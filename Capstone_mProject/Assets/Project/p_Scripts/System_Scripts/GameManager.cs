@@ -19,11 +19,9 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    public MonoBehaviour monoBehaviour { get; private set; }
+    public GameData gameData;
 
     public ObjectPooling objectPooling;
-
-    [SerializeField] private Button poolingBtn;
 
     void Awake()
     {
@@ -41,13 +39,6 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
-
-        poolingBtn.onClick.RemoveAllListeners();
-        poolingBtn.onClick.AddListener(() =>
-        {
-            objectPooling.ShowEffect("Prefab");
-
-        });
     }
 
 

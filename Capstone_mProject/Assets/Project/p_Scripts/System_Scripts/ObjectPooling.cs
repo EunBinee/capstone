@@ -11,12 +11,10 @@ public class ObjectPooling
     public Dictionary<string, Effect> effectPrefabs;
     public Dictionary<string, List<Effect>> effectPools;
     public List<Effect> loofEffectPools;
-    public MonoBehaviour mono;
+
 
     public void InitPooling()
     {
-        mono = GameManager.Instance.monoBehaviour;
-
         //오브젝트 풀링.
         effectPrefabs = new Dictionary<string, Effect>();
         effectPools = new Dictionary<string, List<Effect>>();

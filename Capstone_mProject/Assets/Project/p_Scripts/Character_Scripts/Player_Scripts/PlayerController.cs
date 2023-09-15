@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,6 +28,9 @@ public class PlayerController : MonoBehaviour
     //캡슐 가운데 가장 아래쪽
     private Vector3 CapsuleBottomCenterPoint
    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
+
+
+    public NavMeshSurface navMeshSurface;
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
@@ -61,6 +65,7 @@ public class PlayerController : MonoBehaviour
     private void InitPlayer()
     {
         InitCapsuleCollider();
+        navMeshSurface.BuildNavMesh();
     }
     void InitCapsuleCollider()
     {
