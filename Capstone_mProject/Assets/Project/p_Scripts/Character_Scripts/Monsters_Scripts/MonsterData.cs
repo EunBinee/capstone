@@ -12,8 +12,9 @@ public class MonsterData
         NomalMonster
     }
 
-    [SerializeField] private int monsterid;
-    [SerializeField] private MonsterType monsterType;
+    public int monsterid;
+    public MonsterType monsterType;
+    public float overlapRadius;
 
     //몬스터 필요한 데이터 계속 추가.. 할 것.
 
