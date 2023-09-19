@@ -606,6 +606,7 @@ GameObject:
   - component: {fileID: 1305339787}
   - component: {fileID: 1305339786}
   - component: {fileID: 1305339785}
+  - component: {fileID: 1305339792}
   - component: {fileID: 1305339791}
   m_Layer: 0
   m_Name: Monster
@@ -630,11 +631,6 @@ MonoBehaviour:
     monsterid: 10
     monsterType: 1
     overlapRadius: 7
-  originPosition: {x: 0, y: 0, z: 0}
-  playerTrans: {fileID: 0}
-  isTracing: 0
-  isGoingBack: 0
-  isRoaming: 0
 --- !u!54 &1305339786
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -751,6 +747,21 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1305339792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1305339784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 821f2dbf3adaa3247bfacd7cd8243dc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
+  originPosition: {x: 0, y: 0, z: 0}
+  playerTrans: {fileID: 0}
 --- !u!1 &1372997700
 GameObject:
   m_ObjectHideFlags: 0
