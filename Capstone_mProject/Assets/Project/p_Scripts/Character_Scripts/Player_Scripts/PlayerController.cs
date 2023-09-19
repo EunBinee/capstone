@@ -10,12 +10,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CurrentState _currentState = new CurrentState();
     [SerializeField] private CurrentValue _currentValue = new CurrentValue();
     [SerializeField] private PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
+    [SerializeField] private PlayerPickUp _playerPickUp = new PlayerPickUp();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
+    private PlayerPickUp P_PickUp => _playerPickUp;
+
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     private float _capsuleRadiusDiff;
@@ -40,6 +43,10 @@ public class PlayerController : MonoBehaviour
         Inputs();
         //캐릭터의 애니메이션 변경을 수행하는 함수
         AnimationParameters();
+
+        //캐릭터 물건 들기
+        //ItemPickUp();
+        
     }
     void FixedUpdate()
     {
@@ -279,6 +286,7 @@ public class PlayerController : MonoBehaviour
                     P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
                 }
+               
             }
         }
     }
@@ -430,5 +438,51 @@ public class PlayerController : MonoBehaviour
         cameraRot.x = P_Camera.up_down_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
         P_Camera.playerCameraPivot.transform.localRotation = targetCameraRot;
+    }
+
+    private void ItemPickUp()
+    {
+        
+        //아이템 드는 것과 관련한 함수
+        if (P_PickUp.hit.collider != null)
+        {
+            //아이템 흰색으로 빛나는 기능과 ui 텍스트 안보이게 하기.
+            P_PickUp.hit.collider.GetComponent<Highlight>()?.ToggleHighlight(false);
+            P_PickUp.pickUpUI.SetActive(false);
+
+            //e누르면 아이템 들기, e떼면 아이템 놓기
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                //Debug.Log(P_PickUp.hit.collider.name);
+                if (P_PickUp.hit.collider.GetComponent<Item>())
+                {
+                    Debug.Log("아이템 들기");
+                    P_PickUp.inHandItem = P_PickUp.hit.collider.gameObject;
+                    P_PickUp.inHandItem.transform.SetParent(P_PickUp.pickUpParent.transform, false);
+           
+
+                    if (P_PickUp.hit.collider.GetComponent<Rigidbody>() != null)
+                    {
+                        P_PickUp.hit.collider.GetComponent<Rigidbody>().isKinematic = true;
+                        Debug.Log("키네마틱 켬");
+                    }
+                    
+                    P_States.isPickUp = true;
+                    P_Com.animator.SetTrigger("Pick Up");
+                    
+                   
+                }
+            }
+      
+        }
+        if(Physics.Raycast(P_PickUp.playerCameraTransform.position, P_PickUp.playerCameraTransform.forward, out P_PickUp.hit, P_PickUp.hitRange, P_PickUp.pickalbleLayerMask))
+        {
+            //아이템 빛나게, ui 텍스트 보이게함.
+            P_PickUp.hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
+            P_PickUp.pickUpUI.SetActive(true);
+        }
+
+
+        //Debug.DrawRay(P_PickUp.playerCameraTransform.position, P_PickUp.playerCameraTransform.forward * P_PickUp.hitRange, Color.red);
     }
 }
