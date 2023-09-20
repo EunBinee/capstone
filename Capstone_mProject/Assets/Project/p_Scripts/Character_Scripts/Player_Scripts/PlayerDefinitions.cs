@@ -61,7 +61,7 @@ public class CheckOption
     public float jumpGravity = 1f;
 
     [Range(1f, 30f), Tooltip("대시 속도")]
-    public float dashingSpeed = 30f;
+    public float dashingSpeed = 13f;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;

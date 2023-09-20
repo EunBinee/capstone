@@ -177,15 +177,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.R) && !P_States.isDashing && P_Value.moveAmount > 0)
         {
             P_States.isDashing = true;
-            P_Com.rigidbody.AddForce(transform.forward * 55, ForceMode.Impulse);
-            P_Com.animator.SetTrigger("isDash");
-        }
-        // 대시 중인 상태의 이름 확인
-        AnimatorStateInfo stateInfo = P_Com.animator.GetCurrentAnimatorStateInfo(0);
-        if (!stateInfo.IsName("dash"))
-        {
-            // "Dash" 애니메이션이 끝나면 대시 종료
-            P_States.isDashing = false;
         }
     }
     //애니메이터 블랜더 트리의 파라미터 변경
@@ -371,12 +362,18 @@ public class PlayerController : MonoBehaviour
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
-        if (P_States.isJumping || P_States.isDashing)
+        if (P_States.isJumping)
         {
-            Debug.Log("moveDirection            " + P_Value.moveDirection);
-            Debug.Log("P_Com.rigidbody.velocity " + P_Com.rigidbody.velocity);
             Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
+        }
+        else if (P_States.isDashing)
+        {
+            P_Com.animator.SetTrigger("isDash");
+
+            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
+
+            Invoke("dashOut", 0.1f);
         }
         else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
         {
@@ -400,7 +397,6 @@ public class PlayerController : MonoBehaviour
     {
         if (P_Input.jumpMovement == 1 && !P_States.isJumping)
         {
-
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
@@ -413,6 +409,13 @@ public class PlayerController : MonoBehaviour
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
         }
+    }
+
+    private void dashOut()
+    {
+        P_States.isDashing = false;
+        // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
+        P_Com.rigidbody.velocity = Vector3.zero;
     }
 
     private void Update_Physics()
@@ -428,7 +431,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!P_States.isGround && P_States.isJumping)
         {
-            Debug.Log("Here");
+            //Debug.Log("Here");
             P_Value.gravity = P_COption.gravity * P_COption.jumpGravity;
         }
 
