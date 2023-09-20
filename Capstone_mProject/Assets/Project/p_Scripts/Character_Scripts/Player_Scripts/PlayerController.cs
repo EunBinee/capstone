@@ -57,8 +57,7 @@ public class PlayerController : MonoBehaviour
             AllPlayerLocomotion();
         }
 
-        HandleJump();
-        HandleDash();
+
     }
     void LateUpdate()
     {
@@ -79,41 +78,45 @@ public class PlayerController : MonoBehaviour
     //Input 함수
     private void Inputs()
     {
-        HandleSprint();
-        HandleWalkOrRun();
-        HandleStrafe();
-        P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
-        P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
-        if (Input.GetKey(KeyCode.W))
+        if (!HandleJump())
         {
-            P_Input.verticalMovement = 1;
+            HandleSprint();
+            HandleWalkOrRun();
+            HandleStrafe();
+            P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
+            P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
+            if (Input.GetKey(KeyCode.W))
+            {
+                P_Input.verticalMovement = 1;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                P_Input.verticalMovement = -1;
+            }
+            else
+            {
+                P_Input.verticalMovement = 0;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                P_Input.horizontalMovement = 1;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                P_Input.horizontalMovement = -1;
+            }
+            else
+            {
+                P_Input.horizontalMovement = 0;
+            }
+            //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
+            P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
+            if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
+                P_States.isNotMoving = true;
+            else
+                P_States.isNotMoving = false;
         }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            P_Input.verticalMovement = -1;
-        }
-        else
-        {
-            P_Input.verticalMovement = 0;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            P_Input.horizontalMovement = 1;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            P_Input.horizontalMovement = -1;
-        }
-        else
-        {
-            P_Input.horizontalMovement = 0;
-        }
-        //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
-        P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
-        if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
-            P_States.isNotMoving = true;
-        else
-            P_States.isNotMoving = false;
+
     }
     void HandleSprint()
     {
@@ -124,7 +127,7 @@ public class PlayerController : MonoBehaviour
             P_States.isSprinting = true;
             P_States.isWalking = false;
             P_States.isRunning = false;
-            P_States.isJumping = false;
+            //P_States.isJumping = false;
         }
         else
         {
@@ -160,20 +163,14 @@ public class PlayerController : MonoBehaviour
             P_States.isStrafing = false;
         }
     }
-    void HandleJump()
+    bool HandleJump()
     {
         if (Input.GetKey(KeyCode.Space) && !P_States.isJumping)
         {
             P_Input.jumpMovement = 1;
-            P_States.isJumping = true;
-            P_Com.rigidbody.AddForce(Vector3.up * 40, ForceMode.Impulse);
-            P_Com.animator.SetTrigger("isJump");
+            return true;
         }
-        if (P_States.isJumping && P_States.isGround)
-        {
-            P_States.isJumping = false;
-            P_Input.jumpMovement = 0;
-        }
+        return false;
     }
     void HandleDash()
     {
@@ -319,16 +316,15 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        /*if (P_States.isJumping)
-        {
-            P_Com.animator.SetTrigger("isJump");
-        }*/
+
     }
     private void AllPlayerLocomotion()
     {
         //캐릭터의 실제 이동을 수행하는 함수.
         PlayerRotation(); //플레이어의 방향 전환을 수행하는 함수
         PlayerMovement(); //플레이어의 움직임을 수행하는 함수.
+        PlayerJump();
+        HandleDash();
     }
     private void PlayerRotation()
     {
@@ -342,6 +338,10 @@ public class PlayerController : MonoBehaviour
             Quaternion rotQ = Quaternion.LookRotation(rotDirect);
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, rotQ, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRot;
+        }
+        else if (P_States.isJumping)
+        {
+
         }
         else
         {
@@ -361,6 +361,7 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRot;
         }
+
     }
     private void PlayerMovement()
     {
@@ -369,19 +370,24 @@ public class PlayerController : MonoBehaviour
         P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
-        P_Value.moveDirection.y = 0;
-        if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking || (P_States.isJumping || P_States.isDashing))
+
+        if (P_States.isJumping || P_States.isDashing)
         {
+            Debug.Log("moveDirection            " + P_Value.moveDirection);
+            Debug.Log("P_Com.rigidbody.velocity " + P_Com.rigidbody.velocity);
+            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
+            P_Com.rigidbody.velocity = p_velocity;
+        }
+        else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
+        {
+            P_Value.moveDirection.y = 0;
             if (P_States.isSprinting)    //전력질주
                 P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
             else if (P_States.isRunning) //뛸때
                 P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
             else if (P_States.isWalking) //걸을 때
                 P_Value.moveDirection = P_Value.moveDirection * P_COption.walkingSpeed;
-            else if (P_States.isJumping) //점프했을 때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.jumpingSpeed;
-            else if (P_States.isDashing) //대시했을 때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.dashingSpeed;
+
 
             Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
@@ -389,17 +395,43 @@ public class PlayerController : MonoBehaviour
             return;
         }
     }
+
+    private void PlayerJump()
+    {
+        if (P_Input.jumpMovement == 1 && !P_States.isJumping)
+        {
+
+            P_States.isJumping = true;
+            P_Value.gravity = P_COption.gravity;
+            P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
+            P_Com.animator.SetBool("isJump_Up", true);
+        }
+        if (P_States.isJumping && P_States.isGround)
+        {
+            P_Com.animator.SetBool("isJump_Up", false);
+            P_States.isJumping = false;
+            P_Input.jumpMovement = 0;
+            P_Value.gravity = 0;
+        }
+    }
+
     private void Update_Physics()
     {
-        if (P_States.isGround)
+        if (P_States.isGround && !P_States.isJumping)
         {
             //지면에 잘 붙어있을 경우
             P_Value.gravity = 0f;
         }
-        else
+        else if (!P_States.isGround && !P_States.isJumping)
         {
             P_Value.gravity += _fixedDeltaTime * P_COption.gravity;
         }
+        else if (!P_States.isGround && P_States.isJumping)
+        {
+            Debug.Log("Here");
+            P_Value.gravity = P_COption.gravity * P_COption.jumpGravity;
+        }
+
     }
     void CheckedForward()
     {

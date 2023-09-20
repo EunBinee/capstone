@@ -22,6 +22,7 @@ public class PlayerInput
     public float mouseY;             //마우스 상하
     public float mouseX;             //마우스 좌우
     public float jumpMovement;       //점프
+
 }
 
 [Serializable]
@@ -55,7 +56,9 @@ public class CheckOption
     public float walkingSpeed = 2f;
 
     [Range(1f, 30f), Tooltip("점프할때 속도")]
-    public float jumpingSpeed = 1f;
+    public float jumpPower = 1f;
+    [Range(1f, 30f), Tooltip("점프할때 추가 중력")]
+    public float jumpGravity = 1f;
 
     [Range(1f, 30f), Tooltip("대시 속도")]
     public float dashingSpeed = 30f;
