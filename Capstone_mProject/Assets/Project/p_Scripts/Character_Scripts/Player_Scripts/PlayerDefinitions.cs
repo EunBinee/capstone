@@ -21,6 +21,8 @@ public class PlayerInput
     public float horizontalMovement; //좌우
     public float mouseY;             //마우스 상하
     public float mouseX;             //마우스 좌우
+    public float jumpMovement;       //점프
+
 }
 
 [Serializable]
@@ -53,6 +55,14 @@ public class CheckOption
     [Range(1f, 30f), Tooltip("걷는 속도")]
     public float walkingSpeed = 2f;
 
+    [Range(1f, 30f), Tooltip("점프할때 속도")]
+    public float jumpPower = 1f;
+    [Range(1f, 30f), Tooltip("점프할때 추가 중력")]
+    public float jumpGravity = 1f;
+
+    [Range(1f, 30f), Tooltip("대시 속도")]
+    public float dashingSpeed = 13f;
+
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;
 
@@ -68,6 +78,8 @@ public class CurrentState
     public bool isRunning;  //뛰기
     public bool isSprinting; //전력 질주
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
+    public bool isJumping;  //점프
+    public bool isDashing;  //대시
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부
