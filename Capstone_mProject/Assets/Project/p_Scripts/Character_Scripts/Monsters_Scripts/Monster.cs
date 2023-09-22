@@ -18,7 +18,7 @@ public class Monster : MonoBehaviour
     {
         //몬스터가 플레이어를 때리다.
     }
-    
+
     public virtual void GetDamage()
     {
         //플레이어에게 맞다.
