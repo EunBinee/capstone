@@ -17,7 +17,7 @@ public class MonsterPattern : MonoBehaviour
     [SerializeField] private Transform playerTrans;
     private NavMeshAgent navMeshAgent;
     private MonsterState curMonsterState;
-    private enum MonsterState
+    public enum MonsterState
     {
         Roaming,
         Tracing,
@@ -26,6 +26,11 @@ public class MonsterPattern : MonoBehaviour
     }
     private float overlapRadius;
 
+    public enum MonsterMotion
+    {
+        Attack,
+        KnockBack,
+    }
     void Awake()
     {
         Init();
@@ -90,7 +95,6 @@ public class MonsterPattern : MonoBehaviour
             ChangeMonsterState(MonsterState.Tracing);
             i++;
         }
-
     }
 
     public virtual void Tracing_Movement()
@@ -117,6 +121,7 @@ public class MonsterPattern : MonoBehaviour
         {
             case MonsterState.Roaming:
                 break;
+
             case MonsterState.Tracing:
                 distance = Vector3.Distance(transform.position, playerTrans.position);
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
@@ -125,14 +130,27 @@ public class MonsterPattern : MonoBehaviour
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
                 break;
+
             case MonsterState.Attack:
                 break;
+
             case MonsterState.GoingBack:
                 distance = Vector3.Distance(transform.position, originPosition);
                 if (distance < 0.3f)
                 {
                     ChangeMonsterState(MonsterState.Roaming);
                 }
+                break;
+        }
+    }
+
+    public virtual void Monster_Motion(MonsterMotion monsterMotion)
+    {
+        switch (monsterMotion)
+        {
+            case MonsterMotion.Attack:
+                break;
+            case MonsterMotion.KnockBack:
                 break;
         }
     }

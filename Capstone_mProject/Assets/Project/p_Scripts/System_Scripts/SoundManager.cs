@@ -1,14 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
-public class GameManager : MonoBehaviour
+public class SoundManager : MonoBehaviour
 {
-    private static GameManager instance = null;
-    public static GameManager Instance
+    private static SoundManager instance = null;
+    public static SoundManager Instance
     {
         get
         {
@@ -19,10 +16,6 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
-    public GameData gameData;
-
-    public ObjectPooling objectPooling;
-
     void Awake()
     {
         Init();
@@ -38,7 +31,7 @@ public class GameManager : MonoBehaviour
         else
             Destroy(this.gameObject);
 
-        objectPooling.InitPooling();
+
     }
 
 
