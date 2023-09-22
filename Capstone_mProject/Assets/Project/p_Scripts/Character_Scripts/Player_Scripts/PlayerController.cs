@@ -61,7 +61,6 @@ public class PlayerController : MonoBehaviour
             AllPlayerLocomotion();
         }
 
-
     }
     void LateUpdate()
     {
@@ -170,8 +169,9 @@ public class PlayerController : MonoBehaviour
     }
     bool HandleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping)
+        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
         {
+            //Debug.Log(P_Value.hitDistance);
             P_Input.jumpMovement = 1;
             return true;
         }
@@ -179,10 +179,17 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDash()
     {
-        if (Input.GetKey(KeyCode.R) && !P_States.isDashing && P_Value.moveAmount > 0)
+        P_States.currentDashKeyPress = Input.GetKey(KeyCode.R);
+        if (P_States.previousDashKeyPress && P_States.currentDashKeyPress)
+        {
+            //Debug.Log("이전 프레임에도 누름!");
+            return;
+        }
+        else if (P_States.currentDashKeyPress && !P_States.isDashing && P_Value.moveAmount > 0)
         {
             P_States.isDashing = true;
         }
+        P_States.previousDashKeyPress = P_States.currentDashKeyPress;
     }
     //애니메이터 블랜더 트리의 파라미터 변경
     private void AnimationParameters()
@@ -378,7 +385,7 @@ public class PlayerController : MonoBehaviour
 
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
 
-            Invoke("dashOut", 0.1f);
+            Invoke("dashOut", 0.1f);    //대시 유지 시간
         }
         else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
         {
@@ -421,6 +428,7 @@ public class PlayerController : MonoBehaviour
         P_States.isDashing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
         P_Com.rigidbody.velocity = Vector3.zero;
+        //Invoke("dashOut", 0.5f);
     }
 
     private void Update_Physics()
@@ -444,10 +452,14 @@ public class PlayerController : MonoBehaviour
     void CheckedForward()
     {
         //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
+        // 함수 파라미터 : Capsule의 시작점, Capsule의 끝점,
+        // Capsule의 크기(x, z 중 가장 큰 값이 크기가 됨), Ray의 방향,
+        // RaycastHit 결과, Capsule의 회전값, CapsuleCast를 진행할 거리
         bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
         _castRadius, P_Value.moveDirection + Vector3.down * 0.25f,
         out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
         // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
+        P_Value.hitDistance = hit.distance;
         P_States.isForwardBlocked = false;
         if (cast)
         {
