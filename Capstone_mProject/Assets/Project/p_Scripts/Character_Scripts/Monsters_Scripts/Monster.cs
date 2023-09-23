@@ -9,6 +9,14 @@ public class Monster : MonoBehaviour
     public MonsterData monsterData;
     public MonsterPattern monsterPattern;
 
+    public AudioClip[] monsterSoundClips; //나중에 몬스터 스크립트로 빼도 괜찮을듯
+    public enum monsterSound
+    {
+        Hit,
+        GetDamage,
+        Death
+    }
+
     private void Awake()
     {
         monsterPattern = GetComponent<MonsterPattern>();
