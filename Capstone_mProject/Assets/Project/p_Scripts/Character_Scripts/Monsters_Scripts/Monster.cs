@@ -9,7 +9,7 @@ public class Monster : MonoBehaviour
     public MonsterData monsterData;
     public MonsterPattern monsterPattern;
 
-    public AudioClip[] monsterSoundClips; //나중에 몬스터 스크립트로 빼도 괜찮을듯
+    public AudioClip[] monsterSoundClips;
     public enum monsterSound
     {
         Hit,
@@ -35,6 +35,11 @@ public class Monster : MonoBehaviour
     public virtual void Death()
     {
         //죽다.
+    }
+
+    private void SoundPlay(monsterSound m_sound)
+    {
+        SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound]);
     }
 
 }

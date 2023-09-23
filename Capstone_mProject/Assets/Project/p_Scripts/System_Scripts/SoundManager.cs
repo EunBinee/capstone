@@ -18,25 +18,39 @@ public class SoundManager : MonoBehaviour
     }
 
     [Header("BGM")]
-    public AudioClip bgmClip;
+    public AudioClip[] bgmClip;
     private AudioSource bgmPlayer;
+    public enum BGM
+    {
+        Title,
+        Ingame
+    }
 
     [Header("PlayerSound")]
     public AudioClip[] playerSoundClips;
     private AudioSource playerSoundPlayer;
+    public enum PlayerSound
+    {
+        Hit,
+        GetDamage,
+        Death
+    }
 
     [Header("MonsterSound")]
     //몬스터 사운드 클립은 몬스터 스크립트로 따로 관리
     private AudioSource[] mosterSoundPlayer;
-    private int monsterSound_channels;
+    public int monsterSound_channels;
     private int monsterSound_ChannelIndex;
 
     [Header("Other sfx Sound")] //기타. 효과음.
     public AudioClip[] sfxClips;
     private AudioSource[] sfxPlayer;
-    private int sfx_channels;
+    public int sfx_channels;
     private int sfx_channelIndex;
-
+    public enum SfxSound
+    {
+        UI
+    }
 
     void Awake()
     {
@@ -60,7 +74,6 @@ public class SoundManager : MonoBehaviour
         bgmPlayer.playOnAwake = false;
         bgmPlayer.loop = true;
         bgmPlayer.volume = 1;
-        bgmPlayer.clip = bgmClip;
 
         //플레이어 사운드 플레이어 초기화
         GameObject playerSoundObject = new GameObject("playerSoundPlayer");
@@ -70,7 +83,7 @@ public class SoundManager : MonoBehaviour
         playerSoundPlayer.loop = true;
         playerSoundPlayer.volume = 1;
 
-        //플레이어 사운드 플레이어 초기화
+        //몬스터 사운드 플레이어 초기화
         GameObject monsterSoundObject = new GameObject("monsterSoundPlayer");
         monsterSoundObject.transform.parent = transform;
         mosterSoundPlayer = new AudioSource[monsterSound_channels];
@@ -96,4 +109,50 @@ public class SoundManager : MonoBehaviour
             sfxPlayer[i].volume = 1;
         }
     }
+
+    public void Play_BGM(BGM bgm)
+    {
+        bgmPlayer.clip = playerSoundClips[(int)bgm];
+        bgmPlayer.Play();
+    }
+
+    public void Play_PlayerSound(PlayerSound p_Sound)
+    {
+        //플레이어 캐릭터 사운드
+        playerSoundPlayer.clip = playerSoundClips[(int)p_Sound];
+        playerSoundPlayer.Play();
+    }
+
+    public void Play_MonsterSound(AudioClip monsterSoundClip)
+    {
+        for (int index = 0; index < mosterSoundPlayer.Length; index++)
+        {
+            int loopIndex = (index + monsterSound_ChannelIndex) % mosterSoundPlayer.Length;
+
+            if (mosterSoundPlayer[loopIndex].isPlaying)
+                continue;
+
+            monsterSound_ChannelIndex = loopIndex;
+            mosterSoundPlayer[monsterSound_ChannelIndex].clip = monsterSoundClip;
+            mosterSoundPlayer[monsterSound_ChannelIndex].Play();
+            break;
+        }
+    }
+
+    public void Play_SfxSound(SfxSound sfx_Sound)
+    {
+        for (int index = 0; index < sfxPlayer.Length; index++)
+        {
+            int loopIndex = (index + sfx_channelIndex) % sfxPlayer.Length;
+
+            if (sfxPlayer[loopIndex].isPlaying)
+                continue;
+
+            sfx_channelIndex = loopIndex;
+            sfxPlayer[sfx_channelIndex].clip = sfxClips[(int)sfx_Sound];
+            sfxPlayer[sfx_channelIndex].Play();
+            break;
+        }
+    }
+
 }
