@@ -9,6 +9,14 @@ public class Monster : MonoBehaviour
     public MonsterData monsterData;
     public MonsterPattern monsterPattern;
 
+    public AudioClip[] monsterSoundClips;
+    public enum monsterSound
+    {
+        Hit,
+        GetDamage,
+        Death
+    }
+
     private void Awake()
     {
         monsterPattern = GetComponent<MonsterPattern>();
@@ -27,6 +35,11 @@ public class Monster : MonoBehaviour
     public virtual void Death()
     {
         //죽다.
+    }
+
+    private void SoundPlay(monsterSound m_sound)
+    {
+        SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound]);
     }
 
 }

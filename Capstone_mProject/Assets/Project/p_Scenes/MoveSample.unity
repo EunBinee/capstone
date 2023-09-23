@@ -347,7 +347,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &605036777
 MonoBehaviour:
@@ -395,6 +395,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a345cb62a8f03654aa7a78677f2f2c45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmClip: {fileID: 0}
+  playerSoundClips: []
+  monsterSound_channels: 16
+  sfxClips: []
+  sfx_channels: 16
 --- !u!4 &920376942
 Transform:
   m_ObjectHideFlags: 0
@@ -678,6 +683,7 @@ MonoBehaviour:
     MaxHP: 0
     HP: 0
   monsterPattern: {fileID: 0}
+  monsterSoundClips: []
 --- !u!54 &1305339786
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1138,11 +1144,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1619249209}
   m_LocalRotation: {x: 0.8568621, y: -0, z: -0, w: 0.5155456}
-  m_LocalPosition: {x: 0.6, y: 1.2, z: -10.5}
+  m_LocalPosition: {x: 0.27013433, y: -0.87149215, z: -16.659243}
   m_LocalScale: {x: 15.566, y: 7.8902, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2047525830}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 117.93201, y: 0, z: 0}
 --- !u!1 &1645457506
@@ -1339,8 +1345,9 @@ Transform:
   - {fileID: 1741944488}
   - {fileID: 1216523376}
   - {fileID: 599229456}
+  - {fileID: 1619249213}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &14758371676994569
 Transform:
