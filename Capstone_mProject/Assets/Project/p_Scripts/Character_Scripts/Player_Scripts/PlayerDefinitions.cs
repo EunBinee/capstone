@@ -101,6 +101,7 @@ public class CurrentValue
     public Vector3 groundNormal;    //지면의 방향 벡터
     public Vector3 groundCross;     //지면의 외적 (캐릭터 이동벡터 회전축)
     public Vector3 playerVelocity;  //이동을 위한 플레이어 속도
+    public int comboCount;          // 현재 콤보 카운트
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
@@ -108,6 +109,9 @@ public class CurrentValue
     public float groundSlopeAngle;  //현재 바닥의 경사각
     public float forwardSlopeAngle; //캐릭터가 바라보는 방향의 경사각
     public float slopeAccel;        // 경사로 인한 가속/감속 비율
+    public float comboResetTime = 1f;   // 콤보가 리셋되기까지의 시간 (초)
+    public float lastClickTime = 0f;    // 마지막 클릭 시간
+
 
     [Space]
     public float gravity = 0f; // 직접 제어하는 중력값

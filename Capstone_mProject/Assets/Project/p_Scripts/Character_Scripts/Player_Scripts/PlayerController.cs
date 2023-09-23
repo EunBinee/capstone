@@ -191,6 +191,52 @@ public class PlayerController : MonoBehaviour
         }
         P_States.previousDashKeyPress = P_States.currentDashKeyPress;
     }
+    void Attacking()
+    {
+        if (Input.GetMouseButtonDown(0))  // 마우스 좌클릭을 감지
+        {
+            float timeSinceLastClick = Time.time - P_Value.lastClickTime;
+            if (timeSinceLastClick <= P_Value.comboResetTime)
+            {
+                // 콤보가 리셋되기 전에 다시 클릭한 경우
+                P_Value.comboCount++;
+            }
+            else
+            {
+                // 콤보가 리셋된 경우
+                P_Value.comboCount = 1;
+            }
+
+            P_Value.lastClickTime = Time.time;
+
+            if (P_Value.comboCount == 1)
+            {
+                // 1타 공격 실행
+                Debug.Log("1타 공격!");
+                P_Com.animator.SetTrigger("firstAttack");
+            }
+            else if (P_Value.comboCount == 2)
+            {
+                // 2타 공격 실행
+                Debug.Log("2타 공격!");
+                P_Com.animator.SetTrigger("secondAttack");
+            }
+            else if (P_Value.comboCount == 3)
+            {
+                // 3타 공격 실행 및 콤보 리셋
+                Debug.Log("3타 콤보 공격!");
+                P_Com.animator.SetTrigger("thirdAttack");
+                Invoke("resetCombo", 0f);
+            }
+        }
+    }
+    void resetCombo()
+    {
+        P_Value.comboCount = 0;
+        P_Com.animator.SetFloat("isComboAttack", 0);
+        Debug.Log("초기화");
+    }
+
     //애니메이터 블랜더 트리의 파라미터 변경
     private void AnimationParameters()
     {
@@ -319,7 +365,15 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
+        //자연스러운 애니메이션 레이어 표현
+        /*if (P_Com.animator.GetCurrentAnimatorStateInfo(1).normalizedTime > 0.7f)
+        {
+            if (P_COption.layerWeight >= 0)
+            {
+                P_COption.layerWeight -= Time.deltaTime;
+            }
+            P_Com.animator.SetLayerWeight(1, P_COption.layerWeight);
+        }*/
     }
     private void AllPlayerLocomotion()
     {
@@ -328,6 +382,7 @@ public class PlayerController : MonoBehaviour
         PlayerMovement(); //플레이어의 움직임을 수행하는 함수.
         PlayerJump();
         HandleDash();
+        Attacking();
     }
     private void PlayerRotation()
     {
