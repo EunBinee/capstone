@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
-using System.Diagnostics;
 
 public class MonsterPattern : MonoBehaviour
 {
@@ -31,7 +30,7 @@ public class MonsterPattern : MonoBehaviour
         Attack,
         KnockBack,
     }
-    void Awake()
+    void Start()
     {
         Init();
     }
@@ -40,7 +39,7 @@ public class MonsterPattern : MonoBehaviour
     {
         m_monster = GetComponent<Monster>();
         rigid = GetComponent<Rigidbody>();
-        playerTrans = GameManager.Instance.gameData.player.GetComponent<Transform>();
+        playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         navMeshAgent = GetComponent<NavMeshAgent>();
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
