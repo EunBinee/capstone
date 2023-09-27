@@ -3,33 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.AI;
+using Unity.VisualScripting;
 
 public class MonsterPattern : MonoBehaviour
 {
     Monster m_monster;
+    Animator m_animator;
 
     public Rigidbody rigid;
     public Vector3 originPosition; //원래 캐릭터 position
 
     private int playerLayerId = 3;
     private int playerlayerMask; //플레이어 캐릭터 레이어 마스크
-    [SerializeField] private Transform playerTrans;
+    private Transform playerTrans;
+
     private NavMeshAgent navMeshAgent;
     private MonsterState curMonsterState;
     public enum MonsterState
     {
         Roaming,
+        Discovery,
         Tracing,
         Attack,
         GoingBack,
     }
+    public enum MonsterAnimation
+    {
+        Idle,
+        Move
+    }
     private float overlapRadius;
+    private int roaming_RangeX;
+    private int roaming_RangeZ;
+    Vector3 roam_vertex01; //사각형 왼쪽 가장 위
+    Vector3 roam_vertex02; //사각형 왼쪽 가장 아래
+    Vector3 roam_vertex03; //사각형 오른쪽 가장 아래
+    Vector3 roam_vertex04; //사각형 오른쪽 가장 위
+
+    Vector3 mRoaming_randomPos = Vector3.zero;
+
+    private bool isRoaming = false;
+    private bool isTracing = false;
 
     public enum MonsterMotion
     {
         Attack,
         KnockBack,
     }
+
     void Start()
     {
         Init();
@@ -38,21 +59,28 @@ public class MonsterPattern : MonoBehaviour
     public void Init()
     {
         m_monster = GetComponent<Monster>();
+        m_animator = GetComponent<Animator>();
+
         rigid = GetComponent<Rigidbody>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.updateRotation = false;
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
         curMonsterState = MonsterState.Roaming;
-
         originPosition = transform.position;
-        overlapRadius = m_monster.monsterData.overlapRadius;
+
+        overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
+        roaming_RangeX = m_monster.monsterData.roaming_RangeX; //로밍 범위 x;
+        roaming_RangeZ = m_monster.monsterData.roaming_RangeZ; //로밍 범위 y;
+        CheckRoam_Range();
     }
 
     public void Update()
     {
         Monster_Pattern();
+        UpdateRotation();
     }
 
     private void FixedUpdate()
@@ -66,12 +94,61 @@ public class MonsterPattern : MonoBehaviour
         rigid.angularVelocity = Vector3.zero;
     }
 
+    private void UpdateRotation()
+    {
+        if (navMeshAgent.desiredVelocity.sqrMagnitude >= 0.1f * 0.1f)
+        {
+            //적 ai의 이동방향
+            Vector3 direction = navMeshAgent.desiredVelocity;
+            //회전 각도 산출 후, 선형 보간 함수로 부드럽게 회전
+            Quaternion targetAngle = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 8.0f);
+        }
+    }
+
+    private void SetAnimation(MonsterAnimation m_anim)
+    {
+        switch (m_anim)
+        {
+            case MonsterAnimation.Idle:
+                m_animator.SetBool("m_walk", false);
+                m_animator.SetBool("m_idle", true);
+                break;
+            case MonsterAnimation.Move:
+                m_animator.SetBool("m_walk", true);
+                m_animator.SetBool("m_idle", false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void SetMove_AI(bool moveAI)
+    {
+        if (moveAI)
+        {
+            //움직임.
+            navMeshAgent.isStopped = false;
+            navMeshAgent.updatePosition = true;
+        }
+        else if (!moveAI)
+        {
+            //멈춤
+            navMeshAgent.isStopped = true;
+            navMeshAgent.velocity = Vector3.zero;
+            navMeshAgent.updatePosition = false;
+        }
+    }
+
     public void Monster_Pattern()
     {
         switch (curMonsterState)
         {
             case MonsterState.Roaming:
+                Roam_Monster();
                 CheckPlayerCollider();
+                break;
+            case MonsterState.Discovery:
                 break;
             case MonsterState.Tracing:
                 Tracing_Movement();
@@ -82,23 +159,115 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+    private void Roam_Monster()
+    {
+        if (!isRoaming)
+        {
+            isRoaming = true;
+            //x와 Z주변을 배회하는 몬스터
+            StartCoroutine(Roam_Monster_co());
+        }
+    }
+
+    IEnumerator Roam_Monster_co()
+    {
+        bool monsterRoaming = false;
+        Vector3 randomPos = Vector3.zero;
+
+        monsterRoaming = false;
+        navMeshAgent.isStopped = true;
+        navMeshAgent.velocity = Vector3.zero;
+        navMeshAgent.updatePosition = false;
+
+        while (curMonsterState == MonsterState.Roaming)
+        {
+            if (!monsterRoaming)
+            {
+                SetAnimation(MonsterAnimation.Idle);
+
+                float roamTime = UnityEngine.Random.Range(3, 7);
+
+                yield return new WaitForSeconds(roamTime);
+
+                if (!isTracing)
+                {
+                    float distance = 0;
+                    bool checkObstacle = false;
+                    while (true)
+                    {
+                        randomPos = GetRandom_RoamingPos();
+                        mRoaming_randomPos = randomPos;
+                        distance = Vector3.Distance(transform.position, randomPos);
+                        checkObstacle = CheckObstacleCollider(randomPos);
+                        if (distance > 3f && checkObstacle)
+                            break;
+                    }
+                    SetMove_AI(true);
+                    navMeshAgent.SetDestination(randomPos);
+                    SetAnimation(MonsterAnimation.Move);
+                    monsterRoaming = true;
+                }
+            }
+            else if (monsterRoaming)
+            {
+                if (Vector3.Distance(transform.position, randomPos) < 0.5f)
+                {
+                    monsterRoaming = false;
+                    SetMove_AI(false);
+                }
+                yield return null;
+            }
+        }
+    }
+
+    private Vector3 GetRandom_RoamingPos()
+    {
+        //로밍시, 랜덤한 위치 생성
+        float randomX = UnityEngine.Random.Range(originPosition.x + ((roaming_RangeX / 2) * -1), originPosition.x + (roaming_RangeX / 2));
+        float randomZ = UnityEngine.Random.Range(originPosition.z + ((roaming_RangeZ / 2) * -1), originPosition.z + (roaming_RangeZ / 2));
+        return new Vector3(randomX, transform.position.y, randomZ);
+    }
+
+    public bool CheckObstacleCollider(Vector3 randomPos)
+    {
+        //몬스터 로밍시 지정된 장소에 장애물이 있는지 확인
+        Collider[] colliders = Physics.OverlapSphere(randomPos, 1);
+        if (colliders.Length > 1)
+        {
+            //장애물 존재 (1은 바닥 콜라이더)
+            return false;
+        }
+        return true;
+    }
+
     public void CheckPlayerCollider()
     {
         //로밍중, 집돌아갈 때 플레이어 콜라이더 감지중
         Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
 
-        int i = 0;
-        while (i < playerColliders.Length)
+        if (0 < playerColliders.Length)
         {
             //몬스터의 범위에 들어옴
+            //로밍 코루틴 제거
+            if (isRoaming)
+            {
+                StopCoroutine(Roam_Monster_co());
+                isRoaming = false;
+            }
+
             ChangeMonsterState(MonsterState.Tracing);
-            i++;
+            isTracing = true;
+
         }
     }
 
     public virtual void Tracing_Movement()
     {
         //움직임.
+        SetMove_AI(true);
+
+        SetAnimation(MonsterAnimation.Move);
+
         navMeshAgent.SetDestination(playerTrans.position);
 
         //몬스터와 플레이어 사이의 거리 체크
@@ -107,6 +276,10 @@ public class MonsterPattern : MonoBehaviour
 
     public void GoingBack_Movement()
     {
+        SetMove_AI(true);
+
+        SetAnimation(MonsterAnimation.Move);
+
         navMeshAgent.SetDestination(originPosition);
         CheckDistance();       //계속 거리 체크
         CheckPlayerCollider();
@@ -126,6 +299,7 @@ public class MonsterPattern : MonoBehaviour
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
                 if (distance > 9f)
                 {
+                    isTracing = false;
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
                 break;
@@ -135,8 +309,9 @@ public class MonsterPattern : MonoBehaviour
 
             case MonsterState.GoingBack:
                 distance = Vector3.Distance(transform.position, originPosition);
-                if (distance < 0.3f)
+                if (distance < 1f)
                 {
+                    isTracing = false;
                     ChangeMonsterState(MonsterState.Roaming);
                 }
                 break;
@@ -157,6 +332,7 @@ public class MonsterPattern : MonoBehaviour
     private void ChangeMonsterState(MonsterState monsterState)
     {
         curMonsterState = monsterState;
+        Debug.Log("상태 변경 " + monsterState);
     }
 
     private void OnDrawGizmos()
@@ -165,5 +341,30 @@ public class MonsterPattern : MonoBehaviour
         //크기는  monsterData.overlapRadius
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, overlapRadius);
+
+        if (curMonsterState == MonsterState.Roaming)
+        {
+            //만약 로밍 중이면, 로밍 범위 그리기
+            Gizmos.DrawLine(roam_vertex01, roam_vertex02);
+            Gizmos.DrawLine(roam_vertex02, roam_vertex03);
+            Gizmos.DrawLine(roam_vertex03, roam_vertex04);
+            Gizmos.DrawLine(roam_vertex04, roam_vertex01);
+        }
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
+    }
+
+    //로밍 범위 체크
+    private void CheckRoam_Range()
+    {
+        //사각형 왼쪽 가장 위
+        roam_vertex01 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
+        //사각형 왼쪽 가장 아래
+        roam_vertex02 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
+        //사각형 오른쪽 가장 아래
+        roam_vertex03 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
+        //사각형 오른쪽 가장 위
+        roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
     }
 }
