@@ -43,8 +43,9 @@ public class MonsterPattern : MonoBehaviour
     Vector3 mRoaming_randomPos = Vector3.zero;
 
     private bool isRoaming = false;
+    private bool isFinding = false;
     private bool isTracing = false;
-
+    private bool isGoingBack = false;
     public enum MonsterMotion
     {
         Attack,
@@ -149,6 +150,7 @@ public class MonsterPattern : MonoBehaviour
                 CheckPlayerCollider();
                 break;
             case MonsterState.Discovery:
+                Discovery_Player();
                 break;
             case MonsterState.Tracing:
                 Tracing_Movement();
@@ -189,7 +191,7 @@ public class MonsterPattern : MonoBehaviour
 
                 yield return new WaitForSeconds(roamTime);
 
-                if (!isTracing)
+                if (!isFinding)
                 {
                     float distance = 0;
                     bool checkObstacle = false;
@@ -253,22 +255,89 @@ public class MonsterPattern : MonoBehaviour
             {
                 StopCoroutine(Roam_Monster_co());
                 isRoaming = false;
+
+                ChangeMonsterState(MonsterState.Discovery);
             }
 
-            ChangeMonsterState(MonsterState.Tracing);
-            isTracing = true;
+            if (isGoingBack)
+            {
+                //집돌아가는 도중이면 다시 추적
+                ChangeMonsterState(MonsterState.Tracing);
+                isTracing = true;
+            }
+
+            if (isFinding)
+            {
+                Debug.Log("플레이어 범위 안 추적 시작");
+                ChangeMonsterState(MonsterState.Tracing);
+                isTracing = true;
+                isFinding = false;
+            }
+        }
+        else
+        {
+            if (isFinding)
+            {
+                //플레이어가 나갔을 경우
+                Debug.Log("플레이어 범위 밖 : go back");
+                isFinding = false;
+                isTracing = false;
+                ChangeMonsterState(MonsterState.GoingBack);
+
+            }
+        }
+    }
+
+    private void Discovery_Player()
+    {
+        if (!isFinding)
+        {
+            isFinding = true;
+            StartCoroutine(DiscoveryPlayer_co());
+        }
+    }
+
+    IEnumerator DiscoveryPlayer_co()
+    {
+        Debug.Log("시작");
+
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
+        float time = 0f; //예비 탈출용
+        Vector3 curPlayerPos = playerTrans.position;
+        Vector3 curPlayerdirection = curPlayerPos - transform.position;
+        Quaternion targetAngle = Quaternion.LookRotation(curPlayerdirection);
+
+        while (time < 2f)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
+
+            if (transform.rotation == targetAngle)
+                break;
+            else
+            {
+                time += Time.deltaTime;
+                yield return null;
+            }
 
         }
+
+        Debug.Log(" 기다림 ");
+        yield return new WaitForSeconds(2f);
+        Debug.Log("2초");
+        CheckPlayerCollider();
+
+
     }
 
     public virtual void Tracing_Movement()
     {
         //움직임.
+        navMeshAgent.SetDestination(playerTrans.position);
         SetMove_AI(true);
 
         SetAnimation(MonsterAnimation.Move);
-
-        navMeshAgent.SetDestination(playerTrans.position);
 
         //몬스터와 플레이어 사이의 거리 체크
         CheckDistance();
@@ -297,9 +366,10 @@ public class MonsterPattern : MonoBehaviour
             case MonsterState.Tracing:
                 distance = Vector3.Distance(transform.position, playerTrans.position);
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
-                if (distance > 9f)
+                if (distance > 12f)
                 {
                     isTracing = false;
+                    isGoingBack = true;
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
                 break;
@@ -312,6 +382,7 @@ public class MonsterPattern : MonoBehaviour
                 if (distance < 1f)
                 {
                     isTracing = false;
+                    isGoingBack = false;
                     ChangeMonsterState(MonsterState.Roaming);
                 }
                 break;
