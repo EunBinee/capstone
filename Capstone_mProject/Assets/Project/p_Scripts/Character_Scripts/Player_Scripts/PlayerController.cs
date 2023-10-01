@@ -441,6 +441,7 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
     void CheckedForward()
     {
         //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
@@ -457,6 +458,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
         }
     }
+
     void CheckedGround()
     {
         //캐릭터와 지면사이의 높이

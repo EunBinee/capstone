@@ -7,4 +7,9 @@ using System;
 public class GameData
 {
     public GameObject player;
+
+    public Transform GetPlayerTransform()
+    {
+        return player.transform;
+    }
 }
