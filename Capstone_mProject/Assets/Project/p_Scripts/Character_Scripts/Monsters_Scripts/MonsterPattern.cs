@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.AI;
 using Unity.VisualScripting;
+using UnityEngine.Animations;
 
 public class MonsterPattern : MonoBehaviour
 {
@@ -25,12 +26,17 @@ public class MonsterPattern : MonoBehaviour
         Discovery,
         Tracing,
         Attack,
+        GetHit,
         GoingBack,
+        Death
     }
     public enum MonsterAnimation
     {
         Idle,
-        Move
+        Move,
+        Attack01,
+        GetHit,
+        Death
     }
     private float overlapRadius;
     private int roaming_RangeX;
@@ -46,10 +52,13 @@ public class MonsterPattern : MonoBehaviour
     private bool isFinding = false;
     private bool isTracing = false;
     private bool isGoingBack = false;
+    private bool isGettingHit = false;
+
     public enum MonsterMotion
     {
         Attack,
         KnockBack,
+        Death
     }
 
     void Start()
@@ -69,13 +78,19 @@ public class MonsterPattern : MonoBehaviour
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
-        curMonsterState = MonsterState.Roaming;
+        ChangeMonsterState(MonsterState.Roaming);
         originPosition = transform.position;
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
         roaming_RangeX = m_monster.monsterData.roaming_RangeX; //로밍 범위 x;
         roaming_RangeZ = m_monster.monsterData.roaming_RangeZ; //로밍 범위 y;
         CheckRoam_Range();
+
+        BoxCollider boxCollider = GetComponent<BoxCollider>();
+        boxCollider.enabled = false;
+        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
+        capsuleCollider.enabled = true;
+
     }
 
     public void Update()
@@ -112,12 +127,24 @@ public class MonsterPattern : MonoBehaviour
         switch (m_anim)
         {
             case MonsterAnimation.Idle:
-                m_animator.SetBool("m_walk", false);
-                m_animator.SetBool("m_idle", true);
+                m_animator.SetBool("m_Walk", false);
+                m_animator.SetBool("m_Idle", true);
+                m_animator.SetBool("m_Death", false);
                 break;
             case MonsterAnimation.Move:
-                m_animator.SetBool("m_walk", true);
-                m_animator.SetBool("m_idle", false);
+                m_animator.SetBool("m_Walk", true);
+                m_animator.SetBool("m_Idle", false);
+                m_animator.SetBool("m_Death", false);
+                break;
+            case MonsterAnimation.Attack01:
+                break;
+            case MonsterAnimation.GetHit:
+                m_animator.SetTrigger("m_GetHit");
+                break;
+            case MonsterAnimation.Death:
+                m_animator.SetBool("m_Walk", false);
+                m_animator.SetBool("m_Idle", false);
+                m_animator.SetBool("m_Death", true);
                 break;
             default:
                 break;
@@ -141,6 +168,16 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+    private void ChangeMonsterState(MonsterState monsterState)
+    {
+        curMonsterState = monsterState;
+
+#if UNITY_EDITOR
+        Debug.Log("상태 변경 " + monsterState);
+#endif
+
+    }
+
     public void Monster_Pattern()
     {
         switch (curMonsterState)
@@ -157,6 +194,8 @@ public class MonsterPattern : MonoBehaviour
                 break;
             case MonsterState.GoingBack:
                 GoingBack_Movement();
+                break;
+            default:
                 break;
         }
     }
@@ -191,7 +230,7 @@ public class MonsterPattern : MonoBehaviour
 
                 yield return new WaitForSeconds(roamTime);
 
-                if (!isFinding)
+                if ((isFinding == false) && (curMonsterState != MonsterState.Death))
                 {
                     float distance = 0;
                     bool checkObstacle = false;
@@ -244,48 +283,50 @@ public class MonsterPattern : MonoBehaviour
 
     public void CheckPlayerCollider()
     {
-        //로밍중, 집돌아갈 때 플레이어 콜라이더 감지중
-        Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
-
-        if (0 < playerColliders.Length)
+        if (curMonsterState != MonsterState.Death)
         {
-            //몬스터의 범위에 들어옴
-            //로밍 코루틴 제거
-            if (isRoaming)
-            {
-                StopCoroutine(Roam_Monster_co());
-                isRoaming = false;
+            //로밍중, 집돌아갈 때 플레이어 콜라이더 감지중
+            Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
 
-                ChangeMonsterState(MonsterState.Discovery);
+            if (0 < playerColliders.Length)
+            {
+                //몬스터의 범위에 들어옴
+                //로밍 코루틴 제거
+                if (isRoaming)
+                {
+                    StopCoroutine(Roam_Monster_co());
+                    isRoaming = false;
+
+                    ChangeMonsterState(MonsterState.Discovery);
+                }
+
+                if (isGoingBack)
+                {
+                    //집돌아가는 도중이면 다시 추적
+                    ChangeMonsterState(MonsterState.Tracing);
+                    isTracing = true;
+                }
+
+                if (isFinding)
+                {
+                    ChangeMonsterState(MonsterState.Tracing);
+                    isTracing = true;
+                    isFinding = false;
+                }
             }
-
-            if (isGoingBack)
+            else
             {
-                //집돌아가는 도중이면 다시 추적
-                ChangeMonsterState(MonsterState.Tracing);
-                isTracing = true;
-            }
+                if (isFinding)
+                {
+                    //플레이어가 나갔을 경우
+                    isFinding = false;
+                    isTracing = false;
+                    ChangeMonsterState(MonsterState.GoingBack);
 
-            if (isFinding)
-            {
-                Debug.Log("플레이어 범위 안 추적 시작");
-                ChangeMonsterState(MonsterState.Tracing);
-                isTracing = true;
-                isFinding = false;
+                }
             }
         }
-        else
-        {
-            if (isFinding)
-            {
-                //플레이어가 나갔을 경우
-                Debug.Log("플레이어 범위 밖 : go back");
-                isFinding = false;
-                isTracing = false;
-                ChangeMonsterState(MonsterState.GoingBack);
 
-            }
-        }
     }
 
     private void Discovery_Player()
@@ -299,11 +340,8 @@ public class MonsterPattern : MonoBehaviour
 
     IEnumerator DiscoveryPlayer_co()
     {
-        Debug.Log("시작");
-
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
-
         float time = 0f; //예비 탈출용
         Vector3 curPlayerPos = playerTrans.position;
         Vector3 curPlayerdirection = curPlayerPos - transform.position;
@@ -323,9 +361,7 @@ public class MonsterPattern : MonoBehaviour
 
         }
 
-        Debug.Log(" 기다림 ");
         yield return new WaitForSeconds(2f);
-        Debug.Log("2초");
         CheckPlayerCollider();
 
 
@@ -396,16 +432,74 @@ public class MonsterPattern : MonoBehaviour
             case MonsterMotion.Attack:
                 break;
             case MonsterMotion.KnockBack:
+                if (!isGettingHit)
+                {
+                    isGettingHit = true;
+                    StartCoroutine(KnockBack_co());
+                }
+                break;
+            case MonsterMotion.Death:
+                if (curMonsterState != MonsterState.Death)
+                {
+                    StartCoroutine(Death_co());
+                }
+                break;
+            default:
                 break;
         }
     }
 
-    private void ChangeMonsterState(MonsterState monsterState)
+    IEnumerator KnockBack_co()
     {
-        curMonsterState = monsterState;
-        Debug.Log("상태 변경 " + monsterState);
+        //플레이어의 반대 방향으로 넉백
+        MonsterState preState = curMonsterState;
+        ChangeMonsterState(MonsterState.GetHit);
+
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+        SetAnimation(MonsterAnimation.GetHit);
+
+        Vector3 knockback_Dir = transform.position - playerTrans.position;
+        knockback_Dir = knockback_Dir.normalized;
+        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        float time = 0;
+        while (time < 0.5f)
+        {
+            transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+            if (transform.position == KnockBackPos)
+                break;
+            else
+            {
+                time += Time.deltaTime;
+                yield return null;
+            }
+        }
+        if (preState == MonsterState.Roaming || preState == MonsterState.Discovery)
+            ChangeMonsterState(MonsterState.Tracing);
+        else
+            ChangeMonsterState(preState);
+
+        isGettingHit = false;
     }
 
+    IEnumerator Death_co()
+    {
+        ChangeMonsterState(MonsterState.Death);
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Death);
+
+        BoxCollider boxCollider = GetComponent<BoxCollider>();
+        boxCollider.enabled = true;
+        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
+        capsuleCollider.enabled = false;
+
+
+        yield return new WaitForSeconds(5f);
+
+        this.gameObject.SetActive(false);
+    }
+
+    //---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw

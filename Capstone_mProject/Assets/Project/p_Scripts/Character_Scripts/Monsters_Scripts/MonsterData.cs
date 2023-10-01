@@ -21,8 +21,8 @@ public class MonsterData
     [Range(5f, 30f), Tooltip("몬스터 로밍 범위 z (세로)")]
     public int roaming_RangeZ;
 
-    public float MaxHP;
-    public float HP;
+    public double MaxHP;
+    public double HP;
     //몬스터 필요한 데이터 계속 추가.. 할 것.
 
 
