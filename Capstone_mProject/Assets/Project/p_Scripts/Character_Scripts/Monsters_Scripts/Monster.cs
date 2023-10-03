@@ -68,7 +68,7 @@ public class Monster : MonoBehaviour
         else
         {
             //아직 살아있음.
-            monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.KnockBack);
+            monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
         }
 
     }

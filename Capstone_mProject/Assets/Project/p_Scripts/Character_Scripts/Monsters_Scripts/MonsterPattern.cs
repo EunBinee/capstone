@@ -20,6 +20,7 @@ public class MonsterPattern : MonoBehaviour
 
     private NavMeshAgent navMeshAgent;
     private MonsterState curMonsterState;
+
     public enum MonsterState
     {
         Roaming,
@@ -34,10 +35,17 @@ public class MonsterPattern : MonoBehaviour
     {
         Idle,
         Move,
-        Attack01,
         GetHit,
         Death
     }
+
+    public enum MonsterAttackAnimation
+    {
+        ResetAttackAnim,
+        Short_Range_Attack,
+        Long_Range_Attack,
+    }
+
     private float overlapRadius;
     private int roaming_RangeX;
     private int roaming_RangeZ;
@@ -56,8 +64,9 @@ public class MonsterPattern : MonoBehaviour
 
     public enum MonsterMotion
     {
-        Attack,
-        KnockBack,
+        Short_Range_Attack,
+        Long_Range_Attack,
+        GetHit_KnockBack,
         Death
     }
 
@@ -129,14 +138,11 @@ public class MonsterPattern : MonoBehaviour
             case MonsterAnimation.Idle:
                 m_animator.SetBool("m_Walk", false);
                 m_animator.SetBool("m_Idle", true);
-                m_animator.SetBool("m_Death", false);
                 break;
             case MonsterAnimation.Move:
                 m_animator.SetBool("m_Walk", true);
                 m_animator.SetBool("m_Idle", false);
                 m_animator.SetBool("m_Death", false);
-                break;
-            case MonsterAnimation.Attack01:
                 break;
             case MonsterAnimation.GetHit:
                 m_animator.SetTrigger("m_GetHit");
@@ -149,6 +155,66 @@ public class MonsterPattern : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public virtual string SetAttackAnimation(MonsterAttackAnimation monsterAttackAnimation, int animIndex)
+    {
+        switch (monsterAttackAnimation)
+        {
+            case MonsterAttackAnimation.ResetAttackAnim:
+                Debug.Log("체크");
+                m_animator.SetBool("m_Walk", false);
+                m_animator.SetBool("m_Idle", true);
+                m_animator.SetBool("m_s_Attack01", false);
+                m_animator.SetBool("m_s_Attack02", false);
+                m_animator.SetBool("m_s_Attack03", false);
+                m_animator.SetBool("m_s_Attack04", false);
+                break;
+            case MonsterAttackAnimation.Short_Range_Attack:
+                switch (animIndex)
+                {
+                    case 0:
+                        m_animator.SetBool("m_Walk", false);
+                        m_animator.SetBool("m_Idle", false);
+                        m_animator.SetBool("m_s_Attack01", true);
+                        m_animator.SetBool("m_s_Attack02", false);
+                        m_animator.SetBool("m_s_Attack03", false);
+                        m_animator.SetBool("m_s_Attack04", false);
+                        return "Attack1";
+                    case 1:
+                        m_animator.SetBool("m_Walk", false);
+                        m_animator.SetBool("m_Idle", false);
+                        m_animator.SetBool("m_s_Attack01", false);
+                        m_animator.SetBool("m_s_Attack02", true);
+                        m_animator.SetBool("m_s_Attack03", false);
+                        m_animator.SetBool("m_s_Attack04", false);
+                        return "Attack2";
+                    case 2:
+                        m_animator.SetBool("m_Walk", false);
+                        m_animator.SetBool("m_Idle", false);
+                        m_animator.SetBool("m_s_Attack01", false);
+                        m_animator.SetBool("m_s_Attack02", false);
+                        m_animator.SetBool("m_s_Attack03", true);
+                        m_animator.SetBool("m_s_Attack04", false);
+                        return "Attack3";
+                    case 3:
+                        m_animator.SetBool("m_Walk", false);
+                        m_animator.SetBool("m_Idle", false);
+                        m_animator.SetBool("m_s_Attack01", false);
+                        m_animator.SetBool("m_s_Attack02", false);
+                        m_animator.SetBool("m_s_Attack03", false);
+                        m_animator.SetBool("m_s_Attack04", true);
+                        return "Attack4";
+                    default:
+                        break;
+                }
+                break;
+            case MonsterAttackAnimation.Long_Range_Attack:
+                break;
+            default:
+                break;
+        }
+        return "";
     }
 
     private void SetMove_AI(bool moveAI)
@@ -299,19 +365,13 @@ public class MonsterPattern : MonoBehaviour
 
                     ChangeMonsterState(MonsterState.Discovery);
                 }
-
-                if (isGoingBack)
+                if (isFinding || isGoingBack)
                 {
-                    //집돌아가는 도중이면 다시 추적
-                    ChangeMonsterState(MonsterState.Tracing);
-                    isTracing = true;
-                }
-
-                if (isFinding)
-                {
+                    //집돌아가는 도중이면 다시 추적 또는 찾은 후라면
                     ChangeMonsterState(MonsterState.Tracing);
                     isTracing = true;
                     isFinding = false;
+                    isGoingBack = false;
                 }
             }
             else
@@ -358,13 +418,10 @@ public class MonsterPattern : MonoBehaviour
                 time += Time.deltaTime;
                 yield return null;
             }
-
         }
 
         yield return new WaitForSeconds(2f);
         CheckPlayerCollider();
-
-
     }
 
     public virtual void Tracing_Movement()
@@ -408,6 +465,23 @@ public class MonsterPattern : MonoBehaviour
                     isGoingBack = true;
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
+
+                if (distance < 2.5f)
+                {
+                    //거리가 2.5만큼 가깝다.
+                    //일반 공격
+                    isTracing = false;
+                    ChangeMonsterState(MonsterState.Attack);
+                    Monster_Motion(MonsterMotion.Short_Range_Attack);
+                }
+                //else if (distance > 10f)
+                //{
+                //    //거리가 10만큼 멀어졌다.
+                //    //그럼 장거리  공격
+                //    isTracing = false;
+                //    ChangeMonsterState(MonsterState.Attack);
+                //    Monster_Motion(MonsterMotion.Long_Range_Attack);
+                //}
                 break;
 
             case MonsterState.Attack:
@@ -429,13 +503,18 @@ public class MonsterPattern : MonoBehaviour
     {
         switch (monsterMotion)
         {
-            case MonsterMotion.Attack:
+            case MonsterMotion.Short_Range_Attack:
+                Debug.Log("코루틴 시작");
+                StartCoroutine(Short_Range_Attack_Monster01());
                 break;
-            case MonsterMotion.KnockBack:
+            case MonsterMotion.Long_Range_Attack:
+
+                break;
+            case MonsterMotion.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    StartCoroutine(KnockBack_co());
+                    StartCoroutine(GetHit_KnockBack_co());
                 }
                 break;
             case MonsterMotion.Death:
@@ -449,7 +528,49 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
-    IEnumerator KnockBack_co()
+    IEnumerator Short_Range_Attack_Monster01()
+    {
+        int index = 0;
+        string animName = "";
+
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
+        do
+        {
+            if (m_monster.monsterData.shortAttack_Num == index)
+            {
+                //SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim, 0);
+                index = 0;
+                break;
+            }
+
+            animName = SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
+            index++;
+
+
+            Debug.Log(animName + "애니 시작");
+            yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName(animName) && m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f));
+            Debug.Log("애니 끝");
+
+            //거리 체크
+
+
+        } while (curMonsterState != MonsterState.GetHit); //GetHit당하면 종료
+
+        //상태를 Idle로 변환
+        SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim, 0);
+    }
+
+    IEnumerable Long_Range_Attack()
+    {
+
+        yield return null;
+    }
+
+
+
+    IEnumerator GetHit_KnockBack_co()
     {
         //플레이어의 반대 방향으로 넉백
         MonsterState preState = curMonsterState;
@@ -474,7 +595,7 @@ public class MonsterPattern : MonoBehaviour
                 yield return null;
             }
         }
-        if (preState == MonsterState.Roaming || preState == MonsterState.Discovery)
+        if ((preState == MonsterState.Roaming || preState == MonsterState.Discovery) || preState == MonsterState.Attack)
             ChangeMonsterState(MonsterState.Tracing);
         else
             ChangeMonsterState(preState);

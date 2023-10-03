@@ -4238,11 +4238,13 @@ MonoBehaviour:
   monsterData:
     monsterid: 10
     monsterType: 1
+    MaxHP: 100
+    HP: 0
     overlapRadius: 10
     roaming_RangeX: 15
     roaming_RangeZ: 15
-    MaxHP: 100
-    HP: 0
+    shortAttack_Num: 4
+    LongAttack_Num: 1
   monsterPattern: {fileID: 0}
   monsterSoundClips: []
 --- !u!54 &6316354759507602865
