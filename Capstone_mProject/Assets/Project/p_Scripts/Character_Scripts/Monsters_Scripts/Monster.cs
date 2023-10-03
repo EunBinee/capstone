@@ -11,6 +11,7 @@ public class Monster : MonoBehaviour
     public MonsterPattern monsterPattern;
 
     public AudioClip[] monsterSoundClips;
+    private PlayerController playerController;
 
     public enum monsterSound
     {
@@ -40,6 +41,8 @@ public class Monster : MonoBehaviour
 
     private void Init()
     {
+        playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+
         monsterData.HP = monsterData.MaxHP;
     }
 
@@ -50,9 +53,8 @@ public class Monster : MonoBehaviour
 
     public virtual void OnHit()
     {
-        //몬스터가 플레이어를 때리다.
-
-
+        //몬스터가 플레이어를 때렸을 때 처리.
+        playerController.GetHit();
     }
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.

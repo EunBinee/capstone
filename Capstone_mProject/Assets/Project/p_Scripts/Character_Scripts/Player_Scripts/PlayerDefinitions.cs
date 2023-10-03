@@ -89,6 +89,8 @@ public class CurrentState
     public bool isGround;           //Player가 지면에 닿아있는 상태인지.
     public bool isOnSteepSlop;      //가파른 경사 있음!
 
+    [Space]
+    public bool isGettingHit; //몬스터에게 맞았을 경우.
 }
 
 [Serializable]

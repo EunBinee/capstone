@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerComponents _playerComponents = new PlayerComponents();
     [SerializeField] private PlayerInput _input = new PlayerInput();
     [SerializeField] private CheckOption _checkOption = new CheckOption();
-    [SerializeField] private CurrentState _currentState = new CurrentState();
+    public CurrentState _currentState = new CurrentState();
     [SerializeField] private CurrentValue _currentValue = new CurrentValue();
     [SerializeField] private PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     private PlayerComponents P_Com => _playerComponents;
@@ -484,6 +484,26 @@ public class PlayerController : MonoBehaviour
         P_Value.groundCross = Vector3.Cross(P_Value.groundNormal, Vector3.up);
         //경사면의 회전축벡터 => 플레이어가 경사면을 따라 움직일수있도록 월드 이동 벡터를 회전
     }
+
+    public void GetHit()
+    {
+        StartCoroutine(PlayerGetHit());
+    }
+
+    IEnumerator PlayerGetHit()
+    {
+        Debug.Log("True");
+        P_States.isGettingHit = true;
+        //임시로 시간지나면 isGettingHit false로 만들어줌
+        //나중에 연출 변경 바람.
+
+        //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
+
+        yield return new WaitForSeconds(1.5f);
+        P_States.isGettingHit = false;
+
+    }
+
     //-----------------------------------------------------------------
     //카메라 움직임
     private void CameraActions()
