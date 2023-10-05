@@ -20,7 +20,7 @@ public class MonsterPattern : MonoBehaviour
 
     private NavMeshAgent navMeshAgent;
     private MonsterState curMonsterState;
-    private MonsterAnimation curMonsterAnimation; //현재 진행중인 애니메이션 (기본모션만. IDLE MOVE DEATH)
+
 
     [Header("몬스터 무기 : 인덱스 0번 L쪽 무기, 인덱스 1번 R쪽 무기")]
     public Collider[] weapons;
@@ -63,7 +63,6 @@ public class MonsterPattern : MonoBehaviour
 
     private bool isRoaming = false;
     private bool isFinding = false;
-    private bool isTracing = false;
     private bool isGoingBack = false;
     private bool isGettingHit = false;
 
@@ -142,12 +141,10 @@ public class MonsterPattern : MonoBehaviour
         switch (m_anim)
         {
             case MonsterAnimation.Idle:
-                curMonsterAnimation = MonsterAnimation.Idle;
                 m_animator.SetBool("m_Walk", false);
                 m_animator.SetBool("m_Idle", true);
                 break;
             case MonsterAnimation.Move:
-                curMonsterAnimation = MonsterAnimation.Move;
                 m_animator.SetBool("m_Walk", true);
                 m_animator.SetBool("m_Idle", false);
                 m_animator.SetBool("m_Death", false);
@@ -156,7 +153,6 @@ public class MonsterPattern : MonoBehaviour
                 m_animator.SetTrigger("m_GetHit");
                 break;
             case MonsterAnimation.Death:
-                curMonsterAnimation = MonsterAnimation.Death;
                 m_animator.SetBool("m_Walk", false);
                 m_animator.SetBool("m_Idle", false);
                 m_animator.SetBool("m_Death", true);
@@ -171,6 +167,7 @@ public class MonsterPattern : MonoBehaviour
         switch (monsterAttackAnimation)
         {
             case MonsterAttackAnimation.ResetAttackAnim:
+                Debug.Log("HI");
                 m_animator.SetBool("m_Walk", false);
                 m_animator.SetBool("m_Idle", true);
                 m_animator.SetBool("m_l_WalkSpinAttack", false);
@@ -356,7 +353,6 @@ public class MonsterPattern : MonoBehaviour
                 {
                     //집돌아가는 도중이면 다시 추적 또는 찾은 후라면
                     ChangeMonsterState(MonsterState.Tracing);
-                    isTracing = true;
                     isFinding = false;
                     isGoingBack = false;
                 }
@@ -367,7 +363,6 @@ public class MonsterPattern : MonoBehaviour
                 {
                     //플레이어가 나갔을 경우
                     isFinding = false;
-                    isTracing = false;
                     ChangeMonsterState(MonsterState.GoingBack);
 
                 }
@@ -448,7 +443,6 @@ public class MonsterPattern : MonoBehaviour
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
                 if (distance >= 12f)
                 {
-                    isTracing = false;
                     isGoingBack = true;
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
@@ -457,13 +451,11 @@ public class MonsterPattern : MonoBehaviour
                 {
                     //거리가 2.5만큼 가깝다.
                     //일반 공격
-                    isTracing = false;
                     ChangeMonsterState(MonsterState.Attack);
                     Monster_Motion(MonsterMotion.Short_Range_Attack);
                 }
                 else if (distance >= 7f && distance < 12f)
                 {
-                    isTracing = false;
                     ChangeMonsterState(MonsterState.Attack);
                     Monster_Motion(MonsterMotion.Long_Range_Attack);
                 }
@@ -477,7 +469,6 @@ public class MonsterPattern : MonoBehaviour
                 distance = Vector3.Distance(transform.position, originPosition);
                 if (distance < 1f)
                 {
-                    isTracing = false;
                     isGoingBack = false;
                     ChangeMonsterState(MonsterState.Roaming);
                 }
@@ -557,22 +548,29 @@ public class MonsterPattern : MonoBehaviour
         SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
         SetMove_AI(true);
 
-        float distance = 0;
-
         for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].enabled = true;
         }
 
-        while (true)
+        float distance = 0;
+        float time = 0;
+        bool goingBack = false;
+
+        while (time <= 10f)
         {
             navMeshAgent.SetDestination(playerTrans.position);
             distance = Vector3.Distance(transform.position, playerTrans.position);
 
-            if (distance <= 0.5)
+            if (distance <= 0.1f)
                 break;
-
+            if (distance > 15)
+            {
+                goingBack = true;
+                break;
+            }
             yield return null;
+            time += Time.deltaTime;
         }
 
         for (int i = 0; i < weapons.Length; i++)
@@ -584,7 +582,17 @@ public class MonsterPattern : MonoBehaviour
         SetMove_AI(false);
         SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
 
-        ChangeMonsterState(MonsterState.Tracing);
+        if (goingBack)
+        {
+            isGoingBack = true;
+            ChangeMonsterState(MonsterState.GoingBack);
+        }
+        else
+        {
+            ChangeMonsterState(MonsterState.Tracing);
+        }
+
+
     }
 
     IEnumerator GetHit_KnockBack_co()
