@@ -12,19 +12,27 @@ public class MonsterData
         NomalMonster
     }
 
+    [Header("몬스터 정보")]
     public int monsterid;
     public MonsterType monsterType;
+
+    [Header("몬스터 체력")]
+    public double MaxHP;
+    public double HP;
+
+    [Space]
+    [Header("몬스터 플레이어 탐지 범위 (반지름)")]
     public float overlapRadius;
 
+    [Header("몬스터 로밍 범위 (x , z)")]
     [Range(5f, 30f), Tooltip("몬스터 로밍 범위 x (가로)")]
     public int roaming_RangeX;
     [Range(5f, 30f), Tooltip("몬스터 로밍 범위 z (세로)")]
     public int roaming_RangeZ;
 
-    public double MaxHP;
-    public double HP;
-    //몬스터 필요한 데이터 계속 추가.. 할 것.
-
-
+    [Space]
+    [Header("단/원거리 능력 개수")]
+    public int shortAttack_Num = 0;
+    public int LongAttack_Num = 0;
 
 }
