@@ -20,6 +20,9 @@ public class MonsterData
     public double MaxHP;
     public double HP;
 
+    [Header("몬스터 움직임")]
+    public bool movingMonster;
+
     [Space]
     [Header("몬스터 플레이어 탐지 범위 (반지름)")]
     public float overlapRadius;
@@ -34,5 +37,4 @@ public class MonsterData
     [Header("단/원거리 능력 개수")]
     public int shortAttack_Num = 0;
     public int LongAttack_Num = 0;
-
 }
