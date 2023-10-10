@@ -87,6 +87,8 @@ public class MonsterPattern : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
 
+        m_monster.monsterPattern = this;
+
         if (m_monster.monsterData.movingMonster)
         {
             navMeshAgent = GetComponent<NavMeshAgent>();

@@ -9,7 +9,9 @@ public class MonsterData
     public enum MonsterType
     {
         None,
-        NomalMonster
+        NomalMonster,
+        DistantAttackMonster,
+        BossMonster
     }
 
     [Header("몬스터 정보")]
