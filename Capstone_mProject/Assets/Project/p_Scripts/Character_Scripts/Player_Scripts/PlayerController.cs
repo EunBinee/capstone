@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum PlayerState
+{
+    Idle,
+    Move,
+    ComboAttack
+}
+
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerComponents _playerComponents = new PlayerComponents();
@@ -113,6 +120,10 @@ public class PlayerController : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
+            if (Input.GetMouseButtonDown(0))
+            {
+                StartCoroutine(Attacking());
+            }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
@@ -191,50 +202,93 @@ public class PlayerController : MonoBehaviour
         }
         P_States.previousDashKeyPress = P_States.currentDashKeyPress;
     }
-    void Attacking()
+
+    void AnimState(PlayerState playerState, int index = 0)
     {
-        if (Input.GetMouseButtonDown(0))  // 마우스 좌클릭을 감지
+        switch (playerState)
         {
-            float timeSinceLastClick = Time.time - P_Value.lastClickTime;
-            if (timeSinceLastClick <= P_Value.comboResetTime)
-            {
-                // 콤보가 리셋되기 전에 다시 클릭한 경우
-                P_Value.comboCount++;
-            }
-            else
-            {
-                // 콤보가 리셋된 경우
-                P_Value.comboCount = 1;
-            }
-
-            P_Value.lastClickTime = Time.time;
-
-            if (P_Value.comboCount == 1)
-            {
-                // 1타 공격 실행
-                Debug.Log("1타 공격!");
-                P_Com.animator.SetTrigger("firstAttack");
-            }
-            else if (P_Value.comboCount == 2)
-            {
-                // 2타 공격 실행
-                Debug.Log("2타 공격!");
-                P_Com.animator.SetTrigger("secondAttack");
-            }
-            else if (P_Value.comboCount == 3)
-            {
-                // 3타 공격 실행 및 콤보 리셋
-                Debug.Log("3타 콤보 공격!");
-                P_Com.animator.SetTrigger("thirdAttack");
-                Invoke("resetCombo", 0f);
-            }
+            case PlayerState.Idle:
+                break;
+            case PlayerState.Move:
+                break;
+            case PlayerState.ComboAttack:
+                switch (index)  //몇번쩨 콤보공격인지
+                {
+                    case 1:
+                        Debug.Log("1타");
+                        //P_Com.animator.SetTrigger("firstAttack");
+                        P_Com.animator.SetInteger("comboCount", 1);
+                        break;
+                    case 2:
+                        Debug.Log("2타");
+                        //P_Com.animator.SetTrigger("secondAttack");
+                        P_Com.animator.SetInteger("comboCount", 2);
+                        break;
+                    case 3:
+                        Debug.Log("3타");
+                        //P_Com.animator.SetTrigger("thirdAttack");
+                        P_Com.animator.SetInteger("comboCount", 3);
+                        break;
+                    case 4:
+                        Debug.Log("4타");
+                        //P_Com.animator.SetTrigger("fourthAttack");
+                        P_Com.animator.SetInteger("comboCount", 4);
+                        break;
+                    case 5:
+                        Debug.Log("5타");
+                        //P_Com.animator.SetTrigger("fifthAttack");
+                        P_Com.animator.SetInteger("comboCount", 5);
+                        break;
+                    default:
+                        Debug.Log("초기화");
+                        P_Com.animator.SetInteger("comboCount", 0);
+                        break;
+                }
+                break;
         }
     }
-    void resetCombo()
+
+    IEnumerator Attacking() //클릭해서 들어오면
     {
-        P_Value.comboCount = 0;
-        P_Com.animator.SetFloat("isComboAttack", 0);
-        Debug.Log("초기화");
+        //float timeSinceFirstClick = Time.time;  //시간 저장하고
+        int curAnim = P_Com.animator.GetCurrentAnimatorStateInfo(0).nameHash;
+        int preAnim = 0;
+        int index = 1;
+        float time = 0;
+        bool isCombo = false;
+        while (true)
+        {
+            isCombo = false;
+            AnimState(PlayerState.ComboAttack, index);  //공격 카운트 숫자 넣어서 콤보공격 실행
+
+            if (curAnim == preAnim)
+            {
+                //Debug.Log("이전 프레임과 같은 애니메이션");
+            }
+            Debug.Log("curAnim : " + curAnim);
+            Debug.Log("preAnim : " + preAnim);
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(preAnim.ToString()));
+            
+            int curIndex = index;
+            while (time <= 2f)
+            {
+                time += Time.deltaTime;
+
+                if (Input.GetMouseButton(0) && curIndex == index)
+                {
+                    Debug.Log("콤보 ++");
+                    index++;
+                    isCombo = true;
+                    break;
+                }
+            }
+            if (isCombo == false)
+            {
+                P_Com.animator.SetInteger("comboCount", 0);
+                break;
+            }
+            preAnim = curAnim;
+        }
     }
 
     //애니메이터 블랜더 트리의 파라미터 변경
@@ -382,7 +436,6 @@ public class PlayerController : MonoBehaviour
         PlayerMovement(); //플레이어의 움직임을 수행하는 함수.
         PlayerJump();
         HandleDash();
-        Attacking();
     }
     private void PlayerRotation()
     {
@@ -468,6 +521,7 @@ public class PlayerController : MonoBehaviour
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             P_Com.animator.SetBool("isJump_Up", true);
+            P_Com.animator.SetBool("p_Locomotion", false);
         }
         if (P_States.isJumping && P_States.isGround)
         {
