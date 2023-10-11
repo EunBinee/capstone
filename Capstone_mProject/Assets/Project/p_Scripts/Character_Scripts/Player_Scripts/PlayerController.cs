@@ -244,7 +244,6 @@ public class PlayerController : MonoBehaviour
         int index = 1;
         float time = 0;
         bool isCombo = false;
-        float waitTime = 0;
 
         while (true)
         {
@@ -284,17 +283,19 @@ public class PlayerController : MonoBehaviour
             while (time <= comboClickTime)
             {
                 time += Time.deltaTime;
-                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f);
+                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
                 if (Input.GetMouseButton(0) && curIndex == index)
                 {
                     if (index == 5){
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 1;
+                        isCombo = false;
                     }
-                    else
+                    else{
                         index++;
-                    isCombo = true;
+                        isCombo = true;
+                    }
                     break;
                 }
             }
