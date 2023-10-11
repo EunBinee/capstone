@@ -49,8 +49,8 @@ public class MonsterPattern : MonoBehaviour
 
 
     protected float overlapRadius; //플레이어 발견 범위
-    //--------------------------------------------------------//
-    //로밍관련 변수들
+    // * --------------------------------------------------------//
+    // * 로밍관련 변수들
     protected int roaming_RangeX;
     protected int roaming_RangeZ;
 
@@ -60,7 +60,7 @@ public class MonsterPattern : MonoBehaviour
     protected Vector3 roam_vertex04; //사각형 오른쪽 가장 위
 
     protected Vector3 mRoaming_randomPos = Vector3.zero;
-    //--------------------------------------------------------//
+    //* --------------------------------------------------------//
     protected bool isRoaming = false;
     protected bool isFinding = false;
     protected bool isGoingBack = false;
@@ -220,8 +220,8 @@ public class MonsterPattern : MonoBehaviour
                 break;
         }
     }
-    //-------------------------------------------------------------------------//
-    //몬스터 상태 =>> 로밍
+    // * -------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 로밍
     public virtual void Roam_Monster()
     {
         if (!isRoaming)
@@ -249,8 +249,8 @@ public class MonsterPattern : MonoBehaviour
         }
         return true;
     }
-    //-------------------------------------------------------------------------//
-    //몬스터의 발견범위에 플레이어가 들어왔는지 확인하는 함수.
+    // * -------------------------------------------------------------------------//
+    // * 몬스터의 발견범위에 플레이어가 들어왔는지 확인하는 함수.
     public virtual void CheckPlayerCollider()
     {
         if (curMonsterState != MonsterState.Death)
@@ -264,8 +264,8 @@ public class MonsterPattern : MonoBehaviour
             }
         }
     }
-    //-------------------------------------------------------------------------//
-    //몬스터 상태 =>> 발견
+    // * -------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 발견
     public virtual void Discovery_Player()
     {
         if (!isFinding)
@@ -273,13 +273,13 @@ public class MonsterPattern : MonoBehaviour
             isFinding = true;
         }
     }
-    //------------------------------------------------------------------------//
-    //몬스터 상태 =>> 추적
+    // * ------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 추적
     public virtual void Tracing_Movement()
     {
     }
-    //------------------------------------------------------------------------//
-    //몬스터 상태 =>> 다시 자기자리로
+    // * ------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 다시 자기자리로
     public virtual void GoingBack_Movement()
     {
         SetMove_AI(true);
@@ -291,7 +291,7 @@ public class MonsterPattern : MonoBehaviour
         CheckPlayerCollider();
     }
 
-    //몬스터 추격, 자기자리로 돌아갈 때 ==>>> 몬스터와 플레이어 사이의 거리 체크
+    // * 몬스터 추격, 자기자리로 돌아갈 때 ==>>> 몬스터와 플레이어 사이의 거리 체크
     public virtual void CheckDistance()
     {
         //해당 몬스터와 플레이어 사이의 거리 체크
@@ -310,8 +310,8 @@ public class MonsterPattern : MonoBehaviour
                 break;
         }
     }
-    //------------------------------------------------------------------------//
-    //몬스터 공격 모션, 피격 모션, 죽음 모션 등등
+    // * -----------------------------------------------------------------------//
+    // * 몬스터 공격 모션, 피격 모션, 죽음 모션 등등
     public virtual void Monster_Motion(MonsterMotion monsterMotion)
     {
         switch (monsterMotion)
@@ -328,7 +328,7 @@ public class MonsterPattern : MonoBehaviour
                 break;
         }
     }
-    //---------------------------------------------------------------------------------------//
+    // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw

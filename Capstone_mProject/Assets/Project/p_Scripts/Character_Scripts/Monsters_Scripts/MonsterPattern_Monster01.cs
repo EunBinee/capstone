@@ -127,8 +127,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
         }
     }
-    //---------------------------------------------------------------------------------------------------------//
-    //몬스터 상태 =>> 로밍
+    // *---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 로밍
     public override void Roam_Monster()
     {
         if (!isRoaming)
@@ -228,9 +228,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
             }
         }
     }
-
-    //---------------------------------------------------------------------------------------------------------//
-    //몬스터 상태 =>> 발견
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 발견
     public override void Discovery_Player()
     {
         if (!isFinding)
@@ -266,8 +265,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         CheckPlayerCollider();
     }
 
-    //---------------------------------------------------------------------------------------------------------//
-    //몬스터 상태 =>> 추적
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 추적
     public override void Tracing_Movement()
     {
         //움직임.
@@ -279,8 +278,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //몬스터와 플레이어 사이의 거리 체크
         CheckDistance();
     }
-    //---------------------------------------------------------------------------------------------------------//
-    //몬스터 상태 =>> 다시 자기자리로
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 다시 자기자리로
     public override void GoingBack_Movement()
     {
         SetMove_AI(true);
@@ -338,8 +337,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
         }
     }
-    //---------------------------------------------------------------------------------------------------------//
-    //몬스터 공격 모션, 피격 모션, 죽음 모션
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 공격 모션, 피격 모션, 죽음 모션
     public override void Monster_Motion(MonsterMotion monsterMotion)
     {
         switch (monsterMotion)
@@ -371,8 +370,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
         }
     }
-    //---------------------------------------------------------------------------------------------------------//
-    //근거리 공격 01
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
         SetMove_AI(false);
@@ -407,7 +406,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
     }
 
-    //원거리 공격 01
+    // * 원거리 공격 01
     IEnumerator Long_Range_Attack_Monster01()
     {
         float defaultSpeed = navMeshAgent.speed;
@@ -465,7 +464,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     }
 
-    //피격 모션01
+    // * 피격 모션01
     IEnumerator GetHit_KnockBack_co()
     {
         //플레이어의 반대 방향으로 넉백
@@ -499,7 +498,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         isGettingHit = false;
     }
 
-    //죽음 모션
+    // * 죽음 모션
     IEnumerator Death_co()
     {
         ChangeMonsterState(MonsterState.Death);
@@ -517,7 +516,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         this.gameObject.SetActive(false);
     }
 
-    //---------------------------------------------------------------------------------------//
+    // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw
