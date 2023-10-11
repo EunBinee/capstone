@@ -80,6 +80,8 @@ public class CurrentState
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
     public bool isJumping;  //점프
     public bool isDashing;  //대시
+    public bool previousDashKeyPress;   //이전 프레임에서 대시 키 여부
+    public bool currentDashKeyPress;    //현재 프레임에서 대시 키 여부
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부
@@ -101,12 +103,17 @@ public class CurrentValue
     public Vector3 groundNormal;    //지면의 방향 벡터
     public Vector3 groundCross;     //지면의 외적 (캐릭터 이동벡터 회전축)
     public Vector3 playerVelocity;  //이동을 위한 플레이어 속도
+    public int comboCount;          // 현재 콤보 카운트
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
+    public float hitDistance;       //플레이어 충돌체크 결과 거리
     public float groundSlopeAngle;  //현재 바닥의 경사각
     public float forwardSlopeAngle; //캐릭터가 바라보는 방향의 경사각
     public float slopeAccel;        // 경사로 인한 가속/감속 비율
+    public float comboResetTime = 1f;   // 콤보가 리셋되기까지의 시간 (초)
+    public float lastClickTime = 0f;    // 마지막 클릭 시간
+
 
     [Space]
     public float gravity = 0f; // 직접 제어하는 중력값

@@ -1,7 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+
+public enum PlayerState
+{
+    Idle,
+    Move,
+    ComboAttack,
+    FinishComboAttack
+}
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,8 +38,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 CapsuleBottomCenterPoint
    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
 
-
     public NavMeshSurface navMeshSurface;
+
+    private bool isStartComboAttack = false;
+    public float comboClickTime = 3f;
+
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
@@ -60,7 +72,6 @@ public class PlayerController : MonoBehaviour
             //캐릭터의 실제 이동을 수행하는 함수
             AllPlayerLocomotion();
         }
-
 
     }
     void LateUpdate()
@@ -113,6 +124,12 @@ public class PlayerController : MonoBehaviour
             else
             {
                 P_Input.horizontalMovement = 0;
+            }
+
+            if (Input.GetMouseButtonDown(0) && !isStartComboAttack)
+            {
+                isStartComboAttack = true;
+                StartCoroutine(Attacking());
             }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
@@ -170,8 +187,9 @@ public class PlayerController : MonoBehaviour
     }
     bool HandleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping)
+        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
         {
+            //Debug.Log(P_Value.hitDistance);
             P_Input.jumpMovement = 1;
             return true;
         }
@@ -179,11 +197,117 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDash()
     {
-        if (Input.GetKey(KeyCode.R) && !P_States.isDashing && P_Value.moveAmount > 0)
+        P_States.currentDashKeyPress = Input.GetKey(KeyCode.R);
+        if (P_States.previousDashKeyPress && P_States.currentDashKeyPress)
+        {
+            //Debug.Log("이전 프레임에도 누름!");
+            return;
+        }
+        else if (P_States.currentDashKeyPress && !P_States.isDashing && P_Value.moveAmount > 0)
         {
             P_States.isDashing = true;
         }
+        P_States.previousDashKeyPress = P_States.currentDashKeyPress;
     }
+
+    void AnimState(PlayerState playerState, int index = 0)
+    {
+        switch (playerState)
+        {
+            case PlayerState.Idle:
+                break;
+            case PlayerState.Move:
+                break;
+            case PlayerState.ComboAttack:
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", false);
+                break;
+            case PlayerState.FinishComboAttack:
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", true);
+                break;
+
+        }
+    }
+
+    IEnumerator Attacking() //클릭해서 들어오면
+    {
+        P_Com.animator.SetInteger("comboCount", 0);
+
+        string comboName01 = "Attack_Combo_1";
+        string comboName02 = "Attack_Combo_2";
+        string comboName03 = "Attack_Combo_3";
+        string comboName04 = "Attack_Combo_4";
+        string comboName05 = "Attack_Combo_5";
+        string curAnimName = "";
+
+        int index = 1;
+        float time = 0;
+        bool isCombo = false;
+        float waitTime = 0;
+
+        while (true)
+        {
+            isCombo = false;
+            AnimState(PlayerState.ComboAttack, index);
+
+            switch (index)
+            {
+                case 1:
+                    curAnimName = comboName01;
+                    break;
+                case 2:
+                    curAnimName = comboName02;
+                    break;
+                case 3:
+                    curAnimName = comboName03;
+                    break;
+                case 4:
+                    curAnimName = comboName04;
+                    break;
+                case 5:
+                    curAnimName = comboName05;
+                    break;
+                default:
+                    curAnimName = "";
+                    break;
+            }
+
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
+
+            AnimState(PlayerState.FinishComboAttack, index);
+
+            int curIndex = index;
+            time = 0;
+
+            while (time <= comboClickTime)
+            {
+                time += Time.deltaTime;
+                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f);
+
+                if (Input.GetMouseButton(0) && curIndex == index)
+                {
+                    if (index == 5){
+                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
+                        index = 1;
+                    }
+                    else
+                        index++;
+                    isCombo = true;
+                    break;
+                }
+            }
+            if (isCombo == false)
+            {
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", true);
+                break;
+            }
+        }
+        isStartComboAttack = false;
+    }
+
     //애니메이터 블랜더 트리의 파라미터 변경
     private void AnimationParameters()
     {
@@ -312,7 +436,15 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
+        //자연스러운 애니메이션 레이어 표현
+        /*if (P_Com.animator.GetCurrentAnimatorStateInfo(1).normalizedTime > 0.7f)
+        {
+            if (P_COption.layerWeight >= 0)
+            {
+                P_COption.layerWeight -= Time.deltaTime;
+            }
+            P_Com.animator.SetLayerWeight(1, P_COption.layerWeight);
+        }*/
     }
     private void AllPlayerLocomotion()
     {
@@ -378,7 +510,7 @@ public class PlayerController : MonoBehaviour
 
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
 
-            Invoke("dashOut", 0.1f);
+            Invoke("dashOut", 0.1f);    //대시 유지 시간
         }
         else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
         {
@@ -421,6 +553,7 @@ public class PlayerController : MonoBehaviour
         P_States.isDashing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
         P_Com.rigidbody.velocity = Vector3.zero;
+        //Invoke("dashOut", 0.5f);
     }
 
     private void Update_Physics()
@@ -445,10 +578,14 @@ public class PlayerController : MonoBehaviour
     void CheckedForward()
     {
         //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
+        // 함수 파라미터 : Capsule의 시작점, Capsule의 끝점,
+        // Capsule의 크기(x, z 중 가장 큰 값이 크기가 됨), Ray의 방향,
+        // RaycastHit 결과, Capsule의 회전값, CapsuleCast를 진행할 거리
         bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
         _castRadius, P_Value.moveDirection + Vector3.down * 0.25f,
         out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
         // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
+        P_Value.hitDistance = hit.distance;
         P_States.isForwardBlocked = false;
         if (cast)
         {
