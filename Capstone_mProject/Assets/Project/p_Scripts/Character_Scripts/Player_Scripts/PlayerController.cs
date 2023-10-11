@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     public NavMeshSurface navMeshSurface;
 
     private bool isStartComboAttack = false;
-    public float comboClickTime = 2f;
+    public float comboClickTime = 3f;
 
     void Awake()
     {
@@ -237,6 +237,8 @@ public class PlayerController : MonoBehaviour
         string comboName01 = "Attack_Combo_1";
         string comboName02 = "Attack_Combo_2";
         string comboName03 = "Attack_Combo_3";
+        string comboName04 = "Attack_Combo_4";
+        string comboName05 = "Attack_Combo_5";
         string curAnimName = "";
 
         int index = 1;
@@ -260,10 +262,19 @@ public class PlayerController : MonoBehaviour
                 case 3:
                     curAnimName = comboName03;
                     break;
+                case 4:
+                    curAnimName = comboName04;
+                    break;
+                case 5:
+                    curAnimName = comboName05;
+                    break;
+                default:
+                    curAnimName = "";
+                    break;
             }
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
             AnimState(PlayerState.FinishComboAttack, index);
 
@@ -273,11 +284,14 @@ public class PlayerController : MonoBehaviour
             while (time <= comboClickTime)
             {
                 time += Time.deltaTime;
+                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.5f);
 
                 if (Input.GetMouseButton(0) && curIndex == index)
                 {
-                    if (index == 3)
+                    if (index == 5){
+                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 1;
+                    }
                     else
                         index++;
                     isCombo = true;
