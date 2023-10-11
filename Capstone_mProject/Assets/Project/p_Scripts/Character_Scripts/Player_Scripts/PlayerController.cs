@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +8,8 @@ public enum PlayerState
 {
     Idle,
     Move,
-    ComboAttack
+    ComboAttack,
+    FinishComboAttack
 }
 
 public class PlayerController : MonoBehaviour
@@ -36,8 +38,11 @@ public class PlayerController : MonoBehaviour
     private Vector3 CapsuleBottomCenterPoint
    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
 
-
     public NavMeshSurface navMeshSurface;
+
+    private bool isStartComboAttack = false;
+    public float comboClickTime = 2f;
+
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
@@ -120,8 +125,10 @@ public class PlayerController : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0))
+
+            if (Input.GetMouseButtonDown(0) && !isStartComboAttack)
             {
+                isStartComboAttack = true;
                 StartCoroutine(Attacking());
             }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
@@ -212,83 +219,79 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Move:
                 break;
             case PlayerState.ComboAttack:
-                switch (index)  //몇번쩨 콤보공격인지
-                {
-                    case 1:
-                        Debug.Log("1타");
-                        //P_Com.animator.SetTrigger("firstAttack");
-                        P_Com.animator.SetInteger("comboCount", 1);
-                        break;
-                    case 2:
-                        Debug.Log("2타");
-                        //P_Com.animator.SetTrigger("secondAttack");
-                        P_Com.animator.SetInteger("comboCount", 2);
-                        break;
-                    case 3:
-                        Debug.Log("3타");
-                        //P_Com.animator.SetTrigger("thirdAttack");
-                        P_Com.animator.SetInteger("comboCount", 3);
-                        break;
-                    case 4:
-                        Debug.Log("4타");
-                        //P_Com.animator.SetTrigger("fourthAttack");
-                        P_Com.animator.SetInteger("comboCount", 4);
-                        break;
-                    case 5:
-                        Debug.Log("5타");
-                        //P_Com.animator.SetTrigger("fifthAttack");
-                        P_Com.animator.SetInteger("comboCount", 5);
-                        break;
-                    default:
-                        Debug.Log("초기화");
-                        P_Com.animator.SetInteger("comboCount", 0);
-                        break;
-                }
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", false);
                 break;
+            case PlayerState.FinishComboAttack:
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", true);
+                break;
+
         }
     }
 
     IEnumerator Attacking() //클릭해서 들어오면
     {
-        //float timeSinceFirstClick = Time.time;  //시간 저장하고
-        int curAnim = P_Com.animator.GetCurrentAnimatorStateInfo(0).nameHash;
-        int preAnim = 0;
+        P_Com.animator.SetInteger("comboCount", 0);
+
+        string comboName01 = "Attack_Combo_1";
+        string comboName02 = "Attack_Combo_2";
+        string comboName03 = "Attack_Combo_3";
+        string curAnimName = "";
+
         int index = 1;
         float time = 0;
         bool isCombo = false;
+        float waitTime = 0;
+
         while (true)
         {
             isCombo = false;
-            AnimState(PlayerState.ComboAttack, index);  //공격 카운트 숫자 넣어서 콤보공격 실행
+            AnimState(PlayerState.ComboAttack, index);
 
-            if (curAnim == preAnim)
+            switch (index)
             {
-                //Debug.Log("이전 프레임과 같은 애니메이션");
+                case 1:
+                    curAnimName = comboName01;
+                    break;
+                case 2:
+                    curAnimName = comboName02;
+                    break;
+                case 3:
+                    curAnimName = comboName03;
+                    break;
             }
-            Debug.Log("curAnim : " + curAnim);
-            Debug.Log("preAnim : " + preAnim);
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(preAnim.ToString()));
-            
+
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f);
+
+            AnimState(PlayerState.FinishComboAttack, index);
+
             int curIndex = index;
-            while (time <= 2f)
+            time = 0;
+
+            while (time <= comboClickTime)
             {
                 time += Time.deltaTime;
 
                 if (Input.GetMouseButton(0) && curIndex == index)
                 {
-                    Debug.Log("콤보 ++");
-                    index++;
+                    if (index == 3)
+                        index = 1;
+                    else
+                        index++;
                     isCombo = true;
                     break;
                 }
             }
             if (isCombo == false)
             {
-                P_Com.animator.SetInteger("comboCount", 0);
+                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetBool("p_Locomotion", true);
                 break;
             }
-            preAnim = curAnim;
         }
+        isStartComboAttack = false;
     }
 
     //애니메이터 블랜더 트리의 파라미터 변경
@@ -521,7 +524,6 @@ public class PlayerController : MonoBehaviour
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             P_Com.animator.SetBool("isJump_Up", true);
-            P_Com.animator.SetBool("p_Locomotion", false);
         }
         if (P_States.isJumping && P_States.isGround)
         {
