@@ -356,6 +356,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         bulletRigid.velocity = curDirection.normalized * 35;
 
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+        effect.gameObject.transform.position = muzzlePos.position;
+
         yield return null;
     }
 

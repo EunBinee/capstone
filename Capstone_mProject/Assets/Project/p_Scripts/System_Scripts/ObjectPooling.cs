@@ -49,7 +49,7 @@ public class ObjectPooling
         }
         else
         {
-            curEffect = Resources.Load<Effect>(effectName);
+            curEffect = Resources.Load<Effect>("EffectPrefabs/" + effectName);
             if (curEffect != null)
             {
                 effectPrefabs.Add(effectName, curEffect);
