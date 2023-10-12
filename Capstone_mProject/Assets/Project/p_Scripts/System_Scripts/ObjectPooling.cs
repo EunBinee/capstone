@@ -7,10 +7,17 @@ using System;
 [Serializable]
 public class ObjectPooling
 {
+    // * 이펙트 풀링------------------------------------------------------------------------------------//
     public int PoolCount = 50;
     public Dictionary<string, Effect> effectPrefabs;
     public Dictionary<string, List<Effect>> effectPools;
     public List<Effect> loofEffectPools;
+    // * -----------------------------------------------------------------------------------------------//
+
+    public int projectilesPoolCount = 50;
+    public Dictionary<string, GameObject> projectilePrefabs;
+    public Dictionary<string, List<GameObject>> projectilePools;
+
 
 
     public void InitPooling()
@@ -23,6 +30,12 @@ public class ObjectPooling
         effectPrefabs.Clear();
         effectPools.Clear();
         loofEffectPools.Clear();
+
+        //*------------------------------------------------------//
+        projectilePrefabs = new Dictionary<string, GameObject>();
+        projectilePools = new Dictionary<string, List<GameObject>>();
+        projectilePrefabs.Clear();
+        projectilePools.Clear();
     }
 
     public Effect ShowEffect(string effectName, Transform parent = null) //effectName은 경로의 역할도 함
@@ -33,7 +46,6 @@ public class ObjectPooling
         if (effectPrefabs.ContainsKey(effectName))
         {
             curEffect = effectPrefabs[effectName];
-            //curEffect = UnityEngine.Object.Instantiate(curEffect);
         }
         else
         {
@@ -41,7 +53,6 @@ public class ObjectPooling
             if (curEffect != null)
             {
                 effectPrefabs.Add(effectName, curEffect);
-                //curEffect = UnityEngine.Object.Instantiate(curEffect);
             }
             else
             {
@@ -95,6 +106,75 @@ public class ObjectPooling
         {
             effect.gameObject.transform.SetParent(GameManager.Instance.transform);
             effectPools[effectName].Add(effect);
+        }
+    }
+    // * --------------------------------------------------------------------------------------------------------//
+    //몬스터 총알
+    public GameObject GetProjectilePrefab(string projectileName, Transform parent = null)
+    {
+        GameObject curProjectileObj = null;
+        //프리펩 찾기
+        if (projectilePrefabs.ContainsKey(projectileName))
+        {
+            curProjectileObj = projectilePrefabs[projectileName];
+        }
+        else
+        {
+            curProjectileObj = Resources.Load<GameObject>("ProjectilePrefabs/" + projectileName);
+            if (curProjectileObj != null)
+            {
+                //프리펩 추가
+                projectilePrefabs.Add(projectileName, curProjectileObj);
+            }
+            else
+            {
+#if UNITY_EDITOR
+                Debug.LogError("Projectile 프리펩 없음. 오류.");
+#endif
+            }
+        }
+
+
+        if (curProjectileObj != null)
+        {
+            //오브젝트 풀에 
+            if (projectilePools.ContainsKey(projectileName))
+            {
+                if (projectilePools[projectileName].Count > 0)
+                {
+                    curProjectileObj = projectilePools[projectileName][0];
+                    projectilePools[projectileName].RemoveAt(0);
+                }
+                else
+                {
+                    curProjectileObj = UnityEngine.Object.Instantiate(curProjectileObj);
+                }
+            }
+            else
+            {
+                projectilePools.Add(projectileName, new List<GameObject>());
+                curProjectileObj = UnityEngine.Object.Instantiate(curProjectileObj);
+            }
+
+            Transform objParent = (parent == null) ? GameManager.Instance.transform : parent;
+            curProjectileObj.gameObject.transform.SetParent(objParent);
+        }
+
+        return curProjectileObj;
+    }
+
+    public void AddProjectilePool(string projectileName, GameObject projectileObj)
+    {
+        if (projectilePools[projectileName].Count >= projectilesPoolCount)
+        {
+            //만약 풀이 가득 찼다면, 그냥 삭제.
+            UnityEngine.Object.Destroy(projectileObj);
+        }
+        else
+        {
+            projectileObj.transform.SetParent(GameManager.Instance.transform);
+            projectilePools[projectileName].Add(projectileObj);
+            projectileObj.SetActive(false);
         }
     }
 }

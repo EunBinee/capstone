@@ -39,4 +39,5 @@ public class MonsterData
     [Header("단/원거리 능력 개수")]
     public int shortAttack_Num = 0;
     public int LongAttack_Num = 0;
+
 }
