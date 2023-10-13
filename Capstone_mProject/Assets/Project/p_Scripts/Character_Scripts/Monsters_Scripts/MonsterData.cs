@@ -9,7 +9,9 @@ public class MonsterData
     public enum MonsterType
     {
         None,
-        NomalMonster
+        NomalMonster,
+        DistantAttackMonster,
+        BossMonster
     }
 
     [Header("몬스터 정보")]
@@ -19,6 +21,9 @@ public class MonsterData
     [Header("몬스터 체력")]
     public double MaxHP;
     public double HP;
+
+    [Header("몬스터 움직임")]
+    public bool movingMonster;
 
     [Space]
     [Header("몬스터 플레이어 탐지 범위 (반지름)")]

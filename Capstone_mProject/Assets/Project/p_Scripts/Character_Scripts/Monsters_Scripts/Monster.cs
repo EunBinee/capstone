@@ -22,7 +22,9 @@ public class Monster : MonoBehaviour
 
     private void Awake()
     {
-        monsterPattern = GetComponent<MonsterPattern>();
+    }
+    private void Start()
+    {
         Init();
     }
     private void Update()

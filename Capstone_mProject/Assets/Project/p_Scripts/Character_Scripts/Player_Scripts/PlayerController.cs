@@ -592,8 +592,8 @@ public class PlayerController : MonoBehaviour
         {
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            if (P_States.isForwardBlocked)
-                Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //if (P_States.isForwardBlocked)
+            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
         }
     }
 
