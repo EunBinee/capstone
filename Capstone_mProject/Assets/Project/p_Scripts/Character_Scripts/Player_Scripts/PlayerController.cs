@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     public NavMeshSurface navMeshSurface;
 
     private bool isStartComboAttack = false;
-    public float comboClickTime = 3f;
+    public float comboClickTime = 0.5f;
 
     void Awake()
     {
@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (index == 5){
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
-                        index = 1;
+                        index = 0;
                         isCombo = false;
                     }
                     else{
@@ -370,6 +370,12 @@ public class PlayerController : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
+        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        {
+            P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+            return;
+        }
         if (P_States.isSprinting)
         {
             //전력질주
@@ -437,15 +443,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        //자연스러운 애니메이션 레이어 표현
-        /*if (P_Com.animator.GetCurrentAnimatorStateInfo(1).normalizedTime > 0.7f)
-        {
-            if (P_COption.layerWeight >= 0)
-            {
-                P_COption.layerWeight -= Time.deltaTime;
-            }
-            P_Com.animator.SetLayerWeight(1, P_COption.layerWeight);
-        }*/
     }
     private void AllPlayerLocomotion()
     {
@@ -457,6 +454,10 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerRotation()
     {
+        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        {
+            return;
+        }
         //플레이어의 "방향 전환"을 수행하는 함수
         if (P_States.isStrafing)
         {
@@ -499,6 +500,11 @@ public class PlayerController : MonoBehaviour
         P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
+
+        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        {
+            return;
+        }
 
         if (P_States.isJumping)
         {
