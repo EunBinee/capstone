@@ -53,7 +53,6 @@ public class Bullet : MonoBehaviour
     private void DisappearBullet()
     {
         //풀링
-        Debug.Log("사라짐");
         GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
     }
 
@@ -74,12 +73,6 @@ public class Bullet : MonoBehaviour
             DisappearBullet();
         }
     }
-
-
-
-
-
-
 
 
     // ! n초가 지나면 사라지도록

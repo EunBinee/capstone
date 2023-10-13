@@ -23,6 +23,7 @@ public class ObjectPooling
     public void InitPooling()
     {
         //오브젝트 풀링.
+        //*-----------------------------------------------------//
         effectPrefabs = new Dictionary<string, Effect>();
         effectPools = new Dictionary<string, List<Effect>>();
         loofEffectPools = new List<Effect>();
@@ -30,14 +31,16 @@ public class ObjectPooling
         effectPrefabs.Clear();
         effectPools.Clear();
         loofEffectPools.Clear();
-
         //*------------------------------------------------------//
         projectilePrefabs = new Dictionary<string, GameObject>();
         projectilePools = new Dictionary<string, List<GameObject>>();
         projectilePrefabs.Clear();
         projectilePools.Clear();
+        //*-----------------------------------------------------//
     }
 
+    // * --------------------------------------------------------------------------------------------------------//
+    //* 이펙트
     public Effect ShowEffect(string effectName, Transform parent = null) //effectName은 경로의 역할도 함
     {
         Effect curEffect = null;
@@ -45,6 +48,7 @@ public class ObjectPooling
         //프리펩 찾기
         if (effectPrefabs.ContainsKey(effectName))
         {
+            Debug.Log(effectPrefabs[effectName]);
             curEffect = effectPrefabs[effectName];
         }
         else
@@ -70,7 +74,7 @@ public class ObjectPooling
                 if (effectPools[effectName].Count > 0)
                 {
                     curEffect = effectPools[effectName][0];
-                    effectPools[effectName].RemoveAt(0);
+                    effectPools[effectName].Remove(curEffect);
                 }
                 else
                 {
@@ -101,15 +105,20 @@ public class ObjectPooling
         {
             //만약 풀이 가득 찼다면, 그냥 삭제.
             UnityEngine.Object.Destroy(effect.gameObject);
+
         }
         else
         {
             effect.gameObject.transform.SetParent(GameManager.Instance.transform);
-            effectPools[effectName].Add(effect);
+            if (!effectPools[effectName].Contains(effect))
+            {
+                effectPools[effectName].Add(effect);
+            }
+
         }
     }
     // * --------------------------------------------------------------------------------------------------------//
-    //몬스터 총알
+    //* 몬스터 발사체 ex.총알
     public GameObject GetProjectilePrefab(string projectileName, Transform parent = null)
     {
         GameObject curProjectileObj = null;
