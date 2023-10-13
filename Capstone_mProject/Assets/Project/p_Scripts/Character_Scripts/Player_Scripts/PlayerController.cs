@@ -514,7 +514,7 @@ public class PlayerController : MonoBehaviour
         else if (P_States.isDashing)
         {
             P_Com.animator.SetTrigger("isDash");
-
+            P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
 
             Invoke("dashOut", 0.1f);    //대시 유지 시간
