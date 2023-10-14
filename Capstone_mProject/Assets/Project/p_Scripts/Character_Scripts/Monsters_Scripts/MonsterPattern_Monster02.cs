@@ -29,6 +29,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public int attackTime = 2;
     public int stopAttackTime = 2;
 
+    [Header("몬스터 근거리 공격 범위")]
+    public float shortRangeAttack_Radius = 2;
+
 
     public override void Init()
     {
@@ -181,7 +184,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     isFinding = false;
                     ChangeMonsterState(MonsterState.Attack);
-                    Monster_Motion(MonsterMotion.Long_Range_Attack);
+
+                    float distance = Vector3.Distance(transform.position, playerTrans.position);
+                    if (distance < 1.5f)
+                        Monster_Motion(MonsterMotion.Short_Range_Attack);
+                    else
+                        Monster_Motion(MonsterMotion.Long_Range_Attack);
                 }
             }
             else
@@ -236,6 +244,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             case MonsterMotion.Short_Range_Attack:
                 //근거리 공격
+                StartCoroutine(Short_Range_Attack_Monster01());
                 break;
             case MonsterMotion.Long_Range_Attack:
                 //원거리 공격
@@ -256,6 +265,33 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 break;
         }
     }
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 근거리 공격 01
+    IEnumerator Short_Range_Attack_Monster01()
+    {
+        Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
+        effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
+
+        yield return new WaitForSeconds(1f);
+
+        Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
+        Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
+        effect02.gameObject.transform.position = effect02Pos;
+
+        CheckPlayerDamage(shortRangeAttack_Radius);
+
+
+        yield return new WaitForSeconds(1.5f);
+
+        float distance = Vector3.Distance(transform.position, playerTrans.position);
+        if (distance < 1.5f)
+            Monster_Motion(MonsterMotion.Short_Range_Attack);
+        else
+            Monster_Motion(MonsterMotion.Long_Range_Attack);
+
+        drawDamageCircle = false;
+    }
+
     // * ---------------------------------------------------------------------------------------------------------//
     // * 원거리 공격 01
     IEnumerator Long_Range_Attack01_Monster02()
@@ -330,8 +366,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 curAttackTime = 0;
             }
 
-
-
             distance = Vector3.Distance(transform.position, playerTrans.position);
 
             if (distance >= 20)
@@ -356,7 +390,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 Debug.Log("originRotate " + originRotate);
                 Debug.Log("transform.rotation " + transform.rotation);
                 time = 0;
-                while (time < 5)
+                while (time < 1)
                 {
                     time += Time.deltaTime;
                     transform.rotation = Quaternion.Slerp(transform.rotation, originRotate, Time.deltaTime * 5.0f);
@@ -365,6 +399,11 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 if (goingBack)
                 {
                     ChangeMonsterState(MonsterState.Roaming);
+                }
+                else
+                {
+                    //몬스터가 가까이 옴.
+                    Monster_Motion(MonsterMotion.Short_Range_Attack);
                 }
             }
         }
@@ -430,7 +469,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 // positionY = -transform.position.y * shakeAmount;
             }
 
-
             Mathf.Clamp(positionX, -maxAmount, maxAmount);
             Mathf.Clamp(positionY, -maxAmount, maxAmount);
             Vector3 shakePosition = new Vector3(positionX, positionY, 0);
@@ -440,6 +478,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             transform.localRotation = Quaternion.Slerp(transform.localRotation, shackRotation, Time.deltaTime * smoothAmount);
             yield return null;
         }
+
         transform.localPosition = originalPosition;
         transform.localRotation = originalRotation;
         yield return null;
@@ -483,6 +522,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //크기는  monsterData.overlapRadius
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, overlapRadius);
+
+        if (drawDamageCircle)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, shortRangeAttack_Radius);
+        }
     }
 }
 
