@@ -25,6 +25,11 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public int roamingAngle = 60;
     private Quaternion buttomOriginRotation;
 
+    [Header("몬스터 공격 시간, 공격 중지 시간")]
+    public int attackTime = 2;
+    public int stopAttackTime = 2;
+
+
     public override void Init()
     {
         m_monster = GetComponentInParent<Monster>();
@@ -257,19 +262,21 @@ public class MonsterPattern_Monster02 : MonsterPattern
     {
         //좌 우 좌 우 발사 
         float time = 0;
+        float curAttackTime = 0;
+
         float distance = Vector3.Distance(transform.position, playerTrans.position);
 
         bool useBack = false;
         bool useLeft = false;
         bool goingBack = false;
+        bool canAttack = true;
 
         Quaternion originRotate = transform.rotation;
 
         while (distance > 1.5f && curMonsterState != MonsterState.GetHit)
         {
             useBack = true;
-            time += Time.deltaTime;
-
+            // * 플레이어 쪽으로 고개 돌림--------------------------------//
             Vector3 targetPos = playerTrans.position;
             //몬스터 고개 돌리기
             Vector3 curPlayerPos = playerTrans.position;
@@ -280,29 +287,56 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             yield return null;
 
-            if (time > 0.25f) //n초마다 총알 발사
-            {
-                time = 0;
+            // * 몬스터 공격----------------------------------------------//
 
-                SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                StartCoroutine(Shake(0.1f));
-                if (!useLeft)
+            curAttackTime += Time.deltaTime;
+
+            if (curAttackTime < attackTime && canAttack)
+            {
+                time += Time.deltaTime;
+                if (time > 0.25f) //n초마다 총알 발사
                 {
-                    useLeft = true;
-                    FireBullet(playerTargetPos.position, muzzles[0]);
-                }
-                else
-                {
-                    useLeft = false;
-                    FireBullet(playerTargetPos.position, muzzles[1]);
+                    time = 0;
+
+                    SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
+                    StartCoroutine(Shake(0.1f));
+                    if (!useLeft)
+                    {
+                        useLeft = true;
+                        FireBullet(playerTargetPos.position, muzzles[0]);
+                    }
+                    else
+                    {
+                        useLeft = false;
+                        FireBullet(playerTargetPos.position, muzzles[1]);
+                    }
                 }
             }
+            else if (curAttackTime >= attackTime && canAttack)
+            {
+                Debug.Log(attackTime + "초 동안 공격 완료");
+                Debug.Log(stopAttackTime + "초 동안 공격 쉬기");
+
+                time = 0;
+                curAttackTime = 0;
+                canAttack = false;
+            }
+
+
+            if (curAttackTime > stopAttackTime && !canAttack)
+            {
+                Debug.Log(stopAttackTime + "초 동안 공격 쉬기 완료");
+                canAttack = true;
+                curAttackTime = 0;
+            }
+
+
 
             distance = Vector3.Distance(transform.position, playerTrans.position);
 
-            if (distance >= 13)
+            if (distance >= 20)
             {
-                Debug.Log("멈춤 distance 13이상" + distance);
+                Debug.Log("멈춤 distance 20이상" + distance);
                 //거리가 13만큼 떨어진다면
                 //어택 멈추기
                 goingBack = true;
