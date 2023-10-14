@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class Bullet : MonoBehaviour
     private bool isdisappear = false;
 
     TrailRenderer trailRenderer;
+
+    public Action<Vector3> OnHitPlayerEffect = null;
 
     private void Start()
     {
@@ -60,17 +63,23 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
+
             if (!playerController._currentState.isGettingHit)
             {
                 monster.OnHit();
             }
             isdisappear = true;
             DisappearBullet();
+            OnHitPlayerEffect = null;
+
         }
         else
         {
             isdisappear = true;
             DisappearBullet();
+            OnHitPlayerEffect = null;
+
         }
     }
 

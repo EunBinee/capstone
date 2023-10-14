@@ -33,11 +33,12 @@ public class EffectController : MonoBehaviour
             }
             else
             {
-                float originStartSize = particleSystemList[i].startSize;
+                ParticleSystem.MainModule mainModule = particleSystemList[i].main;
+                float originStartSize = mainModule.startSizeMultiplier;
 
                 float curStartSize = originStartSize * size;
                 curStartSize = (float)Math.Round(curStartSize, 1);
-                particleSystemList[i].startSize = curStartSize;
+                mainModule.startSizeMultiplier = curStartSize;
             }
         }
     }

@@ -18,8 +18,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     [Header("총알이 나가는 위치 : 인덱스 0번 L쪽 총, 인덱스 1번 R쪽 총")]
     public Transform[] muzzles;
-    private bool using_LBullet = false;
-    private bool using_RBullet = false; //총알쏘고있는지 확인.
     [Space]
     [Header("몬스터 회전 각도")]
     public int roamingAngle = 60;
@@ -29,8 +27,13 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public int attackTime = 2;
     public int stopAttackTime = 2;
 
-    [Header("몬스터 근거리 공격 범위")]
+    [Header("몬스터 근거리 공격 범위 (실제 플레이어가 공격을 받는 범위)")]
     public float shortRangeAttack_Radius = 2;
+
+    [Header("몬스터 근거리 공격 거리")]
+    public float shortRangeAttackDistance = 3f;
+    [Header("몬스터가 공격을 멈추는 거리")]
+    public float stopAttackDistance = 20;
 
 
     public override void Init()
@@ -186,7 +189,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     ChangeMonsterState(MonsterState.Attack);
 
                     float distance = Vector3.Distance(transform.position, playerTrans.position);
-                    if (distance < 1.5f)
+                    if (distance < shortRangeAttackDistance)
                         Monster_Motion(MonsterMotion.Short_Range_Attack);
                     else
                         Monster_Motion(MonsterMotion.Long_Range_Attack);
@@ -278,13 +281,22 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
 
-        CheckPlayerDamage(shortRangeAttack_Radius);
+        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius);
 
+        if (playerGetDamage)
+        {
+            //이펙트
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
+
+            effect.gameObject.transform.position = playerTargetPos.position;
+            Vector3 curDirection = m_monster.transform.position - playerTargetPos.position;
+            effect.gameObject.transform.position += curDirection * 0.1f;
+        }
 
         yield return new WaitForSeconds(1.5f);
 
         float distance = Vector3.Distance(transform.position, playerTrans.position);
-        if (distance < 1.5f)
+        if (distance < shortRangeAttackDistance)
             Monster_Motion(MonsterMotion.Short_Range_Attack);
         else
             Monster_Motion(MonsterMotion.Long_Range_Attack);
@@ -309,7 +321,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         Quaternion originRotate = transform.rotation;
 
-        while (distance > 1.5f && curMonsterState != MonsterState.GetHit)
+        while (distance > shortRangeAttackDistance && curMonsterState != MonsterState.GetHit)
         {
             useBack = true;
             // * 플레이어 쪽으로 고개 돌림--------------------------------//
@@ -350,9 +362,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             }
             else if (curAttackTime >= attackTime && canAttack)
             {
-                Debug.Log(attackTime + "초 동안 공격 완료");
-                Debug.Log(stopAttackTime + "초 동안 공격 쉬기");
-
                 time = 0;
                 curAttackTime = 0;
                 canAttack = false;
@@ -361,16 +370,14 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             if (curAttackTime > stopAttackTime && !canAttack)
             {
-                Debug.Log(stopAttackTime + "초 동안 공격 쉬기 완료");
                 canAttack = true;
                 curAttackTime = 0;
             }
 
             distance = Vector3.Distance(transform.position, playerTrans.position);
 
-            if (distance >= 20)
+            if (distance >= stopAttackDistance)
             {
-                Debug.Log("멈춤 distance 20이상" + distance);
                 //거리가 13만큼 떨어진다면
                 //어택 멈추기
                 goingBack = true;
@@ -387,8 +394,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     originRotate.y = transform.rotation.y;
                 }
-                Debug.Log("originRotate " + originRotate);
-                Debug.Log("transform.rotation " + transform.rotation);
                 time = 0;
                 while (time < 1)
                 {
@@ -422,6 +427,15 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         Bullet bullet = bulletObj.GetComponent<Bullet>();
         bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
+        bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
+        {
+            //플레이어가 총에 맞았을 경우, 이펙트
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+
+            effect.gameObject.transform.position = targetPos;
+            Vector3 curDirection = targetPos - bulletObj.transform.position;
+            effect.gameObject.transform.position += curDirection * 0.35f;
+        };
 
         Vector3 curDirection = targetPos - bulletObj.transform.position;
         Quaternion targetAngle = Quaternion.LookRotation(curDirection);

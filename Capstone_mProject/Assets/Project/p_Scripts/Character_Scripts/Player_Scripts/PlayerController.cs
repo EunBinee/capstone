@@ -287,12 +287,14 @@ public class PlayerController : MonoBehaviour
 
                 if (Input.GetMouseButton(0) && curIndex == index)
                 {
-                    if (index == 5){
+                    if (index == 5)
+                    {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 0;
                         isCombo = false;
                     }
-                    else{
+                    else
+                    {
                         index++;
                         isCombo = true;
                     }
@@ -636,7 +638,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit()
     {
-        Debug.Log("True");
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
