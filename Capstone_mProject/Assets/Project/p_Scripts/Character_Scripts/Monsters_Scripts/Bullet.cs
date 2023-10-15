@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class Bullet : MonoBehaviour
     private bool isdisappear = false;
 
     TrailRenderer trailRenderer;
+
+    public Action<Vector3> OnHitPlayerEffect = null;
 
     private void Start()
     {
@@ -60,25 +63,25 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
+            OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
+
             if (!playerController._currentState.isGettingHit)
             {
                 monster.OnHit();
             }
             isdisappear = true;
             DisappearBullet();
+            OnHitPlayerEffect = null;
+
         }
         else
         {
             isdisappear = true;
             DisappearBullet();
+            OnHitPlayerEffect = null;
+
         }
     }
-
-
-    // ! n초가 지나면 사라지도록
-    // ! 어딘가에 부딪치면 사라지도록
-    // ! 플레이어에 맞으면 사라지고 플레이어 피격
-
-
 
 }

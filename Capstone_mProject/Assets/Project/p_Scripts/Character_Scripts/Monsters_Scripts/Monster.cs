@@ -53,9 +53,10 @@ public class Monster : MonoBehaviour
 
     }
 
-    public virtual void OnHit()
+    public virtual void OnHit(float Damage = 0)
     {
         //몬스터가 플레이어를 때렸을 때 처리.
+        //! 플레이어 데미지 처리 나중에 꼭 하기
         playerController.GetHit();
     }
 

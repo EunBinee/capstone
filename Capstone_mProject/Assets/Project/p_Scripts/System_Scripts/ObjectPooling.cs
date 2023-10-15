@@ -48,7 +48,7 @@ public class ObjectPooling
         //프리펩 찾기
         if (effectPrefabs.ContainsKey(effectName))
         {
-            Debug.Log(effectPrefabs[effectName]);
+            //Debug.Log(effectPrefabs[effectName]);
             curEffect = effectPrefabs[effectName];
         }
         else
