@@ -50,7 +50,7 @@ public class CheckOption
     public float sprintSpeed = 9f;
 
     [Range(1f, 30f), Tooltip("달리는 속도")]
-    public float runningSpeed = 6f;
+    public float runningSpeed = 7.5f;
 
     [Range(1f, 30f), Tooltip("걷는 속도")]
     public float walkingSpeed = 2f;
@@ -61,7 +61,7 @@ public class CheckOption
     public float jumpGravity = 1f;
 
     [Range(1f, 30f), Tooltip("대시 속도")]
-    public float dashingSpeed = 13f;
+    public float dashingSpeed = 11f;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;
@@ -104,6 +104,7 @@ public class CurrentValue
     public Vector3 groundCross;     //지면의 외적 (캐릭터 이동벡터 회전축)
     public Vector3 playerVelocity;  //이동을 위한 플레이어 속도
     public int comboCount;          // 현재 콤보 카운트
+    public double HP = 100;               //플레이어 체력
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
