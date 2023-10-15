@@ -63,6 +63,7 @@ public class Bullet : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
             OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
 
             if (!playerController._currentState.isGettingHit)
@@ -82,12 +83,5 @@ public class Bullet : MonoBehaviour
 
         }
     }
-
-
-    // ! n초가 지나면 사라지도록
-    // ! 어딘가에 부딪치면 사라지도록
-    // ! 플레이어에 맞으면 사라지고 플레이어 피격
-
-
 
 }

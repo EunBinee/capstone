@@ -335,10 +335,12 @@ public class MonsterPattern : MonoBehaviour
     public bool CheckPlayerDamage(float _overlapRadius, float damage = 0)
     {
         drawDamageCircle = true;
-        Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
+        Collider[] playerColliders = Physics.OverlapSphere(transform.position, _overlapRadius, playerlayerMask);
         if (0 < playerColliders.Length)
         {
+
             m_monster.OnHit(damage);
+
             return true;
         }
         else

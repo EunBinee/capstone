@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     public ObjectPooling objectPooling;
 
+    //* 카메라 제어---------------------------------//
+    public CameraShake cameraShake;
+    //* --------------------------------------------//
     void Awake()
     {
         Init();
@@ -39,6 +42,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
+        cameraShake = GetComponent<CameraShake>();
     }
 
 

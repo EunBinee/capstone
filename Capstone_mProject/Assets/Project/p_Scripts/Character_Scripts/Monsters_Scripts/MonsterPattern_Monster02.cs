@@ -275,16 +275,20 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
 
+        yield return new WaitForSeconds(0.2f);
+
         bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius);
 
         if (playerGetDamage)
         {
+            //카메라 흔들림
+            GameManager.Instance.cameraShake.ShakeCamera(0.5f, 2, 2);
             //이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
 
@@ -293,7 +297,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
             effect.gameObject.transform.position += curDirection * 0.1f;
         }
 
+
         yield return new WaitForSeconds(1.5f);
+
 
         float distance = Vector3.Distance(transform.position, playerTrans.position);
         if (distance < shortRangeAttackDistance)
@@ -540,7 +546,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         if (drawDamageCircle)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, shortRangeAttack_Radius);
+            Gizmos.DrawWireSphere(m_monster.gameObject.transform.position, shortRangeAttack_Radius);
         }
     }
 }
