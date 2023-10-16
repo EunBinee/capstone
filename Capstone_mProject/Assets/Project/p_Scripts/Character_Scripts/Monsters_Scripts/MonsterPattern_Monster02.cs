@@ -64,6 +64,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     }
 
 
+
     public override void SetAnimation(MonsterAnimation m_anim)
     {
         switch (m_anim)
@@ -329,6 +330,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         while (distance > shortRangeAttackDistance && curMonsterState != MonsterState.GetHit)
         {
+
             useBack = true;
             // * 플레이어 쪽으로 고개 돌림--------------------------------//
             Vector3 targetPos = playerTrans.position;
@@ -431,8 +433,10 @@ public class MonsterPattern_Monster02 : MonsterPattern
         GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab(bulletPrefabsName, bulletsParent);
         Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
 
+        //총알
         Bullet bullet = bulletObj.GetComponent<Bullet>();
         bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
+
         bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
         {
             //플레이어가 총에 맞았을 경우, 이펙트
@@ -446,9 +450,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Vector3 curDirection = targetPos - bulletObj.transform.position;
         Quaternion targetAngle = Quaternion.LookRotation(curDirection);
         bulletObj.transform.rotation = targetAngle;
+        //?--
+        bullet.GetDistance(curDirection.normalized);
+        //?--
+        bulletRigid.velocity = curDirection.normalized * 50f;
 
-        bulletRigid.velocity = curDirection.normalized * 35;
-
+        //총쏠때 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
         effect.gameObject.transform.position = muzzlePos.position;
 
