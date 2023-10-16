@@ -355,7 +355,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     time = 0;
 
                     SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                    StartCoroutine(Shake(0.1f));
+
                     if (!useLeft)
                     {
                         useLeft = true;
@@ -366,6 +366,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                         useLeft = false;
                         FireBullet(playerTargetPos.position, muzzles[1]);
                     }
+                    StartCoroutine(Shake(0.1f));
                 }
             }
             else if (curAttackTime >= attackTime && canAttack)

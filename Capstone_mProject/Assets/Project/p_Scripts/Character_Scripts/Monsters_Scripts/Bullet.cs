@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     public Monster monster;
     private PlayerController playerController;
     private TrailRenderer trailRenderer;
+    private Rigidbody rigid;
 
     public float disappearTime = 30f;
     public string projectileName = "";
@@ -36,7 +37,7 @@ public class Bullet : MonoBehaviour
     public void Reset(Monster _monster = null, string _projectileName = "", Transform muzzlePos = null)
     {
         trailRenderer = GetComponent<TrailRenderer>();
-
+        rigid = GetComponent<Rigidbody>();
         this.gameObject.SetActive(true);
 
         this.gameObject.transform.position = muzzlePos.position;
@@ -67,6 +68,7 @@ public class Bullet : MonoBehaviour
             }
             if (time > disappearTime && !isdisappear)
             {
+
                 isdisappear = true;
                 DisappearBullet();
             }
@@ -84,6 +86,7 @@ public class Bullet : MonoBehaviour
                 {
                     AttackPlayer();
                 }
+                isdisappear = true;
                 DisappearBullet();
             }
             else
@@ -126,30 +129,6 @@ public class Bullet : MonoBehaviour
             targetDistance = shortDist;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //if (other.CompareTag("Player"))
-        //{
-        //    GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
-        //    OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
-        //
-        //    if (!playerController._currentState.isGettingHit)
-        //    {
-        //        monster.OnHit();
-        //    }
-        //    isdisappear = true;
-        //    DisappearBullet();
-        //    OnHitPlayerEffect = null;
-        //
-        //}
-        //else
-        //{
-        //    isdisappear = true;
-        //    DisappearBullet();
-        //    OnHitPlayerEffect = null;
-        //
-        //}
-    }
 
 
     public void GetDistance(Vector3 _targetDir)
@@ -171,7 +150,7 @@ public class Bullet : MonoBehaviour
     private void DisappearBullet()
     {
         //풀링
-        isdisappear = true;
+
         GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
         OnHitPlayerEffect = null;
         isReset = false;
