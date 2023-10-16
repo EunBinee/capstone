@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -46,7 +47,7 @@ public class PlayerController : MonoBehaviour
 
         //캐릭터 물건 들기
         //ItemPickUp();
-        
+
     }
     void FixedUpdate()
     {
@@ -286,7 +287,7 @@ public class PlayerController : MonoBehaviour
                     P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
                 }
-               
+
             }
         }
     }
@@ -442,7 +443,7 @@ public class PlayerController : MonoBehaviour
 
     private void ItemPickUp()
     {
-        
+
         //아이템 드는 것과 관련한 함수
         if (P_PickUp.hit.collider != null)
         {
@@ -459,30 +460,43 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("아이템 들기");
                     P_PickUp.inHandItem = P_PickUp.hit.collider.gameObject;
                     P_PickUp.inHandItem.transform.SetParent(P_PickUp.pickUpParent.transform, false);
-           
+
 
                     if (P_PickUp.hit.collider.GetComponent<Rigidbody>() != null)
                     {
                         P_PickUp.hit.collider.GetComponent<Rigidbody>().isKinematic = true;
                         Debug.Log("키네마틱 켬");
                     }
-                    
+
                     P_States.isPickUp = true;
                     P_Com.animator.SetTrigger("Pick Up");
-                    
-                   
+
+
                 }
             }
-      
+
         }
-        if(Physics.Raycast(P_PickUp.playerCameraTransform.position, P_PickUp.playerCameraTransform.forward, out P_PickUp.hit, P_PickUp.hitRange, P_PickUp.pickalbleLayerMask))
+        if (Physics.Raycast(P_PickUp.playerCameraTransform.position, P_PickUp.playerCameraTransform.forward, out P_PickUp.hit, P_PickUp.hitRange, P_PickUp.pickalbleLayerMask))
         {
             //아이템 빛나게, ui 텍스트 보이게함.
             P_PickUp.hit.collider.GetComponent<Highlight>()?.ToggleHighlight(true);
             P_PickUp.pickUpUI.SetActive(true);
         }
-
-
         //Debug.DrawRay(P_PickUp.playerCameraTransform.position, P_PickUp.playerCameraTransform.forward * P_PickUp.hitRange, Color.red);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
+        { 
+
+            GameObject interObject = other.gameObject;
+
+            if (interObject != null)
+            {
+                //오브젝트가 비어있지 않을 때..
+                GameManager.GetInstance().StartInteraction(interObject);
+            }
+        }
     }
 }
