@@ -68,12 +68,12 @@ public class Bullet : MonoBehaviour
             }
             if (time > disappearTime && !isdisappear)
             {
-
                 isdisappear = true;
                 DisappearBullet();
             }
 
             float curBulletDistance = Vector3.Distance(curOriginPos, this.gameObject.transform.position);
+
             if (firstUpdate)
             {
                 firstUpdate = false;

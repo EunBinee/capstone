@@ -275,6 +275,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     {
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
+        effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
 
         yield return new WaitForSeconds(1.5f);
 
