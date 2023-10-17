@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
 
     public NavMeshSurface navMeshSurface;
 
+    private string curAnimName = "";
     private bool isStartComboAttack = false;
     public float comboClickTime = 0.5f;
     private bool isGettingHit = false;
@@ -231,10 +232,6 @@ public class PlayerController : MonoBehaviour
     {
         curPlayerState = playerState;
 
-#if UNITY_EDITOR
-        Debug.Log("플레이어 상태 변경 " + playerState);
-#endif
-
     }
 
     private void AnimState(PlayerState playerState, int index = 0)
@@ -273,7 +270,7 @@ public class PlayerController : MonoBehaviour
         string comboName03 = "Attack_Combo_3";
         string comboName04 = "Attack_Combo_4";
         string comboName05 = "Attack_Combo_5";
-        string curAnimName = "";
+        //string curAnimName = "";
 
         int index = 1;
         float time = 0;
@@ -283,7 +280,7 @@ public class PlayerController : MonoBehaviour
         {
             isCombo = false;
             ChangePlayerState(PlayerState.ComboAttack);
-            AnimState(PlayerState.ComboAttack, index);
+            //AnimState(PlayerState.ComboAttack, index);
 
             switch (index)
             {
@@ -306,6 +303,7 @@ public class PlayerController : MonoBehaviour
                     curAnimName = "";
                     break;
             }
+            P_Com.animator.Play(curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
@@ -326,7 +324,9 @@ public class PlayerController : MonoBehaviour
                     if (index == 5){
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 0;
+                        time = 0;
                         isCombo = false;
+                        //P_States.isPerformingAction = false;
                     }
                     else{
                         index++;
@@ -415,10 +415,10 @@ public class PlayerController : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
-            P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
-            P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+            P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
             return;
         }
         if (P_States.isSprinting)
@@ -498,7 +498,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerRotation()
     {
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             return;
         }
@@ -539,16 +539,16 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerMovement()
     {
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        {
+            return;
+        }
         //플레이어의 움직임을 수행하는 함수.
         //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
         P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
-        {
-            return;
-        }
 
         if (P_States.isJumping)
         {
