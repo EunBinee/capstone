@@ -2944,6 +2944,7 @@ MonoBehaviour:
     groundCross: {x: 0, y: 0, z: 0}
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
+    HP: 100
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -2966,6 +2967,8 @@ MonoBehaviour:
   rayCastHeightOffset: 1
   navMeshSurface: {fileID: 1424189438}
   comboClickTime: 3
+  skill_E: {fileID: 0}
+  skill_Q: {fileID: 0}
 --- !u!1 &7221356430050552911
 GameObject:
   m_ObjectHideFlags: 0
@@ -3144,7 +3147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1883028038270369999, guid: 62768206ac56f3545919fbb63d58201e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.72
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5065020425338566152, guid: 62768206ac56f3545919fbb63d58201e, type: 3}
       propertyPath: playerTargetPos
