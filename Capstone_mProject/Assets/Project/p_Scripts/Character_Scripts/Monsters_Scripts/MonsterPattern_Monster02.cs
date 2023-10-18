@@ -103,6 +103,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
         switch (curMonsterState)
         {
             case MonsterState.Roaming:
+                if (m_monster.HPBar_CheckNull() == true)
+                    m_monster.RetrunHPBar();
                 Roam_Monster();
                 CheckPlayerCollider();
                 break;
@@ -110,6 +112,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 Discovery_Player();
                 break;
             case MonsterState.Tracing:
+                if (m_monster.HPBar_CheckNull() == false)
+                    m_monster.GetHPBar();
+                break;
+            case MonsterState.Attack:
+                if (m_monster.HPBar_CheckNull() == false)
+                    m_monster.GetHPBar();
                 break;
             case MonsterState.GoingBack:
                 break;
@@ -237,7 +245,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             }
         }
 
-        // yield return new WaitForSeconds(1f);
         CheckPlayerCollider();
     }
     // * ---------------------------------------------------------------------------------------------------------//

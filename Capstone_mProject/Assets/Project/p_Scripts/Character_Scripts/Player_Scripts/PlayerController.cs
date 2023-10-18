@@ -253,7 +253,6 @@ public class PlayerController : MonoBehaviour
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
-                    isGettingHit = true;
                     StartCoroutine(GetHit_KnockBack_co());
                 }
                 break;
@@ -675,9 +674,12 @@ public class PlayerController : MonoBehaviour
         //경사면의 회전축벡터 => 플레이어가 경사면을 따라 움직일수있도록 월드 이동 벡터를 회전
     }
 
+
     public void GetHit(GameObject enemy)
     {
+
         StartCoroutine(PlayerGetHit(enemy, 2));
+
     }
 
 
@@ -702,12 +704,13 @@ public class PlayerController : MonoBehaviour
             //아직 살아있음.
             //P_Com.animator.SetTrigger("isGetDamage");
             P_Com.animator.Play("Get_Damage", 0, 0f);
+
             AnimState(PlayerState.GetHit_KnockBack);
         }
 
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         P_States.isGettingHit = false;
 
     }
