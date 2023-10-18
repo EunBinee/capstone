@@ -783,4 +783,20 @@ public class PlayerController : MonoBehaviour
         targetCameraRot = Quaternion.Euler(cameraRot);
         P_Camera.playerCameraPivot.transform.localRotation = targetCameraRot;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
+        {
+            Debug.Log("엔피시 대화 에리어");
+            GameObject interObject = other.gameObject;
+
+            if (interObject != null)
+            {
+                //오브젝트가 비어있지 않을 때..
+                GameManager.GetInstance().StartInteraction(interObject);
+            }
+            
+        }
+    }
 }
