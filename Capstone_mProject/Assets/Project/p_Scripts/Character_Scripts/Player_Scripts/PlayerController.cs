@@ -226,8 +226,9 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDodge()
     {
+
         P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
-        if (P_States.previousDodgeKeyPress && P_States.currentDodgeKeyPress)
+        if (P_States.previousDodgeKeyPress && P_States.currentDodgeKeyPress && P_States.isDodgeing)
         {
             //Debug.Log("이전 프레임에도 누름!");
             return;
@@ -744,7 +745,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
             //if (transform.position == KnockBackPos)
-                //break;
+            //break;
             //else
             {
                 //time += Time.deltaTime;
@@ -752,7 +753,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         ChangePlayerState(preState);
-        
+
         isGettingHit = false;
     }
 
