@@ -116,6 +116,7 @@ public class Line
     public bool changeEndingID; //대화가 끝나고 ending 변경이 있는지 여부
     public int endingIDToBeChange; //변경될 엔딩 ID
 
+    public int nextLineNum;
 }
 
 
@@ -132,6 +133,9 @@ public class Dialogue
     public int eventNum; //B열
     //대사 문단의 번호
     public int dialogueNum; //D열
+
+    public int lineNum;
+
 }
 
 [System.Serializable]

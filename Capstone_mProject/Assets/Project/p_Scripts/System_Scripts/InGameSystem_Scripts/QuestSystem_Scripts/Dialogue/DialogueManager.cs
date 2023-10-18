@@ -541,6 +541,7 @@ public class DialogueManager : MonoBehaviour
                             interaction_Item.dialogueNum = 1;
                             eventIDToBeChange = dialogue.lines[curPart][curLine].evnetIDToBeChange;
                         }
+                        Debug.Log("이벤트 변화");
 
                     }
 
@@ -553,6 +554,7 @@ public class DialogueManager : MonoBehaviour
                             interaction_Item.dialogueNum = 1;
                             endingIDToBeChange = dialogue.lines[curPart][curLine].endingIDToBeChange;
                         }
+                        Debug.Log("엔딩 변화");
                     }
 
 
@@ -580,7 +582,10 @@ public class DialogueManager : MonoBehaviour
         if (changeEndingID)
         {
             gameInfo.EndingNum = endingIDToBeChange;
-    
+            int nextEventNum = dialogue.lines[curPart][curLine].evnetIDToBeChange;
+            interaction_Item.preEventNum = nextEventNum;
+
+            Debug.Log(nextEventNum);
         }
 
         //이벤트 ID에 변화가 있는지

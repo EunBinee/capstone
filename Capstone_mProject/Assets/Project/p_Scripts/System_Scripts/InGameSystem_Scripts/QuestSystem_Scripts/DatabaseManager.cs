@@ -210,7 +210,7 @@ public class DatabaseManager : MonoBehaviour
             string id_String = "";
 
             id_String += dialogues[i].endingNum.ToString();
-            //id_String += dialogues[i].lineNum.ToString();
+            id_String += dialogues[i].lineNum.ToString();
 
             if (dialogues[i].npcNum.ToString().Length == 1)
                 id_String += "0" + dialogues[i].npcNum.ToString();

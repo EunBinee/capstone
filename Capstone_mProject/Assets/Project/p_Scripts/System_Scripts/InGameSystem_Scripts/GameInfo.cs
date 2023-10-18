@@ -42,9 +42,9 @@ public class GameInfo : MonoBehaviour
         get { return eventNum; }
         set { eventNum = value; }
     }
-    //public int LineNum
-    //{
-    //    get { return eventNum; }
-    //    set { eventNum = value; }
-    //}
+    public int LineNum
+    {
+        get { return eventNum; }
+        set { eventNum = value; }
+    }
 }

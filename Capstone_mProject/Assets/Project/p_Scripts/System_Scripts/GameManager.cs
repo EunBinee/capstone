@@ -159,7 +159,7 @@ public class GameManager : MonoBehaviour
             string id_String = "";
 
             id_String += gameInfo.EndingNum.ToString();
-            //id_String += gameInfo.LineNum.ToString();
+            id_String += gameInfo.LineNum.ToString();
 
             if (interaction_Item.id.ToString().Length == 1)
                 id_String += "0" + interaction_Item.id.ToString();

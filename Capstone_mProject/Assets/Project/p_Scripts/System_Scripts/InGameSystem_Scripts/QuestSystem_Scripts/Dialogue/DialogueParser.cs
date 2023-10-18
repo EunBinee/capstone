@@ -307,6 +307,7 @@ public class DialogueParser : MonoBehaviour
     int npcNum_in = 0;
     int dialogueNum_in = 0;  //E열
     int endingNum_in = 0;
+    int lineNum_in = 0;
 
     //Line.cs에 쓰임
     string name_in;
@@ -320,6 +321,7 @@ public class DialogueParser : MonoBehaviour
         npcNum_in = 0;
         dialogueNum_in = 0;
         endingNum_in = 0;
+        lineNum_in = 0;
 
         name_in = "";
         choice_OneTwo = 0;
@@ -347,6 +349,7 @@ public class DialogueParser : MonoBehaviour
                 dialogue.eventNum = eventNum_in;   //현재 진행되고있는 이벤트번호
                 dialogue.npcNum = npcNum_in;     //Npc 번호
                 dialogue.endingNum = endingNum_in;  //ending번호
+                dialogue.lineNum = lineNum_in;
             }
             else
             {
@@ -357,10 +360,12 @@ public class DialogueParser : MonoBehaviour
                     endingNum_in = endingNum_in;
                 else
                     endingNum_in = int.Parse(row[11].ToString());
+                lineNum_in= int.Parse(row[4].ToString());
 
                 dialogue.eventNum = eventNum_in;   //현재 진행되고있는 이벤트
                 dialogue.npcNum = npcNum_in;     //Npc 번호
                 dialogue.endingNum = endingNum_in;  //ending번호
+                dialogue.lineNum = lineNum_in;
             }
 
             if (row[3].ToString() == "")
@@ -372,8 +377,24 @@ public class DialogueParser : MonoBehaviour
                 dialogueNum_in = int.Parse(row[3].ToString());
                 dialogue.dialogueNum = dialogueNum_in;
             }
-
-
+            if (row[4].ToString() == "")
+            {
+                dialogue.lineNum = lineNum_in;
+            }
+            else
+            {
+                lineNum_in = int.Parse(row[4].ToString());
+                dialogue.lineNum = lineNum_in;
+            }
+            if (row[5].ToString() == "")
+            {
+                dialogue.lineNum = lineNum_in;
+            }
+            else
+            {
+                lineNum_in = int.Parse(row[4].ToString());
+                dialogue.lineNum = lineNum_in;
+            }
             do
             {
                 List<Line> LineList = new List<Line>();
@@ -387,6 +408,7 @@ public class DialogueParser : MonoBehaviour
                     line.isChoice = false;
                     line.isFinishLine = false;  //대화가 끝났는지 여부    
                     line.nextDialogueNum = dialogueNum_in;
+                    line.nextLineNum=lineNum_in;
 
                     do
                     {
@@ -450,18 +472,21 @@ public class DialogueParser : MonoBehaviour
                                 {
                                     //다음 단락으로 
                                     line.nextDialogueNum = dialogueNum_in+1;
+
                                 }
+                         
 
                                 //대사가 끝나고 Evnet의 변화가 있는지도 확인
                                 if (!line.changeEvnetID) //false일때만 변경 한번 
                                 {
                                     int changeEvnetID = 0;
-                                    isNumeric = int.TryParse(row[1].ToString(), out changeEvnetID);
+                                    isNumeric = int.TryParse(row[12].ToString(), out changeEvnetID);
 
                                     if (isNumeric) //만약 숫자 변환이 가능하다면
                                     {
                                         line.changeEvnetID = true;
                                         line.evnetIDToBeChange = changeEvnetID;
+                                        Debug.Log(line.evnetIDToBeChange);
                                     }
                                 }
                                 //대사가 끝나고 Ending의 변화가 있는지도 확인
@@ -479,13 +504,7 @@ public class DialogueParser : MonoBehaviour
 
                             }
                         }
-                        else
-                        {
-                            Debug.Log("d");
-
-                        }
-                
-
+                                                
                         //-----------------------------------------------------------
                         //여기서 i를 ++ 해줌
                         if (++i < (data.Length))
@@ -503,12 +522,15 @@ public class DialogueParser : MonoBehaviour
                     LineList.Add(line);
 
                     contextList.Clear();
+
+
                     if (finishBreak)
                     {
                         break;
                     }
 
-                } while (row[4].ToString() == "" || row[7].ToString() == "");    //csv E열
+
+                } while (row[4].ToString() == "");    //csv E열.
 
                 lines.Add(LineList);
 
@@ -517,6 +539,7 @@ public class DialogueParser : MonoBehaviour
                     break;
                 }
             } while (row[3].ToString() == "");    //csv D열 
+
 
             dialogue.lines = lines;
             dialogues.Add(dialogue);
