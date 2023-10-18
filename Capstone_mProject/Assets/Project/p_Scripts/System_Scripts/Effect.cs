@@ -10,6 +10,7 @@ public class Effect : MonoBehaviour
     //OnEnable() //풀링할거라서 
     private ParticleSystem mEffect;
     public event Action callBack = null;
+
     public void ShowEffect()
     {
         mEffect = GetComponent<ParticleSystem>();
