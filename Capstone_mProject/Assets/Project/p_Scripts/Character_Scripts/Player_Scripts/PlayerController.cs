@@ -9,7 +9,10 @@ public enum PlayerState
     Idle,
     Move,
     ComboAttack,
-    FinishComboAttack
+    FinishComboAttack,
+    GetHit_KnockBack,
+    GetHit,
+    Death
 }
 
 public class PlayerController : MonoBehaviour
@@ -40,8 +43,14 @@ public class PlayerController : MonoBehaviour
 
     public NavMeshSurface navMeshSurface;
 
+    private string curAnimName = "";
     private bool isStartComboAttack = false;
     public float comboClickTime = 0.5f;
+    private bool isGettingHit = false;
+    private PlayerState curPlayerState;
+    private GameObject curEnemy;
+    public SkillButton skill_E;
+    public SkillButton skill_Q;
 
     void Awake()
     {
@@ -98,7 +107,7 @@ public class PlayerController : MonoBehaviour
         {
             HandleSprint();
             HandleWalkOrRun();
-            HandleStrafe();
+            //HandleStrafe();
             P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
             if (Input.GetKey(KeyCode.W))
@@ -131,6 +140,14 @@ public class PlayerController : MonoBehaviour
                 isStartComboAttack = true;
                 StartCoroutine(Attacking());
             }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                skill_E.OnClicked();
+            }
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                skill_Q.OnClicked();
+            }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
@@ -142,7 +159,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleSprint()
     {
-        if (Input.GetKey(KeyCode.CapsLock) && P_Value.moveAmount > 0)
+        if (Input.GetKey(KeyCode.LeftControl) && P_Value.moveAmount > 0)
         {
             //moveAmount > 0 하는 이유
             //제자리에서 멈춰서 자꾸 뛴다.
@@ -162,18 +179,19 @@ public class PlayerController : MonoBehaviour
         //뛰기중이면, 걷기 생략
         if (P_States.isSprinting)
             return;
-        if (Input.GetKey(KeyCode.LeftShift))
+        /*if (Input.GetKey(KeyCode.LeftShift))
         {
             P_States.isWalking = true;
             P_States.isRunning = false;
+            P_States.isRunning = false;
         }
-        else
+        else8*/
         {
             P_States.isWalking = false;
             P_States.isRunning = true;
         }
     }
-    void HandleStrafe()
+    /*void HandleStrafe()
     {
         //오른쪽 마우스 클릭 => 주목하면서 걷기
         if (Input.GetMouseButton(1))
@@ -184,7 +202,7 @@ public class PlayerController : MonoBehaviour
         {
             P_States.isStrafing = false;
         }
-    }
+    }*/
     bool HandleJump()
     {
         if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
@@ -197,7 +215,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDash()
     {
-        P_States.currentDashKeyPress = Input.GetKey(KeyCode.R);
+        P_States.currentDashKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
         if (P_States.previousDashKeyPress && P_States.currentDashKeyPress)
         {
             //Debug.Log("이전 프레임에도 누름!");
@@ -210,7 +228,13 @@ public class PlayerController : MonoBehaviour
         P_States.previousDashKeyPress = P_States.currentDashKeyPress;
     }
 
-    void AnimState(PlayerState playerState, int index = 0)
+    private void ChangePlayerState(PlayerState playerState)
+    {
+        curPlayerState = playerState;
+
+    }
+
+    private void AnimState(PlayerState playerState, int index = 0)
     {
         switch (playerState)
         {
@@ -226,6 +250,13 @@ public class PlayerController : MonoBehaviour
                 P_Com.animator.SetInteger("comboCount", index);
                 P_Com.animator.SetBool("p_Locomotion", true);
                 break;
+            case PlayerState.GetHit_KnockBack:
+                if (!isGettingHit)
+                {
+                    isGettingHit = true;
+                    StartCoroutine(GetHit_KnockBack_co());
+                }
+                break;
 
         }
     }
@@ -239,7 +270,7 @@ public class PlayerController : MonoBehaviour
         string comboName03 = "Attack_Combo_3";
         string comboName04 = "Attack_Combo_4";
         string comboName05 = "Attack_Combo_5";
-        string curAnimName = "";
+        //string curAnimName = "";
 
         int index = 1;
         float time = 0;
@@ -248,7 +279,8 @@ public class PlayerController : MonoBehaviour
         while (true)
         {
             isCombo = false;
-            AnimState(PlayerState.ComboAttack, index);
+            ChangePlayerState(PlayerState.ComboAttack);
+            //AnimState(PlayerState.ComboAttack, index);
 
             switch (index)
             {
@@ -271,10 +303,12 @@ public class PlayerController : MonoBehaviour
                     curAnimName = "";
                     break;
             }
+            P_Com.animator.Play(curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
+            ChangePlayerState(PlayerState.FinishComboAttack);
             AnimState(PlayerState.FinishComboAttack, index);
 
             int curIndex = index;
@@ -291,7 +325,9 @@ public class PlayerController : MonoBehaviour
                     {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 0;
+                        time = 0;
                         isCombo = false;
+                        //P_States.isPerformingAction = false;
                     }
                     else
                     {
@@ -309,6 +345,15 @@ public class PlayerController : MonoBehaviour
             }
         }
         isStartComboAttack = false;
+    }
+
+    // UI 버튼에 의해 호출됩니다.
+    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
+    // damage 정보 만큼 피해를 입힙니다.
+    public void ActivateSkill(SOSkill skill)
+    {
+        P_Com.animator.Play(skill.animationName);
+        //print(string.Format("적에게 스킬 {0} 로 {1} 의 피해를 주었습니다.", skill.name, skill.damage));
     }
 
     //애니메이터 블랜더 트리의 파라미터 변경
@@ -372,10 +417,10 @@ public class PlayerController : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
-            P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
-            P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+            P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
             return;
         }
         if (P_States.isSprinting)
@@ -419,15 +464,14 @@ public class PlayerController : MonoBehaviour
                     //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
                     P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);   //상
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);               //하
-                    /*
-                    Vertical에만 값을 넣어주는 이유
-                    걷기 모션은 Front만 쓴다.
-                    이유 : 애니메이션은 딱 하나 Front만 쓰기 때문
-                     몸을 돌리는 건 코드에서 돌려준다.
-                    그리고 주목 기능을 쓰게 되면, 몸이 한 방향을 주목하고 움직여야하기에
-                    다른 애니메이션도 쓰이게 된다. 
-                    그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
-                    */
+
+                    //Vertical에만 값을 넣어주는 이유
+                    //걷기 모션은 Front만 쓴다.
+                    //이유 : 애니메이션은 딱 하나 Front만 쓰기 때문
+                    // 몸을 돌리는 건 코드에서 돌려준다.
+                    //그리고 주목 기능을 쓰게 되면, 몸이 한 방향을 주목하고 움직여야하기에
+                    //다른 애니메이션도 쓰이게 된다. 
+                    //그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
                 }
                 else
                 {
@@ -456,7 +500,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerRotation()
     {
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             return;
         }
@@ -497,16 +541,16 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerMovement()
     {
+        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        {
+            return;
+        }
         //플레이어의 움직임을 수행하는 함수.
         //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
         P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
-        if (isStartComboAttack && !P_Com.animator.GetBool("p_Locomotion"))
-        {
-            return;
-        }
 
         if (P_States.isJumping)
         {
@@ -631,22 +675,72 @@ public class PlayerController : MonoBehaviour
         //경사면의 회전축벡터 => 플레이어가 경사면을 따라 움직일수있도록 월드 이동 벡터를 회전
     }
 
-    public void GetHit()
+    public void GetHit(GameObject enemy)
     {
-        StartCoroutine(PlayerGetHit());
+        StartCoroutine(PlayerGetHit(enemy, 2));
     }
 
-    IEnumerator PlayerGetHit()
+
+    IEnumerator PlayerGetHit(GameObject enemy, double Damage)
     {
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
+
+        curEnemy = enemy;
+
+        P_Value.HP -= Damage;
+        //플레이어의 반대 방향으로 넉백
+
+        if (P_Value.HP <= 0)
+        {
+            //죽음
+            Death();
+        }
+        else
+        {
+            //아직 살아있음.
+            P_Com.animator.SetTrigger("isGetDamage");
+            AnimState(PlayerState.GetHit_KnockBack);
+        }
 
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
 
         yield return new WaitForSeconds(1.5f);
         P_States.isGettingHit = false;
 
+    }
+
+    public void Death()
+    {
+        //죽다.
+        P_Value.HP = 0;
+        AnimState(PlayerState.Death);
+    }
+
+    IEnumerator GetHit_KnockBack_co()
+    {
+        PlayerState preState = curPlayerState;
+        ChangePlayerState(PlayerState.GetHit);
+
+        Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
+        knockback_Dir = knockback_Dir.normalized;
+        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        float time = 0;
+        while (time < 0.5f)
+        {
+            transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+            if (transform.position == KnockBackPos)
+                break;
+            else
+            {
+                time += Time.deltaTime;
+                yield return null;
+            }
+        }
+        ChangePlayerState(preState);
+
+        isGettingHit = false;
     }
 
     //-----------------------------------------------------------------
