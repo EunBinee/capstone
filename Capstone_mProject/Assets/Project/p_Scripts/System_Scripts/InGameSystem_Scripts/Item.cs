@@ -6,15 +6,6 @@ using UnityEngine.Rendering;
 
 public class Item : MonoBehaviour
 {
-    //public string Name; //Npc 이름
-    //public bool isNpc;
-    //public int eventNum; //이벤트 id
-
-    ////ending이나 Event가 변한 경우를 체크하기 위함
-    //public int preEventNum;
-    //public int preEndingNum;
-
-
     public string Name; //Npc 이름
     public int id; //Npc ID
 

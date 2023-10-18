@@ -7,21 +7,6 @@ using TMPro;
 
 public class DialogueController : MonoBehaviour
 {
-    //[SerializeField] private TMP_Text Text_Dialogue;
-
-    //private void Start()
-    //{
-    //    StartCoroutine(Typing(Text_Dialogue.text));
-    //}
-
-    //IEnumerator Typing(string text)
-    //{
-    //    foreach(char letter in text.ToCharArray())
-    //    {
-    //        print(letter);
-    //        yield return new WaitForSeconds(1f);
-    //    }
-    //}
 
     [SerializeField] TMP_Text objectText;
 
