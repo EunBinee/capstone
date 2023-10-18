@@ -275,6 +275,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     {
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
+        effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
 
         yield return new WaitForSeconds(1.5f);
 
@@ -355,7 +356,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     time = 0;
 
                     SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                    StartCoroutine(Shake(0.1f));
+
                     if (!useLeft)
                     {
                         useLeft = true;
@@ -366,6 +367,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                         useLeft = false;
                         FireBullet(playerTargetPos.position, muzzles[1]);
                     }
+                    StartCoroutine(Shake(0.1f));
                 }
             }
             else if (curAttackTime >= attackTime && canAttack)

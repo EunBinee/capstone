@@ -159,6 +159,37 @@ Transform:
   m_Father: {fileID: 7023409517887790911}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1245690142454608226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2945568365766124254}
+  m_Layer: 0
+  m_Name: HPPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2945568365766124254
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245690142454608226}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.194, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4762861633317339650}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1358245799360554655
 GameObject:
   m_ObjectHideFlags: 0
@@ -998,6 +1029,7 @@ Transform:
   m_Children:
   - {fileID: 8646618055133631834}
   - {fileID: 2430420258927608403}
+  - {fileID: 2945568365766124254}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1066,8 +1098,10 @@ MonoBehaviour:
   monsterData:
     monsterid: 10
     monsterType: 1
+    monsterHPBarPos: {fileID: 2945568365766124254}
     MaxHP: 100
     HP: 0
+    movingMonster: 0
     overlapRadius: 10
     roaming_RangeX: 15
     roaming_RangeZ: 15
@@ -1087,11 +1121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821f2dbf3adaa3247bfacd7cd8243dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rigid: {fileID: 0}
-  originPosition: {x: 0, y: 0, z: 0}
-  weapons:
-  - {fileID: 4850669884374586736}
-  - {fileID: 4850669883255061977}
 --- !u!195 &1511302643489331301
 NavMeshAgent:
   m_ObjectHideFlags: 0

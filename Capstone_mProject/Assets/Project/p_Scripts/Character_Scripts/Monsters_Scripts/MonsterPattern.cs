@@ -148,6 +148,7 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+
     public virtual void SetAnimation(MonsterAnimation m_anim)
     {
         switch (m_anim)
