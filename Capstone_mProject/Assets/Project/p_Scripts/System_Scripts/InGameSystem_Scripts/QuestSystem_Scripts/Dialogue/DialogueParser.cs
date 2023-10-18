@@ -241,6 +241,10 @@ public class DialogueParser : MonoBehaviour
                                     line.nextDialogueNum = dialogueNum_in+1;
 
                                 }
+                                if (!isNumeric && row[9].ToString()=="")
+                                {
+                                    line.nextDialogueNum = dialogueNum_in;
+                                }
                          
 
                                 //대사가 끝나고 Evnet의 변화가 있는지도 확인
