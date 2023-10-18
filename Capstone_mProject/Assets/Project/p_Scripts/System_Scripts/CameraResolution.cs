@@ -9,7 +9,7 @@ public class CameraResolution : MonoBehaviour
     public int setWidth = 1920; // 사용자 설정 너비
     public int setHeight = 1080; // 사용자 설정 높이
 
-    private void Start()
+    private void Awake()
     {
         SetResolution(); // 초기에 게임 해상도 고정
     }

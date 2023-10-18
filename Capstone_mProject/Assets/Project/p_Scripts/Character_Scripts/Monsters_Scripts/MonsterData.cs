@@ -16,9 +16,11 @@ public class MonsterData
 
     [Header("몬스터 정보")]
     public int monsterid;
+    public string monsterName;
     public MonsterType monsterType;
 
     [Header("몬스터 체력")]
+    public Transform HPBarPos;
     public double MaxHP;
     public double HP;
 
@@ -39,5 +41,10 @@ public class MonsterData
     [Header("단/원거리 능력 개수")]
     public int shortAttack_Num = 0;
     public int LongAttack_Num = 0;
+
+    [Space]
+    [Header("몬스터 정보 보이는 거리")]
+    public float canSeeMonsterInfo_Distance = 20;
+
 
 }

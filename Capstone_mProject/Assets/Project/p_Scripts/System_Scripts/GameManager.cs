@@ -22,7 +22,10 @@ public class GameManager : MonoBehaviour
     public GameData gameData;
 
     public ObjectPooling objectPooling;
+    public HPBarManager hPBarManager;
 
+    //*---------------------------------------------//
+    public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
     public CameraShake cameraShake;
     //* --------------------------------------------//
@@ -42,6 +45,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
+        hPBarManager = GetComponent<HPBarManager>();
         cameraShake = GetComponent<CameraShake>();
     }
 
