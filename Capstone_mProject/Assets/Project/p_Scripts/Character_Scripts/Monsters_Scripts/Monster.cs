@@ -22,7 +22,9 @@ public class Monster : MonoBehaviour
 
     private void Awake()
     {
-        monsterPattern = GetComponent<MonsterPattern>();
+    }
+    private void Start()
+    {
         Init();
     }
     private void Update()
@@ -51,10 +53,11 @@ public class Monster : MonoBehaviour
 
     }
 
-    public virtual void OnHit()
+    public virtual void OnHit(float Damage = 0)
     {
         //몬스터가 플레이어를 때렸을 때 처리.
         playerController.GetHit(this.gameObject);
+
     }
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.

@@ -321,14 +321,16 @@ public class PlayerController : MonoBehaviour
 
                 if (Input.GetMouseButton(0) && curIndex == index)
                 {
-                    if (index == 5){
+                    if (index == 5)
+                    {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
                         index = 0;
                         time = 0;
                         isCombo = false;
                         //P_States.isPerformingAction = false;
                     }
-                    else{
+                    else
+                    {
                         index++;
                         isCombo = true;
                     }
@@ -642,8 +644,8 @@ public class PlayerController : MonoBehaviour
         {
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            if (P_States.isForwardBlocked)
-                Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //if (P_States.isForwardBlocked)
+            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
         }
     }
 
@@ -681,7 +683,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit(GameObject enemy, double Damage)
     {
-        Debug.Log("True");
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
