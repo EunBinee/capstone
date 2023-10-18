@@ -21,20 +21,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameData gameData;
-
+    public MonoBehaviour monoBehaviour { get; private set; }
 
     public ObjectPooling objectPooling;
 
-    //* ì¹´ë©”ë¼ ì œì–´---------------------------------//
-    public CameraShake cameraShake;
-    //* --------------------------------------------//
+    [SerializeField] private Button poolingBtn;
+
     void Awake()
     {
-        Init();
+        InitGameManager();
     }
 
-    private void Init()
+    private void InitGameManager()
     {
         if (instance == null)
         {
@@ -45,11 +43,17 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
-        cameraShake = GetComponent<CameraShake>();
+
+        poolingBtn.onClick.RemoveAllListeners();
+        poolingBtn.onClick.AddListener(() =>
+        {
+            objectPooling.ShowEffect("Prefab");
+
+        });
     }
 
 
-    //ï¿½ï¿½È­ ï¿½Ã½ï¿½ï¿½ï¿½
+    //´ëÈ­ ½Ã½ºÅÛ
     DialogueManager dialogueManager;
     GameInfo gameInfo;
 
@@ -60,8 +64,8 @@ public class GameManager : MonoBehaviour
 
     public void StartInteraction(GameObject gameObject)
     {
-        dialogueManager = GetComponent<DialogueManager>(); //ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®
-        //ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®. ex. ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£, ï¿½Ìºï¿½Æ® ï¿½ï¿½È£
+        dialogueManager = GetComponent<DialogueManager>(); //´ë»ç ½Ã½ºÅÛÀ» À§ÇÑ ½ºÅ©¸³Æ®
+        //°ÔÀÓ¿¡ ´ëÇÑ Àü¹İÀûÀÎ Á¤º¸¸¦ °¡Áö°í ÀÖ´Â ½ºÅ©¸³Æ®. ex. ÇöÀç °ÔÀÓÀÇ ¿£µù ¹øÈ£, ÀÌº¥Æ® ¹øÈ£
         gameInfo = GetComponent<GameInfo>();
   
         Item interaction_Item = gameObject.GetComponent<Item>();
@@ -76,12 +80,12 @@ public class GameManager : MonoBehaviour
                 interaction_Item.dialogueNum = 1;
             }
 
-            player_InteractingTrue(); //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+            player_InteractingTrue(); //ÇÃ·¹ÀÌ¾î Ä³¸¯ÅÍ°¡ »óÈ£ÀÛ¿ë ¸øÇÏµµ·Ï Á¦ÇÑ.
             Debug.Log(interaction_Item.Name);
 
 
             //1 01 0001 01 
-            //ï¿½ï¿½ï¿½ï¿½, npc id, ï¿½Ìºï¿½Æ®id, ï¿½ï¿½ï¿½Ü¶ï¿½ï¿½ï¿½È£ 
+            //¿£µù, npc id, ÀÌº¥Æ®id, ´ë»ç´Ü¶ô¹øÈ£ 
             int id = 0;
             string id_String = "";
 
@@ -116,7 +120,7 @@ public class GameManager : MonoBehaviour
 
             if (interaction_Item.isNpc)
             {
-                //ï¿½ï¿½ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ NPCï¿½ï¿½ ï¿½ï¿½ï¿½
+                //»óÁ¶ÀÛ¿ëÀÌ °¡´ÉÇÑ NPCÀÎ °æ¿ì
                 dialogueManager.Action_NPC(id, interaction_Item);
             }
 
@@ -126,12 +130,12 @@ public class GameManager : MonoBehaviour
 
     public void player_InteractingTrue()
     {
-        //ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½.
+        //ÇÃ·¹ÀÌ¾îÀÇ »óÈ£ÀÛ¿ëÀ» ¸·´Â´Ù.
         //playerController.interacting = true;
     }
     public void player_InteractingFalse()
     {
-        //ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½Ù½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ Ç®ï¿½ï¿½ï¿½Ø´ï¿½.
+        //ÇÃ·¹ÀÌ¾î°¡ ´Ù½Ã »óÈ£ÀÛ¿ëÇÒ ¼ö ÀÖµµ·Ï Ç®¾îÁØ´Ù.
         //playerController.interacting = false;
     }
 
