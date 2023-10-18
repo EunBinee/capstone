@@ -702,8 +702,9 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
+            //P_Com.animator.SetTrigger("isGetDamage");
+            P_Com.animator.Play("Get_Damage", 0, 0f);
 
-            P_Com.animator.SetTrigger("isGetDamage");
             AnimState(PlayerState.GetHit_KnockBack);
         }
 
@@ -724,25 +725,25 @@ public class PlayerController : MonoBehaviour
     IEnumerator GetHit_KnockBack_co()
     {
         PlayerState preState = curPlayerState;
-        ChangePlayerState(PlayerState.GetHit);
+        //ChangePlayerState(PlayerState.GetHit);
 
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
         knockback_Dir = knockback_Dir.normalized;
         Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
-        float time = 0;
-        while (time < 0.5f)
+        //float time = 0;
+        //while (time < 0.1f)
         {
             transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-            if (transform.position == KnockBackPos)
-                break;
-            else
+            //if (transform.position == KnockBackPos)
+                //break;
+            //else
             {
-                time += Time.deltaTime;
+                //time += Time.deltaTime;
                 yield return null;
             }
         }
         ChangePlayerState(preState);
-
+        
         isGettingHit = false;
     }
 
