@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
     }*/
     bool HandleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
+        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping)
         {
             //Debug.Log(P_Value.hitDistance);
             P_Input.jumpMovement = 1;
@@ -559,7 +559,8 @@ public class PlayerController : MonoBehaviour
         }
         else if (P_States.isDashing)
         {
-            P_Com.animator.SetTrigger("isDash");
+            P_Com.animator.SetTrigger("isDodge");
+            //P_Com.animator.Play("dodge",0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
 
