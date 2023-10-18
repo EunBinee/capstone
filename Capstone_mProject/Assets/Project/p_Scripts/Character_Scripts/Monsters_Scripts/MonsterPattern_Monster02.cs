@@ -362,19 +362,17 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     time = 0;
 
-                    SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-
                     if (!useLeft)
                     {
                         useLeft = true;
-                        FireBullet(playerTargetPos.position, muzzles[0]);
+                        StartCoroutine(Fire(playerTargetPos.position, muzzles[0]));
                     }
                     else
                     {
                         useLeft = false;
-                        FireBullet(playerTargetPos.position, muzzles[1]);
+                        StartCoroutine(Fire(playerTargetPos.position, muzzles[1]));
                     }
-                    StartCoroutine(Shake(0.1f));
+
                 }
             }
             else if (curAttackTime >= attackTime && canAttack)
@@ -431,43 +429,47 @@ public class MonsterPattern_Monster02 : MonsterPattern
         }
     }
 
-    private void FireBullet(Vector3 targetPos, Transform muzzlePos)
-    {
-        //총알 발사
-        StartCoroutine(Fire(targetPos, muzzlePos));
-    }
-
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos)
     {
-        GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab(bulletPrefabsName, bulletsParent);
-        Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
+        //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
+        Vector3 curDirection = targetPos - muzzlePos.position;
 
-        //총알
-        Bullet bullet = bulletObj.GetComponent<Bullet>();
-        bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
-
-        bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
+        bool hidePlayer = HidePlayer(muzzlePos.position, curDirection.normalized);
+        if (!hidePlayer)
         {
-            //플레이어가 총에 맞았을 경우, 이펙트
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+            //* 어택 에니메이션
+            SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
+            //* 총알 //
+            GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab(bulletPrefabsName, bulletsParent);
+            Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
 
-            effect.gameObject.transform.position = targetPos;
-            Vector3 curDirection = targetPos - bulletObj.transform.position;
-            effect.gameObject.transform.position += curDirection * 0.35f;
-        };
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
+            bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
+            // 플레이어에게  총알이 맞았을 경우
+            bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
+            {
+                //플레이어가 총에 맞았을 경우, 이펙트
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
 
-        Vector3 curDirection = targetPos - bulletObj.transform.position;
-        Quaternion targetAngle = Quaternion.LookRotation(curDirection);
-        bulletObj.transform.rotation = targetAngle;
-        //?--
-        bullet.GetDistance(curDirection.normalized);
-        //?--
-        bulletRigid.velocity = curDirection.normalized * 50f;
+                effect.gameObject.transform.position = targetPos;
+                Vector3 curDirection = targetPos - bulletObj.transform.position;
+                effect.gameObject.transform.position += curDirection * 0.35f;
+            };
 
-        //총쏠때 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
-        effect.gameObject.transform.position = muzzlePos.position;
+            //총알 방향//
+            Quaternion targetAngle = Quaternion.LookRotation(curDirection);
+            bulletObj.transform.rotation = targetAngle;
 
+            bullet.GetDistance(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
+                                                         //총알 발사.
+            bulletRigid.velocity = curDirection.normalized * 50f;
+            //총쏠때 이펙트
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+            effect.gameObject.transform.position = muzzlePos.position;
+
+            //몬스터 몸 흔들리는 연출//
+            StartCoroutine(Shake(0.1f));
+        }
         yield return null;
     }
 

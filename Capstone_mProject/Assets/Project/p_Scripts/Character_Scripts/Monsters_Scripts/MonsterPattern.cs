@@ -350,6 +350,54 @@ public class MonsterPattern : MonoBehaviour
         }
     }
     // * ---------------------------------------------------------------------------------------//
+    //! 발사체 쏘는 공격시, 플레이어 앞에 물체가 있는지 확인
+    public virtual bool HidePlayer(Vector3 curOriginPos, Vector3 targetDir)
+    {
+        //* 발사체 공격 시, 플레이어의 앞에 물체가 있는지 확인.!
+        //*  curOriginPos : 레이를 발사하는 곳 ; targetDir : originPos에서 부터 플레이어로 향하는 방향 벡터
+        //* 리턴 true 플레이어가 가장 앞에 있음. 리턴 false 플레이어 앞에 장애물 있음.
+
+        //몬스터에 발사체 공격이 있는 경우에만 작동.
+        if (m_monster.monsterData.haveProjectileAttack)
+        {
+            float range = 100f;
+            float playerDistance = 0;
+            float shortestDistance = 1000;
+
+            bool playerInRay = false;
+
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(curOriginPos, targetDir, range);
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.name != this.gameObject.name) //자기자신 제외
+                {
+                    float distance = hit.distance;
+                    if (distance < shortestDistance)
+                    {
+                        shortestDistance = distance;
+
+                        if (hit.collider.tag == "Player")
+                        {
+                            playerInRay = true;
+                            playerDistance = hit.distance;
+                        }
+                    }
+                }
+            }
+            if (playerInRay)
+            {
+                if (shortestDistance >= playerDistance) //* 플레이어 가장 앞에 있음.
+                    return false;
+                else
+                    return true;
+            }
+        }
+        //장애물이 있는 경우.
+        return true;
+    }
+    // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw
@@ -369,7 +417,6 @@ public class MonsterPattern : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
     }
-
     //로밍 범위 체크
     private void CheckRoam_Range()
     {

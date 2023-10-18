@@ -26,6 +26,8 @@ public class MonsterData
 
     [Header("몬스터 움직임")]
     public bool movingMonster;
+    [Header("몬스터가 발사체 쏘는 공격이 있는지")]
+    public bool haveProjectileAttack;
 
     [Space]
     [Header("몬스터 플레이어 탐지 범위 (반지름)")]
