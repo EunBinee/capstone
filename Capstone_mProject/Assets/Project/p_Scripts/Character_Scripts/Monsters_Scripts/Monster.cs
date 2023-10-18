@@ -55,6 +55,7 @@ public class Monster : MonoBehaviour
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         monsterData.HP = monsterData.MaxHP;
         m_hPBar = null;
+        GetHPBar();
     }
 
     private void Reset()
@@ -65,17 +66,14 @@ public class Monster : MonoBehaviour
     //* 플레이어와 몬스터 사이의 거리 //
     private void CheckDistance()
     {
-        playerDistance = Vector3.Distance(transform.position, playerTrans.position);
-        //! 몬스터 HP바 거리에 따라서 받거나 반납
-
-        if (playerDistance >= monsterData.canSeeMonsterInfo_Distance && m_hPBar != null)
+        // ? 몬스터 데이터
+        if (m_hPBar != null)
         {
-            RetrunHPBar();
-        }
+            playerDistance = Vector3.Distance(transform.position, playerTrans.position);
+            if (playerDistance < monsterData.canSeeMonsterInfo_Distance)
+            {
 
-        if (playerDistance < monsterData.canSeeMonsterInfo_Distance && m_hPBar == null)
-        {
-            GetHPBar();
+            }
         }
     }
     //*------------------------------------------------------------------------------------------//
@@ -89,9 +87,11 @@ public class Monster : MonoBehaviour
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
     {
+        if (HPBar_CheckNull() == false)
+            GetHPBar();
         monsterData.HP -= Damage;
+        m_hPBar.UpdateHP();
         //플레이어의 반대 방향으로 넉백
-
         if (monsterData.HP <= 0)
         {
             //죽음
@@ -101,6 +101,7 @@ public class Monster : MonoBehaviour
         {
             //아직 살아있음.
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+
         }
 
     }
@@ -124,9 +125,25 @@ public class Monster : MonoBehaviour
         m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
         m_hPBar.Reset(monsterData.MaxHP, this);
     }
+
+    public void SetActive_HPBar()
+    {
+        if (m_hPBar.gameObject.activeSelf == true)
+            m_hPBar.gameObject.SetActive(false);
+        else
+            m_hPBar.gameObject.SetActive(true);
+    }
+
     public void RetrunHPBar()
     {
         GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
         m_hPBar = null;
+    }
+
+    public bool HPBar_CheckNull()
+    {
+        if (m_hPBar != null)
+            return true;
+        return false;
     }
 }

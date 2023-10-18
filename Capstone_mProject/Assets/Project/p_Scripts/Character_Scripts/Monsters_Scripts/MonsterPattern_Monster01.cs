@@ -111,6 +111,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         switch (curMonsterState)
         {
             case MonsterState.Roaming:
+                if (m_monster.HPBar_CheckNull() == true)
+                    m_monster.RetrunHPBar();
                 Roam_Monster();
                 CheckPlayerCollider();
                 break;
@@ -119,6 +121,12 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
             case MonsterState.Tracing:
                 Tracing_Movement();
+                if (m_monster.HPBar_CheckNull() == false)
+                    m_monster.GetHPBar();
+                break;
+            case MonsterState.Attack:
+                if (m_monster.HPBar_CheckNull() == false)
+                    m_monster.GetHPBar();
                 break;
             case MonsterState.GoingBack:
                 GoingBack_Movement();

@@ -32,4 +32,32 @@ public class MonsterUI_Info : MonoBehaviour
         isReset = false;
     }
 
+    public void UpdateHP()
+    {
+        float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
+        Debug.Log($"monsterHP_Value {monsterHP_Value}");
+
+        StartCoroutine(UpdateHPBar_Anim(monsterHP_Value));
+    }
+
+    IEnumerator UpdateHPBar_Anim(float monsterHP_Value)
+    {
+        float time = 0;
+        while (time < 0.5f)
+        {
+            time += Time.deltaTime;
+
+            m_slider.value = Mathf.Lerp(m_slider.value, monsterHP_Value, 0.5f);
+            if (m_slider.value == monsterHP_Value)
+            {
+                Debug.Log($"끝~");
+                break;
+            }
+            yield return null;
+        }
+
+        m_slider.value = monsterHP_Value;
+    }
+
+
 }
