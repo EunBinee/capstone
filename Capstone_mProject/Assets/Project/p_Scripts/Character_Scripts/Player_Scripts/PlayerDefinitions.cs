@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
 //Player캐릭터 정의의 모든 것
 
 [Serializable]
@@ -78,6 +79,7 @@ public class CurrentState
     public bool isRunning;  //뛰기
     public bool isSprinting; //전력 질주
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
+
     public bool isJumping;  //점프
     public bool isDashing;  //대시
     public bool previousDashKeyPress;   //이전 프레임에서 대시 키 여부
@@ -139,4 +141,21 @@ public class PlayerFollowCamera
     public Vector3 cameraFllowVelocity = Vector3.zero;
     public float left_right_LookAngle;
     public float up_down_LookAngle;
+}
+
+[Serializable]
+public class PlayerPickUp
+{
+    public LayerMask pickalbleLayerMask; //들수있는거 레이어
+    public Transform playerCameraTransform;
+    public GameObject pickUpUI; //픽업ui 텍스트
+
+    [Min(1)]
+    public float hitRange = 3;
+
+    public Transform pickUpParent;
+    public GameObject inHandItem;
+    
+
+    public RaycastHit hit;
 }
