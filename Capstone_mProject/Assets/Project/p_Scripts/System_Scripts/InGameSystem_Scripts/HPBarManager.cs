@@ -40,14 +40,22 @@ public class HPBarManager : MonoBehaviour
         {
             for (int i = 0; i < HPBarInUse.Count; i++)
             {
-                if (HPBarInUse[i].isReset) // 리셋을 안시킨 경우
+                // 오브젝트와 카메라 간의 거리를 계산
+                Vector3 cameraToObj = HPBarInUse[i].m_HPBarPos.position - m_Camera.transform.position;
+                // 카메라 정면 방향과 오브젝트 간의 각도를 계산
+                float angle = Vector3.Angle(m_Camera.transform.forward, cameraToObj);
+                if (angle < 90f)
                 {
-                    HPBarInUse[i].gameObject.transform.position = m_Camera.WorldToScreenPoint(HPBarInUse[i].m_HPBarPos.position);
+                    Vector3 targetScreenPos = m_Camera.WorldToScreenPoint(HPBarInUse[i].m_HPBarPos.position);
+                    if (HPBarInUse[i].isReset) // 리셋을 안시킨 경우
+                    {
+                        HPBarInUse[i].gameObject.transform.position = targetScreenPos;
+                    }
                 }
+
             }
         }
     }
-
     //*----------------------------------------------------------------------------//
     //* hp바 오브젝트 풀링//
     //HP바 받기.

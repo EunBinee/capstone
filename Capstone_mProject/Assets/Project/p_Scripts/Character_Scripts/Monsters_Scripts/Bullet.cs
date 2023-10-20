@@ -150,7 +150,6 @@ public class Bullet : MonoBehaviour
     private void DisappearBullet()
     {
         //풀링
-
         GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
         OnHitPlayerEffect = null;
         isReset = false;

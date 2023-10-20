@@ -11,6 +11,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
     [Header("몬스터 무기 : 인덱스 0번 L쪽 무기, 인덱스 1번 R쪽 무기")]
     public Collider[] weapons;
 
+    Coroutine roam_Monster_co = null;
+
     public override void Init()
     {
         m_monster = GetComponent<Monster>();
@@ -40,6 +42,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         boxCollider.enabled = false;
         CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = true;
+
+        playerHide = true;
     }
 
     public override void SetAnimation(MonsterAnimation m_anim)
@@ -143,7 +147,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         {
             isRoaming = true;
             //x와 Z주변을 배회하는 몬스터
-            StartCoroutine(Roam_Monster_co());
+            roam_Monster_co = StartCoroutine(Roam_Monster_co());
         }
     }
 
@@ -211,7 +215,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 //로밍 코루틴 제거
                 if (isRoaming)
                 {
-                    StopCoroutine(Roam_Monster_co());
+                    StopCoroutine(roam_Monster_co);
                     isRoaming = false;
 
                     ChangeMonsterState(MonsterState.Discovery);
