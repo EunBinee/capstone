@@ -64,9 +64,9 @@ public class GameManager : MonoBehaviour
         //게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
     }
+
     public void StartInteraction(GameObject gameObject)
     {
-        
 
         Item interaction_Item = gameObject.GetComponent<Item>();
 
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
     {
         //플레이어의 상호작용을 막는다.
         //playerController.interacting = true;
-       
+
     }
     public void player_InteractingFalse()
     {

@@ -1012,6 +1012,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6a9ea846c82f7498793d483b3a5eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerController: {fileID: 7132128578107607687}
+  playerCamera: {fileID: 1645457506}
+  playerCameraPivot: {fileID: 1095902721}
+  cameraObj: {fileID: 1372997702}
+  left_right_LookSpeed: 500
+  up_down_LookSpeed: 500
+  minPivot: 0
+  maxPivot: 0
+  cameraFllowVelocity: {x: 0, y: 0, z: 0}
+  left_right_LookAngle: 0
+  up_down_LookAngle: 0
 --- !u!4 &1395086467 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2613482197501280323, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -2603,6 +2614,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cabe5edb6da7bc4c8747fdf2e223ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHide: 0
+  isRoaming: 0
+  isFinding: 0
+  isGoingBack: 0
+  isGettingHit: 0
   buttomGameObject: {fileID: 4974057788738251395}
   bulletPrefabsName: Monster02_Bullet
   bulletsParent: {fileID: 7001013087040994621}
