@@ -127,16 +127,4 @@ public class PlayerFollowCamera
     public GameObject playerCamera;      //카메라 오브젝트
     public GameObject playerCameraPivot; //카메라 피봇
     public Camera cameraObj;             //카메라.
-
-    [Header("Value")]
-    public float left_right_LookSpeed = 500; //왼 오 돌리는 스피드
-    public float up_down_LookSpeed = 500;    //위아래로 돌리는 스피드
-    public float minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정
-    public float maxPivot = 35;               //35로 위 고정
-
-    [Header("Camera Debug")]
-    //카메라가 캐릭터를 쫒아가는 데 속력. zero로 초기화
-    public Vector3 cameraFllowVelocity = Vector3.zero;
-    public float left_right_LookAngle;
-    public float up_down_LookAngle;
 }

@@ -18,7 +18,7 @@ public enum PlayerState
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerComponents _playerComponents = new PlayerComponents();
-    [SerializeField] private PlayerInput _input = new PlayerInput();
+    public PlayerInput _input = new PlayerInput();
     [SerializeField] private CheckOption _checkOption = new CheckOption();
     public CurrentState _currentState = new CurrentState();
     [SerializeField] private CurrentValue _currentValue = new CurrentValue();
@@ -83,15 +83,13 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    void LateUpdate()
-    {
-        CameraActions();
-    }
+
     private void InitPlayer()
     {
         InitCapsuleCollider();
         navMeshSurface.BuildNavMesh();
     }
+
     void InitCapsuleCollider()
     {
         P_Com.capsuleCollider = GetComponent<CapsuleCollider>();
@@ -735,7 +733,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
             //if (transform.position == KnockBackPos)
-                //break;
+            //break;
             //else
             {
                 //time += Time.deltaTime;
@@ -743,46 +741,12 @@ public class PlayerController : MonoBehaviour
             }
         }
         ChangePlayerState(preState);
-        
+
         isGettingHit = false;
     }
 
     //-----------------------------------------------------------------
     //카메라 움직임
-    private void CameraActions()
-    {
-        CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-        CameraRotate();       //마우스 방향에 따른 카메라 방향
-    }
-    private void CameraFollowPlayer()
-    {
-        //플레이어를 따라다니는 카메라
-        //ref는 call by reference를 하겠다는 것.
-        Vector3 cameraPos = Vector3.SmoothDamp(P_Camera.playerCamera.transform.position, transform.position, ref P_Camera.cameraFllowVelocity, 0.1f);
-        P_Camera.playerCamera.transform.position = cameraPos;
-    }
-    private void CameraRotate()
-    {
-        //마우스 방향에 따른 카메라 방향
-        Vector3 cameraRot;
-        Quaternion targetCameraRot;
-        P_Camera.left_right_LookAngle += (P_Input.mouseX * P_Camera.left_right_LookSpeed) * Time.deltaTime;
-        P_Camera.up_down_LookAngle -= (P_Input.mouseY * P_Camera.up_down_LookSpeed) * Time.deltaTime;
-        P_Camera.up_down_LookAngle = Mathf.Clamp(P_Camera.up_down_LookAngle, P_Camera.minPivot, P_Camera.maxPivot); //위아래 고정
-        cameraRot = Vector3.zero;
-        cameraRot.y = P_Camera.left_right_LookAngle;
-        //y에서 up_down_LookAngle을 안쓰고 left_right_LookAngle을 쓰는이유
-        //*(중요)마우스가 위로 올라갈때, 유니티 좌표계에서는 좌표가 뒤바뀐다.
-        // 마우스 X좌표가 위아래 좌표가 된다.
-        //그래서 카메라rot y(위아래,세로)에는 마우스의 x축(가로)을 넣어주고
-        // 카메라rot x축(좌우,가로)에는  마우스의 y축(세로)를 넣어준다
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        P_Camera.playerCamera.transform.rotation = targetCameraRot;
-        cameraRot = Vector3.zero;
-        cameraRot.x = P_Camera.up_down_LookAngle;
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        P_Camera.playerCameraPivot.transform.localRotation = targetCameraRot;
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -796,7 +760,7 @@ public class PlayerController : MonoBehaviour
                 //오브젝트가 비어있지 않을 때..
                 GameManager.GetInstance().StartInteraction(interObject);
             }
-            
+
         }
     }
 }
