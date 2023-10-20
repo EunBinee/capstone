@@ -23,6 +23,8 @@ public class MonsterPattern : MonoBehaviour
 
     protected bool drawDamageCircle = false;
 
+    public bool playerHide = false;
+
     public enum MonsterState
     {
         Roaming,
@@ -63,10 +65,10 @@ public class MonsterPattern : MonoBehaviour
 
     protected Vector3 mRoaming_randomPos = Vector3.zero;
     //* --------------------------------------------------------//
-    protected bool isRoaming = false;
-    protected bool isFinding = false;
-    protected bool isGoingBack = false;
-    protected bool isGettingHit = false;
+    public bool isRoaming = false;
+    public bool isFinding = false;
+    public bool isGoingBack = false;
+    public bool isGettingHit = false;
 
     public enum MonsterMotion
     {
@@ -111,11 +113,15 @@ public class MonsterPattern : MonoBehaviour
         boxCollider.enabled = false;
         CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = true;
+
+        playerHide = false;
     }
 
     public void Update()
     {
         Monster_Pattern();
+
+
         if (m_monster.monsterData.movingMonster)
         {
             UpdateRotation();
@@ -355,48 +361,55 @@ public class MonsterPattern : MonoBehaviour
     {
         //* 발사체 공격 시, 플레이어의 앞에 물체가 있는지 확인.!
         //*  curOriginPos : 레이를 발사하는 곳 ; targetDir : originPos에서 부터 플레이어로 향하는 방향 벡터
-        //* 리턴 true 플레이어가 가장 앞에 있음. 리턴 false 플레이어 앞에 장애물 있음.
+        //* 리턴 false 플레이어가 가장 앞에 있음. 리턴 true 플레이어 앞에 장애물 있음(플레이어 숨음).
+        float range = 100f;
+        float playerDistance = 0;
+        float shortestDistance = 1000;
 
-        //몬스터에 발사체 공격이 있는 경우에만 작동.
-        if (m_monster.monsterData.haveProjectileAttack)
+        bool playerInRay = false;
+
+        Debug.DrawRay(curOriginPos, targetDir * 100f, Color.blue);
+
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(curOriginPos, targetDir, range);
+
+        foreach (RaycastHit hit in hits)
         {
-            float range = 100f;
-            float playerDistance = 0;
-            float shortestDistance = 1000;
-
-            bool playerInRay = false;
-
-            RaycastHit[] hits;
-            hits = Physics.RaycastAll(curOriginPos, targetDir, range);
-
-            foreach (RaycastHit hit in hits)
+            if (hit.collider.name != this.gameObject.name) //자기자신 제외
             {
-                if (hit.collider.name != this.gameObject.name) //자기자신 제외
+                float distance = hit.distance;
+                if (distance < shortestDistance)
                 {
-                    float distance = hit.distance;
-                    if (distance < shortestDistance)
-                    {
-                        shortestDistance = distance;
+                    shortestDistance = distance;
 
-                        if (hit.collider.tag == "Player")
-                        {
-                            playerInRay = true;
-                            playerDistance = hit.distance;
-                        }
+                    if (hit.collider.tag == "Player")
+                    {
+                        playerInRay = true;
+                        playerDistance = hit.distance;
                     }
                 }
             }
-            if (playerInRay)
-            {
-                if (shortestDistance >= playerDistance) //* 플레이어 가장 앞에 있음.
-                    return false;
-                else
-                    return true;
-            }
         }
-        //장애물이 있는 경우.
+        if (playerInRay)
+        {
+            if (shortestDistance >= playerDistance) //* 플레이어 가장 앞에 있음.
+                return false;
+            else
+                return true;
+        }
         return true;
     }
+
+    //* ----------------------------------------------------------------------------------------//
+    //! 플레이어가 몬스터의 뒤에 있는지 앞에 있는지 확인용 함수
+    //TODO: 이 함수 만들어서, 몬스터가 아직 플레이어를 눈치 못챘을때, 몬스터 뒤에서 오면 일정 거리 동안은 눈치 못채도록 만들기 위한 함수
+    public bool PlayerLocationCheck()
+    {
+        //* 앞뒤 체크
+
+        return true;
+    }
+
     // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
@@ -429,4 +442,14 @@ public class MonsterPattern : MonoBehaviour
         //사각형 오른쪽 가장 위
         roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
     }
+
+    public Vector3 GetDirection(Vector3 target, Vector3 startPos)
+    {
+        //startPos에서 target으로 가는 방향 벡터;
+        Vector3 curDirection = target - startPos;
+
+        return curDirection;
+    }
+
+
 }
