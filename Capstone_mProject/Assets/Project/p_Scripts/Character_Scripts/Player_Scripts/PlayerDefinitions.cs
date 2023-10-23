@@ -12,6 +12,7 @@ public class PlayerComponents
     public Animator animator;
     public Rigidbody rigidbody;
     public CapsuleCollider capsuleCollider;
+    public Transform playerTargetPos;
 }
 
 [Serializable]

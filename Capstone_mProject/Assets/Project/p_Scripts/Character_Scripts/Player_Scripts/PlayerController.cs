@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -47,6 +48,9 @@ public class PlayerController : MonoBehaviour
     private bool isStartComboAttack = false;
     public float comboClickTime = 0.5f;
     private bool isGettingHit = false;
+
+    public Action OnHitPlayerEffect = null;
+
     private PlayerState curPlayerState;
     private GameObject curEnemy;
     public SkillButton skill_E;
@@ -86,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private void InitPlayer()
     {
+        if (P_Com.playerTargetPos == null)
+            P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
         navMeshSurface.BuildNavMesh();
     }
@@ -726,25 +732,36 @@ public class PlayerController : MonoBehaviour
         //ChangePlayerState(PlayerState.GetHit);
 
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
+
+        // TODO: 몬스터에 맞았을때 플레이어 쪽에서 HIT Effect 나오도록 변경. 
+        OnHitPlayerEffect?.Invoke();
+        if (OnHitPlayerEffect == null)
+        {
+            //null일시 기본 이펙트.
+            playerGetHitEffect();
+        }
+
         knockback_Dir = knockback_Dir.normalized;
         Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
-        //float time = 0;
-        //while (time < 0.1f)
-        {
-            transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-            //if (transform.position == KnockBackPos)
-            //break;
-            //else
-            {
-                //time += Time.deltaTime;
-                yield return null;
-            }
-        }
+
+        transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+
+        yield return null;
+
         ChangePlayerState(preState);
 
         isGettingHit = false;
     }
 
+    private void playerGetHitEffect()
+    {
+        //피격시 기본 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+
+        effect.gameObject.transform.position = P_Com.playerTargetPos.position;
+        Vector3 curDirection = P_Com.playerTargetPos.position - curEnemy.transform.position;
+        effect.gameObject.transform.position += curDirection * 0.35f;
+    }
     //-----------------------------------------------------------------
     //카메라 움직임
 

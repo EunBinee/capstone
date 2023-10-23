@@ -57,7 +57,7 @@ public class Monster : MonoBehaviour
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         monsterData.HP = monsterData.MaxHP;
         m_hPBar = null;
-        GetHPBar();
+        //GetHPBar();
     }
 
     private void Reset()
@@ -80,32 +80,34 @@ public class Monster : MonoBehaviour
     }
     //*------------------------------------------------------------------------------------------//
     //* 몬스터 //
-    public virtual void OnHit(float Damage = 0)
+    public virtual void OnHit(float Damage = 0, Action action = null)
     {
         //몬스터가 플레이어를 때렸을 때 처리.
+        playerController.OnHitPlayerEffect = action;
         playerController.GetHit(this.gameObject);
 
     }
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
     {
-        if (HPBar_CheckNull() == false)
-            GetHPBar();
-        monsterData.HP -= Damage;
-        m_hPBar.UpdateHP();
-        //플레이어의 반대 방향으로 넉백
-        if (monsterData.HP <= 0)
+        if (!monsterPattern.noAttack)
         {
-            //죽음
-            Death();
+            if (HPBar_CheckNull() == false)
+                GetHPBar();
+            monsterData.HP -= Damage;
+            m_hPBar.UpdateHP();
+            //플레이어의 반대 방향으로 넉백
+            if (monsterData.HP <= 0)
+            {
+                //죽음
+                Death();
+            }
+            else
+            {
+                //아직 살아있음.
+                monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+            }
         }
-        else
-        {
-            //아직 살아있음.
-            monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
-
-        }
-
     }
 
     public virtual void Death()
