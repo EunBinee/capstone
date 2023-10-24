@@ -17,6 +17,7 @@ public class MonsterPattern : MonoBehaviour
     protected int playerLayerId = 3;
     protected int playerlayerMask; //플레이어 캐릭터 레이어 마스크
     protected Transform playerTrans;
+    public Transform playerTargetPos; //총알 과녁 (플레이어 몸)
 
     protected NavMeshAgent navMeshAgent;
     protected MonsterState curMonsterState;
@@ -24,6 +25,7 @@ public class MonsterPattern : MonoBehaviour
     protected bool drawDamageCircle = false;
 
     public bool playerHide = false;
+    public bool noAttack = false; //플레이어에게 공격 안받음.
 
     public enum MonsterState
     {
@@ -90,6 +92,7 @@ public class MonsterPattern : MonoBehaviour
 
         rigid = GetComponent<Rigidbody>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
+        playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
 
         m_monster.monsterPattern = this;
 
@@ -153,7 +156,6 @@ public class MonsterPattern : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 8.0f);
         }
     }
-
 
     public virtual void SetAnimation(MonsterAnimation m_anim)
     {
@@ -402,12 +404,28 @@ public class MonsterPattern : MonoBehaviour
 
     //* ----------------------------------------------------------------------------------------//
     //! 플레이어가 몬스터의 뒤에 있는지 앞에 있는지 확인용 함수
-    //TODO: 이 함수 만들어서, 몬스터가 아직 플레이어를 눈치 못챘을때, 몬스터 뒤에서 오면 일정 거리 동안은 눈치 못채도록 만들기 위한 함수
     public bool PlayerLocationCheck()
     {
         //* 앞뒤 체크
+        Vector3 curDirection = GetDirection(playerTargetPos.position, transform.position);
+        // 몬스터에서 플레이어로의 벡터와 몬스터의 전방 벡터를 내적
+        float dotProduct = Vector3.Dot(curDirection.normalized, transform.forward);
 
-        return true;
+        if (dotProduct > 0)
+        {
+            // * 플레이어가 몬스터의 전방에 있을 때:
+
+            Debug.Log("플레이어는 몬스터의 앞에 있습니다.");
+            return true;
+        }
+        else
+        {
+            // * 플레이어가 몬스터의 뒤에 있을 때:
+
+            Debug.Log("플레이어는 몬스터의 뒤에 있습니다.");
+            return false;
+        }
+
     }
 
     // * ---------------------------------------------------------------------------------------//

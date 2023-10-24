@@ -7,9 +7,10 @@ using System;
 public class GameData
 {
     public GameObject player;
-
+    public Transform playerTargetPos;
     public Transform GetPlayerTransform()
     {
         return player.transform;
     }
+
 }

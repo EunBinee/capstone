@@ -14,7 +14,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     [Header("총알")]
     public string bulletPrefabsName = "Monster02_Bullet"; //총알
     public Transform bulletsParent;
-    public Transform playerTargetPos; //총알 과녁 (플레이어 몸)
+
 
     [Header("총알이 나가는 위치 : 인덱스 0번 L쪽 총, 인덱스 1번 R쪽 총")]
     public Transform[] muzzles;
@@ -36,12 +36,14 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public float shortRangeAttackDistance = 3f;
     [Header("몬스터가 공격을 멈추는 거리")]
     public float stopAttackDistance = 20;
+
+    [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
+    public float findPlayerDistance = 6f;
+
     Coroutine roam_Monster_co = null;
     Coroutine short_Range_Attack01_co = null;
     Coroutine long_Range_Attack01_co = null;
     Coroutine hidePlayer_waitMonster_co = null;
-
-
 
     public override void Init()
     {
@@ -50,7 +52,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         rigid = GetComponent<Rigidbody>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
-
+        playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         m_monster.monsterPattern = this;
 
         navMeshAgent = null;
@@ -163,7 +165,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         time = 0;
         Quaternion startRotation = transform.rotation;
         Quaternion startButtomRotation = buttomGameObject.transform.rotation;
-        Debug.Log("제자리로!");
+
         while (time < 3)
         {
             time += Time.deltaTime;
@@ -172,8 +174,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             if (buttomOriginRotation == buttomGameObject.transform.rotation && originRotatation == transform.rotation)
                 break;
-
-            Debug.Log($"transform.rotation {transform.rotation},  buttomGameObject.transform.rotation  {buttomGameObject.transform.rotation}");
 
             yield return null;
         }
@@ -184,9 +184,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             time = 0;
             roamTime = UnityEngine.Random.Range(1, 3);
-            Debug.Log("기다리는 중 " + roamTime + "초");
-            yield return new WaitForSeconds(roamTime);
 
+            yield return new WaitForSeconds(roamTime);
 
             if (curAngle == 0)
             {
@@ -227,18 +226,38 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     Debug.Log("안숨음");
                     if (isRoaming)
                     {
-                        // TODO:  플레이어가 뒤에 있는지 확인도 같이 하기..//
-                        if (roam_Monster_co != null)
-                            StopCoroutine(roam_Monster_co);
-                        isRoaming = false;
-                        ChangeMonsterState(MonsterState.Discovery);
+                        //* 플레이어가 뒤에 있는지 체크
+                        bool inFrontOf_Player = PlayerLocationCheck();
+                        bool findPlayer = false;
+                        if (!inFrontOf_Player)
+                        {
+                            //* 플레이어가 몬스터 뒤에 있음.
+                            float distance = Vector3.Distance(transform.position, playerTrans.position);
+                            if (distance < findPlayerDistance)
+                            {
+                                //플레이어가 몬스터 뒤에 있지만 일정 거리 가까워졌을때.
+                                // >>>> 발견
+                                findPlayer = true;
+                            }
+                        }
+                        else
+                            findPlayer = true;
+
+                        if (findPlayer)
+                        {
+                            if (roam_Monster_co != null)
+                                StopCoroutine(roam_Monster_co);
+                            isRoaming = false;
+                            ChangeMonsterState(MonsterState.Discovery);
+                        }
+
                     }
                     if (isFinding) //* State : Discorvery
                     {
                         isFinding = false;
                         ChangeMonsterState(MonsterState.Attack);
 
-                        float distance = Vector3.Distance(transform.position, playerTrans.position);
+                        float distance = Vector3.Distance(transform.position, playerTargetPos.position);
                         if (distance < shortRangeAttackDistance)
                             Monster_Motion(MonsterMotion.Short_Range_Attack);
                         else
@@ -336,7 +355,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.2f);
 
         Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
@@ -498,7 +517,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             Bullet bullet = bulletObj.GetComponent<Bullet>();
             bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
             // 플레이어에게  총알이 맞았을 경우
-            bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
+            bullet.OnHitPlayerEffect = () =>
             {
                 //플레이어가 총에 맞았을 경우, 이펙트
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
@@ -624,28 +643,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
                         StopCoroutine(short_Range_Attack01_co);
                     if (long_Range_Attack01_co != null)
                         StopCoroutine(long_Range_Attack01_co);
-
-                    //time = 0;
-                    //Quaternion startRotation = transform.rotation;
-                    //Quaternion startButtomRotation = buttomGameObject.transform.rotation;
-                    //while (time < 5)
-                    //{
-                    //    time += Time.deltaTime;
-                    //    transform.rotation = Quaternion.Slerp(startRotation, originRotatation, time * 2f);
-                    //    buttomGameObject.transform.rotation = Quaternion.Slerp(startButtomRotation, buttomOriginRotation, time * 2f);
-
-                    //    if (buttomOriginRotation == buttomGameObject.transform.rotation)
-                    //        break;
-
-                    //    yield return null;
-                    //}
                     ChangeMonsterState(MonsterState.Roaming);
                     break;
                 }
                 yield return null;
             }
         }
-
 
         hidePlayer_waitMonster_co = null;
     }
