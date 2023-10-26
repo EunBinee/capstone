@@ -68,24 +68,29 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //캐릭터 입력 받음
-        Inputs();
-        //캐릭터의 애니메이션 변경을 수행하는 함수
-        AnimationParameters();
+        if (!UIManager.gameIsPaused)
+        {
+            //캐릭터 입력 받음
+            Inputs();
+            //캐릭터의 애니메이션 변경을 수행하는 함수
+            AnimationParameters();
+        }
     }
     void FixedUpdate()
     {
-        _fixedDeltaTime = Time.fixedDeltaTime;
-        Update_Physics();
-        //전방 지면 체크
-        CheckedForward();
-        CheckedGround();
-        if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
+        if (!UIManager.gameIsPaused)
         {
-            //캐릭터의 실제 이동을 수행하는 함수
-            AllPlayerLocomotion();
+            _fixedDeltaTime = Time.fixedDeltaTime;
+            Update_Physics();
+            //전방 지면 체크
+            CheckedForward();
+            CheckedGround();
+            if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
+            {
+                //캐릭터의 실제 이동을 수행하는 함수
+                AllPlayerLocomotion();
+            }
         }
-
     }
 
     private void InitPlayer()
@@ -733,7 +738,6 @@ public class PlayerController : MonoBehaviour
 
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
 
-        // TODO: 몬스터에 맞았을때 플레이어 쪽에서 HIT Effect 나오도록 변경. 
         OnHitPlayerEffect?.Invoke();
         if (OnHitPlayerEffect == null)
         {
