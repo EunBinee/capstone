@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
         SettingMenu,
         Inventory,
         Quest,
-        Popup
+        PopupWindow
     };
 
     public UIPrefabs uiPrefabs;
@@ -92,7 +92,11 @@ public class UIManager : MonoBehaviour
                 break;
             case UI.Quest:
                 break;
-            case UI.Popup:
+            case UI.PopupWindow:
+                if (uiPrefabs.popupWindow == null)
+                    prefab = Resources.Load<GameObject>("SystemPrefabs/" + "Popup_Window");
+                else
+                    prefab = uiPrefabs.popupWindow;
                 break;
             default:
                 break;
@@ -105,7 +109,22 @@ public class UIManager : MonoBehaviour
                 prefab = Instantiate(prefab, GameManager.Instance.m_canvas.transform);
                 prefab.SetActive(true);
                 uiPrefabsInGame.Add(prefab);
-                uiPrefabs.settingUI = prefab;
+
+                switch (ui)
+                {
+                    case UI.SettingMenu:
+                        uiPrefabs.settingUI = prefab;
+                        break;
+                    case UI.Inventory:
+                        break;
+                    case UI.Quest:
+                        break;
+                    case UI.PopupWindow:
+                        uiPrefabs.popupWindow = prefab;
+                        break;
+                    default:
+                        break;
+                }
             }
             else
             {

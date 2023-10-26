@@ -7,4 +7,5 @@ using UnityEngine;
 public class UIPrefabs
 {
     public GameObject settingUI;
+    public GameObject popupWindow;
 }

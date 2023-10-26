@@ -103,8 +103,16 @@ public class Popup_Setting : UIBase
         settingInfo.quitBtn.onClick.RemoveAllListeners();
         settingInfo.quitBtn.onClick.AddListener(() =>
         {
-            //TODO: 나가기 기능 : 반드시 저장 할 건지 물어보는 PopUP 띄우기
+
+            GameObject popup = UIManager.Instance.GetUIPrefab(UIManager.UI.PopupWindow);
+            Popup_Window popup_Window = popup.GetComponent<Popup_Window>();
+            popup_Window.SetButtonValue("Quit", "Do you really want to quit game?", () =>
+            {
+                //TODO: 나가기 기능 
+                Debug.Log("나가기");
+            });
         });
+
         //*----------------------------------------------------------------------//
     }
 
