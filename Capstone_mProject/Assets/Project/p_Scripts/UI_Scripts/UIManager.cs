@@ -61,6 +61,7 @@ public class UIManager : MonoBehaviour
 
     public void Resume()
     {
+        //! 다시 시작
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
@@ -70,6 +71,7 @@ public class UIManager : MonoBehaviour
 
     public void Pause()
     {
+        //! 멈춤
         Cursor.visible = true;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         Time.timeScale = 0f;

@@ -82,10 +82,12 @@ public class Monster : MonoBehaviour
     //* 몬스터 //
     public virtual void OnHit(float Damage = 0, Action action = null)
     {
-        //몬스터가 플레이어를 때렸을 때 처리.
-        playerController.OnHitPlayerEffect = action;
-        playerController.GetHit(this.gameObject);
-
+        if (!playerController._currentState.isGettingHit)
+        {
+            //몬스터가 플레이어를 때렸을 때 처리.
+            playerController.OnHitPlayerEffect = action;
+            playerController.GetHit(this.gameObject);
+        }
     }
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
