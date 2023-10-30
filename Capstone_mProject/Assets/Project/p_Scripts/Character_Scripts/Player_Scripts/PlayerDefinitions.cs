@@ -62,7 +62,7 @@ public class CheckOption
     public float jumpGravity = 1f;
 
     [Range(1f, 30f), Tooltip("대시 속도")]
-    public float dashingSpeed = 11f;
+    public float dodgingSpeed = 11f;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;
@@ -80,9 +80,9 @@ public class CurrentState
     public bool isSprinting; //전력 질주
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
     public bool isJumping;  //점프
-    public bool isDashing;  //대시
-    public bool previousDashKeyPress;   //이전 프레임에서 대시 키 여부
-    public bool currentDashKeyPress;    //현재 프레임에서 대시 키 여부
+    public bool isDodgeing;  //닷지
+    public bool previousDodgeKeyPress;   //이전 프레임에서 대시 키 여부
+    public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부

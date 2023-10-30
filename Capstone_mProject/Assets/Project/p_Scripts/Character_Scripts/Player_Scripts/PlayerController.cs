@@ -146,10 +146,21 @@ public class PlayerController : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
+                //Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
+                //knockback_Dir = knockback_Dir.normalized;
+                //Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f;
+                //transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+
+                Vector3 skillDir = this.gameObject.transform.forward;
+                skillDir = skillDir.normalized;
+                Vector3 skillPos = transform.position + skillDir * 15f;
+                transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
+                //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
                 skill_E.OnClicked();
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
+                //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
                 skill_Q.OnClicked();
             }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
@@ -209,7 +220,7 @@ public class PlayerController : MonoBehaviour
     }*/
     bool HandleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
+        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping)
         {
             //Debug.Log(P_Value.hitDistance);
             P_Input.jumpMovement = 1;
@@ -217,19 +228,20 @@ public class PlayerController : MonoBehaviour
         }
         return false;
     }
-    void HandleDash()
+    void HandleDodge()
     {
-        P_States.currentDashKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
-        if (P_States.previousDashKeyPress && P_States.currentDashKeyPress)
+
+        P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
+        if (P_States.previousDodgeKeyPress && P_States.currentDodgeKeyPress && P_States.isDodgeing)
         {
             //Debug.Log("이전 프레임에도 누름!");
             return;
         }
-        else if (P_States.currentDashKeyPress && !P_States.isDashing && P_Value.moveAmount > 0)
+        else if (P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0)
         {
-            P_States.isDashing = true;
+            P_States.isDodgeing = true;
         }
-        P_States.previousDashKeyPress = P_States.currentDashKeyPress;
+        P_States.previousDodgeKeyPress = P_States.currentDodgeKeyPress;
     }
 
     private void ChangePlayerState(PlayerState playerState)
@@ -499,7 +511,7 @@ public class PlayerController : MonoBehaviour
         PlayerRotation(); //플레이어의 방향 전환을 수행하는 함수
         PlayerMovement(); //플레이어의 움직임을 수행하는 함수.
         PlayerJump();
-        HandleDash();
+        HandleDodge();
     }
     private void PlayerRotation()
     {
@@ -560,13 +572,14 @@ public class PlayerController : MonoBehaviour
             Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
         }
-        else if (P_States.isDashing)
+        else if (P_States.isDodgeing)
         {
-            P_Com.animator.SetTrigger("isDash");
+            P_Com.animator.SetTrigger("isDodge");
+            //P_Com.animator.Play("dodge",0);
             P_Value.moveDirection.y = 0;
-            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
+            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 
-            Invoke("dashOut", 0.1f);    //대시 유지 시간
+            Invoke("dodgeOut", 0.1f);    //대시 유지 시간
         }
         else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
         {
@@ -604,9 +617,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void dashOut()
+    private void dodgeOut()
     {
-        P_States.isDashing = false;
+        P_States.isDodgeing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
         P_Com.rigidbody.velocity = Vector3.zero;
         //Invoke("dashOut", 0.5f);
