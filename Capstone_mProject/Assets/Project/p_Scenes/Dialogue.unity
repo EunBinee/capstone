@@ -1313,6 +1313,9 @@ MonoBehaviour:
     loofEffectPools: []
     projectilesPoolCount: 50
   hPBarManager: {fileID: 0}
+  dialogueInfo: {fileID: 0}
+  dialogueManager: {fileID: 0}
+  gameInfo: {fileID: 0}
   m_canvas: {fileID: 0}
   cameraShake: {fileID: 0}
 --- !u!114 &605036778
@@ -1557,6 +1560,7 @@ GameObject:
   - component: {fileID: 1008238529}
   - component: {fileID: 1008238532}
   - component: {fileID: 1008238533}
+  - component: {fileID: 1008238534}
   m_Layer: 0
   m_Name: Npc
   m_TagString: Npc
@@ -1661,6 +1665,18 @@ MonoBehaviour:
   lineNum: 0
   preEventNum: 1
   preEndingNum: 1
+--- !u!114 &1008238534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1008238526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8d105b88d869cd4e9e3b8422d8340f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1036817122
 GameObject:
   m_ObjectHideFlags: 0

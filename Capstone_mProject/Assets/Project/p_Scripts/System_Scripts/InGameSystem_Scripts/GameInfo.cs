@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameInfo : MonoBehaviour
 {
-    //°ÔÀÓ ¿£µù
+    //ê²Œì„ ì—”ë”©
     [SerializeField]
     private int endingNum;
 
-    //ÀÌº¥Æ® ¹øÈ£
+    //ì´ë²¤íŠ¸ id
     [SerializeField]
     private int eventNum;
 

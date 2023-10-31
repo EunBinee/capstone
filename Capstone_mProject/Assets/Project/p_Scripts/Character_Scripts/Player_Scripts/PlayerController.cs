@@ -407,6 +407,8 @@ public class PlayerController : MonoBehaviour
         OnHitPlayerEffect?.Invoke();
         if (OnHitPlayerEffect == null)
         {
+            transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+
             //null일시 기본 이펙트.
             playerGetHitEffect();
         }
@@ -445,7 +447,8 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-                GameManager.GetInstance().StartInteraction(interObject);
+                //GameManager.GetInstance().StartInteraction(interObject);
+                GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
 
         }
