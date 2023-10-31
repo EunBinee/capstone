@@ -1734,6 +1734,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5869534580316714971}
+  - component: {fileID: 5869534580316714973}
+  - component: {fileID: 5869534580316714972}
   m_Layer: 3
   m_Name: Ball_R
   m_TagString: Untagged
@@ -4838,6 +4840,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4254350915901567179}
+  - component: {fileID: 5429842569204866222}
+  - component: {fileID: 5429842569204866221}
   m_Layer: 3
   m_Name: Ball_L
   m_TagString: Untagged
@@ -4845,6 +4849,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &5429842569204866221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5429842569204866220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6253b53cc2a6df9429e5ce26a3eb0f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monster: {fileID: 0}
+--- !u!136 &5429842569204866222
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5429842569204866220}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.06
+  m_Height: 0.262032
+  m_Direction: 0
+  m_Center: {x: -0.024251513, y: -0.03, z: 0.035}
 --- !u!1 &5494070508225107684
 GameObject:
   m_ObjectHideFlags: 0
@@ -5074,6 +5105,33 @@ Transform:
   m_Father: {fileID: 5940264580789676657}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5869534580316714972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492349730985040252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6253b53cc2a6df9429e5ce26a3eb0f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monster: {fileID: 0}
+--- !u!136 &5869534580316714973
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492349730985040252}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.06
+  m_Height: 0.25053504
+  m_Direction: 0
+  m_Center: {x: 0.023295019, y: 0.029999994, z: -0.045000006}
 --- !u!1 &5901979435652570087
 GameObject:
   m_ObjectHideFlags: 0
@@ -5753,7 +5811,7 @@ MonoBehaviour:
     walkingSpeed: 2
     jumpPower: 10
     jumpGravity: 3
-    dashingSpeed: 11
+    dodgingSpeed: 11
     slopeAccel: 1
     gravity: -9.81
   _currentState:
@@ -5763,9 +5821,9 @@ MonoBehaviour:
     isSprinting: 0
     isStrafing: 0
     isJumping: 0
-    isDashing: 0
-    previousDashKeyPress: 0
-    currentDashKeyPress: 0
+    isDodgeing: 0
+    previousDodgeKeyPress: 0
+    currentDodgeKeyPress: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -5869,6 +5927,8 @@ GameObject:
   - component: {fileID: 7988687090360101585}
   - component: {fileID: 6445318472282318196}
   - component: {fileID: 9121663129434345918}
+  - component: {fileID: 9121663129434345920}
+  - component: {fileID: 9121663129434345919}
   m_Layer: 3
   m_Name: Md_Straight_Sword_01
   m_TagString: Untagged
@@ -7791,6 +7851,32 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9121663129434345919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7320130850947461227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6253b53cc2a6df9429e5ce26a3eb0f41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monster: {fileID: 0}
+--- !u!65 &9121663129434345920
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7320130850947461227}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.04560098, y: 0.8171925, z: 0.2424024}
+  m_Center: {x: 0.0002037783, y: 0.48794183, z: 0.0001525898}
 --- !u!1 &9164945251229890157
 GameObject:
   m_ObjectHideFlags: 0
