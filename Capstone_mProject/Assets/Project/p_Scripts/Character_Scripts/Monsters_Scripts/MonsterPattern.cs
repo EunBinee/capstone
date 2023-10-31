@@ -347,9 +347,7 @@ public class MonsterPattern : MonoBehaviour
         Collider[] playerColliders = Physics.OverlapSphere(transform.position, _overlapRadius, playerlayerMask);
         if (0 < playerColliders.Length)
         {
-
             m_monster.OnHit(damage);
-
             return true;
         }
         else

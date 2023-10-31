@@ -14,6 +14,13 @@ public class MonsterPattern_Monster01 : MonsterPattern
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
     public float findPlayerDistance = 6f;
 
+    [Space]
+    public Transform attackEffectPos;
+    public string shortAttackEffectName;
+    public string LongAttackEffectName;
+    Vector3 effectRotation;
+
+
     Coroutine roam_Monster_co = null;
     Coroutine short_Range_Attack_co = null;
     Coroutine long_Range_Attack_co = null;
@@ -89,15 +96,20 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 switch (animIndex)
                 {
                     case 0:
+                        //왼손 공격
+                        effectRotation = new Vector3(-35, -145, 35);
                         m_animator.SetTrigger("m_s_Attack01");
                         break;
                     case 1:
+                        effectRotation = new Vector3(-30, 50, 190);
                         m_animator.SetTrigger("m_s_Attack02");
                         break;
                     case 2:
+                        effectRotation = new Vector3(0, 0, 0);
                         m_animator.SetTrigger("m_s_Attack03");
                         break;
                     case 3:
+                        effectRotation = new Vector3(0, 0, 0);
                         m_animator.SetTrigger("m_s_Attack04");
                         break;
                     default:
@@ -434,13 +446,18 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAnimation(MonsterAnimation.Idle);
 
         int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
+        SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
+
+        yield return new WaitForSeconds(0.5f);
+
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
+        effect.transform.localEulerAngles = effectRotation;
+        effect.transform.position = attackEffectPos.position;
 
         for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].enabled = true;
         }
-
-        SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
 
         yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
 
@@ -448,7 +465,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         float distance = Vector3.Distance(transform.position, playerTrans.position);
         if (distance < 1.3f)
         {
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1f);
             Monster_Motion(MonsterMotion.Short_Range_Attack);
         }
         else
@@ -543,12 +560,27 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         bool isAttack = true;
         noAttack = true;
+
+        yield return new WaitForSeconds(0.5f);
+        Effect effect = null;
+
+        effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
+        if (effect != null)
+        {
+            effect.transform.localEulerAngles = new Vector3(0, 0, 0);
+            effect.transform.position = attackEffectPos.position;
+        }
+
         while (true)
         {
             if (time <= 5 && isAttack)
             {
                 navMeshAgent.SetDestination(playerTargetPos.position);
                 distance = Vector3.Distance(transform.position, playerTargetPos.position);
+                if (effect != null)
+                {
+                    effect.transform.position = attackEffectPos.position;
+                }
                 if (distance <= 2f)
                     break;
                 if (distance > 15)
@@ -568,7 +600,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 SetMove_AI(false);
                 SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-
+                if (effect != null)
+                {
+                    effect.StopEffect();
+                }
             }
 
             //* 공격 쉬는 시간.------------------------------------------------------------------//
@@ -586,10 +621,20 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
                 SetMove_AI(true);
+                //* 이펙트
 
+                yield return new WaitForSeconds(0.5f);
+                effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
+                if (effect != null)
+                {
+                    effect.transform.localEulerAngles = new Vector3(0, 0, 0);
+                    effect.transform.position = attackEffectPos.position;
+                }
             }
         }
 
+        if (effect.gameObject.activeSelf && effect != null)
+            effect.StopEffect();
 
         for (int i = 0; i < weapons.Length; i++)
         {

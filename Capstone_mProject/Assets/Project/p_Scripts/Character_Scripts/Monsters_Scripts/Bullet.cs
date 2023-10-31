@@ -138,13 +138,7 @@ public class Bullet : MonoBehaviour
 
     public void AttackPlayer()
     {
-        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
-        //OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
-
-        if (!playerController._currentState.isGettingHit)
-        {
-            monster.OnHit(3, OnHitPlayerEffect);
-        }
+        monster.OnHit(3, OnHitPlayerEffect);
     }
 
     private void DisappearBullet()
