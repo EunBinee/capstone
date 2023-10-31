@@ -17,10 +17,7 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (!playerController._currentState.isGettingHit)
-            {
-                monster.OnHit();
-            }
+            monster.OnHit();
         }
     }
 

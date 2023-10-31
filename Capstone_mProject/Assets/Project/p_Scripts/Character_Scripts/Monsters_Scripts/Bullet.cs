@@ -21,7 +21,7 @@ public class Bullet : MonoBehaviour
     private bool isReset = false;
     private bool firstUpdate = true;
 
-    public Action<Vector3> OnHitPlayerEffect = null;
+    public Action OnHitPlayerEffect = null;
 
     private float targetDistance = 0;
     private bool attackPlayer = false;
@@ -138,19 +138,12 @@ public class Bullet : MonoBehaviour
 
     public void AttackPlayer()
     {
-        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
-        OnHitPlayerEffect?.Invoke(this.gameObject.transform.position);
-
-        if (!playerController._currentState.isGettingHit)
-        {
-            monster.OnHit();
-        }
+        monster.OnHit(3, OnHitPlayerEffect);
     }
 
     private void DisappearBullet()
     {
         //풀링
-
         GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
         OnHitPlayerEffect = null;
         isReset = false;

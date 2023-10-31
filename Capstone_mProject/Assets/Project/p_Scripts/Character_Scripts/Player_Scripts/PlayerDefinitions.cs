@@ -12,6 +12,7 @@ public class PlayerComponents
     public Animator animator;
     public Rigidbody rigidbody;
     public CapsuleCollider capsuleCollider;
+    public Transform playerTargetPos;
 }
 
 [Serializable]
@@ -58,10 +59,10 @@ public class CheckOption
     [Range(1f, 30f), Tooltip("점프할때 속도")]
     public float jumpPower = 1f;
     [Range(1f, 30f), Tooltip("점프할때 추가 중력")]
-    public float jumpGravity = 1f;
+    public float jumpGravity = 2f;
 
-    [Range(1f, 30f), Tooltip("대시 속도")]
-    public float dashingSpeed = 11f;
+    [Range(1f, 30f), Tooltip("닷지 속도")]
+    public float dodgingSpeed = 5f;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;
@@ -79,9 +80,10 @@ public class CurrentState
     public bool isSprinting; //전력 질주
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
     public bool isJumping;  //점프
-    public bool isDashing;  //대시
-    public bool previousDashKeyPress;   //이전 프레임에서 대시 키 여부
-    public bool currentDashKeyPress;    //현재 프레임에서 대시 키 여부
+    public bool isDodgeing;  //닷지
+    public bool previousDodgeKeyPress;   //이전 프레임에서 대시 키 여부
+    public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
+    public bool isStartComboAttack;
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부
@@ -105,6 +107,7 @@ public class CurrentValue
     public Vector3 playerVelocity;  //이동을 위한 플레이어 속도
     public int comboCount;          // 현재 콤보 카운트
     public double HP = 100;               //플레이어 체력
+    public string curAnimName = "";
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
@@ -127,16 +130,4 @@ public class PlayerFollowCamera
     public GameObject playerCamera;      //카메라 오브젝트
     public GameObject playerCameraPivot; //카메라 피봇
     public Camera cameraObj;             //카메라.
-
-    [Header("Value")]
-    public float left_right_LookSpeed = 500; //왼 오 돌리는 스피드
-    public float up_down_LookSpeed = 500;    //위아래로 돌리는 스피드
-    public float minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정
-    public float maxPivot = 35;               //35로 위 고정
-
-    [Header("Camera Debug")]
-    //카메라가 캐릭터를 쫒아가는 데 속력. zero로 초기화
-    public Vector3 cameraFllowVelocity = Vector3.zero;
-    public float left_right_LookAngle;
-    public float up_down_LookAngle;
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,6 +9,8 @@ public enum PlayerState
 {
     Idle,
     Move,
+    Jump,
+    Dodge,
     ComboAttack,
     FinishComboAttack,
     GetHit_KnockBack,
@@ -17,12 +20,12 @@ public enum PlayerState
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private PlayerComponents _playerComponents = new PlayerComponents();
-    [SerializeField] private PlayerInput _input = new PlayerInput();
-    [SerializeField] private CheckOption _checkOption = new CheckOption();
+    [SerializeField] public PlayerComponents _playerComponents = new PlayerComponents();
+    public PlayerInput _input = new PlayerInput();
+    [SerializeField] public CheckOption _checkOption = new CheckOption();
     public CurrentState _currentState = new CurrentState();
-    [SerializeField] private CurrentValue _currentValue = new CurrentValue();
-    [SerializeField] private PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
+    [SerializeField] public CurrentValue _currentValue = new CurrentValue();
+    [SerializeField] public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
@@ -43,11 +46,13 @@ public class PlayerController : MonoBehaviour
 
     public NavMeshSurface navMeshSurface;
 
-    private string curAnimName = "";
     private bool isStartComboAttack = false;
-    public float comboClickTime = 0.5f;
+
     private bool isGettingHit = false;
-    private PlayerState curPlayerState;
+
+    public Action OnHitPlayerEffect = null;
+
+    public PlayerState curPlayerState;
     private GameObject curEnemy;
     public SkillButton skill_E;
     public SkillButton skill_Q;
@@ -64,34 +69,32 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //캐릭터 입력 받음
-        Inputs();
         //캐릭터의 애니메이션 변경을 수행하는 함수
-        AnimationParameters();
+        if (!UIManager.gameIsPaused)
+        {
+            AnimationParameters();
+        }
     }
     void FixedUpdate()
     {
-        _fixedDeltaTime = Time.fixedDeltaTime;
-        Update_Physics();
-        //전방 지면 체크
-        CheckedForward();
-        CheckedGround();
-        if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
+        if (!UIManager.gameIsPaused)
         {
-            //캐릭터의 실제 이동을 수행하는 함수
-            AllPlayerLocomotion();
+            _fixedDeltaTime = Time.fixedDeltaTime;
+            Update_Physics();
+            //전방 지면 체크
+            CheckedForward();
+            CheckedGround();
         }
+    }
 
-    }
-    void LateUpdate()
-    {
-        CameraActions();
-    }
     private void InitPlayer()
     {
+        if (P_Com.playerTargetPos == null)
+            P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
         navMeshSurface.BuildNavMesh();
     }
+
     void InitCapsuleCollider()
     {
         P_Com.capsuleCollider = GetComponent<CapsuleCollider>();
@@ -100,141 +103,13 @@ public class PlayerController : MonoBehaviour
         //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     }
 
-    //Input 함수
-    private void Inputs()
-    {
-        if (!HandleJump())
-        {
-            HandleSprint();
-            HandleWalkOrRun();
-            //HandleStrafe();
-            P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
-            P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
-            if (Input.GetKey(KeyCode.W))
-            {
-                P_Input.verticalMovement = 1;
-            }
-            else if (Input.GetKey(KeyCode.S))
-            {
-                P_Input.verticalMovement = -1;
-            }
-            else
-            {
-                P_Input.verticalMovement = 0;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                P_Input.horizontalMovement = 1;
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                P_Input.horizontalMovement = -1;
-            }
-            else
-            {
-                P_Input.horizontalMovement = 0;
-            }
-
-            if (Input.GetMouseButtonDown(0) && !isStartComboAttack)
-            {
-                isStartComboAttack = true;
-                StartCoroutine(Attacking());
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                skill_E.OnClicked();
-            }
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                skill_Q.OnClicked();
-            }
-            //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
-            P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
-            if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
-                P_States.isNotMoving = true;
-            else
-                P_States.isNotMoving = false;
-        }
-
-    }
-    void HandleSprint()
-    {
-        if (Input.GetKey(KeyCode.LeftControl) && P_Value.moveAmount > 0)
-        {
-            //moveAmount > 0 하는 이유
-            //제자리에서 멈춰서 자꾸 뛴다.
-            P_States.isSprinting = true;
-            P_States.isWalking = false;
-            P_States.isRunning = false;
-            //P_States.isJumping = false;
-        }
-        else
-        {
-            P_States.isSprinting = false;
-        }
-    }
-    void HandleWalkOrRun()
-    {
-        //shift => 걷기
-        //뛰기중이면, 걷기 생략
-        if (P_States.isSprinting)
-            return;
-        /*if (Input.GetKey(KeyCode.LeftShift))
-        {
-            P_States.isWalking = true;
-            P_States.isRunning = false;
-            P_States.isRunning = false;
-        }
-        else8*/
-        {
-            P_States.isWalking = false;
-            P_States.isRunning = true;
-        }
-    }
-    /*void HandleStrafe()
-    {
-        //오른쪽 마우스 클릭 => 주목하면서 걷기
-        if (Input.GetMouseButton(1))
-        {
-            P_States.isStrafing = true;
-        }
-        else
-        {
-            P_States.isStrafing = false;
-        }
-    }*/
-    bool HandleJump()
-    {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && P_Value.hitDistance <= 0f)
-        {
-            //Debug.Log(P_Value.hitDistance);
-            P_Input.jumpMovement = 1;
-            return true;
-        }
-        return false;
-    }
-    void HandleDash()
-    {
-        P_States.currentDashKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
-        if (P_States.previousDashKeyPress && P_States.currentDashKeyPress)
-        {
-            //Debug.Log("이전 프레임에도 누름!");
-            return;
-        }
-        else if (P_States.currentDashKeyPress && !P_States.isDashing && P_Value.moveAmount > 0)
-        {
-            P_States.isDashing = true;
-        }
-        P_States.previousDashKeyPress = P_States.currentDashKeyPress;
-    }
-
-    private void ChangePlayerState(PlayerState playerState)
+    public void ChangePlayerState(PlayerState playerState)
     {
         curPlayerState = playerState;
 
     }
 
-    private void AnimState(PlayerState playerState, int index = 0)
+    public void AnimState(PlayerState playerState, int index = 0)
     {
         switch (playerState)
         {
@@ -260,91 +135,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator Attacking() //클릭해서 들어오면
-    {
-        P_Com.animator.SetInteger("comboCount", 0);
 
-        string comboName01 = "Attack_Combo_1";
-        string comboName02 = "Attack_Combo_2";
-        string comboName03 = "Attack_Combo_3";
-        string comboName04 = "Attack_Combo_4";
-        string comboName05 = "Attack_Combo_5";
-        //string curAnimName = "";
-
-        int index = 1;
-        float time = 0;
-        bool isCombo = false;
-
-        while (true)
-        {
-            isCombo = false;
-            ChangePlayerState(PlayerState.ComboAttack);
-            //AnimState(PlayerState.ComboAttack, index);
-
-            switch (index)
-            {
-                case 1:
-                    curAnimName = comboName01;
-                    break;
-                case 2:
-                    curAnimName = comboName02;
-                    break;
-                case 3:
-                    curAnimName = comboName03;
-                    break;
-                case 4:
-                    curAnimName = comboName04;
-                    break;
-                case 5:
-                    curAnimName = comboName05;
-                    break;
-                default:
-                    curAnimName = "";
-                    break;
-            }
-            P_Com.animator.Play(curAnimName, 0);
-
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
-
-            ChangePlayerState(PlayerState.FinishComboAttack);
-            AnimState(PlayerState.FinishComboAttack, index);
-
-            int curIndex = index;
-            time = 0;
-
-            while (time <= comboClickTime)
-            {
-                time += Time.deltaTime;
-                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
-
-                if (Input.GetMouseButton(0) && curIndex == index)
-                {
-                    if (index == 5)
-                    {
-                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
-                        index = 0;
-                        time = 0;
-                        isCombo = false;
-                        //P_States.isPerformingAction = false;
-                    }
-                    else
-                    {
-                        index++;
-                        isCombo = true;
-                    }
-                    break;
-                }
-            }
-            if (isCombo == false)
-            {
-                P_Com.animator.SetInteger("comboCount", index);
-                P_Com.animator.SetBool("p_Locomotion", true);
-                break;
-            }
-        }
-        isStartComboAttack = false;
-    }
 
     // UI 버튼에 의해 호출됩니다.
     // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
@@ -489,124 +280,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void AllPlayerLocomotion()
-    {
-        //캐릭터의 실제 이동을 수행하는 함수.
-        PlayerRotation(); //플레이어의 방향 전환을 수행하는 함수
-        PlayerMovement(); //플레이어의 움직임을 수행하는 함수.
-        PlayerJump();
-        HandleDash();
-    }
-    private void PlayerRotation()
-    {
-        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
-        {
-            return;
-        }
-        //플레이어의 "방향 전환"을 수행하는 함수
-        if (P_States.isStrafing)
-        {
-            Vector3 rotDirect = P_Value.moveDirection;
-            rotDirect = P_Camera.cameraObj.transform.forward;
-            rotDirect.y = 0;
-            rotDirect.Normalize();
-            Quaternion rotQ = Quaternion.LookRotation(rotDirect);
-            Quaternion targetRot = Quaternion.Slerp(transform.rotation, rotQ, P_COption.rotSpeed * Time.deltaTime);
-            transform.rotation = targetRot;
-        }
-        else if (P_States.isJumping)
-        {
-
-        }
-        else
-        {
-            //걷기와 뛰기는 동일하게
-            Vector3 targetDirect = Vector3.zero;
-            targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-            targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-            targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
-            targetDirect.y = 0;
-            if (targetDirect == Vector3.zero)
-            {
-                //vector3.zero는 0,0,0 이다.
-                //방향 전환이 없기에 캐릭터의 방향은 고냥 원래 방향.
-                targetDirect = transform.forward;
-            }
-            Quaternion turnRot = Quaternion.LookRotation(targetDirect);
-            Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
-            transform.rotation = targetRot;
-        }
-
-    }
-    private void PlayerMovement()
-    {
-        if (isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
-        {
-            return;
-        }
-        //플레이어의 움직임을 수행하는 함수.
-        //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-        P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-        P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-        P_Value.moveDirection.Normalize(); //정규화시켜준다.
-
-
-        if (P_States.isJumping)
-        {
-            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
-            P_Com.rigidbody.velocity = p_velocity;
-        }
-        else if (P_States.isDashing)
-        {
-            P_Com.animator.SetTrigger("isDash");
-            P_Value.moveDirection.y = 0;
-            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dashingSpeed;
-
-            Invoke("dashOut", 0.1f);    //대시 유지 시간
-        }
-        else if ((P_States.isSprinting || P_States.isRunning) || P_States.isWalking)
-        {
-            P_Value.moveDirection.y = 0;
-            if (P_States.isSprinting)    //전력질주
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
-            else if (P_States.isRunning) //뛸때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
-            else if (P_States.isWalking) //걸을 때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.walkingSpeed;
-
-
-            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
-            P_Com.rigidbody.velocity = p_velocity;
-            return;
-        }
-    }
-
-    private void PlayerJump()
-    {
-        if (P_Input.jumpMovement == 1 && !P_States.isJumping)
-        {
-            P_States.isJumping = true;
-            P_Value.gravity = P_COption.gravity;
-            P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
-            P_Com.animator.SetBool("isJump_Up", true);
-        }
-        if (P_States.isJumping && P_States.isGround)
-        {
-            P_Com.animator.SetBool("isJump_Up", false);
-            P_States.isJumping = false;
-            P_Input.jumpMovement = 0;
-            P_Value.gravity = 0;
-        }
-    }
-
-    private void dashOut()
-    {
-        P_States.isDashing = false;
-        // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
-        P_Com.rigidbody.velocity = Vector3.zero;
-        //Invoke("dashOut", 0.5f);
-    }
 
     private void Update_Physics()
     {
@@ -689,6 +362,8 @@ public class PlayerController : MonoBehaviour
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
+        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
+
         curEnemy = enemy;
 
         P_Value.HP -= Damage;
@@ -728,61 +403,39 @@ public class PlayerController : MonoBehaviour
         //ChangePlayerState(PlayerState.GetHit);
 
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
-        knockback_Dir = knockback_Dir.normalized;
-        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
-        //float time = 0;
-        //while (time < 0.1f)
+
+        OnHitPlayerEffect?.Invoke();
+        if (OnHitPlayerEffect == null)
         {
             transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-            //if (transform.position == KnockBackPos)
-            //break;
-            //else
-            {
-                //time += Time.deltaTime;
-                yield return null;
-            }
+
+            //null일시 기본 이펙트.
+            playerGetHitEffect();
         }
+
+        knockback_Dir = knockback_Dir.normalized;
+        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+
+        transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+
+        yield return null;
+
         ChangePlayerState(preState);
 
         isGettingHit = false;
     }
 
+    private void playerGetHitEffect()
+    {
+        //피격시 기본 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+
+        effect.gameObject.transform.position = P_Com.playerTargetPos.position;
+        Vector3 curDirection = P_Com.playerTargetPos.position - curEnemy.transform.position;
+        effect.gameObject.transform.position += curDirection * 0.35f;
+    }
     //-----------------------------------------------------------------
     //카메라 움직임
-    private void CameraActions()
-    {
-        CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-        CameraRotate();       //마우스 방향에 따른 카메라 방향
-    }
-    private void CameraFollowPlayer()
-    {
-        //플레이어를 따라다니는 카메라
-        //ref는 call by reference를 하겠다는 것.
-        Vector3 cameraPos = Vector3.SmoothDamp(P_Camera.playerCamera.transform.position, transform.position, ref P_Camera.cameraFllowVelocity, 0.1f);
-        P_Camera.playerCamera.transform.position = cameraPos;
-    }
-    private void CameraRotate()
-    {
-        //마우스 방향에 따른 카메라 방향
-        Vector3 cameraRot;
-        Quaternion targetCameraRot;
-        P_Camera.left_right_LookAngle += (P_Input.mouseX * P_Camera.left_right_LookSpeed) * Time.deltaTime;
-        P_Camera.up_down_LookAngle -= (P_Input.mouseY * P_Camera.up_down_LookSpeed) * Time.deltaTime;
-        P_Camera.up_down_LookAngle = Mathf.Clamp(P_Camera.up_down_LookAngle, P_Camera.minPivot, P_Camera.maxPivot); //위아래 고정
-        cameraRot = Vector3.zero;
-        cameraRot.y = P_Camera.left_right_LookAngle;
-        //y에서 up_down_LookAngle을 안쓰고 left_right_LookAngle을 쓰는이유
-        //*(중요)마우스가 위로 올라갈때, 유니티 좌표계에서는 좌표가 뒤바뀐다.
-        // 마우스 X좌표가 위아래 좌표가 된다.
-        //그래서 카메라rot y(위아래,세로)에는 마우스의 x축(가로)을 넣어주고
-        // 카메라rot x축(좌우,가로)에는  마우스의 y축(세로)를 넣어준다
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        P_Camera.playerCamera.transform.rotation = targetCameraRot;
-        cameraRot = Vector3.zero;
-        cameraRot.x = P_Camera.up_down_LookAngle;
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        P_Camera.playerCameraPivot.transform.localRotation = targetCameraRot;
-    }
 
     private void OnTriggerEnter(Collider other)
     {

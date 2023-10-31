@@ -159,11 +159,11 @@ RectTransform:
   m_Father: {fileID: 885843644}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 283, y: -167}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &123911200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -310,11 +310,11 @@ RectTransform:
   m_Father: {fileID: 885843644}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385, y: -167}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -100, y: 0}
   m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &254553909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,10 +733,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameData:
     player: {fileID: 1781261958009274546}
+    playerTargetPos: {fileID: 0}
   objectPooling:
     PoolCount: 50
     loofEffectPools: []
     projectilesPoolCount: 50
+  hPBarManager: {fileID: 0}
+  m_canvas: {fileID: 0}
   cameraShake: {fileID: 0}
 --- !u!1 &885843640
 GameObject:
@@ -1229,6 +1232,7 @@ GameObject:
   - component: {fileID: 1372997703}
   - component: {fileID: 1372997702}
   - component: {fileID: 1372997701}
+  - component: {fileID: 1372997704}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1302,6 +1306,29 @@ Transform:
   m_Father: {fileID: 1095902722}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1372997704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372997700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b6a9ea846c82f7498793d483b3a5eac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 1781261958009274547}
+  playerCamera: {fileID: 1645457506}
+  playerCameraPivot: {fileID: 1095902721}
+  cameraObj: {fileID: 1372997702}
+  left_right_LookSpeed: 500
+  up_down_LookSpeed: 500
+  minPivot: 0
+  maxPivot: 0
+  cameraFllowVelocity: {x: 0, y: 0, z: 0}
+  left_right_LookAngle: 0
+  up_down_LookAngle: 0
 --- !u!1 &1424189437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1736,6 +1763,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6faabb02e1a45d14c9c8636d92dbfc4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1781261958009274552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781261958009274546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 1781261958009274547}
+  comboClickTime: 0.5
 --- !u!1001 &7112981474169916124
 PrefabInstance:
   m_ObjectHideFlags: 0

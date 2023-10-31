@@ -61,7 +61,6 @@ public class GameManager : MonoBehaviour
         gameInfo = GetComponent<GameInfo>();
     }
 
-
     static public GameManager GetInstance()
     {
         return instance;

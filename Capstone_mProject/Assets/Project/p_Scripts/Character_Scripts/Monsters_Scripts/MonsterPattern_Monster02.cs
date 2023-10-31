@@ -14,14 +14,16 @@ public class MonsterPattern_Monster02 : MonsterPattern
     [Header("총알")]
     public string bulletPrefabsName = "Monster02_Bullet"; //총알
     public Transform bulletsParent;
-    public Transform playerTargetPos; //총알 과녁 (플레이어 몸)
+
 
     [Header("총알이 나가는 위치 : 인덱스 0번 L쪽 총, 인덱스 1번 R쪽 총")]
     public Transform[] muzzles;
+
     [Space]
     [Header("몬스터 회전 각도")]
     public int roamingAngle = 60;
     private Quaternion buttomOriginRotation;
+    private Quaternion originRotatation;
 
     [Header("몬스터 공격 시간, 공격 중지 시간")]
     public int attackTime = 2;
@@ -35,6 +37,13 @@ public class MonsterPattern_Monster02 : MonsterPattern
     [Header("몬스터가 공격을 멈추는 거리")]
     public float stopAttackDistance = 20;
 
+    [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
+    public float findPlayerDistance = 6f;
+
+    Coroutine roam_Monster_co = null;
+    Coroutine short_Range_Attack01_co = null;
+    Coroutine long_Range_Attack01_co = null;
+    Coroutine hidePlayer_waitMonster_co = null;
 
     public override void Init()
     {
@@ -43,7 +52,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         rigid = GetComponent<Rigidbody>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
-
+        playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         m_monster.monsterPattern = this;
 
         navMeshAgent = null;
@@ -55,15 +64,17 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //Monster_Motion(MonsterMotion.Long_Range_Attack);
 
         originPosition = transform.position;
+        originRotatation = transform.rotation;
         buttomOriginRotation = buttomGameObject.transform.rotation;
+
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
 
         CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = true;
+
+        playerHide = true;
     }
-
-
 
     public override void SetAnimation(MonsterAnimation m_anim)
     {
@@ -112,12 +123,17 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 Discovery_Player();
                 break;
             case MonsterState.Tracing:
-                if (m_monster.HPBar_CheckNull() == false)
-                    m_monster.GetHPBar();
+                // 몬스터 02 Tracing X
                 break;
             case MonsterState.Attack:
                 if (m_monster.HPBar_CheckNull() == false)
                     m_monster.GetHPBar();
+                //* 공격 중에 숨으면..
+                if (playerHide && hidePlayer_waitMonster_co == null)
+                {
+                    //못움직이는 몬스터인데 플레이어가 숨었다면??
+                    hidePlayer_waitMonster_co = StartCoroutine(HidePlayer_waitMonster(2f));
+                }
                 break;
             case MonsterState.GoingBack:
                 break;
@@ -134,7 +150,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             isRoaming = true;
             //x와 Z주변을 배회하는 몬스터
-            StartCoroutine(Roam_Monster_co());
+            roam_Monster_co = StartCoroutine(Roam_Monster_co());
         }
     }
 
@@ -146,13 +162,30 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Quaternion targetRotation;
         int curAngle = 0;
 
+        time = 0;
+        Quaternion startRotation = transform.rotation;
+        Quaternion startButtomRotation = buttomGameObject.transform.rotation;
+
+        while (time < 3)
+        {
+            time += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(startRotation, originRotatation, time * 2f);
+            buttomGameObject.transform.rotation = Quaternion.Slerp(startButtomRotation, buttomOriginRotation, time * 2f);
+
+            if (buttomOriginRotation == buttomGameObject.transform.rotation && originRotatation == transform.rotation)
+                break;
+
+            yield return null;
+        }
+        transform.rotation = originRotatation;
+        buttomGameObject.transform.rotation = buttomOriginRotation;
+
         while (curMonsterState == MonsterState.Roaming)
         {
             time = 0;
             roamTime = UnityEngine.Random.Range(1, 3);
-            Debug.Log("기다리는 중 " + roamTime + "초");
-            yield return new WaitForSeconds(roamTime);
 
+            yield return new WaitForSeconds(roamTime);
 
             if (curAngle == 0)
             {
@@ -184,34 +217,73 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             //로밍중, 집돌아갈 때 플레이어 콜라이더 감지중
             Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
+            Vector3 curDirection = GetDirection(playerTargetPos.position, transform.position);
+            playerHide = HidePlayer(transform.position, curDirection.normalized);
             if (0 < playerColliders.Length)
             {
-                if (isRoaming)
+                if (!playerHide) //*플레이어가 안숨었을 경우에만..
                 {
-                    StopCoroutine(Roam_Monster_co());
-                    isRoaming = false;
-                    ChangeMonsterState(MonsterState.Discovery);
-                }
-                if (isFinding)
-                {
-                    isFinding = false;
-                    ChangeMonsterState(MonsterState.Attack);
+                    Debug.Log("안숨음");
+                    if (isRoaming)
+                    {
+                        //* 플레이어가 뒤에 있는지 체크
+                        bool inFrontOf_Player = PlayerLocationCheck();
+                        bool findPlayer = false;
+                        if (!inFrontOf_Player)
+                        {
+                            //* 플레이어가 몬스터 뒤에 있음.
+                            float distance = Vector3.Distance(transform.position, playerTrans.position);
+                            if (distance < findPlayerDistance)
+                            {
+                                //플레이어가 몬스터 뒤에 있지만 일정 거리 가까워졌을때.
+                                // >>>> 발견
+                                findPlayer = true;
+                            }
+                        }
+                        else
+                            findPlayer = true;
 
-                    float distance = Vector3.Distance(transform.position, playerTrans.position);
-                    if (distance < shortRangeAttackDistance)
-                        Monster_Motion(MonsterMotion.Short_Range_Attack);
-                    else
-                        Monster_Motion(MonsterMotion.Long_Range_Attack);
+                        if (findPlayer)
+                        {
+                            if (roam_Monster_co != null)
+                                StopCoroutine(roam_Monster_co);
+                            isRoaming = false;
+                            ChangeMonsterState(MonsterState.Discovery);
+                        }
+
+                    }
+                    if (isFinding) //* State : Discorvery
+                    {
+                        isFinding = false;
+                        ChangeMonsterState(MonsterState.Attack);
+
+                        float distance = Vector3.Distance(transform.position, playerTargetPos.position);
+                        if (distance < shortRangeAttackDistance)
+                            Monster_Motion(MonsterMotion.Short_Range_Attack);
+                        else
+                            Monster_Motion(MonsterMotion.Long_Range_Attack);
+                    }
+                }
+                else
+                {
+                    if (isFinding) //* State : Discorvery
+                    {
+
+                        isFinding = false;
+                        ChangeMonsterState(MonsterState.Roaming);
+
+                    }
                 }
             }
-            else
+            else //* playerColliders 영역 안에 없을 경우.
             {
-                if (isFinding)
+                if (isFinding) //* State : Discorvery
                 {
                     isFinding = false;
                     ChangeMonsterState(MonsterState.Roaming);
                 }
             }
+
         }
     }
     // * ---------------------------------------------------------------------------------------------------------//
@@ -228,8 +300,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     IEnumerator DiscoveryPlayer_co()
     {
         float time = 0f; //예비 탈출용
-        Vector3 curPlayerPos = playerTrans.position;
-        Vector3 curPlayerdirection = curPlayerPos - transform.position;
+        Vector3 curPlayerdirection = GetDirection(playerTargetPos.position, transform.position);
         Quaternion targetAngle = Quaternion.LookRotation(curPlayerdirection);
 
         while (time < 1.5f)
@@ -255,11 +326,11 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             case MonsterMotion.Short_Range_Attack:
                 //근거리 공격
-                StartCoroutine(Short_Range_Attack_Monster01());
+                short_Range_Attack01_co = StartCoroutine(Short_Range_Attack_Monster01());
                 break;
             case MonsterMotion.Long_Range_Attack:
                 //원거리 공격
-                StartCoroutine(Long_Range_Attack01_Monster02());
+                long_Range_Attack01_co = StartCoroutine(Long_Range_Attack01_Monster02());
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
@@ -284,7 +355,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.2f);
 
         Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
@@ -306,9 +377,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             effect.gameObject.transform.position += curDirection * 0.1f;
         }
 
-
         yield return new WaitForSeconds(1.5f);
-
 
         float distance = Vector3.Distance(transform.position, playerTrans.position);
         if (distance < shortRangeAttackDistance)
@@ -334,72 +403,70 @@ public class MonsterPattern_Monster02 : MonsterPattern
         bool goingBack = false;
         bool canAttack = true;
 
-        Quaternion originRotate = transform.rotation;
-
         while (distance > shortRangeAttackDistance && curMonsterState != MonsterState.GetHit)
         {
-
-            useBack = true;
-            // * 플레이어 쪽으로 고개 돌림--------------------------------//
-            Vector3 targetPos = playerTrans.position;
-            //몬스터 고개 돌리기
-            Vector3 curPlayerPos = playerTrans.position;
-            Vector3 curPlayerdirection = curPlayerPos - transform.position;
-            Quaternion targetAngle = Quaternion.LookRotation(curPlayerdirection);
-
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 20.0f);
-
-            yield return null;
-
-            // * 몬스터 공격----------------------------------------------//
-
-            curAttackTime += Time.deltaTime;
-
-            if (curAttackTime < attackTime && canAttack)
+            if (curMonsterState == MonsterState.Attack)
             {
-                time += Time.deltaTime;
-                if (time > 0.25f) //n초마다 총알 발사
+                useBack = true;
+                // * 플레이어 쪽으로 고개 돌림--------------------------------//
+                Vector3 targetPos = playerTrans.position;
+                //몬스터 고개 돌리기
+                Vector3 curPlayerdirection = playerTrans.position - transform.position;
+                Quaternion targetAngle = Quaternion.LookRotation(curPlayerdirection);
+
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 20.0f);
+
+                yield return null;
+
+                // * 몬스터 공격----------------------------------------------//
+
+                curAttackTime += Time.deltaTime;
+
+                if (curAttackTime < attackTime && canAttack)
+                {
+                    time += Time.deltaTime;
+                    if (time > 0.2f) //n초마다 총알 발사
+                    {
+                        time = 0;
+
+                        if (!useLeft)
+                        {
+                            useLeft = true;
+                            StartCoroutine(Fire(playerTargetPos.position, muzzles[0]));
+                        }
+                        else
+                        {
+                            useLeft = false;
+                            StartCoroutine(Fire(playerTargetPos.position, muzzles[1]));
+                        }
+
+                    }
+                }
+                else if (curAttackTime >= attackTime && canAttack)
                 {
                     time = 0;
+                    curAttackTime = 0;
+                    canAttack = false;
+                }
 
-                    SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
 
-                    if (!useLeft)
-                    {
-                        useLeft = true;
-                        FireBullet(playerTargetPos.position, muzzles[0]);
-                    }
-                    else
-                    {
-                        useLeft = false;
-                        FireBullet(playerTargetPos.position, muzzles[1]);
-                    }
-                    StartCoroutine(Shake(0.1f));
+                if (curAttackTime > stopAttackTime && !canAttack)
+                {
+                    canAttack = true;
+                    curAttackTime = 0;
+                }
+
+                distance = Vector3.Distance(transform.position, playerTrans.position);
+
+                if (distance >= stopAttackDistance)
+                {
+                    //거리가 13만큼 떨어진다면
+                    //어택 멈추기
+                    goingBack = true;
+                    break;
                 }
             }
-            else if (curAttackTime >= attackTime && canAttack)
-            {
-                time = 0;
-                curAttackTime = 0;
-                canAttack = false;
-            }
 
-
-            if (curAttackTime > stopAttackTime && !canAttack)
-            {
-                canAttack = true;
-                curAttackTime = 0;
-            }
-
-            distance = Vector3.Distance(transform.position, playerTrans.position);
-
-            if (distance >= stopAttackDistance)
-            {
-                //거리가 13만큼 떨어진다면
-                //어택 멈추기
-                goingBack = true;
-                break;
-            }
         }
 
         if (curMonsterState != MonsterState.GetHit)
@@ -409,13 +476,15 @@ public class MonsterPattern_Monster02 : MonsterPattern
             {
                 if (!goingBack)
                 {
-                    originRotate.y = transform.rotation.y;
+                    originRotatation.y = transform.rotation.y;
                 }
                 time = 0;
                 while (time < 1)
                 {
                     time += Time.deltaTime;
-                    transform.rotation = Quaternion.Slerp(transform.rotation, originRotate, Time.deltaTime * 5.0f);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, originRotatation, Time.deltaTime * 5.0f);
+                    //buttomGameObject.transform.rotation = Quaternion.Slerp(buttomGameObject.transform.rotation, buttomOriginRotation, Time.deltaTime * 5.0f);
+
                     yield return null;
                 }
                 if (goingBack)
@@ -431,43 +500,47 @@ public class MonsterPattern_Monster02 : MonsterPattern
         }
     }
 
-    private void FireBullet(Vector3 targetPos, Transform muzzlePos)
-    {
-        //총알 발사
-        StartCoroutine(Fire(targetPos, muzzlePos));
-    }
-
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos)
     {
-        GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab(bulletPrefabsName, bulletsParent);
-        Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
+        //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
+        Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
 
-        //총알
-        Bullet bullet = bulletObj.GetComponent<Bullet>();
-        bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
-
-        bullet.OnHitPlayerEffect = (Vector3 bulletPos) =>
+        playerHide = HidePlayer(muzzlePos.position, curDirection.normalized);
+        if (!playerHide)
         {
-            //플레이어가 총에 맞았을 경우, 이펙트
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+            //* 어택 에니메이션
+            SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
+            //* 총알 //
+            GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab(bulletPrefabsName, bulletsParent);
+            Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
 
-            effect.gameObject.transform.position = targetPos;
-            Vector3 curDirection = targetPos - bulletObj.transform.position;
-            effect.gameObject.transform.position += curDirection * 0.35f;
-        };
+            Bullet bullet = bulletObj.GetComponent<Bullet>();
+            bullet.Reset(m_monster, bulletPrefabsName, muzzlePos);
+            // 플레이어에게  총알이 맞았을 경우
+            bullet.OnHitPlayerEffect = () =>
+            {
+                //플레이어가 총에 맞았을 경우, 이펙트
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
 
-        Vector3 curDirection = targetPos - bulletObj.transform.position;
-        Quaternion targetAngle = Quaternion.LookRotation(curDirection);
-        bulletObj.transform.rotation = targetAngle;
-        //?--
-        bullet.GetDistance(curDirection.normalized);
-        //?--
-        bulletRigid.velocity = curDirection.normalized * 50f;
+                effect.gameObject.transform.position = targetPos;
+                Vector3 curDirection = targetPos - bulletObj.transform.position;
+                effect.gameObject.transform.position += curDirection * 0.35f;
+            };
 
-        //총쏠때 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
-        effect.gameObject.transform.position = muzzlePos.position;
+            //총알 방향//
+            Quaternion targetAngle = Quaternion.LookRotation(curDirection);
+            bulletObj.transform.rotation = targetAngle;
 
+            bullet.GetDistance(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
+                                                         //총알 발사.
+            bulletRigid.velocity = curDirection.normalized * 50f;
+            //총쏠때 이펙트
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+            effect.gameObject.transform.position = muzzlePos.position;
+
+            //몬스터 몸 흔들리는 연출//
+            StartCoroutine(Shake(0.1f));
+        }
         yield return null;
     }
 
@@ -538,8 +611,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
         ChangeMonsterState(MonsterState.Attack);
         Monster_Motion(MonsterMotion.Long_Range_Attack);
     }
-    // * ---------------------------------------------------------------------------------------//
+    // * ---------------------------------------------------------------------------------------------------------//
     // * 죽음 모션
+
     IEnumerator Death_co()
     {
         ChangeMonsterState(MonsterState.Death);
@@ -550,8 +624,36 @@ public class MonsterPattern_Monster02 : MonsterPattern
         this.gameObject.SetActive(false);
     }
 
-    // * ---------------------------------------------------------------------------------------//
+    // * ---------------------------------------------------------------------------------------------------------//
+    IEnumerator HidePlayer_waitMonster(float hideDuration)
+    {
+        float time = 0;
+        if (playerHide)
+        {
+            while (true)
+            {
+                time += Time.deltaTime;
+                if (!playerHide && time < hideDuration)
+                {
+                    break;
+                }
+                if (playerHide && time >= hideDuration)
+                {
+                    if (short_Range_Attack01_co != null)
+                        StopCoroutine(short_Range_Attack01_co);
+                    if (long_Range_Attack01_co != null)
+                        StopCoroutine(long_Range_Attack01_co);
+                    ChangeMonsterState(MonsterState.Roaming);
+                    break;
+                }
+                yield return null;
+            }
+        }
 
+        hidePlayer_waitMonster_co = null;
+    }
+
+    // * ---------------------------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw
