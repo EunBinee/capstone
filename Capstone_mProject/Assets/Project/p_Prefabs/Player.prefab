@@ -1870,6 +1870,7 @@ GameObject:
   - component: {fileID: 8795022814585965161}
   - component: {fileID: 8795022814585965160}
   - component: {fileID: 8795022814585965167}
+  - component: {fileID: 768073872511944013}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -1960,6 +1961,7 @@ MonoBehaviour:
     animator: {fileID: 0}
     rigidbody: {fileID: 0}
     capsuleCollider: {fileID: 0}
+    playerTargetPos: {fileID: 0}
   _input:
     verticalMovement: 0
     horizontalMovement: 0
@@ -1980,7 +1982,7 @@ MonoBehaviour:
     walkingSpeed: 2
     jumpPower: 10
     jumpGravity: 3
-    dashingSpeed: 11
+    dodgingSpeed: 5
     slopeAccel: 1
     gravity: -9.81
   _currentState:
@@ -1990,9 +1992,10 @@ MonoBehaviour:
     isSprinting: 0
     isStrafing: 0
     isJumping: 0
-    isDashing: 0
-    previousDashKeyPress: 0
-    currentDashKeyPress: 0
+    isDodgeing: 0
+    previousDodgeKeyPress: 0
+    currentDodgeKeyPress: 0
+    isStartComboAttack: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -2006,6 +2009,7 @@ MonoBehaviour:
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
     HP: 100
+    curAnimName: 
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -2018,18 +2022,25 @@ MonoBehaviour:
     playerCamera: {fileID: 0}
     playerCameraPivot: {fileID: 0}
     cameraObj: {fileID: 0}
-    left_right_LookSpeed: 500
-    up_down_LookSpeed: 500
-    minPivot: -35
-    maxPivot: 35
-    cameraFllowVelocity: {x: 0, y: 0, z: 0}
-    left_right_LookAngle: 0
-    up_down_LookAngle: 0
   rayCastHeightOffset: 1
   navMeshSurface: {fileID: 0}
-  comboClickTime: 3
+  curPlayerState: 0
   skill_E: {fileID: 0}
   skill_Q: {fileID: 0}
+--- !u!114 &768073872511944013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8795022814585965166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 8795022814585965167}
+  comboClickTime: 0.5
 --- !u!1 &8990085253208681639
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,10 +23,17 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Inputs();
+        
+        //캐릭터의 애니메이션 변경을 수행하는 함수
+        if (!UIManager.gameIsPaused)
+        {
+            Inputs();
+            AnimationParameters();
+        }
     }
     void FixedUpdate()
     {
+        P_Controller.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
         {
             //캐릭터의 실제 이동을 수행하는 함수
@@ -145,6 +152,7 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
+            P_Com.animator.Play("jump 0");
             P_Com.animator.SetBool("isJump_Up", true);
         }
         if (P_States.isJumping && P_States.isGround)
@@ -175,11 +183,7 @@ public class PlayerMovement : MonoBehaviour
     {
         P_States.isDodgeing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
-        //P_Com.rigidbody.velocity = Vector3.zero;
-        for (float i = P_COption.dodgingSpeed; i < P_COption.runningSpeed; i--)
-        {
-            P_Com.rigidbody.velocity -= P_Value.moveDirection * i;
-        }
+        P_Com.rigidbody.velocity = Vector3.zero;
     }
 
     private void AllPlayerLocomotion()
@@ -194,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
-            return;
+            //return;
         }
         if (P_States.isJumping)
         {
@@ -242,6 +246,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (P_States.isJumping)
         {
+            //Time.timeScale = 0.1f;
             Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
         }
@@ -251,16 +256,13 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-            for (float i = P_COption.runningSpeed; i >= P_COption.dodgingSpeed; i++)
-            {
-                P_Com.rigidbody.velocity += P_Value.moveDirection * i;
-            }
-
-            Invoke("dodgeOut", 0.1f);    //대시 유지 시간
+            
+            Invoke("dodgeOut", 0.15f);    //대시 유지 시간
 
         }
         else if (P_States.isSprinting || P_States.isRunning)
         {
+            //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
             if (P_States.isSprinting)    //전력질주
                 P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
@@ -271,6 +273,141 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
             return;
+        }
+    }
+
+    //애니메이터 블랜더 트리의 파라미터 변경
+    private void AnimationParameters()
+    {
+        //캐릭터의 애니메이션 변경을 수행하는 함수
+        //isStrafing에 쓰인다. >주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
+        float snappedVertical = 0.0f;
+        float snappedHorizontal = 0.0f;
+        #region Horizontal 
+        if (P_Input.horizontalMovement > 0 && P_Input.horizontalMovement <= 0.5f)
+        {
+            //0보다 큰데 0.5보다 같거나 작은 경우
+            snappedHorizontal = 0.5f;
+        }
+        else if (P_Input.horizontalMovement > 0.5f)
+        {
+            //0.5보다 큰경우
+            snappedHorizontal = 1;
+        }
+        else if (P_Input.horizontalMovement < 0 && P_Input.horizontalMovement >= -0.5f)
+        {
+            //0보다 작은데 -0.5보다 같거나 큰 경우
+            snappedHorizontal = -0.5f;
+        }
+        else if (P_Input.horizontalMovement < -0.5f)
+        {
+            //-0.5보다 작은 경우
+            snappedHorizontal = -1;
+        }
+        else
+        {
+            //아무것도 누르지 않은 경우
+            snappedHorizontal = 0;
+        }
+        #endregion
+        #region Vertical
+        if (P_Input.verticalMovement > 0 && P_Input.verticalMovement <= 0.5f)
+        {
+            //0보다 큰데 0.5보다 같거나 작은 경우
+            snappedVertical = 0.5f;
+        }
+        else if (P_Input.verticalMovement > 0.5f)
+        {
+            //0.5보다 큰경우
+            snappedVertical = 1;
+        }
+        else if (P_Input.verticalMovement < 0 && P_Input.verticalMovement >= -0.5f)
+        {
+            //0보다 작은데 -0.5보다 같거나 큰 경우
+            snappedVertical = -0.5f;
+        }
+        else if (P_Input.verticalMovement < -0.5f)
+        {
+            //-0.5보다 작은 경우
+            snappedVertical = -1;
+        }
+        else
+        {
+            //아무것도 누르지 않은 경우
+            snappedVertical = 0;
+        }
+        #endregion
+        if (P_States.isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        {
+            P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
+            return;
+        }
+        if (P_States.isSprinting)
+        {
+            //전력질주
+            P_States.isStrafing = false; //뛸때는 주목 해제
+            P_Com.animator.SetFloat("Vertical", 2, 0.2f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
+        }
+        else //뛰기 아닐 경우
+        {
+            if (P_States.isStrafing)
+            {
+                //주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
+                //걷기일 경우
+                if (P_States.isWalking)
+                {
+                    //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
+                    //value는 내가 할당하고 싶은 값
+                    //dampTime은 이전값에서 value에 도달하는데 걸리는데 소요될것이라 가정하는 "지연시간"
+                    //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
+                    P_Com.animator.SetFloat("Vertical", snappedVertical / 2, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal / 2, 0.2f, Time.deltaTime);               //하
+                }
+                else
+                {
+                    //뛰기일 경우
+                    P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0.2f, Time.deltaTime);               //하
+                }
+            }
+            else
+            {
+                //걷기 일 경우
+                if (P_States.isWalking)
+                {
+                    // Debug.Log("걷기");
+                    //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
+                    //value는 내가 할당하고 싶은 값
+                    //dampTime은 이전값에서 value에 도달하는데 걸리는데 소요될것이라 가정하는 "지연시간"
+                    //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);               //하
+
+                    //Vertical에만 값을 넣어주는 이유
+                    //걷기 모션은 Front만 쓴다.
+                    //이유 : 애니메이션은 딱 하나 Front만 쓰기 때문
+                    // 몸을 돌리는 건 코드에서 돌려준다.
+                    //그리고 주목 기능을 쓰게 되면, 몸이 한 방향을 주목하고 움직여야하기에
+                    //다른 애니메이션도 쓰이게 된다. 
+                    //그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
+                }
+                else
+                {
+                    //뛰기의 경우
+                    //Debug.Log("뛰기");
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);          //하
+                }
+                if (P_Value.moveAmount == 0)
+                {
+                    // Debug.Log("멈춤");
+                    //아무것도 안누른 경우. >idle
+                    P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+                }
+            }
         }
     }
 
