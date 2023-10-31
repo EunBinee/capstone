@@ -23,7 +23,7 @@ public class HPBarManager : MonoBehaviour
     private void InitHPBar()
     {
         HPBarInUse = new List<MonsterUI_Info>();
-        hpBarPools = new List<MonsterUI_Info>();
+    hpBarPools = new List<MonsterUI_Info>();
 
         if (HPBar_Prefab == null)
         {

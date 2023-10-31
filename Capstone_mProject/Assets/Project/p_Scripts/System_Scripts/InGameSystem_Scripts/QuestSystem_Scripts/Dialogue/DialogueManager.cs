@@ -6,17 +6,17 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    DialogueController dialogueController;
-    GameInfo gameInfo; //°ÔÀÓÀÇ Àü¹ÝÀûÀÎ Á¤º¸¸¦ °¡Áø ½ºÅ©¸³Æ®
-    public GameObject go_DialogueBar; //´ë»ç UI
-    public TMP_Text Text_Dialogue; //´ë»ç ÅØ½ºÆ®
-    public TMP_Text Text_Name; //ÀÌ¸§ ÅØ½ºÆ®
-    public GameObject ObjectTextBox_Button01; //¹öÆ° 1¹ø ¿ÀºêÁ§Æ®
-    public TMP_Text Text_Btn01; //¹öÆ° 1¹ø ÅØ½ºÆ®
-    public GameObject ObjectTextBox_Button02; //¹öÆ° 2¹ø ¿ÀºêÁ§Æ®
-    public TMP_Text Text_Btn02; //¹öÆ° 2¹ø ÅØ½ºÆ®
+    DialogueController dialogueController; //ëŒ€í™” í…ìŠ¤íŠ¸ ì¶œë ¥ ì• ë‹ˆë©”ì´ì…˜ êµ¬í˜„ ìŠ¤í¬ë¦½íŠ¸
+    GameInfo gameInfo; //ê²Œìž„ì˜ ì „ë°˜ì ì¸ ì •ë³´ 
+    public GameObject go_DialogueBar; //ëŒ€í™”ì°½ UI
+    public TMP_Text Text_Dialogue; //ëŒ€í™” text
+    public TMP_Text Text_Name; //ì´ë¦„ text
+    public GameObject ObjectTextBox_Button01; //ì„ íƒì§€ 1ë²ˆ UI
+    public TMP_Text Text_Btn01; //ì„ íƒì§€ 1ë²ˆ text
+    public GameObject ObjectTextBox_Button02; //ì„ íƒì§€ 2ë²ˆ UI
+    public TMP_Text Text_Btn02; //ì„ íƒì§€ 2ë²ˆ text
 
-    public bool endChat_inController = false;  //ChatController¿¡¼­ Chat ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³µ´ÂÁö, È®ÀÎ¿ë.
+    public bool endChat_inController = false;  //dialogueController 
 
     void Start()
     {
@@ -26,8 +26,8 @@ public class DialogueManager : MonoBehaviour
 
     public void Action_NPC(int id, Item interaction_Item)
     {
-        //NPCÀÇ ´ë»ç¸¦ °¡Áö°í ¿Â´Ù.
-        //DBManager.GetInstance().NPC_diaglogues_Dictionary[id]¸¦ ÅëÇØ¼­ ÇöÀç idÀÇ ¸Â´Â Dialogue¸¦ °¡Áö°í ¿Â´Ù.
+        //NPCï¿½ï¿½ ï¿½ï¿½ç¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½.
+        //DBManager.GetInstance().NPC_diaglogues_Dictionary[id]ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ ï¿½Â´ï¿½ Dialogueï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â´ï¿½.
         Dialogue dialogue = DatabaseManager.GetInstance().NPC_diaglogues_Dictionary[id];
         StartCoroutine(StartObjectTextBox(dialogue, interaction_Item));
     }
@@ -35,51 +35,51 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
-        //ÅØ½ºÆ®¸¦ º¸¿©ÁÖ´Â ÄÚ·çÆ¾
+        //ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½Ú·ï¿½Æ¾
 
-        go_DialogueBar.SetActive(true); //´ë»ç UI È°¼ºÈ­
+        go_DialogueBar.SetActive(true); //ï¿½ï¿½ï¿½ UI È°ï¿½ï¿½È­
         Text_Dialogue.text = "";
         Text_Name.text = "";
-        bool AllFinish = false; //¸ðµç ´ë»ç°¡ ³¡³µ´ÂÁö È®ÀÎ¿ë
+        bool AllFinish = false; //ï¿½ï¿½ï¿½ ï¿½ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½Î¿ï¿½
 
-        int curPart = 0; //Dialogue.csÀÇ lines[curPart][curLine] => lines[curPart]   
+        int curPart = 0; //Dialogue.csï¿½ï¿½ lines[curPart][curLine] => lines[curPart]   
         int curLine = 0; //lines[curPart][curPart] 
         int curContext = 0; //lines[curPart][curLine].context[curContext] 
 
-        bool isFinish = false; //´ë»ç°¡ ³¡³². ALLFinish¶ûÀº ´Ù¸§
-        //±×´ÙÀ½ ´ë»ç´Â ¾ø¾î¼­ ´ë»ç´Â ³¡³µÁö¸¸, ´ë»ç¸¦ º» ÈÄ,¾ÆÁ÷ ¿£ÅÍ¸¦ Ä¡Áö ¾Ê¾Æ¼­ ¾ÆÁ÷ ¿ÏÀüÈ÷ ²¨ÁöÁö´Â ¾ÊÀº »óÅÂ
+        bool isFinish = false; //ï¿½ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½. ALLFinishï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½
+        //ï¿½×´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½î¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ç¸¦ ï¿½ï¿½ ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¸ï¿½ Ä¡ï¿½ï¿½ ï¿½Ê¾Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        bool isChoice = false; // ¼±ÅÃÁö¸¦ °¡Áö°í ÀÖ´ÂÁö
-        bool choiceSettingF = false; //¼±ÅÃÁö °¡Áö°í ÀÖÀ¸¸é ¼±ÅÃÁö ¹öÆ°µéÀÇ ÅØ½ºÆ® º¯È¯µî ¼¼ÆÃÀ» ³¡³Â´ÂÁö
-        bool ClickChoiceBtn = true; //¼±ÅÃÁö¸¦ ´­·¶À» °æ¿ì, ¹Ù·Î EnterÅ° ¾øÀÌ ¹Ù·Î ´ÙÀ½ ´ë»ç·Î ³Ñ¾î°¡µµ·Ï ¼³Á¤ÇÏ´Â bool°ª
-
-
-        int curlineContextLen;  //ÇöÀç dialogue.line[curline]ÀÇ line¾ÈÀÇ contextÀÇ ±æÀÌ
+        bool isChoice = false; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½
+        bool choiceSettingF = false; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½
+        bool ClickChoiceBtn = true; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½Ù·ï¿½ EnterÅ° ï¿½ï¿½ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ boolï¿½ï¿½
 
 
-        //endingÀÌ³ª EndingÀÇ º¯È­°¡ ¾Ò´ÂÁö
+        int curlineContextLen;  //ï¿½ï¿½ï¿½ï¿½ dialogue.line[curline]ï¿½ï¿½ lineï¿½ï¿½ï¿½ï¿½ contextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+
+
+        //endingï¿½Ì³ï¿½ Endingï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½
         bool changeEvnetID = false;
-        int eventIDToBeChange = 0; //¾÷µ¥ÀÌÆ®ÇÒ ÀÌº¥Æ® ID
+        int eventIDToBeChange = 0; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ìºï¿½Æ® ID
         bool changeEndingID = false;
-        int endingIDToBeChange = 0; //¾÷µ¥ÀÌÆ®ÇÒ ¿£µù ID
+        int endingIDToBeChange = 0; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ID
 
-        string line = ""; //´ë»ç
+        string line = ""; //ï¿½ï¿½ï¿½
 
-        endChat_inController = true; //ChatController¿¡¼­ Chat ¾Ö´Ï¸ÞÀÌ¼ÇÀÌ ³¡³µ´ÂÁö, È®ÀÎ¿ë.
+        endChat_inController = true; //ChatControllerï¿½ï¿½ï¿½ï¿½ Chat ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, È®ï¿½Î¿ï¿½.
 
         while (!AllFinish)
         {
-            curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //ÇöÀç ´ë»çÀÇ ¹è¿­ ±æÀÌ
+            curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½
 
             if (curContext < curlineContextLen)
             {
-                //¾ÆÁ÷ ¹®ÀåÀÌ ³¡³ªÁö ¾Ê¾Ò´Ù¸é..
+                //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½..
                 if (ClickChoiceBtn)
                 {
-                    //¼±ÅÃÁö¸¦ °í¸£°í ³­ Á÷ÈÄ¸é?
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¸ï¿½?
                     Text_Dialogue.text = "";
                     Text_Name.text = "";
-                    endChat_inController = false; //chat ¾Ö´Ï¸ÞÀÌ¼Ç È®ÀÎ¿ë.
+                    endChat_inController = false; //chat ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ È®ï¿½Î¿ï¿½.
 
                     Text_Name.text = dialogue.lines[curPart][curLine].Name;
                     line = dialogue.lines[curPart][curLine].context[curContext];
@@ -93,7 +93,7 @@ public class DialogueManager : MonoBehaviour
                 }
                 else if (Input.GetKeyDown(KeyCode.Return))
                 {
-                    //¼±ÅÃÁö °í¸§ÀÌ ¾ø°í, ¾ÆÁ÷ ¹®ÀåÀÌ ³¡³ªÁö ¾Ê¾Ò´Ù¸é..
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½..
                     Text_Dialogue.text = "";
                     Text_Name.text = "";
                     endChat_inController = false;
@@ -111,43 +111,43 @@ public class DialogueManager : MonoBehaviour
 
             yield return new WaitUntil(() => endChat_inController == true);
 
-            //¸¶Áö¸· contextÀÇ ¸¶Áö¸· ¹®ÀåÀÌ ³¡³­ °æ¿ì È®ÀÎÇÏ±â
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ contextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½
             if (curContext == curlineContextLen)
             {
-                //¸¶Áö¸· contextÀÇ ¸¶Áö¸· ¹®ÀåÀÌ ³¡³­ ÈÄ, ´ëÈ­°¡ ³¡ÀÌ ³µ´ÂÁö, ¼±ÅÃÁö°¡ ÀÖ´ÂÁö È®ÀÎ
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ contextï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 
                 isChoice = dialogue.lines[curPart][curLine].isChoice;
                 isFinish = dialogue.lines[curPart][curLine].isFinishLine;
 
                 if (isChoice)
                 {
-                    //¸¸¾à ´ë»ç°¡ ³¡³µ°í ¼±ÅÃÁö°¡ ÀÖ´Â °æ¿ì
+                    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½
                     if (!choiceSettingF)
                     {
-                        Debug.Log("ischoice Æ®·ç");
-                        //1. ¼±ÅÃÁöÀÇ ¹öÆ°µéÀ» ºñÈ°¼ºÈ­ -> È°¼ºÈ­
+                        Debug.Log("ischoice Æ®ï¿½ï¿½");
+                        //1. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ -> È°ï¿½ï¿½È­
                         ObjectTextBox_Button01.SetActive(true);
                         ObjectTextBox_Button02.SetActive(true);
 
-                        //¿É¼ÇÀ» ´©¸£¸é ¾îµð·Î °¥Áö °áÁ¤
+                        //ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                         int firstOptDialogPart = dialogue.lines[curPart][curLine].choice.firstOptDialogNum;
                         int secondOptDialogPart = dialogue.lines[curPart][curLine].choice.secondOptDialogNum;
 
 
-                        //¼±ÅÃÁö¸¦ ¶ç¿î´Ù.
+                        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
                         Text_Btn01.text = dialogue.lines[curPart][curLine].choice.firstOption;
                         Text_Btn02.text = dialogue.lines[curPart][curLine].choice.secondOption;
 
-                        //¹öÆ°¾È¿¡ ³»¿ë¹° ³Ö¾îÁÜ.
+                        //ï¿½ï¿½Æ°ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ë¹° ï¿½Ö¾ï¿½ï¿½ï¿½.
                         Button btn01 = ObjectTextBox_Button01.GetComponent<Button>();
                         btn01.onClick.RemoveAllListeners();
-                        //AddListener¿¡ ÇÔ¼ö¸¦ ¸¸µé¾î ³Ö¾îÁÙ ¼ö ÀÖÁö¸¸.. µ¿ÀûÀ¸·Î °è¼Ó curPart°¡ º¯ÇØ¾ßÇÏ±â¿¡..
-                        //¶÷´Ù¸¦ ÀÌ¿ëÇØ¼­ ÀÍ¸íÇÔ¼ö¸¦ ¸¸µé¾îÁÖ¾ú´Ù.
+                        //AddListenerï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.. ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ curPartï¿½ï¿½ ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ï±â¿¡..
+                        //ï¿½ï¿½ï¿½Ù¸ï¿½ ï¿½Ì¿ï¿½ï¿½Ø¼ï¿½ ï¿½Í¸ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½.
                         btn01.onClick.AddListener(() =>
                         {
-                            if (!Input.GetKeyDown(KeyCode.Return))// ¾ÆÁ÷ ¹®ÀåÀÌ ³¡³ªÁö ¾Ê¾Ò´Ù¸é..
+                            if (!Input.GetKeyDown(KeyCode.Return))// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò´Ù¸ï¿½..
                             {
-                                curPart = (firstOptDialogPart - 1); //curPart·Î ´ÙÀ½À¸·Î ³Ñ¾î°£´Ù.
+                                curPart = (firstOptDialogPart - 1); //curPartï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°£ï¿½ï¿½.
                                 curLine = 0;
                                 curContext = 0;
                                 ObjectTextBox_Button01.SetActive(false);
@@ -186,15 +186,15 @@ public class DialogueManager : MonoBehaviour
 
                 else if (!isChoice && isFinish)
                 {
-                    //¼±ÅÃÁö°¡ ¾ø°í ¿ÏÀüÈ÷ ¹®´ÜÀÌ ³¡³­ °æ¿ì
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 
-                    //ÀÌ ´ë»çÈÄ ´ÙÀ½ ¾î¶² ´ë»ç¸¦ Ã³¾ßÇÒÁö
+                    //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ç¸¦ Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     int nextDialogueNum = dialogue.lines[curPart][curLine].nextDialogueNum;
                     interaction_Item.dialogueNum = nextDialogueNum;
 
-                    // ÇöÀç »óÈ£ÀÛ¿ëÇÏ°í ÀÖ´Â ¿ÀºêÁ§Æ®ÀÇ Item¿¡ ±× °ªÀ» ¾÷µ¥ÀÌÆ® ÇØÁØ´Ù.
-                    bool eventID = dialogue.lines[curPart][curLine].changeEvnetID; //ÇöÀç Event¸¦ º¯°æÇØ¾ßÇÏ´Â °¡..
-                    if (eventID) //º¯°æÇÒ ÀÌº¥Æ®°¡ ÀÖÀ» °æ¿ì¿¡¸¸ º¯°æ
+                    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Itemï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ø´ï¿½.
+                    bool eventID = dialogue.lines[curPart][curLine].changeEvnetID; //ï¿½ï¿½ï¿½ï¿½ Eventï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½..
+                    if (eventID) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                     {
                         changeEvnetID = eventID;
                         if (changeEvnetID)
@@ -202,7 +202,7 @@ public class DialogueManager : MonoBehaviour
                             interaction_Item.dialogueNum = 1;
                             eventIDToBeChange = dialogue.lines[curPart][curLine].evnetIDToBeChange;
                         }
-                        Debug.Log("ÀÌº¥Æ® º¯È­");
+                        Debug.Log("ï¿½Ìºï¿½Æ® ï¿½ï¿½È­");
 
                     }
 
@@ -215,7 +215,7 @@ public class DialogueManager : MonoBehaviour
                             interaction_Item.dialogueNum = 1;
                             endingIDToBeChange = dialogue.lines[curPart][curLine].endingIDToBeChange;
                         }
-                        Debug.Log("¿£µù º¯È­");
+                        Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­");
                     }
 
 
@@ -228,18 +228,18 @@ public class DialogueManager : MonoBehaviour
 
                 else if (!isChoice && !isFinish)
                 {
-                    //¼±ÅÃÁö°¡ ¾ø°í, ¿ÏÀüÈ÷ ¹®´ÜÀÌ ³¡³­ °æ¿ì°¡ ¾Æ´Ñ µÚ¿¡ ´Ù¸¥ »ç¶÷ÀÇ ´ë»ç°¡ ´õ ÀÖ´Â °æ¿ì
-                    //°è¼Ó ÀÌ¾îÁø´Ù.
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì°¡ ï¿½Æ´ï¿½ ï¿½Ú¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ç°¡ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½
+                    //ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½.
                     curLine++;
                     curContext = 0;
                     ClickChoiceBtn = false;
 
-                    Debug.Log("´ë»ç ÀÌ¾îÁ®¾ßÇÏ´Âµ¥..");
+                    Debug.Log("ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Âµï¿½..");
                 }
             }
         }
 
-        //¿£µù¿¡ º¯È­°¡ ÀÖ´ÂÁö
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½
         if (changeEndingID)
         {
             gameInfo.EndingNum = endingIDToBeChange;
@@ -249,13 +249,13 @@ public class DialogueManager : MonoBehaviour
             Debug.Log(nextEventNum);
         }
 
-        //ÀÌº¥Æ® ID¿¡ º¯È­°¡ ÀÖ´ÂÁö
+        //ï¿½Ìºï¿½Æ® IDï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½
         if (changeEvnetID)
         {
             gameInfo.EventNum = eventIDToBeChange;
         }
-        go_DialogueBar.SetActive(false); //´ëÈ­ ¿ÀºêÁ§Æ®¸¦ ºñÈ°¼ºÈ­ ½ÃÅ²´Ù.
-        GameManager.GetInstance().player_InteractingFalse();  //ÇÃ·¹ÀÌ¾î°¡ ¿òÁ÷ÀÏ ¼ö ÀÖµµ·Ï »óÈ£ÀÛ¿ë´Ù½Ã Çã¿ë
+        go_DialogueBar.SetActive(false); //ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­ ï¿½ï¿½Å²ï¿½ï¿½.
+        //GameManager.GetInstance().player_InteractingFalse();  //ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½È£ï¿½Û¿ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½
 
     }
 

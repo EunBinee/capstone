@@ -735,7 +735,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
             //if (transform.position == KnockBackPos)
-                //break;
+            //break;
             //else
             {
                 //time += Time.deltaTime;
@@ -743,7 +743,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         ChangePlayerState(preState);
-        
+
         isGettingHit = false;
     }
 
@@ -794,9 +794,10 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-                GameManager.GetInstance().StartInteraction(interObject);
+                //GameManager.GetInstance().StartInteraction(interObject);
+                GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
-            
+
         }
     }
 }

@@ -8,10 +8,10 @@ public class DatabaseManager : MonoBehaviour
 
     public string csvFileName_NPC;
 
-    //npcÀÇ ´ë»çÀÇ ¸î¹øÂ°ÀÎÁö
+    //npcï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ï¿½ï¿½ï¿½
     public Dictionary<int, Dialogue> NPC_diaglogues_Dictionary = new Dictionary<int, Dialogue>();
 
-    //List<int> idList01 = new List<int>(); //Start()¿¡¼­ DebugÇÒ¶§ »ç¿ë
+    //List<int> idList01 = new List<int>(); //Start()ï¿½ï¿½ï¿½ï¿½ Debugï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½
     //List<int> idList02 = new List<int>();
     int eventID;
 
@@ -28,7 +28,7 @@ public class DatabaseManager : MonoBehaviour
     }
     //void Start()
     //{
-    //    //µ¥ÀÌÅÍ ÆÄ½ÌÀÌ ÀßµÆ´ÂÁö  Debug.Log¿ë
+    //    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ä½ï¿½ï¿½ï¿½ ï¿½ßµÆ´ï¿½ï¿½ï¿½  Debug.Logï¿½ï¿½
     //    for (int i = 0; i < idList01.Count; i++)
     //    {
     //        int id = idList01[i];
@@ -56,12 +56,12 @@ public class DatabaseManager : MonoBehaviour
 
     //                    Debug.Log(lines[j][k].context[l]);
 
-    //                    //¸¸¾à ¼±ÅÃÁö¸¦ °¡Áö°í ÀÖ´Ù¸é..
+    //                    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½..
     //                    if (l == (lines[j][k].context.Length - 1))
     //                    {
     //                        if (lines[j][k].isChoice)
     //                        {
-    //                            Debug.Log("¼±ÅÃÁö");
+    //                            Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
     //                            Debug.Log(lines[j][k].choice.firstOption);
     //                            Debug.Log(lines[j][k].choice.firstOptDialogNum.ToString());
     //                            Debug.Log(lines[j][k].choice.secondOption);
@@ -91,7 +91,7 @@ public class DatabaseManager : MonoBehaviour
         for (int i = 0; i < dialogues.Length; i++)
         {
             //1 01 0001 01 
-            //¿£µù, npc id, ÀÌº¥Æ®id, ´ë»ç´Ü¶ô¹øÈ£ 
+            //ï¿½ï¿½ï¿½ï¿½, npc id, ï¿½Ìºï¿½Æ®id, ï¿½ï¿½ï¿½Ü¶ï¿½ï¿½ï¿½È£ 
             int id = 0;
             string id_String = "";
 
@@ -124,11 +124,11 @@ public class DatabaseManager : MonoBehaviour
 
             if (isNPC)
             {
-                //idList01.Add(id);   //Start()¿¡¼­ DebugÇÒ¶§ »ç¿ë
+                //idList01.Add(id);   //Start()ï¿½ï¿½ï¿½ï¿½ Debugï¿½Ò¶ï¿½ ï¿½ï¿½ï¿½
                 NPC_diaglogues_Dictionary[id] = dialogues[i];
             }
 
         }
-        Debug.Log(csvFileName + "¿Ï·á!");
+        Debug.Log(csvFileName + "ï¿½Ï·ï¿½!");
     }
 }
