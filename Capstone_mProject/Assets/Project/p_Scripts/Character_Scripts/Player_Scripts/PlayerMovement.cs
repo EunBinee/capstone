@@ -454,6 +454,8 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
             P_Com.animator.Play(P_Value.curAnimName, 0);
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
+            effect.gameObject.transform.position = this.gameObject.transform.position+Vector3.up;
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
