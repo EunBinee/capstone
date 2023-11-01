@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         //캐릭터의 애니메이션 변경을 수행하는 함수
         if (!UIManager.gameIsPaused)
         {
@@ -256,7 +256,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-            
+
             Invoke("dodgeOut", 0.15f);    //대시 유지 시간
 
         }
@@ -453,9 +453,15 @@ public class PlayerMovement : MonoBehaviour
                     P_Value.curAnimName = "";
                     break;
             }
-            P_Com.animator.Play(P_Value.curAnimName, 0);
+            //Time.timeScale = 0.1f;
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
-            effect.gameObject.transform.position = this.gameObject.transform.position+Vector3.up;
+            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+            Quaternion effectRotation = this.gameObject.transform.rotation;
+            effectRotation.x = 0;
+            effectRotation.z = 0;
+            effect.gameObject.transform.rotation = effectRotation;
+            P_Com.animator.Play(P_Value.curAnimName, 0);
+            //Debug.Log("effect play " + P_Value.curAnimName);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
