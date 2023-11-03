@@ -17,7 +17,7 @@ public class PlayerAttackCheck : MonoBehaviour
         }
         else
         {
-            Debug.Log("¿¡ÀÓ ¼öÁØ¤»");
+            //Debug.Log("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¤ï¿½");
         }
     }
 }

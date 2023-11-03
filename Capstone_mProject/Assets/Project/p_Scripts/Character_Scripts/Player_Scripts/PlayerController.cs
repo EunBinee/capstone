@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     void FixedUpdate()
     {
@@ -258,7 +258,7 @@ public class PlayerController : MonoBehaviour
         AnimState(PlayerState.Death);
     }
 
-    IEnumerator GetHit_KnockBack_co()
+    IEnumerator GetHit_KnockBack_co() //넉백만을 수행
     {
         PlayerState preState = curPlayerState;
         //ChangePlayerState(PlayerState.GetHit);
