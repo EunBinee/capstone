@@ -52,7 +52,6 @@ public class UIManager : MonoBehaviour
         {
             if (!gameIsPaused)
             {
-                Debug.Log("HI");
                 GetUIPrefab(UI.SettingMenu);
                 Pause();
             }
