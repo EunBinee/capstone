@@ -6,11 +6,18 @@ public class PlayerAttackCheck : MonoBehaviour
 {
     [SerializeField] private Monster monster;
 
-    private void OnCollisionEnter(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Monster")
         {
-            monster.GetDamage(5);
+            Debug.Log("hit monster");
+            monster = other.GetComponent<Monster>();
+            if (monster != null)
+                monster.GetDamage(3);
+        }
+        else
+        {
+            //Debug.Log("���� ���ؤ�");
         }
     }
 }

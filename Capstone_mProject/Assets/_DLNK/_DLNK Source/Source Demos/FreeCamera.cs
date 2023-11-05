@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class FreeCamera : MonoBehaviour {
+public class FreeCamera : MonoBehaviour
+{
 #if UNITY_EDITOR
 	static Texture2D ms_invisibleCursor;
 #endif
@@ -12,41 +13,46 @@ public class FreeCamera : MonoBehaviour {
 	public float moveSpeed = 5f;
 	public float sprintSpeed = 50f;
 
-	bool	m_inputCaptured;
-	float	m_yaw;
-	float	m_pitch;
-	
-	void Awake() {
+	bool m_inputCaptured;
+	float m_yaw;
+	float m_pitch;
+
+	void Awake()
+	{
 #if UNITY_EDITOR
-		if(!ms_invisibleCursor) {
+		if (!ms_invisibleCursor)
+		{
 			ms_invisibleCursor = new Texture2D(0, 0);
-	//		ms_invisibleCursor.SetPixel(0, 0, new Color32(0, 0, 0, 0));
+			//		ms_invisibleCursor.SetPixel(0, 0, new Color32(0, 0, 0, 0));
 		}
 #endif
 
 		enabled = enableInputCapture;
 	}
 
-	void OnValidate() {
-		if(Application.isPlaying)
+	void OnValidate()
+	{
+		if (Application.isPlaying)
 			enabled = enableInputCapture;
 	}
 
-	void CaptureInput() {
+	void CaptureInput()
+	{
 		Cursor.lockState = CursorLockMode.Locked;
 
-//#if UNITY_EDITOR
-	//	Cursor.SetCursor(ms_invisibleCursor, Vector2.zero, CursorMode.ForceSoftware);
-//#else
+		//#if UNITY_EDITOR
+		//	Cursor.SetCursor(ms_invisibleCursor, Vector2.zero, CursorMode.ForceSoftware);
+		//#else
 		Cursor.visible = false;
-//#endif
+		//#endif
 		m_inputCaptured = true;
 
 		m_yaw = transform.eulerAngles.y;
 		m_pitch = transform.eulerAngles.x;
 	}
 
-	void ReleaseInput() {
+	void ReleaseInput()
+	{
 		Cursor.lockState = CursorLockMode.None;
 #if UNITY_EDITOR
 		Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
@@ -56,26 +62,30 @@ public class FreeCamera : MonoBehaviour {
 		m_inputCaptured = false;
 	}
 
-	void OnApplicationFocus(bool focus) {
-		if(m_inputCaptured && !focus)
+	void OnApplicationFocus(bool focus)
+	{
+		if (m_inputCaptured && !focus)
 			ReleaseInput();
 	}
 
-	void Update() {
-		if(!m_inputCaptured) {
-			if(!holdRightMouseCapture && Input.GetMouseButtonDown(0)) 
+	void Update()
+	{
+		if (!m_inputCaptured)
+		{
+			if (!holdRightMouseCapture && Input.GetMouseButtonDown(0))
 				CaptureInput();
-			else if(holdRightMouseCapture && Input.GetMouseButtonDown(1))
+			else if (holdRightMouseCapture && Input.GetMouseButtonDown(1))
 				CaptureInput();
 		}
 
-		if(!m_inputCaptured)
+		if (!m_inputCaptured)
 			return;
 
-		if(m_inputCaptured) {
-			if(!holdRightMouseCapture && Input.GetKeyDown(KeyCode.Escape))
+		if (m_inputCaptured)
+		{
+			if (!holdRightMouseCapture && Input.GetKeyDown(KeyCode.Escape))
 				ReleaseInput();
-			else if(holdRightMouseCapture && Input.GetMouseButtonUp(1))
+			else if (holdRightMouseCapture && Input.GetMouseButtonUp(1))
 				ReleaseInput();
 		}
 

@@ -35,7 +35,7 @@ public class MonsterUI_Info : MonoBehaviour
     public void UpdateHP()
     {
         float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
-        Debug.Log($"monsterHP_Value {monsterHP_Value}");
+        //        Debug.Log($"monsterHP_Value {monsterHP_Value}");
 
         StartCoroutine(UpdateHPBar_Anim(monsterHP_Value));
     }

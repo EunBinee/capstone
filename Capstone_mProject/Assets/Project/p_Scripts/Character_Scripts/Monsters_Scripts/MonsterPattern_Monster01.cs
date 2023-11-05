@@ -230,12 +230,15 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
             if (0 < playerColliders.Length)
             {
+                Debug.Log("AA");
                 if (!playerHide) //*플레이어가 안숨었을 경우에만..
                 {
+                    Debug.Log("BB");
                     //몬스터의 범위에 들어옴
                     //로밍 코루틴 제거
                     if (isRoaming)
                     {
+                        Debug.Log("CC");
                         bool inFrontOf_Player = PlayerLocationCheck();
                         bool findPlayer = false;
                         if (!inFrontOf_Player)
@@ -564,12 +567,17 @@ public class MonsterPattern_Monster01 : MonsterPattern
         yield return new WaitForSeconds(0.5f);
         Effect effect = null;
 
-        effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
-        if (effect != null)
+        // TODO : 나중에 원거리 이펙트 정해진 후, LongAttackEffectName != "" 이 부분 전부 없애기
+        if (LongAttackEffectName != "")
         {
-            effect.transform.localEulerAngles = new Vector3(0, 0, 0);
-            effect.transform.position = attackEffectPos.position;
+            effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
+            if (effect != null)
+            {
+                effect.transform.localEulerAngles = new Vector3(0, 0, 0);
+                effect.transform.position = attackEffectPos.position;
+            }
         }
+
 
         while (true)
         {
@@ -577,7 +585,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
             {
                 navMeshAgent.SetDestination(playerTargetPos.position);
                 distance = Vector3.Distance(transform.position, playerTargetPos.position);
-                if (effect != null)
+                if (LongAttackEffectName != "" && effect != null)
                 {
                     effect.transform.position = attackEffectPos.position;
                 }
@@ -591,6 +599,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 yield return null;
                 time += Time.deltaTime;
             }
+
             else if (time > 5 && isAttack)
             {
                 // 공격 정지
@@ -600,7 +609,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 SetMove_AI(false);
                 SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-                if (effect != null)
+                if (LongAttackEffectName != "" && effect != null)
                 {
                     effect.StopEffect();
                 }
@@ -624,16 +633,20 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 //* 이펙트
 
                 yield return new WaitForSeconds(0.5f);
-                effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
-                if (effect != null)
+                if (LongAttackEffectName != "")
                 {
-                    effect.transform.localEulerAngles = new Vector3(0, 0, 0);
-                    effect.transform.position = attackEffectPos.position;
+                    effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
+                    if (effect != null)
+                    {
+                        effect.transform.localEulerAngles = new Vector3(0, 0, 0);
+                        effect.transform.position = attackEffectPos.position;
+                    }
                 }
+
             }
         }
 
-        if (effect.gameObject.activeSelf && effect != null)
+        if (LongAttackEffectName != "" && effect.gameObject.activeSelf && effect != null)
             effect.StopEffect();
 
         for (int i = 0; i < weapons.Length; i++)
