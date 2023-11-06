@@ -801,8 +801,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.04560098, y: 0.8287874, z: 0.24240258}
-  m_Center: {x: 0.00020353781, y: 0.48214367, z: 0.0001506347}
+  m_Size: {x: 0.04560098, y: 1.2890403, z: 0.24240305}
+  m_Center: {x: 0.00020365634, y: 0.7122685, z: 0.00014975324}
 --- !u!1 &1095902721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1620,6 +1620,10 @@ PrefabInstance:
     - target: {fileID: 8795022814585965166, guid: a853dc61a6b162b45bc1a0355ba2cb34, type: 3}
       propertyPath: m_Name
       value: Player (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8795022814585965166, guid: a853dc61a6b162b45bc1a0355ba2cb34, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 8795022814585965167, guid: a853dc61a6b162b45bc1a0355ba2cb34, type: 3}
       propertyPath: navMeshSurface
@@ -6115,7 +6119,6 @@ MonoBehaviour:
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
     HP: 100
-    curAnimName: 
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0

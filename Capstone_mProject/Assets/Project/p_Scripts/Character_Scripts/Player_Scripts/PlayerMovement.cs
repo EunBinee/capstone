@@ -31,10 +31,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (P_States.isStartComboAttack && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
+        {
+            P_Value.index = 1;
+            P_Value.time = 0;
+            P_Value.isCombo = false;
+            P_States.isStartComboAttack = false;
+            P_Com.animator.SetInteger("comboCount", P_Value.index);
+            P_Com.animator.SetBool("p_Locomotion", true);
+            //P_Com.animator.Play("locomotion");
+            P_Com.animator.Rebind();
+        }
+        Inputs();
         //캐릭터의 애니메이션 변경을 수행하는 함수
         if (!UIManager.gameIsPaused)
         {
-            Inputs();
             AnimationParameters();
         }
     }
@@ -80,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0) && !P_States.isStartComboAttack)
+            if (P_States.isGround && Input.GetMouseButtonDown(0) && !P_States.isStartComboAttack)
             {
                 P_States.isStartComboAttack = true;
                 StartCoroutine(Attacking());
@@ -433,14 +444,15 @@ public class PlayerMovement : MonoBehaviour
         int index = 1;
         float time = 0;
         bool isCombo = false;
+        string curAnimName = "";
 
         while (true)
         {
-            isCombo = false;
+            P_Value.isCombo = false;
             P_Controller.ChangePlayerState(PlayerState.ComboAttack);
             //AnimState(PlayerState.ComboAttack, index);
 
-            switch (index)
+            switch (P_Value.index)
             {
                 case 1:
                     //검
@@ -510,14 +522,19 @@ public class PlayerMovement : MonoBehaviour
                     P_Value.curAnimName = comboName05;
                     break;
                 default:
-                    P_Value.curAnimName = "";
+                    curAnimName = "";
                     break;
             }
-            P_Com.animator.Play(P_Value.curAnimName, 0);
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
+            //Time.timeScale = 0.1f;
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect(curAnimName);
             effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+            Quaternion effectRotation = this.gameObject.transform.rotation;
+            effectRotation.x = 0;
+            effectRotation.z = 0;
+            effect.gameObject.transform.rotation = effectRotation;
+            P_Com.animator.Play(curAnimName, 0);
 
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
             //플레이어 공격 콜라이더 비활성화
@@ -533,37 +550,37 @@ public class PlayerMovement : MonoBehaviour
             }
 
             P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
-            P_Controller.AnimState(PlayerState.FinishComboAttack, index);
+            P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
 
-            int curIndex = index;
-            time = 0;
+            int curIndex = P_Value.index;
+            P_Value.time = 0;
 
-            while (time <= comboClickTime)
+            while (P_Value.time <= comboClickTime)
             {
-                time += Time.deltaTime;
+                P_Value.time += Time.deltaTime;
                 yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
-                if (Input.GetMouseButton(0) && curIndex == index)
+                if (Input.GetMouseButton(0) && curIndex == P_Value.index)
                 {
-                    if (index == 5)
+                    if (P_Value.index == 5)
                     {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
-                        index = 0;
-                        time = 0;
-                        isCombo = false;
+                        P_Value.index = 0;
+                        P_Value.time = 0;
+                        P_Value.isCombo = false;
                         //P_States.isPerformingAction = false;
                     }
                     else
                     {
-                        index++;
-                        isCombo = true;
+                        P_Value.index++;
+                        P_Value.isCombo = true;
                     }
                     break;
                 }
             }
-            if (isCombo == false)
+            if (P_Value.isCombo == false)
             {
-                P_Com.animator.SetInteger("comboCount", index);
+                P_Com.animator.SetInteger("comboCount", P_Value.index);
                 P_Com.animator.SetBool("p_Locomotion", true);
                 break;
             }
