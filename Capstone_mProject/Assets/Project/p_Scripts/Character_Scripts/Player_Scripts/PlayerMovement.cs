@@ -441,10 +441,6 @@ public class PlayerMovement : MonoBehaviour
 
         List<Collider> playerColliderList = new List<Collider>();
         List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
-        int index = 1;
-        float time = 0;
-        bool isCombo = false;
-        string curAnimName = "";
 
         while (true)
         {
@@ -522,19 +518,20 @@ public class PlayerMovement : MonoBehaviour
                     P_Value.curAnimName = comboName05;
                     break;
                 default:
-                    curAnimName = "";
+                    P_Value.curAnimName = "";
                     break;
             }
             //Time.timeScale = 0.1f;
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect(curAnimName);
+            Debug.Log(P_Value.index);
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
             effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
             Quaternion effectRotation = this.gameObject.transform.rotation;
             effectRotation.x = 0;
             effectRotation.z = 0;
             effect.gameObject.transform.rotation = effectRotation;
-            P_Com.animator.Play(curAnimName, 0);
+            P_Com.animator.Play(P_Value.curAnimName, 0);
 
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
             //플레이어 공격 콜라이더 비활성화

@@ -110,6 +110,7 @@ public class CurrentValue
     public int index;
     public float time;
     public bool isCombo;
+    public string curAnimName = "";
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
