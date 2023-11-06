@@ -27,25 +27,8 @@ public class QuestManager : MonoBehaviour
         return instance;
     }
     public Quest quest_ = new Quest();
-    //public List<Quest> quests = new List<Quest>();
+    public string text = "";
 
-    // protected void Init()
-    // {
-    //     foreach (Quest group in quests)
-    //     {
-    //         group.InitMainQuestValue();
-    //         TextTitleUpdate(group);
-    //         TextValueUpdate(group, group.currentQuestValue);
-    //     }
-    // }
-    // protected void TextTitleUpdate(Quest qroup)
-    // {
-    //     //qroup.questTitle.text = qroup.questTitle.ToString();
-    // }
-    // protected void TextValueUpdate(Quest group, int value)
-    // {
-
-    // }
 
     private void Init()
     {
@@ -58,13 +41,11 @@ public class QuestManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
-
                 quest_.currentQuestValue++;
                 Debug.Log(quest_.currentQuestValue);
+                TextUpdate();
             }
-
             Quest_ValueUpdate();
-
         }
 
 
@@ -103,29 +84,38 @@ public class QuestManager : MonoBehaviour
     {
         GameManager.instance.dialogueManager.DoQuest = true;
         Init();
-        string text = "";
-        switch (GameManager.Instance.gameInfo.QuestNum)
-        {
-            case 1:
-                Debug.Log("퀘스트 1번");
-                quest_ = DatabaseManager.GetInstance().Quest_Dictionary[id];
-                //QuestList(1);
-                break;
-            default:
-                break;
-        }
+
+        quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
+        // switch (GameManager.Instance.gameInfo.QuestNum)
+        // {
+        //     case 1:
+        //         Debug.Log("퀘스트 1번");
+        //         quest_ = DatabaseManager.GetInstance().Quest_Dictionary[id];
+        //         //QuestList(1);
+        //         break;
+        //     default:
+        //         break;
+        // }
+        TextUpdate();
+
+    }
+
+
+    public void TextUpdate()
+    {
         for (int i = 0; i < quest_.questContent.Count;)
         {
-            text += quest_.questContent[i];
+            text = quest_.questContent[i] + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
             if (++i != quest_.questContent.Count)
             {
+
                 text += "\n";
             }
         }
-        //GameManager.Instance.dialogueManager.DoQuest = true;
         GameManager.GetInstance().dialogueManager.QuestGoal_UI(text);
         Debug.Log(GameManager.Instance.dialogueManager.DoQuest);
 
-
     }
+
+
 }
