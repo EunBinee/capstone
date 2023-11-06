@@ -4,20 +4,29 @@ using UnityEngine;
 
 public class PlayerAttackCheck : MonoBehaviour
 {
+    public bool isEnable = false;
     [SerializeField] private Monster monster;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Monster")
+        if (isEnable)
         {
-            Debug.Log("hit monster");
-            monster = other.GetComponent<Monster>();
-            if (monster != null)
-                monster.GetDamage(3);
+            if (other.gameObject.tag == "Monster")
+            {
+
+                Debug.Log("hit monster");
+                monster = other.GetComponentInParent<Monster>();
+                if (monster != null)
+                    monster.GetDamage(3);
+                else
+                    Debug.LogError("몬스터 : null");
+
+            }
+            else
+            {
+
+            }
         }
-        else
-        {
-            //Debug.Log("���� ���ؤ�");
-        }
+
     }
 }
