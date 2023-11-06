@@ -27,6 +27,7 @@ public class PlayerMovement : MonoBehaviour
             PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
             playerAttackChecks.Add(attackCheck);
         }
+        P_Value.index = 1;
     }
     // Update is called once per frame
     void Update()
@@ -562,7 +563,7 @@ public class PlayerMovement : MonoBehaviour
                     if (P_Value.index == 5)
                     {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
-                        P_Value.index = 0;
+                        P_Value.index = 1;
                         P_Value.time = 0;
                         P_Value.isCombo = false;
                         //P_States.isPerformingAction = false;
