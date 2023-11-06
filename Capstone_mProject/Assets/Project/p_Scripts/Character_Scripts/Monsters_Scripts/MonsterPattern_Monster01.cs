@@ -20,6 +20,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     public string LongAttackEffectName;
     Vector3 effectRotation;
 
+    Effect curEffect = null;
 
     Coroutine roam_Monster_co = null;
     Coroutine short_Range_Attack_co = null;
@@ -147,6 +148,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
             case MonsterState.Attack:
                 if (m_monster.HPBar_CheckNull() == false)
                     m_monster.GetHPBar();
+                break;
+            case MonsterState.GetHit:
+
                 break;
             case MonsterState.GoingBack:
                 GoingBack_Movement();
@@ -445,6 +449,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
+
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
 
@@ -454,6 +459,13 @@ public class MonsterPattern_Monster01 : MonsterPattern
         yield return new WaitForSeconds(0.5f);
 
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
+        curEffect = effect;
+
+        effect.finishAction = () =>
+        {
+            curEffect = null;
+        };
+
         effect.transform.localEulerAngles = effectRotation;
         effect.transform.position = attackEffectPos.position;
 
@@ -680,6 +692,24 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //플레이어의 반대 방향으로 넉백
         MonsterState preState = curMonsterState;
         ChangeMonsterState(MonsterState.GetHit);
+
+        if (preState == MonsterState.Attack && short_Range_Attack_co != null)
+        {
+            StopCoroutine(short_Range_Attack_co);
+            for (int i = 0; i < weapons.Length; i++)
+            {
+                weapons[i].enabled = false;
+            }
+            short_Range_Attack_co = null;
+        }
+
+
+        if (curEffect != null)
+        {
+            Debug.Log("없앰");
+            curEffect.StopEffect();
+            curEffect = null;
+        }
 
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);

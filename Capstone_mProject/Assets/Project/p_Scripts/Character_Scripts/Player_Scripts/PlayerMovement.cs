@@ -14,16 +14,23 @@ public class PlayerMovement : MonoBehaviour
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
 
     public float comboClickTime = 0.5f;
-
+    [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
+    public Collider[] attackColliders;
+    private List<PlayerAttackCheck> playerAttackChecks;
     // Start is called before the first frame update
     void Start()
     {
         _controller = GetComponent<PlayerController>();
+        playerAttackChecks = new List<PlayerAttackCheck>();
+        for (int i = 0; i < attackColliders.Length; i++)
+        {
+            PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
+            playerAttackChecks.Add(attackCheck);
+        }
     }
     // Update is called once per frame
     void Update()
     {
-        
         //캐릭터의 애니메이션 변경을 수행하는 함수
         if (!UIManager.gameIsPaused)
         {
@@ -256,7 +263,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-            
+
             Invoke("dodgeOut", 0.15f);    //대시 유지 시간
 
         }
@@ -420,8 +427,9 @@ public class PlayerMovement : MonoBehaviour
         string comboName03 = "Attack_Combo_3";
         string comboName04 = "Attack_Combo_4";
         string comboName05 = "Attack_Combo_5";
-        //string curAnimName = "";
 
+        List<Collider> playerColliderList = new List<Collider>();
+        List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
         int index = 1;
         float time = 0;
         bool isCombo = false;
@@ -435,18 +443,70 @@ public class PlayerMovement : MonoBehaviour
             switch (index)
             {
                 case 1:
+                    //검
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
+
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
+
                     P_Value.curAnimName = comboName01;
                     break;
                 case 2:
+                    //검
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
+
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
+
                     P_Value.curAnimName = comboName02;
                     break;
                 case 3:
+                    //오른쪽 다리
+                    playerColliderList.Add(attackColliders[2]);
+                    playerAttackCheckList.Add(playerAttackChecks[2]);
+
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
+
                     P_Value.curAnimName = comboName03;
                     break;
                 case 4:
+                    //양발 다
+                    playerColliderList.Add(attackColliders[1]);
+                    playerAttackCheckList.Add(playerAttackChecks[1]);
+                    playerColliderList.Add(attackColliders[2]);
+                    playerAttackCheckList.Add(playerAttackChecks[2]);
+
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
+
                     P_Value.curAnimName = comboName04;
                     break;
                 case 5:
+                    //검
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
+
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
+
                     P_Value.curAnimName = comboName05;
                     break;
                 default:
@@ -455,10 +515,22 @@ public class PlayerMovement : MonoBehaviour
             }
             P_Com.animator.Play(P_Value.curAnimName, 0);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
-            effect.gameObject.transform.position = this.gameObject.transform.position+Vector3.up;
+            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
+
+            //플레이어 공격 콜라이더 비활성화
+            if (playerAttackCheckList.Count != 0)
+            {
+                for (int i = 0; i < playerColliderList.Count; ++i)
+                {
+                    playerColliderList[i].enabled = false;
+                    playerAttackCheckList[i].isEnable = false;
+                }
+                playerColliderList.Clear();
+                playerAttackCheckList.Clear();
+            }
 
             P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
             P_Controller.AnimState(PlayerState.FinishComboAttack, index);
@@ -495,7 +567,12 @@ public class PlayerMovement : MonoBehaviour
                 P_Com.animator.SetBool("p_Locomotion", true);
                 break;
             }
+
         }
+
         P_States.isStartComboAttack = false;
     }
+
+
+
 }
