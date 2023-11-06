@@ -23,6 +23,10 @@ public class CameraController : MonoBehaviour
     public float left_right_LookAngle;
     public float up_down_LookAngle;
 
+    private void Start()
+    {
+        playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+    }
 
     private void LateUpdate()
     {

@@ -98,6 +98,7 @@ public class MonsterPattern : MonoBehaviour
 
         if (m_monster.monsterData.movingMonster)
         {
+
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.updateRotation = false;
         }
