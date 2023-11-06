@@ -12,6 +12,10 @@ public class GameInfo : MonoBehaviour
     [SerializeField]
     private int eventNum;
 
+    //퀘스트 번호
+    [SerializeField]
+    private int questNum;
+
 
     public int EndingNum
     {
@@ -24,9 +28,9 @@ public class GameInfo : MonoBehaviour
         get { return eventNum; }
         set { eventNum = value; }
     }
-    public int LineNum
+    public int QuestNum
     {
-        get { return eventNum; }
-        set { eventNum = value; }
+        get { return questNum; }
+        set { questNum = value; }
     }
 }

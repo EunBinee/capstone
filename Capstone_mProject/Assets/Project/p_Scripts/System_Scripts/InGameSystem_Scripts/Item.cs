@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public string Name; //Npc ÀÌ¸§
+    public string Name; //Npc ì´ë¦„
     public int id; //Npc ID
 
     public bool isNpc;
 
-    //´ë»ç ¹®´ÜÀÇ ¹øÈ£
-    public int dialogueNum; //´ëÈ­´Ü¶ô, Ã³À½Àº Ç×»ó 1
+    //ëŒ€í™” 
+    public int dialogueNum; //ë‹¨ë½ë²ˆí˜¸, ì²˜ìŒì€ í•­ìƒ 1
+    public int questNum; //í€˜ìŠ¤íŠ¸ ë²ˆí˜¸
+    //public int lineNum;
 
-    public int lineNum;
-
-    //endingÀÌ³ª Event°¡ º¯ÇÑ °æ¿ì¸¦ Ã¼Å©ÇÏ±â À§ÇÔ
-    //--> ¿£µùÀÌ³ª ÀÌº¥Æ®°¡ º¯ÇÑ °æ¿ì, DialogueNumÀÌ ´Ù½Ã 1ÀÌ µÇ¾î¾ß ÇÑ´Ù.
-    // ±×°ÍÀ» Ã¼Å©ÇÏ±â À§ÇÔ.
+    //endingì´ë‚˜ Eventê°€ ë³€í•œ ê²½ìš°ë¥¼ ì²´í¬í•˜ê¸° ìœ„í•¨
+    //--> ì—”ë”©ì´ë‚˜ ì´ë²¤íŠ¸ê°€ ë³€í•œ ê²½ìš°, DialogueNumì´ ë‹¤ì‹œ 1ì´ ë˜ì–´ì•¼ í•œë‹¤.
+    // ê·¸ê²ƒì„ ì²´í¬í•˜ê¸° ìœ„í•¨.
     public int preEventNum;
     public int preEndingNum;
 }

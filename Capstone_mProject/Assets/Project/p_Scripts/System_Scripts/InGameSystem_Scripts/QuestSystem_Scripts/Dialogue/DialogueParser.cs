@@ -8,92 +8,35 @@ using UnityEngine;
 
 public class DialogueParser : MonoBehaviour
 {
-    //    public Dialogue[] Parse(string _CSVFileName)
-    //    {
-    //        List<Dialogue> dialogueList = new List<Dialogue>(); //´ëÈ­ ¸®½ºÆ® »ı¼º
-    //        TextAsset csvData = Resources.Load<TextAsset>(_CSVFileName); //csvÆÄÀÏ °¡Á®¿È
-
-    //        string[] data = csvData.text.Split(new char[] { '\n' }); //¿£ÅÍ ±âÁØÀ¸·Î ÂÉ°×.
-
-    //        for (int i = 1; i < data.Length;)
-    //        {
-
-    //            string[] row = data[i].Split(new char[] { ',' });
-
-    //            Dialogue dialogue = new Dialogue(); //´ë»ç ¸®½ºÆ® »ı¼º
-
-    //            dialogue.name = row[3]; //Ä³¸¯ÅÍ ÀÌ¸§
-    //            dialogue.skipnum = row[7]; //½ºÅµ¹øÈ£
-    //            dialogue.endingNum = row[9]; //¿£µù¹øÈ£
-
-    //            List<string> contextList = new List<string>();
-
-    //            if (row[4].ToString() == "1") //¼±ÅÃÁö ¿©ºÎ°¡ 1ÀÌ¸é ¼±ÅÃÁö ÀÖÀ½. 
-    //            {
-    //                dialogue.isChoice = true;
-    //            }
-    //            else
-    //            {
-    //                dialogue.isChoice = false;
-    //            }
-
-    //            do
-    //            {
-    //                Debug.Log(row[4]);
-    //                if (row[3] != "") //´ë»ç°¡ °ø¹éÀÌ ¾Æ´Ï¸é Ãß°¡ 
-    //                {
-    //                    contextList.Add(row[4]); //´ë»ç
-    //                }
-
-    //                if (++i < data.Length)
-    //                {
-    //                    row = data[i].Split(new char[] { ',' });
-    //                }
-    //                else
-    //                {
-    //                    break;
-    //                }
-    //                if (row[5].ToString() != "") //¼±ÅÃ´ë»ç°¡ °ø¹éÀÌ ¾Æ´Ï¸é Ãß°¡
-    //                {
-    //                    contextList.Add(row[6]);
-    //                }
-
-    //            } while (row[2].ToString() == ""); //¿©¹éÀÌ¸é ´ÙÀ½ ´ë»ç Ãß°¡
-
-    //            dialogue.contexts = contextList.ToArray();
-    //            dialogueList.Add(dialogue);
-
-    //        }
-
-    //        return dialogueList.ToArray();
-    //    }
-    //}
-
-
     int eventNum_in = 0;
     int npcNum_in = 0;
-    int dialogueNum_in = 0;  //E¿­
+    int dialogueNum_in = 0;  //E
     int endingNum_in = 0;
-    int lineNum_in = 0;
+    int questNum_in = 0;
+    //int lineNum_in = 0;
 
-    //Line.cs¿¡ ¾²ÀÓ
+    //Line.csì— ì“°ì„
     string name_in;
     int choice_OneTwo = 0;
     bool startChoice = false;
     bool finishBreak = false;
+    //bool doQuest = false;
 
-    void Initialization()
+    void Initialization() //ì´ˆê¸°í™”
     {
         eventNum_in = 0;
         npcNum_in = 0;
         dialogueNum_in = 0;
         endingNum_in = 0;
-        lineNum_in = 0;
+        questNum_in = 0;
+        //lineNum_in = 0;
 
         name_in = "";
         choice_OneTwo = 0;
         startChoice = false;
         finishBreak = false;
+        //doQuest = false;
+
     }
     public Dialogue[] DialogueParse(string csvFileName)
     {
@@ -113,10 +56,11 @@ public class DialogueParser : MonoBehaviour
 
             if (row[1].ToString() == "")
             {
-                dialogue.eventNum = eventNum_in;   //ÇöÀç ÁøÇàµÇ°íÀÖ´Â ÀÌº¥Æ®¹øÈ£
-                dialogue.npcNum = npcNum_in;     //Npc ¹øÈ£
-                dialogue.endingNum = endingNum_in;  //ending¹øÈ£
-                dialogue.lineNum = lineNum_in;
+                dialogue.eventNum = eventNum_in;   //ì´ë²¤íŠ¸id
+                dialogue.npcNum = npcNum_in;     //Npcid
+                dialogue.endingNum = endingNum_in;  //endingid
+                dialogue.questNum = questNum_in;
+                //dialogue.lineNum = lineNum_in;
             }
             else
             {
@@ -127,12 +71,19 @@ public class DialogueParser : MonoBehaviour
                     endingNum_in = endingNum_in;
                 else
                     endingNum_in = int.Parse(row[11].ToString());
-                lineNum_in = int.Parse(row[4].ToString());
+                if (row[10] == "")
+                    questNum_in = questNum_in;
+                else
+                    questNum_in = int.Parse(row[10].ToString());
+                //lineNum_in = int.Parse(row[4].ToString());
 
-                dialogue.eventNum = eventNum_in;   //ÇöÀç ÁøÇàµÇ°íÀÖ´Â ÀÌº¥Æ®
-                dialogue.npcNum = npcNum_in;     //Npc ¹øÈ£
-                dialogue.endingNum = endingNum_in;  //ending¹øÈ£
-                dialogue.lineNum = lineNum_in;
+                dialogue.eventNum = eventNum_in;   //ì´ë²¤íŠ¸ id
+                dialogue.npcNum = npcNum_in;     //Npc id
+                dialogue.endingNum = endingNum_in;  //ending id
+                dialogue.questNum = questNum_in;
+                //dialogue.lineNum = lineNum_in;
+
+
             }
 
             if (row[3].ToString() == "")
@@ -146,58 +97,59 @@ public class DialogueParser : MonoBehaviour
             }
             if (row[4].ToString() == "")
             {
-                dialogue.lineNum = lineNum_in;
+                //dialogue.lineNum = lineNum_in;
             }
             else
             {
-                lineNum_in = int.Parse(row[4].ToString());
-                dialogue.lineNum = lineNum_in;
+                //lineNum_in = int.Parse(row[4].ToString());
+                //dialogue.lineNum = lineNum_in;
             }
             if (row[5].ToString() == "")
             {
-                dialogue.lineNum = lineNum_in;
+                //dialogue.lineNum = lineNum_in;
             }
             else
             {
-                lineNum_in = int.Parse(row[4].ToString());
-                dialogue.lineNum = lineNum_in;
+                //lineNum_in = int.Parse(row[4].ToString());
+                //dialogue.lineNum = lineNum_in;
             }
             do
             {
                 List<Line> LineList = new List<Line>();
-                List<string> contextList = new List<string>();  //Line.csÀÇ context[]¿¡ ³Ö±â À§ÇÔ
+                List<string> contextList = new List<string>();  //Line.csì˜ context[]ì— ë„£ê¸° ìœ„í•¨. 
 
                 do
                 {
                     Line line = new Line();
 
-                    //¶óÀÎ ÃÊ±âÈ­
+                    //ë¼ì¸ ì´ˆê¸°í™”
                     line.isChoice = false;
-                    line.isFinishLine = false;  //´ëÈ­°¡ ³¡³µ´ÂÁö ¿©ºÎ    
+                    line.isFinishLine = false;  //ëŒ€í™” ëë‚¬ëŠ”ì§€ ì—¬ë¶€
                     line.nextDialogueNum = dialogueNum_in;
-                    line.nextLineNum = lineNum_in;
+                    //line.DoQuest = false;
+                    //line.nextLineNum = lineNum_in;
 
                     do
                     {
-                        if (!startChoice) //¼±ÅÃÁö°¡ ¾øÀ» °æ¿ì
+                        if (!startChoice) //ì„ íƒì§€ê°€ ì—†ì„ ê²½ìš°
                         {
                             if (row[5].ToString() != "")
                             {
-                                name_in = row[5].ToString(); //Ä³¸¯ÅÍ ÀÌ¸§ 
+                                name_in = row[5].ToString(); //npc ì´ë¦„ 
                             }
 
                             line.Name = name_in;
                             contextList.Add(row[6].ToString());
 
                         }
-                        else if (startChoice) //¼±ÅÃÁö°¡ ÀÖÀ» °æ¿ì
+                        else if (startChoice) //ì„ íƒì§€ê°€ ìˆì„ ê²½ìš°
                         {
                             choice_OneTwo++;
 
                             line.isChoice = true;
                             if (choice_OneTwo == 1)
                             {
-                                //Ã¹¹øÂ° Áú¹®ÀÎÁö
+                                //ì²«ë²ˆì§¸ ì§ˆë¬¸ì¸ì§€
                                 line.choice = new Choice();
                                 line.choice.firstOption = row[8].ToString();
                                 line.choice.firstOptDialogNum = int.Parse(row[9].ToString());
@@ -205,7 +157,7 @@ public class DialogueParser : MonoBehaviour
                             }
                             else if (choice_OneTwo == 2)
                             {
-                                //µÎ¹øÂ° Áú¹®ÀÎÁö
+                                //ë‘ë²ˆì§¸ ì§ˆë¬¸ì¸ì§€
                                 line.choice.secondOption = row[8].ToString();
                                 line.choice.secondOptDialogNum = int.Parse(row[9].ToString());
 
@@ -218,66 +170,90 @@ public class DialogueParser : MonoBehaviour
                         {
                             if (int.Parse(row[7].ToString()) == 1)
                             {
-                                //¼±ÅÃÁö°¡ ÀÖ´Â °æ¿ì
+                                //ì„ íƒì§€ ìˆëŠ” ê²½ìš°
                                 startChoice = true;
                                 line.isChoice = true;
                             }
                             else if (int.Parse(row[7].ToString()) == 0)
                             {
                                 line.isFinishLine = true;
-                                //´ÙÀ½ ´ë»çÀÇ ¼ø¼­ 
+
+                                //ì„ íƒì§€ ì—†ì´ ëë‚˜ëŠ” ê²½ìš° ë‹¤ìŒ ëŒ€ì‚¬ ì •í•´ì•¼í•¨. 
                                 int nextDialogueNum = 0;
                                 bool isNumeric = int.TryParse(row[3].ToString(), out nextDialogueNum);
 
 
-                                if (isNumeric) //¸¸¾à ¼ıÀÚ º¯È¯ÀÌ °¡´ÉÇÏ´Ù¸é
+                                if (isNumeric) //ë§Œì•½ ìˆ«ì ë³€í™˜ì´ ê°€ëŠ¥í•˜ë‹¤ë©´ 
                                 {
                                     line.nextDialogueNum = nextDialogueNum;
                                     //Debug.Log(nextDialogueNum);
                                 }
                                 if (!isNumeric && row[3].ToString() == "")
                                 {
-                                    //´ÙÀ½ ´Ü¶ôÀ¸·Î 
                                     line.nextDialogueNum = dialogueNum_in + 1;
-
                                 }
+                                // if (row[12].ToString() != "")
+                                // {
+                                //     line.nextDialogueNum = 1;
+                                // }
+
+                                // line.nextDialogueNum = dialogueNum_in + 1;
+
+
+
+
                                 //if (!isNumeric && row[9].ToString() == "")
                                 //{
                                 //    line.nextDialogueNum = dialogueNum_in;
                                 //}
 
 
-                                //´ë»ç°¡ ³¡³ª°í EvnetÀÇ º¯È­°¡ ÀÖ´ÂÁöµµ È®ÀÎ
-                                if (!line.changeEvnetID) //falseÀÏ¶§¸¸ º¯°æ ÇÑ¹ø 
+                                //ëŒ€ì‚¬ê°€ ëë‚˜ê³  Evnetì˜ ë³€í™”ê°€ ìˆëŠ”ì§€
+                                if (!line.changeEvnetID) //falseì¼ë•Œ ë³€í™”
                                 {
                                     int changeEvnetID = 0;
                                     isNumeric = int.TryParse(row[12].ToString(), out changeEvnetID);
 
-                                    if (isNumeric) //¸¸¾à ¼ıÀÚ º¯È¯ÀÌ °¡´ÉÇÏ´Ù¸é
+                                    if (isNumeric)
                                     {
                                         line.changeEvnetID = true;
                                         line.evnetIDToBeChange = changeEvnetID;
                                         Debug.Log(line.evnetIDToBeChange);
+                                        Debug.Log("ì´ë²¤íŠ¸ ë³€í™” ìˆìŒ");
                                     }
                                 }
-                                //´ë»ç°¡ ³¡³ª°í EndingÀÇ º¯È­°¡ ÀÖ´ÂÁöµµ È®ÀÎ
+                                //ëŒ€ì‚¬ê°€ ëë‚˜ê³  ì—”ë”©ì˜ ë³€í™”ê°€ ìˆëŠ”ì§€
                                 if (!line.changeEndingID)
                                 {
                                     int changeEndingID = 0;
                                     isNumeric = int.TryParse(row[11].ToString(), out changeEndingID);
 
-                                    if (isNumeric) //¸¸¾à ¼ıÀÚ º¯È¯ÀÌ °¡´ÉÇÏ´Ù¸é
+                                    if (isNumeric)
                                     {
                                         line.changeEndingID = true;
                                         line.endingIDToBeChange = changeEndingID;
                                     }
                                 }
 
+                                if (!line.changeQuestID)
+                                {
+                                    int changeQuestID = 0;
+                                    isNumeric = int.TryParse(row[10].ToString(), out changeQuestID);
+
+                                    if (isNumeric)
+                                    {
+                                        line.changeQuestID = true;
+                                        line.questIDToBeChange = changeQuestID;
+                                    }
+                                    //Debug.Log(changeQuestID);
+
+                                }
+
                             }
                         }
 
                         //-----------------------------------------------------------
-                        //¿©±â¼­ i¸¦ ++ ÇØÁÜ
+                        //ì—¬ê¸°ì„œ ië¥¼ ++
                         if (++i < (data.Length))
                         {
                             row = data[i].Split(new char[] { ',' });
@@ -287,7 +263,7 @@ public class DialogueParser : MonoBehaviour
                             finishBreak = true;
                             break;
                         }
-                    } while (row[5].ToString() == "");    //ÀÌ¸§ÀÌ ºñ¾îÀÖÀ¸¸é °è¼Ó ´ë»ç°¡ ÀÌ¾îÁü.
+                    } while (row[5].ToString() == "");    //csv fì—´ ë¹„ì–´ìˆìœ¼ë©´ ëŒ€í™” ì´ì–´ì§. 
 
                     line.context = contextList.ToArray();
                     LineList.Add(line);
@@ -301,7 +277,7 @@ public class DialogueParser : MonoBehaviour
                     }
 
 
-                } while (row[4].ToString() == "");    //csv E¿­.
+                } while (row[4].ToString() == "");    //csv E.
 
                 lines.Add(LineList);
 
@@ -309,12 +285,47 @@ public class DialogueParser : MonoBehaviour
                 {
                     break;
                 }
-            } while (row[3].ToString() == "");    //csv D¿­ 
+            } while (row[3].ToString() == "");    //csv D
 
 
             dialogue.lines = lines;
             dialogues.Add(dialogue);
         }
         return dialogues.ToArray();
+    }
+
+    public Quest[] QuestParse(string csvFileName)
+    {
+        List<Quest> quests = new List<Quest>();
+
+        TextAsset csvData = Resources.Load<TextAsset>(csvFileName);
+        string[] data = csvData.text.Split(new char[] { '\n' });
+
+        for (int i = 1; i < data.Length;)
+        {
+            string[] row = data[i].Split(new char[] { ',' });
+            Quest quest = new Quest();
+            quest.questId = int.Parse(row[0].ToString());
+            quest.questClearValue = int.Parse(row[3].ToString());
+            quest.questContent = new List<string>();
+
+            do
+            {
+                quest.questContent.Add(row[1].ToString());
+
+                if (++i < data.Length)
+                {
+                    row = data[i].Split(new char[] { ',' });
+                }
+                else
+                {
+                    finishBreak = true;
+                    break;
+                }
+            } while (row[0].ToString() == "");
+            quests.Add(quest);
+            Debug.Log(quest.questClearValue);
+        }
+        return quests.ToArray();
     }
 }

@@ -26,7 +26,7 @@ public class DialogueController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                //EnterÅ°¸¦ ´©¸£¸é ¾Ö´Ï¸ŞÀÌ¼Ç ÁßÁöÇÏ°í, ¹Ù·Î ±Û¾¾ ³ª¿Àµµ·Ï ÇÏ±â À§ÇÔ.
+                //Enterí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì§€í•˜ê³ , ë°”ë¡œ ê¸€ì”¨ ë‚˜ì˜¤ë„ë¡ í•˜ê¸° ìœ„í•¨.
                 stopChat = true;
             }
         }
@@ -34,25 +34,35 @@ public class DialogueController : MonoBehaviour
 
 
 
-    //Å¸ÀÌÇÎ ¾Ö´Ï¸ŞÀÌ¼Ç
+    //íƒ€ì´í•‘ ì• ë‹ˆë©”ì´ì…˜
     public void Chat_Obect(string sentence)
     {
         startChat = true;
         StartCoroutine(ObjectChat(sentence));
     }
 
+    public static IEnumerator WaitForRealTime(float delay)
+    {
+        while (true)
+        {
+            float pauseEndTime = Time.realtimeSinceStartup + delay;
+            while (Time.realtimeSinceStartup < pauseEndTime)
+            {
+                yield return 0;
+            }
+            break;
+        }
+    }
 
     IEnumerator ObjectChat(string sentence)
     {
-
-
         string writerText = "";
 
         for (int i = 0; i < sentence.Length; i++)
         {
             if (stopChat)
             {
-                //EnterÅ°¸¦ ´©¸£¸é ¾Ö´Ï¸ŞÀÌ¼Ç ÁßÁöÇÏ°í, ¹Ù·Î ±Û¾¾ ³ª¿Àµµ·Ï.
+                //Enterí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì• ë‹ˆë©”ì´ì…˜ ì¤‘ì§€í•˜ê³ , ë°”ë¡œ ê¸€ì”¨ ë‚˜ì˜¤ë„ë¡.
                 writerText = sentence;
                 objectText.text = writerText;
                 break;
@@ -62,12 +72,11 @@ public class DialogueController : MonoBehaviour
                 writerText += sentence[i];
                 objectText.text = writerText;
 
-
-                yield return new WaitForSeconds(0.07f);
+                yield return new WaitForSecondsRealtime(0.03f);
             }
         }
 
-        //¸ğµç ´ë»ç°¡ Å¸ÀÌÇÎ µÆ´Ù´Â °ÍÀ» ¾Ë·Á¾ßÇÔ.
+        //ëª¨ë“  ëŒ€ì‚¬ê°€ íƒ€ì´í•‘ ë˜ê³  ì´ˆê¸°í™”
         dialogueManager.endChat_inController = true;
         startChat = false;
         stopChat = false;
