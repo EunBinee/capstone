@@ -219,6 +219,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             Collider[] playerColliders = Physics.OverlapSphere(transform.position, overlapRadius, playerlayerMask);
             Vector3 curDirection = GetDirection(playerTargetPos.position, transform.position);
             playerHide = HidePlayer(transform.position, curDirection.normalized);
+
             if (0 < playerColliders.Length)
             {
                 if (!playerHide) //*플레이어가 안숨었을 경우에만..

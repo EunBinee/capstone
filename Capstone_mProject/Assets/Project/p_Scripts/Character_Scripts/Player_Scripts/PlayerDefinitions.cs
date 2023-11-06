@@ -59,10 +59,10 @@ public class CheckOption
     [Range(1f, 30f), Tooltip("점프할때 속도")]
     public float jumpPower = 1f;
     [Range(1f, 30f), Tooltip("점프할때 추가 중력")]
-    public float jumpGravity = 2f;
+    public float jumpGravity = 1f;
 
     [Range(1f, 30f), Tooltip("닷지 속도")]
-    public float dodgingSpeed = 5f;
+    public float dodgingSpeed = 10f;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;

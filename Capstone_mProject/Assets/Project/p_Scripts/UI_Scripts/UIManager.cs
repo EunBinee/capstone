@@ -52,7 +52,6 @@ public class UIManager : MonoBehaviour
         {
             if (!gameIsPaused)
             {
-                Debug.Log("HI");
                 GetUIPrefab(UI.SettingMenu);
                 Pause();
             }
@@ -66,7 +65,6 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
         gameIsPaused = false;
-
     }
 
     public void Pause()
