@@ -89,8 +89,6 @@ public class DialogueManager : MonoBehaviour
 
         endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.
 
-
-
         while (!AllFinish && !DoQuest)
         {
 
