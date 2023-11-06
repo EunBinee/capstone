@@ -19,6 +19,7 @@ public class DialogueInfo : MonoBehaviour
                 interaction_Item.dialogueNum = 1;
                 interaction_Item.questNum = GameManager.Instance.gameInfo.QuestNum;
             }
+
             player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
             Debug.Log(interaction_Item.Name);
 
