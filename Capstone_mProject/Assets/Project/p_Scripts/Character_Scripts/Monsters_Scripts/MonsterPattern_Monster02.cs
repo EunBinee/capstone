@@ -571,19 +571,20 @@ public class MonsterPattern_Monster02 : MonsterPattern
             if (curMonsterState == MonsterState.Attack)
             {
                 //* 일반 총 쏠때 흔들림
-                positionX = -transform.position.x * shakeAmount * 5f;
-                positionY = -transform.position.y * shakeAmount;
-                rotationX = -transform.position.x * shakeAmount;
-                rotationY = -transform.position.y * shakeAmount * 0.2f;
+                positionX = -transform.localPosition.x * shakeAmount * 5f;
+                positionY = -transform.localPosition.y * shakeAmount;
+                rotationX = -transform.localPosition.x * shakeAmount;
+                rotationY = -transform.localPosition.y * shakeAmount * 0.2f;
             }
             if (curMonsterState == MonsterState.GetHit)
             {
                 //* 데미지 얻었을때 흔들림
                 smoothAmount = 6;
-                shakeAmount = 0.5f;
-                positionX = -transform.position.x * shakeAmount * 5f;
-                positionY = -transform.position.y * shakeAmount;
-
+                shakeAmount = 1f;
+                positionX = -transform.localPosition.x * shakeAmount * 5f;
+                positionY = -transform.localPosition.y * shakeAmount;
+                rotationX = -transform.localPosition.x * shakeAmount * 0.5f;
+                rotationY = -transform.localPosition.y * shakeAmount * 0.5f;
 
             }
 

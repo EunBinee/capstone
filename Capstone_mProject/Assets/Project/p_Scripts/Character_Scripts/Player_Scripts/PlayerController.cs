@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
         if (P_Com.playerTargetPos == null)
             P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
+
         navMeshSurface.BuildNavMesh();
     }
 
