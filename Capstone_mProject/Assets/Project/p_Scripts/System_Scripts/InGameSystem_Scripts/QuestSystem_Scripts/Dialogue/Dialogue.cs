@@ -5,22 +5,26 @@ using UnityEngine;
 [System.Serializable]
 public class Line
 {
-    public string Name; //npc ÀÌ¸§
-    public string[] context; //´ë»çµé
+    public string Name; //npc ì´ë¦„
+    public string[] context; //ëŒ€í™”ë‚´ìš©ë“¤
 
-    public bool isChoice;//¼±ÅÃÁö ¿©ºÎ
+    public bool isChoice;//ì„ íƒì§€ ì—¬ë¶€
     public Choice choice;
 
-    public bool isFinishLine;  //´ëÈ­°¡ ³¡³µ´ÂÁö ¿©ºÎ    
-    public int nextDialogueNum; //³¡³µ´Ù¸é, ÀÌ ´ë»ç ´ÙÀ½ ´ë»ç(´ë»ç´Ü¶ô).
+    public bool isFinishLine;  //ëŒ€í™” ëë‚¬ëŠ”ì§€ ì—¬ë¶€
+    public int nextDialogueNum; //ëŒ€í™”ê°€ ëë‚˜ê³  ë‹¤ìŒ ëŒ€ì‚¬ ë‹¨ë½ì˜ ë²ˆí˜¸
 
-    public bool changeEvnetID; //´ëÈ­°¡ ³¡³ª°í ÀÌº¥Æ®¹øÈ£ÀÇ º¯°æÀÌ ÀÖ´ÂÁö ¿©ºÎ
-    public int evnetIDToBeChange; //º¯°æµÉ ÀÌº¥Æ® ID
+    public bool changeEvnetID; //ëŒ€í™”ê°€ ëë‚˜ê³  ì´ë²¤íŠ¸ë²ˆí˜¸ ë³€ê²½ì´ ìˆëŠ”ì§€ ì—¬ë¶€
+    public int evnetIDToBeChange; //ë³€ê²½ë  ì´ë²¤íŠ¸ ID
 
-    public bool changeEndingID; //´ëÈ­°¡ ³¡³ª°í ending º¯°æÀÌ ÀÖ´ÂÁö ¿©ºÎ
-    public int endingIDToBeChange; //º¯°æµÉ ¿£µù ID
+    public bool changeEndingID; //ëŒ€í™”ê°€ ëë‚˜ê³  ending ë²ˆí˜¸ì˜ ë³€ê²½ì´ ìˆëŠ”ì§€ ì—¬ë¶€
+    public int endingIDToBeChange; //ë³€ê²½ë  ì—”ë”©ID
 
-    public int nextLineNum;
+    public bool DoQuest; //í€˜ìŠ¤íŠ¸ ì§„í–‰ì¤‘ì¸ì§€ ì—¬ë¶€
+    public bool changeQuestID; //ëŒ€í™” ëë‚˜ê³  í€˜ìŠ¤íŠ¸ ë²ˆí˜¸ ë³€ê²½ ìˆëŠ”ì§€ ì—¬ë¶€
+    public int questIDToBeChange; //ë³€ê²½ë  í€˜ìŠ¤íŠ¸ ID
+
+    //public int nextLineNum;
 }
 
 
@@ -29,26 +33,28 @@ public class Dialogue
 {
     public List<List<Line>> lines;
 
-    //¿£µù 
-    public int endingNum; //L¿­
-    //NPC¹øÈ£
-    public int npcNum; //C¿­
-    //ÀÌº¥Æ® ¹øÈ£
-    public int eventNum; //B¿­
-    //´ë»ç ¹®´ÜÀÇ ¹øÈ£
-    public int dialogueNum; //D¿­
-
-    public int lineNum;
+    //ì—”ë”©ë²ˆí˜¸
+    public int endingNum; //
+    //NPCID
+    public int npcNum; //C
+    //ì´ë²¤íŠ¸ID
+    public int eventNum; //Bï¿½ï¿½
+    //ëŒ€í™”ë‹¨ë½
+    public int dialogueNum; //Dï¿½ï¿½
+    //í€˜ìŠ¤íŠ¸ ë²ˆí˜¸
+    public int questNum;
+    //ëŒ€ì‚¬ë²ˆí˜¸
+    //ublic int lineNum;
 
 }
 
 [System.Serializable]
 public class Choice
 {
-    public string firstOption; //1¹øÂ° ¼±ÅÃÁöÀÇ Text
-    public string secondOption; //2¹øÂ° ¼±ÅÃÁöÀÇ Text
+    public string firstOption; //1ë²ˆ ì„ íƒì§€ Text
+    public string secondOption; //2ë²ˆ ì„ íƒì§€ Text
 
-    public int firstOptDialogNum; //1¹øÂ° ¼±ÅÃÁö¸¦ ¼±ÅÃÇßÀ» °æ¿ì, ±×´ÙÀ½ ´ë»ç ¹øÈ£
-    public int secondOptDialogNum;//2¹øÂ° ¼±ÅÃÁö¸¦ ¼±ÅÃÇßÀ» °æ¿ì, ±×´ÙÀ½ ´ë»ç ¹øÈ£
+    public int firstOptDialogNum; //1ë²ˆì§¸ ì„ íƒì§€ë¥¼ ì„ íƒí–ˆì„ ê²½ìš°, ê·¸ë‹¤ìŒ ëŒ€ì‚¬ ë‹¨ë½ ë²ˆí˜¸
+    public int secondOptDialogNum;//2ë²ˆì§¸ ì„ íƒì§€ë¥¼ ì„ íƒí–ˆì„ ê²½ìš°, ê·¸ë‹¤ìŒ ëŒ€ì‚¬ ë‹¨ë½ ë²ˆí˜¸
 
 }

@@ -1869,6 +1869,7 @@ GameObject:
   - component: {fileID: 8795022814585965162}
   - component: {fileID: 8795022814585965161}
   - component: {fileID: 8795022814585965160}
+  - component: {fileID: 1051826932335391151}
   - component: {fileID: 8795022814585965167}
   m_Layer: 3
   m_Name: Player
@@ -1944,6 +1945,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1051826932335391151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8795022814585965166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 8795022814585965167}
+  comboClickTime: 0.5
 --- !u!114 &8795022814585965167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1960,6 +1975,7 @@ MonoBehaviour:
     animator: {fileID: 0}
     rigidbody: {fileID: 0}
     capsuleCollider: {fileID: 0}
+    playerTargetPos: {fileID: 0}
   _input:
     verticalMovement: 0
     horizontalMovement: 0
@@ -1980,7 +1996,7 @@ MonoBehaviour:
     walkingSpeed: 2
     jumpPower: 10
     jumpGravity: 3
-    dashingSpeed: 11
+    dodgingSpeed: 5
     slopeAccel: 1
     gravity: -9.81
   _currentState:
@@ -1990,9 +2006,10 @@ MonoBehaviour:
     isSprinting: 0
     isStrafing: 0
     isJumping: 0
-    isDashing: 0
-    previousDashKeyPress: 0
-    currentDashKeyPress: 0
+    isDodgeing: 0
+    previousDodgeKeyPress: 0
+    currentDodgeKeyPress: 0
+    isStartComboAttack: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -2006,6 +2023,7 @@ MonoBehaviour:
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
     HP: 100
+    curAnimName: 
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -2018,16 +2036,9 @@ MonoBehaviour:
     playerCamera: {fileID: 0}
     playerCameraPivot: {fileID: 0}
     cameraObj: {fileID: 0}
-    left_right_LookSpeed: 500
-    up_down_LookSpeed: 500
-    minPivot: -35
-    maxPivot: 35
-    cameraFllowVelocity: {x: 0, y: 0, z: 0}
-    left_right_LookAngle: 0
-    up_down_LookAngle: 0
   rayCastHeightOffset: 1
   navMeshSurface: {fileID: 0}
-  comboClickTime: 3
+  curPlayerState: 0
   skill_E: {fileID: 0}
   skill_Q: {fileID: 0}
 --- !u!1 &8990085253208681639
@@ -2182,6 +2193,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8162178433404244180}
     m_Modifications:
+    - target: {fileID: 1800224417581620059, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+      propertyPath: m_RotationAtRest.x
+      value: 57.48811
+      objectReference: {fileID: 0}
     - target: {fileID: 2368256536511119947, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_Name
       value: P05_Mika_db
@@ -2229,6 +2244,14 @@ PrefabInstance:
     - target: {fileID: 3140816988919453937, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+      propertyPath: m_RotationAtRest.x
+      value: 48.399395
+      objectReference: {fileID: 0}
+    - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+      propertyPath: m_RotationOffset.x
+      value: -48.57596
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}

@@ -407,7 +407,7 @@ public class PlayerController : MonoBehaviour
         OnHitPlayerEffect?.Invoke();
         if (OnHitPlayerEffect == null)
         {
-            transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
+            //transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
             //null일시 기본 이펙트.
             playerGetHitEffect();
@@ -450,6 +450,8 @@ public class PlayerController : MonoBehaviour
                 //GameManager.GetInstance().StartInteraction(interObject);
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
+
+
 
         }
     }
