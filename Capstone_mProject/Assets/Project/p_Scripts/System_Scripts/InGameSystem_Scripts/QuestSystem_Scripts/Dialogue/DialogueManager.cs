@@ -105,6 +105,13 @@ public class DialogueManager : MonoBehaviour
             GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
+            //대화 스킵 버튼
+            if (Input.GetKeyDown(KeyCode.J))
+            {
+
+                curContext = curlineContextLen;
+            }
+
             if (curContext < curlineContextLen)
             {
                 //아직 문장이 끝나지 않은 경우
