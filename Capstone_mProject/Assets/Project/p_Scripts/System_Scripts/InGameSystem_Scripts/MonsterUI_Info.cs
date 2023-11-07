@@ -16,6 +16,7 @@ public class MonsterUI_Info : MonoBehaviour
 
     public void Reset(double _monsterMaxHP, Monster _monster)
     {
+        m_slider.value = 1;
         monsterMaxHP = _monsterMaxHP;
         m_Monster = _monster;
         m_HPBarPos = m_Monster.monsterData.HPBarPos;
@@ -35,13 +36,18 @@ public class MonsterUI_Info : MonoBehaviour
     public void UpdateHP()
     {
         float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
-        //        Debug.Log($"monsterHP_Value {monsterHP_Value}");
 
-        StartCoroutine(UpdateHPBar_Anim(monsterHP_Value));
+        if (monsterHP_Value <= 0)
+            monsterHP_Value = 0;
+
+        if (m_slider.value > 0)
+            StartCoroutine(UpdateHPBar_Anim(monsterHP_Value));
+
     }
 
     IEnumerator UpdateHPBar_Anim(float monsterHP_Value)
     {
+        Debug.Log($"update : {monsterHP_Value}");
         float time = 0;
         while (time < 0.5f)
         {

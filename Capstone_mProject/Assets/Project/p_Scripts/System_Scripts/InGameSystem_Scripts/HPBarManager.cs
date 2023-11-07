@@ -23,7 +23,7 @@ public class HPBarManager : MonoBehaviour
     private void InitHPBar()
     {
         HPBarInUse = new List<MonsterUI_Info>();
-    hpBarPools = new List<MonsterUI_Info>();
+        hpBarPools = new List<MonsterUI_Info>();
 
         if (HPBar_Prefab == null)
         {
@@ -85,6 +85,8 @@ public class HPBarManager : MonoBehaviour
     //HP바 반납.
     public void Add_HPBarPool(MonsterUI_Info HPBar)
     {
+        HPBar.gameObject.SetActive(false);
+
         if (hpBarPools.Count >= hpBarPoolsCount)
         {
             //만약 풀이 가득 찼다면, 그냥 삭제.
@@ -94,8 +96,6 @@ public class HPBarManager : MonoBehaviour
         {
             HPBarInUse.Remove(HPBar);
             hpBarPools.Add(HPBar);
-
-            HPBar.gameObject.SetActive(false);
         }
     }
 

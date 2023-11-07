@@ -130,34 +130,37 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     public override void Monster_Pattern()
     {
-        switch (curMonsterState)
+        if (curMonsterState != MonsterState.Death)
         {
-            case MonsterState.Roaming:
-                if (m_monster.HPBar_CheckNull() == true)
-                    m_monster.RetrunHPBar();
-                Roam_Monster();
-                CheckPlayerCollider();
-                break;
-            case MonsterState.Discovery:
-                Discovery_Player();
-                break;
-            case MonsterState.Tracing:
-                Tracing_Movement();
-                if (m_monster.HPBar_CheckNull() == false)
-                    m_monster.GetHPBar();
-                break;
-            case MonsterState.Attack:
-                if (m_monster.HPBar_CheckNull() == false)
-                    m_monster.GetHPBar();
-                break;
-            case MonsterState.GetHit:
+            switch (curMonsterState)
+            {
+                case MonsterState.Roaming:
+                    if (m_monster.HPBar_CheckNull() == true)
+                        m_monster.RetrunHPBar();
+                    Roam_Monster();
+                    CheckPlayerCollider();
+                    break;
+                case MonsterState.Discovery:
+                    Discovery_Player();
+                    break;
+                case MonsterState.Tracing:
+                    Tracing_Movement();
+                    if (m_monster.HPBar_CheckNull() == false)
+                        m_monster.GetHPBar();
+                    break;
+                case MonsterState.Attack:
+                    if (m_monster.HPBar_CheckNull() == false)
+                        m_monster.GetHPBar();
+                    break;
+                case MonsterState.GetHit:
 
-                break;
-            case MonsterState.GoingBack:
-                GoingBack_Movement();
-                break;
-            default:
-                break;
+                    break;
+                case MonsterState.GoingBack:
+                    GoingBack_Movement();
+                    break;
+                default:
+                    break;
+            }
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -235,15 +238,12 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
             if (0 < playerColliders.Length)
             {
-                Debug.Log("AA");
                 if (!playerHide) //*플레이어가 안숨었을 경우에만..
                 {
-                    Debug.Log("BB");
                     //몬스터의 범위에 들어옴
                     //로밍 코루틴 제거
                     if (isRoaming)
                     {
-                        Debug.Log("CC");
                         bool inFrontOf_Player = PlayerLocationCheck();
                         bool findPlayer = false;
                         if (!inFrontOf_Player)
@@ -342,11 +342,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
     public override void Tracing_Movement()
     {
         //움직임.
+        if (navMeshAgent.isStopped == true)
+            SetMove_AI(true);
         navMeshAgent.SetDestination(playerTrans.position);
-        SetMove_AI(true);
-
         SetAnimation(MonsterAnimation.Move);
-
         //몬스터와 플레이어 사이의 거리 체크
         CheckDistance();
     }
@@ -429,7 +428,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
-                if (!isGettingHit)
+                GetHit();
+                if (!isGettingHit) //넉백
                 {
                     isGettingHit = true;
                     StartCoroutine(GetHit_KnockBack_co());
@@ -450,7 +450,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
-
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
 
@@ -470,10 +469,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         effect.transform.localEulerAngles = effectRotation;
         effect.transform.position = attackEffectPos.position;
 
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].enabled = true;
-        }
+        EnabledWeaponsCollider(true);
 
         yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
 
@@ -486,10 +482,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
         else
         {
-            for (int i = 0; i < weapons.Length; i++)
-            {
-                weapons[i].enabled = false;
-            }
+            EnabledWeaponsCollider(false);
 
             ChangeMonsterState(MonsterState.Tracing);
             short_Range_Attack_co = null;
@@ -507,10 +500,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
         SetMove_AI(true);
 
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].enabled = true;
-        }
+        EnabledWeaponsCollider(true);
 
         float distance = 0;
         float time = 0;
@@ -532,10 +522,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
             time += Time.deltaTime;
         }
 
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].enabled = false;
-        }
+        EnabledWeaponsCollider(false);
+
         navMeshAgent.speed = defaultSpeed;
 
         SetMove_AI(false);
@@ -550,8 +538,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         {
             ChangeMonsterState(MonsterState.Tracing);
         }
-
-
     }
 
     //* 원거리 공격 02
@@ -565,10 +551,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
         SetMove_AI(true);
 
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].enabled = true;
-        }
+        EnabledWeaponsCollider(true);
 
         float distance = 0;
         float time = 0;
@@ -662,10 +645,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         if (LongAttackEffectName != "" && effect.gameObject.activeSelf && effect != null)
             effect.StopEffect();
 
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            weapons[i].enabled = false;
-        }
+        EnabledWeaponsCollider(false);
 
         navMeshAgent.speed = defaultSpeed;
         noAttack = false;
@@ -687,26 +667,28 @@ public class MonsterPattern_Monster01 : MonsterPattern
         yield return null;
     }
 
-    // * 피격 모션01
+    // * 피격 모션01 :플레이어의 반대 방향으로 넉백
+    private void GetHit()
+    {
+        //? 피격 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01", attackEffectPos);
+        float x = UnityEngine.Random.Range(-1.0f, 1.0f);
+        float y = UnityEngine.Random.Range(-1.0f, 1.0f);
+        float z = UnityEngine.Random.Range(-1.0f, 1.0f);
+        Vector3 randomPos = new Vector3(x, y, z);
+        effect.transform.position = attackEffectPos.position + randomPos;
+    }
+
     IEnumerator GetHit_KnockBack_co()
     {
-        //플레이어의 반대 방향으로 넉백
+        StopAtackCoroutine();
+
         MonsterState preState = curMonsterState;
         ChangeMonsterState(MonsterState.GetHit);
 
-        if (preState == MonsterState.Attack && short_Range_Attack_co != null)
-        {
-            StopCoroutine(short_Range_Attack_co);
-            for (int i = 0; i < weapons.Length; i++)
-            {
-                weapons[i].enabled = false;
-            }
-            short_Range_Attack_co = null;
-        }
-
-
         if (curEffect != null)
         {
+            //* 공격 이펙트 없앰.
             Debug.Log("없앰");
             curEffect.StopEffect();
             curEffect = null;
@@ -718,7 +700,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         Vector3 knockback_Dir = transform.position - playerTrans.position;
         knockback_Dir = knockback_Dir.normalized;
-        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        Vector3 KnockBackPos = transform.position + knockback_Dir * 2f; // 넉백 시 이동할 위치
         float time = 0;
         while (time < 0.5f)
         {
@@ -732,10 +714,12 @@ public class MonsterPattern_Monster01 : MonsterPattern
             }
         }
 
-        if ((preState == MonsterState.Roaming || preState == MonsterState.Discovery) || preState == MonsterState.Attack)
-            ChangeMonsterState(MonsterState.Tracing);
-        else
-            ChangeMonsterState(preState);
+        yield return new WaitForSeconds(1);
+
+
+        navMeshAgent.Warp(transform.position);
+        SetMove_AI(true);
+        ChangeMonsterState(MonsterState.Tracing);
 
         isGettingHit = false;
     }
@@ -743,21 +727,50 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 죽음 모션
     IEnumerator Death_co()
     {
+        StopAtackCoroutine();
+        SetAnimation(MonsterAnimation.Idle);
         ChangeMonsterState(MonsterState.Death);
         SetMove_AI(false);
-        SetAnimation(MonsterAnimation.Death);
 
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         boxCollider.enabled = true;
         CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = false;
 
+        yield return new WaitForSeconds(0.5f);
+
+        m_monster.RetrunHPBar();
+        SetAnimation(MonsterAnimation.Death);
 
         yield return new WaitForSeconds(5f);
 
         this.gameObject.SetActive(false);
     }
 
+    private void StopAtackCoroutine()
+    {
+        // * 죽음, 넉백에서 사용.
+        if (short_Range_Attack_co != null)
+        {
+            StopCoroutine(short_Range_Attack_co);
+            short_Range_Attack_co = null;
+        }
+        if (long_Range_Attack_co != null)
+        {
+            StopCoroutine(long_Range_Attack_co);
+            long_Range_Attack_co = null;
+        }
+
+        EnabledWeaponsCollider(false);
+    }
+
+    private void EnabledWeaponsCollider(bool enable)
+    {
+        for (int i = 0; i < weapons.Length; i++)
+        {
+            weapons[i].enabled = enable;
+        }
+    }
     // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {

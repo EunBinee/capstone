@@ -13,7 +13,6 @@ public class Monster : MonoBehaviour
     public AudioClip[] monsterSoundClips;
     private PlayerController playerController;
     private Transform playerTrans;
-    private float playerDistance; //플레이어와 몬스터 사이의 거리.
 
     [SerializeField] private MonsterUI_Info m_hPBar;
 
@@ -39,14 +38,12 @@ public class Monster : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             GetDamage(3);
+
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
             Death();
         }
-
-        CheckDistance();
-
         //---====================================//
     }
     //*------------------------------------------------------------------------------------------//
@@ -64,20 +61,7 @@ public class Monster : MonoBehaviour
     {
 
     }
-    //*------------------------------------------------------------------------------------------//
-    //* 플레이어와 몬스터 사이의 거리 //
-    private void CheckDistance()
-    {
-        // ? 몬스터 데이터
-        if (m_hPBar != null)
-        {
-            playerDistance = Vector3.Distance(transform.position, playerTrans.position);
-            if (playerDistance < monsterData.canSeeMonsterInfo_Distance)
-            {
 
-            }
-        }
-    }
     //*------------------------------------------------------------------------------------------//
     //* 몬스터 //
     public virtual void OnHit(float Damage = 0, Action action = null)
@@ -98,6 +82,8 @@ public class Monster : MonoBehaviour
                 GetHPBar();
             monsterData.HP -= Damage;
             m_hPBar.UpdateHP();
+
+            Debug.Log($"AA monsterData.HP {monsterData.HP}");
             //플레이어의 반대 방향으로 넉백
             if (monsterData.HP <= 0)
             {
@@ -142,8 +128,12 @@ public class Monster : MonoBehaviour
 
     public void RetrunHPBar()
     {
-        GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
-        m_hPBar = null;
+        if (m_hPBar != null)
+        {
+            GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
+            m_hPBar = null;
+        }
+
     }
 
     public bool HPBar_CheckNull()
