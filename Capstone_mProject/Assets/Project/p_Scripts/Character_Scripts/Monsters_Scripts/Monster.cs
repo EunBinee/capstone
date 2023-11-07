@@ -38,6 +38,7 @@ public class Monster : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             GetDamage(3);
+
         }
         if (Input.GetKeyDown(KeyCode.O))
         {

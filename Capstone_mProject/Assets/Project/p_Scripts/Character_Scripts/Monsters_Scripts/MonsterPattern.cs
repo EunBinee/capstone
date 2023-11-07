@@ -195,6 +195,7 @@ public class MonsterPattern : MonoBehaviour
         if (moveAI)
         {
             //움직임.
+            navMeshAgent.ResetPath();
             navMeshAgent.isStopped = false;
             navMeshAgent.updatePosition = true;
         }
@@ -413,18 +414,15 @@ public class MonsterPattern : MonoBehaviour
         if (dotProduct > 0)
         {
             // * 플레이어가 몬스터의 전방에 있을 때:
-
             Debug.Log("플레이어는 몬스터의 앞에 있습니다.");
             return true;
         }
         else
         {
             // * 플레이어가 몬스터의 뒤에 있을 때:
-
             Debug.Log("플레이어는 몬스터의 뒤에 있습니다.");
             return false;
         }
-
     }
 
     // * ---------------------------------------------------------------------------------------//

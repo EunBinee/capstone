@@ -112,34 +112,37 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     public override void Monster_Pattern()
     {
-        switch (curMonsterState)
+        if (curMonsterState != MonsterState.Death)
         {
-            case MonsterState.Roaming:
-                if (m_monster.HPBar_CheckNull() == true)
-                    m_monster.RetrunHPBar();
-                Roam_Monster();
-                CheckPlayerCollider();
-                break;
-            case MonsterState.Discovery:
-                Discovery_Player();
-                break;
-            case MonsterState.Tracing:
-                // 몬스터 02 Tracing X
-                break;
-            case MonsterState.Attack:
-                if (m_monster.HPBar_CheckNull() == false)
-                    m_monster.GetHPBar();
-                //* 공격 중에 숨으면..
-                if (playerHide && hidePlayer_waitMonster_co == null)
-                {
-                    //못움직이는 몬스터인데 플레이어가 숨었다면??
-                    hidePlayer_waitMonster_co = StartCoroutine(HidePlayer_waitMonster(2f));
-                }
-                break;
-            case MonsterState.GoingBack:
-                break;
-            default:
-                break;
+            switch (curMonsterState)
+            {
+                case MonsterState.Roaming:
+                    if (m_monster.HPBar_CheckNull() == true)
+                        m_monster.RetrunHPBar();
+                    Roam_Monster();
+                    CheckPlayerCollider();
+                    break;
+                case MonsterState.Discovery:
+                    Discovery_Player();
+                    break;
+                case MonsterState.Tracing:
+                    // 몬스터 02 Tracing X
+                    break;
+                case MonsterState.Attack:
+                    if (m_monster.HPBar_CheckNull() == false)
+                        m_monster.GetHPBar();
+                    //* 공격 중에 숨으면..
+                    if (playerHide && hidePlayer_waitMonster_co == null)
+                    {
+                        //못움직이는 몬스터인데 플레이어가 숨었다면??
+                        hidePlayer_waitMonster_co = StartCoroutine(HidePlayer_waitMonster(2f));
+                    }
+                    break;
+                case MonsterState.GoingBack:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -344,6 +347,10 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 break;
             case MonsterMotion.Death:
                 //죽음
+                if (curMonsterState != MonsterState.Death)
+                {
+                    StartCoroutine(Death_co());
+                }
                 break;
             default:
                 break;
