@@ -76,26 +76,30 @@ public class Monster : MonoBehaviour
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
     {
-        if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+        if (monsterData.HP > 0)
         {
-            if (HPBar_CheckNull() == false)
-                GetHPBar();
-            monsterData.HP -= Damage;
-            m_hPBar.UpdateHP();
+            if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+            {
+                if (HPBar_CheckNull() == false)
+                    GetHPBar();
+                monsterData.HP -= Damage;
+                m_hPBar.UpdateHP();
 
-            Debug.Log($"AA monsterData.HP {monsterData.HP}");
-            //플레이어의 반대 방향으로 넉백
-            if (monsterData.HP <= 0)
-            {
-                //죽음
-                Death();
-            }
-            else
-            {
-                //아직 살아있음.
-                monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+                Debug.Log($"AA monsterData.HP {monsterData.HP}");
+                //플레이어의 반대 방향으로 넉백
+                if (monsterData.HP <= 0)
+                {
+                    //죽음
+                    Death();
+                }
+                else
+                {
+                    //아직 살아있음.
+                    monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+                }
             }
         }
+
     }
 
     public virtual void Death()
