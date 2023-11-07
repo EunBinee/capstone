@@ -207,7 +207,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             while (time <= 10)
             {
-                Debug.Log("B");
                 time += Time.deltaTime;
                 // Slerp를 사용하여 부드럽게 회전합니다.
                 buttomGameObject.transform.rotation = Quaternion.Slerp(buttomGameObject.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
@@ -557,6 +556,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         }
         yield return null;
     }
+
     IEnumerator Shake(float duration)
     {
         float shakeAmount = 0.01f;
@@ -634,6 +634,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             shake_co = StartCoroutine(Shake(duration));
 
         yield return new WaitForSeconds(duration);
+
 
         isGettingHit = false;
 

@@ -16,13 +16,16 @@ public class MonsterUI_Info : MonoBehaviour
 
     public void Reset(double _monsterMaxHP, Monster _monster)
     {
-        m_slider.value = 1;
+
+
         monsterMaxHP = _monsterMaxHP;
         m_Monster = _monster;
         m_HPBarPos = m_Monster.monsterData.HPBarPos;
 
         Debug.Log("text" + _monster.monsterData.monsterName);
         monsterName.text = _monster.monsterData.monsterName;
+
+        resetHP();
 
         isReset = true;
     }
@@ -31,6 +34,12 @@ public class MonsterUI_Info : MonoBehaviour
     {
         //비활성화 될때마다.
         isReset = false;
+    }
+
+    public void resetHP()
+    {
+        float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
+        m_slider.value = monsterHP_Value;
     }
 
     public void UpdateHP()
@@ -42,7 +51,6 @@ public class MonsterUI_Info : MonoBehaviour
 
         if (m_slider.value > 0)
             StartCoroutine(UpdateHPBar_Anim(monsterHP_Value));
-
     }
 
     IEnumerator UpdateHPBar_Anim(float monsterHP_Value)
