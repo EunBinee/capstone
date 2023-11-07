@@ -88,6 +88,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             case MonsterAnimation.GetHit:
                 break;
             case MonsterAnimation.Death:
+                m_animator.SetBool("m_Death", true);
                 break;
             default:
                 break;
@@ -642,15 +643,15 @@ public class MonsterPattern_Monster02 : MonsterPattern
     IEnumerator Death_co()
     {
         ChangeMonsterState(MonsterState.Death);
-        yield return new WaitForSeconds(0.5f);
-        m_monster.RetrunHPBar();
 
+        yield return new WaitForSeconds(0.5f);
+
+        m_monster.RetrunHPBar();
         SetAnimation(MonsterAnimation.Death);
 
         yield return new WaitForSeconds(5f);
 
-        this.gameObject.SetActive(false);
-
+        m_monster.gameObject.SetActive(false);
     }
 
     // * ---------------------------------------------------------------------------------------------------------//

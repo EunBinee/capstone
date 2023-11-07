@@ -728,7 +728,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     IEnumerator Death_co()
     {
         StopAtackCoroutine();
-
+        SetAnimation(MonsterAnimation.Idle);
         ChangeMonsterState(MonsterState.Death);
         SetMove_AI(false);
 

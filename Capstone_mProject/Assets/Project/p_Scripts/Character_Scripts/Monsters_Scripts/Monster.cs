@@ -128,8 +128,12 @@ public class Monster : MonoBehaviour
 
     public void RetrunHPBar()
     {
-        GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
-        m_hPBar = null;
+        if (m_hPBar != null)
+        {
+            GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
+            m_hPBar = null;
+        }
+
     }
 
     public bool HPBar_CheckNull()
