@@ -76,7 +76,7 @@ public class Monster : MonoBehaviour
 
     public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
     {
-        if (!monsterPattern.noAttack)
+        if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
         {
             if (HPBar_CheckNull() == false)
                 GetHPBar();
