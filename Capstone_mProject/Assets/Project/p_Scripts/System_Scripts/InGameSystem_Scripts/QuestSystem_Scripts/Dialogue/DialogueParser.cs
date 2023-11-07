@@ -306,12 +306,17 @@ public class DialogueParser : MonoBehaviour
             string[] row = data[i].Split(new char[] { ',' });
             Quest quest = new Quest();
             quest.questId = int.Parse(row[0].ToString());
-            quest.questClearValue = int.Parse(row[3].ToString());
+            quest.questClearValue = int.Parse(row[5].ToString());
+
+            quest.questGoal = new List<string>();
+            quest.questTitle = new List<string>();
             quest.questContent = new List<string>();
 
             do
             {
-                quest.questContent.Add(row[1].ToString());
+                quest.questGoal.Add(row[3].ToString()); //퀘스트 목표            
+                quest.questTitle.Add(row[2].ToString()); //퀘스트 제목
+                quest.questContent.Add(row[4].ToString()); //퀘스트 세부내용
 
                 if (++i < data.Length)
                 {

@@ -103,6 +103,10 @@ public class Monster : MonoBehaviour
         //죽다.
         monsterData.HP = 0;
         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
+
+        //퀘스트 진행도 ++
+        QuestManager.instance.currentQuestValue_++;
+        Debug.Log(QuestManager.instance.currentQuestValue_);
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //

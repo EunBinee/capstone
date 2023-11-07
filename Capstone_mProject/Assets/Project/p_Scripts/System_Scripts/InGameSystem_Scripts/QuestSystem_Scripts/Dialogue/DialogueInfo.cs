@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 [Serializable]
 public class DialogueInfo : MonoBehaviour
 {
@@ -19,7 +21,9 @@ public class DialogueInfo : MonoBehaviour
                 interaction_Item.dialogueNum = 1;
                 interaction_Item.questNum = GameManager.Instance.gameInfo.QuestNum;
             }
-            player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+
+
+            //player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
             Debug.Log(interaction_Item.Name);
 
 
@@ -68,17 +72,17 @@ public class DialogueInfo : MonoBehaviour
             }
 
         }
-    }
-
-    //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
-    public void player_InteractingTrue()
-    {
-        UIManager.Instance.Pause();
 
     }
-    //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
-    public void player_InteractingFalse()
-    {
-        UIManager.Instance.Resume();
-    }
+    // //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
+    // public void player_InteractingTrue()
+    // {
+    //     UIManager.Instance.Pause();
+
+    // }
+    // //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
+    // public void player_InteractingFalse()
+    // {
+    //     UIManager.Instance.Resume();
+    // }
 }

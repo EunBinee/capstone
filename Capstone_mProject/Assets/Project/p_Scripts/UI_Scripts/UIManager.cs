@@ -56,6 +56,19 @@ public class UIManager : MonoBehaviour
                 Pause();
             }
         }
+
+        //왼쪽Alt키를 누르고 있는동안 마우스 커서 활성화
+        if (Input.GetKey(KeyCode.LeftAlt))
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftAlt))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
     }
 
     public void Resume()

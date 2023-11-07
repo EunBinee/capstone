@@ -27,11 +27,14 @@ public class QuestManager : MonoBehaviour
         return instance;
     }
     public Quest quest_ = new Quest();
-    public string text = "";
-
+    private string text_goal = "";
+    private string text_title = "";
+    private string text_content = "";
+    public int currentQuestValue_;
 
     private void Init()
     {
+        currentQuestValue_ = 0;
         quest_.currentQuestValue = 0;
         quest_.questClearValue = 0;
     }
@@ -39,31 +42,46 @@ public class QuestManager : MonoBehaviour
     {
         if (GameManager.Instance.dialogueManager.DoQuest == true)
         {
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                quest_.currentQuestValue++;
-                Debug.Log(quest_.currentQuestValue);
-                TextUpdate();
-            }
+            quest_.currentQuestValue = currentQuestValue_;
+            // if (Input.GetKeyDown(KeyCode.L))
+            // {
+            //     currentQuestValue_++;
+            //     quest_.currentQuestValue = currentQuestValue_;
+            //     Debug.Log(quest_.currentQuestValue);
+            //     TextUpdate();
+            // }
             Quest_ValueUpdate();
+            TextUpdate();
         }
 
+        if (GameManager.Instance.dialogueManager.IsQuestDetail)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+            {
+                QuestExit();
+                GameManager.Instance.dialogueManager.IsQuestDetail = false;
+            }
+        }
 
     }
 
-    public void QuestList(int questNum)
+    //퀘스트 버튼 클릭시에 퀘스트 상세내용 팝업창 띄우기
+    public void QuestClick()
     {
-
-
-
-
-
+        GameManager.GetInstance().dialogueManager.QuestDetailTitle_UI(text_title);
+        GameManager.GetInstance().dialogueManager.QuestDetailContent_UI(text_content);
+        GameManager.GetInstance().dialogueManager.QuestDetailGoal_UI(text_goal);
     }
+    public void QuestExit()
+    {
+        GameManager.Instance.dialogueManager.QuestDeailFalse();
+    }
+
 
     //퀘스트 진행도 업데이트
     public void Quest_ValueUpdate()
     {
-
+        //현재 퀘스트 진행도와 퀘스트 목표치가 같으면 퀘스트 클리어.
         if (quest_.currentQuestValue >= quest_.questClearValue)
         {
             Quest_Clear();
@@ -71,15 +89,15 @@ public class QuestManager : MonoBehaviour
 
     }
 
+    //퀘스트 클리어 함수
     protected void Quest_Clear()
     {
         Debug.Log("퀘스트 클리어");
         GameManager.instance.dialogueManager.DoQuest = false;
-        quest_.currentQuestValue = 0;
-        GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse();
+
     }
 
-
+    //퀘스트 업데이트 함수 
     public void UpdateQuest(int id)
     {
         GameManager.instance.dialogueManager.DoQuest = true;
@@ -100,20 +118,39 @@ public class QuestManager : MonoBehaviour
 
     }
 
-
+    //퀘스트 목표 업데이트 함수 
     public void TextUpdate()
     {
-        for (int i = 0; i < quest_.questContent.Count;)
+
+        for (int i = 0; i < quest_.questGoal.Count;)
         {
-            text = quest_.questContent[i] + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
-            if (++i != quest_.questContent.Count)
+            text_goal = quest_.questGoal[i] + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
+            if (++i != quest_.questGoal.Count)
             {
 
-                text += "\n";
+                text_goal += "\n";
             }
         }
-        GameManager.GetInstance().dialogueManager.QuestGoal_UI(text);
-        Debug.Log(GameManager.Instance.dialogueManager.DoQuest);
+
+        for (int i = 0; i < quest_.questTitle.Count;)
+        {
+            text_title = quest_.questTitle[i];
+            if (++i != quest_.questTitle.Count)
+            {
+                text_title += "\n";
+            }
+        }
+        for (int i = 0; i < quest_.questContent.Count;)
+        {
+            text_content = quest_.questContent[i];
+            if (++i != quest_.questContent.Count)
+            {
+                text_content += "\n";
+            }
+        }
+
+        GameManager.GetInstance().dialogueManager.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
+        //Debug.Log(GameManager.Instance.dialogueManager.DoQuest);
 
     }
 

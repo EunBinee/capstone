@@ -1,8 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
+using UnityEditor;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -17,18 +21,25 @@ public class DialogueManager : MonoBehaviour
     public TMP_Text Text_Btn02; //선택지 2번 text
     public bool endChat_inController = false;  //dialogueController 타이핑 애니메이션
 
-    public GameObject go_QuestBar;
-    public TMP_Text Text_questGoal; //퀘스트 목표 text
+    public GameObject Quest_Button01;
+    public GameObject Go_QuestDetail;
+    public TMP_Text Text_QuestGoal; //퀘스트 목표 text
+    public TMP_Text Text_QuestDetailGoal; //퀘스트 목표 text
+    public TMP_Text Text_QuestDetailTitle; //퀘스트 제목 text
+    public TMP_Text Text_QuestDetailContent; //퀘스트 세부내용 text
 
     public bool DoQuest;
+    public bool IsQuestDetail;
 
     void Start()
     {
         dialogueController = GetComponent<DialogueController>();
         gameInfo = GetComponent<GameInfo>();
         DoQuest = false;
-
+        IsQuestDetail = false;
     }
+
+
 
     public void Action_NPC(int id, Item interaction_Item)
     {
@@ -54,7 +65,7 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
-
+        //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         go_DialogueBar.SetActive(true); //텍스트 UI 활성화
         Text_Dialogue.text = "";
@@ -91,7 +102,7 @@ public class DialogueManager : MonoBehaviour
 
         while (!AllFinish && !DoQuest)
         {
-
+            GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
             if (curContext < curlineContextLen)
@@ -105,7 +116,7 @@ public class DialogueManager : MonoBehaviour
                     endChat_inController = false;
 
                     Text_Name.text = dialogue.lines[curPart][curLine].Name;
-                    line = dialogue.lines[curPart][curLine].context[curContext];
+                    line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
 
                     dialogueController.Chat_Obect(line);
                     curContext++;
@@ -114,7 +125,7 @@ public class DialogueManager : MonoBehaviour
                     //Debug.Log("d");
 
                 }
-                else if (Input.GetKeyDown(KeyCode.Return))
+                else if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
                 {
                     //선택지가 없고 아직 문장이 끝나지 않은경우
                     Text_Dialogue.text = "";
@@ -123,7 +134,7 @@ public class DialogueManager : MonoBehaviour
 
                     Text_Name.text = dialogue.lines[curPart][curLine].Name;
 
-                    line = dialogue.lines[curPart][curLine].context[curContext];
+                    line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
                     dialogueController.Chat_Obect(line);
                     curContext++;
 
@@ -131,7 +142,6 @@ public class DialogueManager : MonoBehaviour
 
                 }
             }
-
             yield return new WaitUntil(() => endChat_inController == true);
             //yield return StartCoroutine(DialogueManager.WaitForRealTime(0.1f));
             //마지막 context의 마지막 문장이 끝난 경우 확인하기
@@ -158,18 +168,18 @@ public class DialogueManager : MonoBehaviour
 
 
                         //선택지 대사 출력
-                        Text_Btn01.text = dialogue.lines[curPart][curLine].choice.firstOption;
-                        Text_Btn02.text = dialogue.lines[curPart][curLine].choice.secondOption;
+                        Text_Btn01.text = dialogue.lines[curPart][curLine].choice.firstOption.Replace("'", ",");
+                        Text_Btn02.text = dialogue.lines[curPart][curLine].choice.secondOption.Replace("'", ","); ;
 
                         //버튼안에 내용물 넣어줌.
-                        Button btn01 = ObjectTextBox_Button01.GetComponent<Button>();
+                        UnityEngine.UI.Button btn01 = ObjectTextBox_Button01.GetComponent<UnityEngine.UI.Button>();
                         btn01.onClick.RemoveAllListeners();
 
                         //AddListener에 함수를 만들어 넣어줄 수 있지만..동적으로 계속 curPart가 변해야하기에..
                         //람다를 이용해서 익명함수를 만들어주었다.
                         btn01.onClick.AddListener(() =>
                         {
-                            if (!Input.GetKeyDown(KeyCode.Return))// 아직 문장이 끝나지 않았다면
+                            if (!Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))// 아직 문장이 끝나지 않았다면
                             {
                                 curPart = (firstOptDialogPart - 1); //curPart로 다음으로 넘어감. 
                                 curLine = 0;
@@ -183,11 +193,11 @@ public class DialogueManager : MonoBehaviour
 
                         });
 
-                        Button btn02 = ObjectTextBox_Button02.GetComponent<Button>();
+                        UnityEngine.UI.Button btn02 = ObjectTextBox_Button02.GetComponent<UnityEngine.UI.Button>();
                         btn02.onClick.RemoveAllListeners();
                         btn02.onClick.AddListener(() =>
                         {
-                            if (!Input.GetKeyDown(KeyCode.Return))
+                            if (!Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
                             {
                                 curPart = (secondOptDialogPart - 1);
                                 curLine = 0;
@@ -262,9 +272,7 @@ public class DialogueManager : MonoBehaviour
 
                     }
 
-
-
-                    if (Input.GetKeyDown(KeyCode.Return))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
                     {
                         AllFinish = true;
                     }
@@ -281,6 +289,9 @@ public class DialogueManager : MonoBehaviour
                     Debug.Log("대사 이어지는 중..");
                 }
             }
+
+            player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+            yield return new WaitForSecondsRealtime(0.05f);
         }
 
         //엔딩 변화 있는 경우
@@ -303,22 +314,77 @@ public class DialogueManager : MonoBehaviour
             gameInfo.QuestNum = questIDToBeChange;
             QuestManager.GetInstance().UpdateQuest(gameInfo.QuestNum);
         }
-        go_DialogueBar.SetActive(false); //��ȭ ������Ʈ�� ��Ȱ��ȭ ��Ų��.
-        GameManager.Instance.dialogueInfo.player_InteractingFalse();
+        go_DialogueBar.SetActive(false); //대화 UI 비활성화
+        //GameManager.Instance.dialogueInfo.player_InteractingFalse();
+
+        //yield return new WaitForSecondsRealtime(0.3f);
+        player_InteractingFalse();
 
     }
 
-    public void QuestGoal_UI(string text)
+    //퀘스트 디테일에서 퀘스트 제목 ui 활성화
+    public void QuestDetailTitle_UI(string text)
     {
-        go_QuestBar.SetActive(true);
-        if (Text_questGoal.text != text)
+        Go_QuestDetail.SetActive(true);
+        IsQuestDetail = true;
+        //player_InteractingTrue();
+        if (Text_QuestDetailTitle.text != text)
         {
-            Text_questGoal.text = text;
+            Text_QuestDetailTitle.text = text;
+        }
+
+    }
+    //퀘스트 디테일에서 퀘스트 세부내용 ui 활성화
+    public void QuestDetailContent_UI(string text)
+    {
+        //Go_QuestDetail.SetActive(true);
+        //player_InteractingTrue();
+
+        if (Text_QuestDetailContent.text != text)
+        {
+            Text_QuestDetailContent.text = text;
         }
     }
+    //퀘스트 디테일에서 퀘스트 목표 ui 활성화
+    public void QuestDetailGoal_UI(string text)
+    {
+        if (Text_QuestDetailGoal.text != text)
+        {
+            Text_QuestDetailGoal.text = text;
+        }
+    }
+    //퀘스트 디테일 비활성화
+    public void QuestDeailFalse()
+    {
+        Go_QuestDetail.SetActive(false);
+        //player_InteractingFalse();
+
+    }
+    //퀘스트 목표 UI 출력 활성화
+    public void QuestGoal_UI(string text)
+    {
+        Quest_Button01.SetActive(true);
+        if (Text_QuestGoal.text != text)
+        {
+            Text_QuestGoal.text = text;
+        }
+    }
+    //퀘스트 목표 UI 출력 비활성화
     public void QuestGoal_UIFalse()
     {
-        go_QuestBar.SetActive(false);
+        Quest_Button01.SetActive(false);
     }
 
+
+    //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
+    public void player_InteractingTrue()
+    {
+        UIManager.Instance.Pause();
+
+    }
+    //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
+    public void player_InteractingFalse()
+    {
+        UIManager.Instance.Resume();
+    }
 }
