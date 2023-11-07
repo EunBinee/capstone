@@ -17,7 +17,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 Debug.Log("hit monster");
                 monster = other.GetComponentInParent<Monster>();
                 if (monster != null)
-                    monster.GetDamage(3);
+                    monster.GetDamage(15);
                 else
                     Debug.LogError("몬스터 : null");
 
