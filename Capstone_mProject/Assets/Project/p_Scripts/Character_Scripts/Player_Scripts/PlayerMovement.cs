@@ -139,7 +139,7 @@ public class PlayerMovement : MonoBehaviour
                 if (skill_E.imgCool.fillAmount == 0)
                 {
                     skillDir = this.gameObject.transform.forward.normalized;
-                    skillPos = transform.position + skillDir * 20f;
+                    skillPos = transform.position + skillDir * 30f;
                     transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
                 }
                 //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
@@ -558,12 +558,21 @@ public class PlayerMovement : MonoBehaviour
             }
             //Time.timeScale = 0.1f;
             //Debug.Log(P_Value.index);
+            //* 공격 시 앞으로 찔끔찔끔 가도록
+            Vector3 dir = this.gameObject.transform.forward.normalized;
+            Vector3 pos = transform.position + dir * 20f;
+            transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+
+            //* 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
             effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+            //* 이펙트 회전
             Quaternion effectRotation = this.gameObject.transform.rotation;
             effectRotation.x = 0;
             effectRotation.z = 0;
             effect.gameObject.transform.rotation = effectRotation;
+
+            //* 공격 애니메이션 재생
             P_Com.animator.Play(P_Value.curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));

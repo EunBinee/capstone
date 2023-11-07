@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public enum PlayerState
 {
@@ -55,6 +57,8 @@ public class PlayerController : MonoBehaviour
     public PlayerState curPlayerState;
     private GameObject curEnemy;
 
+    public TMP_Text hitNum;
+
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
@@ -67,6 +71,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        hitNum.text = P_Value.hits.ToString();
 
     }
     void FixedUpdate()
@@ -104,7 +109,7 @@ public class PlayerController : MonoBehaviour
         float deltaHitTime = Time.time - P_Value.curHitTime;
         if (deltaHitTime > 5.0f) //5초 지나면
         {
-            Debug.Log("hits 초기화");
+            //Debug.Log("hits 초기화");
             P_Value.hits = 0;   //히트수 초기화
         }
     }
@@ -250,7 +255,7 @@ public class PlayerController : MonoBehaviour
         {
             //아직 살아있음.
             //P_Com.animator.SetTrigger("isGetDamage");
-            P_Com.animator.Play("Get_Damage", 0, 0f);
+            P_Com.animator.Play("Get_Damage", 0);
 
             AnimState(PlayerState.GetHit_KnockBack);
         }
