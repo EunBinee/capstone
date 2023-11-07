@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerController _controller;// = new PlayerController();
@@ -92,8 +92,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (P_States.isGround && Input.GetMouseButtonDown(0) && !P_States.isStartComboAttack)
+            if (P_States.isGround && Input.GetMouseButtonDown(0) && !P_States.isStartComboAttack && !EventSystem.current.IsPointerOverGameObject())
             {
+                //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                 P_States.isStartComboAttack = true;
                 StartCoroutine(Attacking());
             }

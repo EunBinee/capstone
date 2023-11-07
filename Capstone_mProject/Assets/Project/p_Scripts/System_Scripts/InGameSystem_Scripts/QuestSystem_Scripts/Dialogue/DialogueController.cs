@@ -24,7 +24,7 @@ public class DialogueController : MonoBehaviour
     {
         if (startChat)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록 하기 위함.
                 stopChat = true;
@@ -63,14 +63,17 @@ public class DialogueController : MonoBehaviour
             if (stopChat)
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록.
-                writerText = sentence;
+
+                writerText = sentence.Replace("'", ",");
+                //writerText = sentence.Replace("\\n", "\n");
                 objectText.text = writerText;
                 break;
             }
             else
             {
                 writerText += sentence[i];
-                objectText.text = writerText;
+                objectText.text = writerText.Replace("'", ",");
+                objectText.text = writerText.Replace("\\n", "\n");
 
                 yield return new WaitForSecondsRealtime(0.03f);
             }
