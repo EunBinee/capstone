@@ -610,12 +610,14 @@ public class PlayerMovement : MonoBehaviour
                         P_Value.index = 1;
                         P_Value.time = 0;
                         P_Value.isCombo = false;
+                        P_States.hadAttack = false;
                         //P_States.isPerformingAction = false;
                     }
                     else
                     {
                         P_Value.index++;
                         P_Value.isCombo = true;
+                        P_States.hadAttack = false;
                     }
                     break;
                 }
