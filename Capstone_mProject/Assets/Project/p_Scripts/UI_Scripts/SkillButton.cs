@@ -5,52 +5,52 @@ using UnityEngine.UI;
 
 public class SkillButton : MonoBehaviour
 {
-    // ScriptableObject ·Î »ý¼ºÇÑ ½ºÅ³
+    // ScriptableObject ë¡œ ìƒì„±í•œ ìŠ¤í‚¬
     public SOSkill skill;
 
-    // Player °´Ã¼ ¿¬°á
+    // Player ê°ì²´ ì—°ê²°
     public PlayerController player;
 
-    // ½ºÅ³ ÀÌ¹ÌÁö
+    // ìŠ¤í‚¬ ì´ë¯¸ì§€
     public Image imgIcon;
 
-    // Cooldown ÀÌ¹ÌÁö
+    // Cooldown ì´ë¯¸ì§€
     public Image imgCool;
 
     void Start()
     {
-        // SO Skill ¿¡ µî·ÏÇÑ ½ºÅ³ ¾ÆÀÌÄÜ ¿¬°á
+        // SO Skill ì— ë“±ë¡í•œ ìŠ¤í‚¬ ì•„ì´ì½˜ ì—°ê²°
         imgIcon.sprite = skill.icon;
 
-        // Cool ÀÌ¹ÌÁö ÃÊ±â ¼³Á¤
+        // Cool ì´ë¯¸ì§€ ì´ˆê¸° ì„¤ì •
         imgCool.fillAmount = 0;
     }
 
     public void OnClicked()
     {
-        // Cool ÀÌ¹ÌÁöÀÇ fillAmount °¡ 0 º¸´Ù Å©´Ù´Â °ÍÀº
-        // ¾ÆÁ÷ ÄðÅ¸ÀÓÀÌ ³¡³ªÁö ¾Ê¾Ò´Ù´Â ¶æ
+        // Cool ì´ë¯¸ì§€ì˜ fillAmount ê°€ 0 ë³´ë‹¤ í¬ë‹¤ëŠ” ê²ƒì€
+        // ì•„ì§ ì¿¨íƒ€ìž„ì´ ëë‚˜ì§€ ì•Šì•˜ë‹¤ëŠ” ëœ»
         if (imgCool.fillAmount > 0) return;
 
-        // Player °´Ã¼ÀÇ ActivateSkill È£Ãâ     
+        // Player ê°ì²´ì˜ ActivateSkill í˜¸ì¶œ     
         player.ActivateSkill(skill);
 
-        // ½ºÅ³ Cool Ã³¸®
+        // ìŠ¤í‚¬ Cool ì²˜ë¦¬
         StartCoroutine(SC_Cool());
     }
 
     IEnumerator SC_Cool()
     {
-        // skill.cool °ª¿¡ µû¶ó ´Þ¶óÁü
-        // ¿¹: skill.cool ÀÌ 10ÃÊ ¶ó¸é
+        // skill.cool ê°’ì— ë”°ë¼ ë‹¬ë¼ì§
+        // ì˜ˆ: skill.cool ì´ 10ì´ˆ ë¼ë©´
         // tick = 0.1
         float tick = 1f / skill.cool;
         float t = 0;
 
         imgCool.fillAmount = 1;
 
-        // 10ÃÊ¿¡ °ÉÃÄ 1 -> 0 À¸·Î º¯°æÇÏ´Â °ªÀ»
-        // imgCool.fillAmout ¿¡ ³Ö¾îÁÖ´Â ÄÚµå
+        // 10ì´ˆì— ê±¸ì³ 1 -> 0 ìœ¼ë¡œ ë³€ê²½í•˜ëŠ” ê°’ì„
+        // imgCool.fillAmout ì— ë„£ì–´ì£¼ëŠ” ì½”ë“œ
         while (imgCool.fillAmount > 0)
         {
             imgCool.fillAmount = Mathf.Lerp(1, 0, t);

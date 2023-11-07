@@ -1892,7 +1892,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 2
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!95 &8697790301199432525
 Animator:
   serializedVersion: 4
@@ -1977,7 +1977,11 @@ MonoBehaviour:
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
     HP: 100
+    index: 0
+    time: 0
+    isCombo: 0
     curAnimName: 
+    hits: 0
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -2219,6 +2223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!1001 &6921067678038606662
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2997,6 +3002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!1 &4670565585574412557 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2368256536511119947, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -3059,3 +3065,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}

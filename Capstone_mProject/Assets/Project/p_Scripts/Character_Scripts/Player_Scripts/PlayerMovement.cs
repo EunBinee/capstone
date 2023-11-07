@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
 
+    public SkillButton skill_E;
+    public SkillButton skill_Q;
+
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
     public Collider[] attackColliders;
@@ -92,29 +95,27 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (P_States.isGround && Input.GetMouseButtonDown(0) && !P_States.isStartComboAttack)
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack)
             {
                 P_States.isStartComboAttack = true;
                 StartCoroutine(Attacking());
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                //Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
-                //knockback_Dir = knockback_Dir.normalized;
-                //Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f;
-                //transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-
-                Vector3 skillDir = this.gameObject.transform.forward;
-                skillDir = skillDir.normalized;
-                Vector3 skillPos = transform.position + skillDir * 15f;
-                transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
-                //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
-                P_Controller.skill_E.OnClicked();
+                Debug.Log("P_States.isSkill : " + P_States.isSkill);
+                if (P_States.isSkill)
+                {
+                    return;
+                }
+                skillMotion('E');
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
-                P_Controller.skill_Q.OnClicked();
+                if (P_States.isSkill)
+                {
+                    return;
+                }
+                skillMotion('Q');
             }
 
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
@@ -123,6 +124,44 @@ public class PlayerMovement : MonoBehaviour
                 P_States.isNotMoving = true;
             else
                 P_States.isNotMoving = false;
+        }
+    }
+
+    private void skillMotion(char a)
+    {
+        Vector3 skillDir;
+        Vector3 skillPos;
+        P_States.isSkill = true;
+
+        switch (a)
+        {
+            case 'E':
+                if (skill_E.imgCool.fillAmount == 0)
+                {
+                    skillDir = this.gameObject.transform.forward.normalized;
+                    skillPos = transform.position + skillDir * 20f;
+                    transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
+                }
+                //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
+                skill_E.OnClicked();
+                break;
+
+            case 'Q':
+                if (skill_Q.imgCool.fillAmount == 0)
+                {
+                    //Time.timeScale = 0.1f;
+                    //P_Value.gravity = P_COption.gravity;
+                    skillDir = this.gameObject.transform.up.normalized;
+                    /*skillPos = transform.position + skillDir * 40f;*/
+                    //transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
+                    P_Com.rigidbody.AddForce(skillDir * 5f, ForceMode.Impulse);
+                }
+                //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
+                skill_Q.OnClicked();
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -215,13 +254,15 @@ public class PlayerMovement : MonoBehaviour
     }
     private void PlayerRotation()
     {
-        if (P_States.isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if (P_States.isSkill || P_States.isJumping)
         {
-            //return;
-        }
-        if (P_States.isJumping)
-        {
-
+            if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+            {
+                Time.timeScale = 1f;
+                P_States.isSkill = false;
+                P_Value.gravity = 0;
+            }
+            return;
         }
         else
         {
@@ -245,23 +286,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if (P_States.isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if ((P_States.isStartComboAttack || P_States.isSkill) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
-            //Debug.Log($"P_States.isStartComboAttack {P_States.isStartComboAttack}");
-            //Debug.Log($"P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(locomotio) {P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")}");
+            P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }
         //플레이어의 움직임을 수행하는 함수.
         //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
         P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
         P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-        //Debug.Log($" P_Camera.cameraObj.transform.forward    {P_Camera.cameraObj.transform.forward}");
-        //Debug.Log($" P_Input.verticalMovement {P_Input.verticalMovement}");
-        //Debug.Log($" P_Value.moveDirection    {P_Value.moveDirection}");
-        //Debug.Log($"  P_Camera.cameraObj.transform.right {P_Camera.cameraObj.transform.right}");
 
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
-
 
         if (P_States.isJumping)
         {
@@ -271,7 +306,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isDodgeing)
         {
-            //P_Com.animator.SetTrigger("isDodge");
             P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
@@ -356,7 +390,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if (P_States.isStartComboAttack && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if ((P_States.isStartComboAttack || !P_States.isGround) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
             P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
@@ -523,7 +557,7 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
             //Time.timeScale = 0.1f;
-            Debug.Log(P_Value.index);
+            //Debug.Log(P_Value.index);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
             effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
             Quaternion effectRotation = this.gameObject.transform.rotation;
