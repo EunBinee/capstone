@@ -190,6 +190,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             time = 0;
             roamTime = UnityEngine.Random.Range(1, 3);
 
+            Debug.Log("A");
+
             yield return new WaitForSeconds(roamTime);
 
             if (curAngle == 0)
@@ -205,6 +207,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             while (time <= 10)
             {
+                Debug.Log("B");
                 time += Time.deltaTime;
                 // Slerp를 사용하여 부드럽게 회전합니다.
                 buttomGameObject.transform.rotation = Quaternion.Slerp(buttomGameObject.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
@@ -647,11 +650,19 @@ public class MonsterPattern_Monster02 : MonsterPattern
         yield return new WaitForSeconds(0.5f);
 
         m_monster.RetrunHPBar();
-        SetAnimation(MonsterAnimation.Death);
+        //SetAnimation(MonsterAnimation.Death);
 
-        yield return new WaitForSeconds(5f);
+        //TODO: 죽었을때 수정.(애니메이터 문제)
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Eff_Burst_1_oneShot");
 
-        m_monster.gameObject.SetActive(false);
+        effect.transform.position = transform.position;
+        effect.finishAction = () =>
+        {
+            m_monster.gameObject.SetActive(false);
+        };
+        //yield return new WaitForSeconds(5f);
+
+        //m_monster.gameObject.SetActive(false);
     }
 
     // * ---------------------------------------------------------------------------------------------------------//
