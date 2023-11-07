@@ -608,86 +608,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
         shake_co = null;
         yield return null;
     }
-    /*
-        //총 쏘고나서 몬스터 몸 흔들리게
-        IEnumerator Shake(float duration)
-        {
-            float shakeAmount = 0.01f;
-            float smoothAmount = 1f;
-            float maxAmount = 0.06f;
-
-            float time = 0;
-
-            Vector3 originalPosition = transform.localPosition;
-            Quaternion originalRotation = transform.localRotation;
-
-            Vector3 buttomOriginalPos = buttomGameObject.transform.localPosition;
-            Quaternion buttomOriginalRotation = buttomGameObject.transform.localRotation;
-
-            float positionX = transform.localPosition.x;
-            float positionY = transform.localPosition.y;
-            float rotationX = transform.localRotation.x;
-            float rotationY = transform.localRotation.y;
-
-            float buttomPositionX = buttomGameObject.transform.localPosition.x;
-            float buttomPositionY = buttomGameObject.transform.localPosition.y;
-            float buttomRotationX = buttomGameObject.transform.localRotation.x;
-            float buttomRotationY = buttomGameObject.transform.localRotation.y;
-
-            while (time < duration)
-            {
-                time += Time.deltaTime;
-
-                if (curMonsterState == MonsterState.Attack)
-                {
-                    positionX = -transform.position.x * shakeAmount * 5f;
-                    positionY = -transform.position.y * shakeAmount;
-                    rotationX = -transform.position.x * shakeAmount;
-                    rotationY = -transform.position.y * shakeAmount * 0.2f;
-
-                    buttomPositionX = -buttomGameObject.transform.position.x * shakeAmount * 5f;
-                    buttomPositionY = -buttomGameObject.transform.position.y * shakeAmount;
-                    buttomRotationX = -buttomGameObject.transform.position.x * shakeAmount;
-                    buttomRotationY = -buttomGameObject.transform.position.y * shakeAmount * 0.2f;
-                }
-                if (curMonsterState == MonsterState.GetHit)
-                {
-                    smoothAmount = 6;
-                    positionX = -transform.position.x * shakeAmount * 5f;
-                    buttomPositionX = -buttomGameObject.transform.position.x * shakeAmount * 5f;
-                    // positionY = -transform.position.y * shakeAmount;
-                }
-
-                Mathf.Clamp(positionX, -maxAmount, maxAmount);
-                Mathf.Clamp(positionY, -maxAmount, maxAmount);
-
-                Mathf.Clamp(buttomPositionX, -maxAmount, maxAmount);
-                Mathf.Clamp(buttomPositionY, -maxAmount, maxAmount);
-
-                Vector3 shakePosition = new Vector3(positionX, positionY, 0);
-                Quaternion shackRotation = new Quaternion(rotationX, rotationY, 0, 1);
-
-                Vector3 buttomShakePosition = new Vector3(buttomPositionX, buttomPositionY, 0);
-                Quaternion buttomShackRotation = new Quaternion(buttomRotationX, buttomRotationY, 0, 1);
-
-                transform.localPosition = Vector3.Lerp(transform.localPosition, originalPosition + shakePosition, Time.deltaTime * smoothAmount);
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, shackRotation, Time.deltaTime * smoothAmount);
-
-                buttomGameObject.transform.localPosition = Vector3.Lerp(buttomGameObject.transform.localPosition, buttomOriginalPos + buttomShakePosition, Time.deltaTime * smoothAmount);
-                buttomGameObject.transform.localRotation = Quaternion.Slerp(buttomGameObject.transform.localRotation, buttomShackRotation, Time.deltaTime * smoothAmount);
-                yield return null;
-            }
-
-            transform.localPosition = originalPosition;
-            transform.localRotation = originalRotation;
-
-            buttomGameObject.transform.localPosition = buttomOriginalPos;
-            buttomGameObject.transform.localRotation = buttomOriginalRotation;
-
-            shake_co = null;
-            yield return null;
-        }
-        */
     // * ---------------------------------------------------------------------------------------------------------//
     // * 피격 모션
 
@@ -715,11 +635,15 @@ public class MonsterPattern_Monster02 : MonsterPattern
     IEnumerator Death_co()
     {
         ChangeMonsterState(MonsterState.Death);
+        yield return new WaitForSeconds(0.5f);
+        m_monster.RetrunHPBar();
+
         SetAnimation(MonsterAnimation.Death);
 
         yield return new WaitForSeconds(5f);
 
         this.gameObject.SetActive(false);
+
     }
 
     // * ---------------------------------------------------------------------------------------------------------//
