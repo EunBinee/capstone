@@ -85,6 +85,7 @@ public class CurrentState
     public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
     public bool isStartComboAttack;
     public bool isSkill;
+    public bool hadAttack;
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부

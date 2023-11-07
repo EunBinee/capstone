@@ -10,6 +10,7 @@ public class PlayerAttackCheck : MonoBehaviour
     public PlayerController _controller;// = new PlayerController();
     private PlayerController P_Controller => _controller;
     private CurrentValue P_Value => P_Controller._currentValue;
+    private CurrentState P_States => P_Controller._currentState;
 
     void Start()
     {
@@ -29,8 +30,9 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 Debug.Log("hit monster");
                 monster = other.GetComponentInParent<Monster>();
-                if (monster != null)
+                if (monster != null && !P_States.hadAttack)
                 {
+                    P_States.hadAttack = true;
                     monster.GetDamage(15);
                     P_Value.curHitTime = Time.time; //현재 시간 저장
                     P_Controller.CheckHitTime();

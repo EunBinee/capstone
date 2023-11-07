@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
             CheckedForward();
             CheckedGround();
             CheckHitTime();
+            CheckAnim();
         }
     }
 
@@ -146,7 +147,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
+    public void CheckAnim()
+    {
+        if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("Get_Damage")
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        {
+            P_Com.animator.Rebind();
+        }
+    }
 
     // UI 버튼에 의해 호출됩니다.
     // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
