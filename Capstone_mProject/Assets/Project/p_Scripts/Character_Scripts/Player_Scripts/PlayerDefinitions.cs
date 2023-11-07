@@ -84,6 +84,7 @@ public class CurrentState
     public bool previousDodgeKeyPress;   //이전 프레임에서 대시 키 여부
     public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
     public bool isStartComboAttack;
+    public bool isSkill;
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부
@@ -111,6 +112,8 @@ public class CurrentValue
     public float time;
     public bool isCombo;
     public string curAnimName = "";
+    public int hits = 0;
+    public float curHitTime = 0;
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리

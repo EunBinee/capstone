@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public enum PlayerState
 {
@@ -54,8 +56,8 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState curPlayerState;
     private GameObject curEnemy;
-    public SkillButton skill_E;
-    public SkillButton skill_Q;
+
+    public TMP_Text hitNum;
 
     void Awake()
     {
@@ -69,6 +71,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        hitNum.text = P_Value.hits.ToString();
 
     }
     void FixedUpdate()
@@ -80,6 +83,7 @@ public class PlayerController : MonoBehaviour
             //전방 지면 체크
             CheckedForward();
             CheckedGround();
+            CheckHitTime();
         }
     }
 
@@ -98,6 +102,16 @@ public class PlayerController : MonoBehaviour
         _castRadius = P_Com.capsuleCollider.radius * 0.9f;
         _castRadiusDiff = P_Com.capsuleCollider.radius - _castRadius + 0.05f;
         //그냥 캡슐 콜라이더 radius와 castRadius의 차이
+    }
+
+    public void CheckHitTime()
+    {
+        float deltaHitTime = Time.time - P_Value.curHitTime;
+        if (deltaHitTime > 5.0f) //5초 지나면
+        {
+            //Debug.Log("hits 초기화");
+            P_Value.hits = 0;   //히트수 초기화
+        }
     }
 
     public void ChangePlayerState(PlayerState playerState)
@@ -180,6 +194,7 @@ public class PlayerController : MonoBehaviour
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
             //if (P_States.isForwardBlocked)
             //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
 
@@ -240,7 +255,7 @@ public class PlayerController : MonoBehaviour
         {
             //아직 살아있음.
             //P_Com.animator.SetTrigger("isGetDamage");
-            P_Com.animator.Play("Get_Damage", 0, 0f);
+            P_Com.animator.Play("Get_Damage", 0);
 
             AnimState(PlayerState.GetHit_KnockBack);
         }

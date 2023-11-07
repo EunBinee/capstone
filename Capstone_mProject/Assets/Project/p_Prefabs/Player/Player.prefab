@@ -1981,6 +1981,7 @@ MonoBehaviour:
     time: 0
     isCombo: 0
     curAnimName: 
+    hits: 0
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -2222,6 +2223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!1001 &6921067678038606662
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3012,6 +3014,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!1 &4670565585574412557 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2368256536511119947, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -3074,3 +3077,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
