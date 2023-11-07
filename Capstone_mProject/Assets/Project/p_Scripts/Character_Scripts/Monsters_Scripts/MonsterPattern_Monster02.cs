@@ -190,8 +190,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             time = 0;
             roamTime = UnityEngine.Random.Range(1, 3);
 
-            Debug.Log("A");
-
             yield return new WaitForSeconds(roamTime);
 
             if (curAngle == 0)

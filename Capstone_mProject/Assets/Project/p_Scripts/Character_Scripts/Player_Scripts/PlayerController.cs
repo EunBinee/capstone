@@ -48,8 +48,6 @@ public class PlayerController : MonoBehaviour
 
     public NavMeshSurface navMeshSurface;
 
-    private bool isStartComboAttack = false;
-
     private bool isGettingHit = false;
 
     public Action OnHitPlayerEffect = null;
@@ -58,6 +56,7 @@ public class PlayerController : MonoBehaviour
     private GameObject curEnemy;
 
     public TMP_Text hitNum;
+    public Slider HPgauge;
 
     void Awake()
     {
@@ -67,6 +66,8 @@ public class PlayerController : MonoBehaviour
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+
+        P_Value.HP = P_Value.MaxHP;
     }
     // Update is called once per frame
     void Update()
@@ -85,6 +86,7 @@ public class PlayerController : MonoBehaviour
             CheckedGround();
             CheckHitTime();
             CheckAnim();
+            CheckHP();
         }
     }
 
@@ -154,6 +156,11 @@ public class PlayerController : MonoBehaviour
         {
             P_Com.animator.Rebind();
         }
+    }
+
+    public void CheckHP()
+    {
+        HPgauge.value = P_Value.HP / P_Value.MaxHP;
     }
 
     // UI 버튼에 의해 호출됩니다.
@@ -236,12 +243,12 @@ public class PlayerController : MonoBehaviour
     public void GetHit(GameObject enemy)
     {
 
-        StartCoroutine(PlayerGetHit(enemy, 2));
+        StartCoroutine(PlayerGetHit(enemy, 2f));
 
     }
 
 
-    IEnumerator PlayerGetHit(GameObject enemy, double Damage)
+    IEnumerator PlayerGetHit(GameObject enemy, float Damage)
     {
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌

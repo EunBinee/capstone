@@ -108,7 +108,8 @@ public class CurrentValue
     public Vector3 groundCross;     //지면의 외적 (캐릭터 이동벡터 회전축)
     public Vector3 playerVelocity;  //이동을 위한 플레이어 속도
     public int comboCount;          // 현재 콤보 카운트
-    public double HP = 100;               //플레이어 체력
+    public float MaxHP = 100;               //플레이어 체력
+    public float HP;
     public int index;
     public float time;
     public bool isCombo;

@@ -27,7 +27,6 @@ public class EffectController : MonoBehaviour
         {
             if (particleSystemList[i].main.startSize3D)
             {
-                Debug.Log("변경");
                 ParticleSystem.MainModule mainModule = particleSystemList[i].main;
                 mainModule.startSizeXMultiplier = (float)Math.Round((mainModule.startSizeXMultiplier * size), 1);
                 mainModule.startSizeYMultiplier = (float)Math.Round((mainModule.startSizeYMultiplier * size), 1);
@@ -35,7 +34,6 @@ public class EffectController : MonoBehaviour
             }
             else
             {
-                Debug.Log("변경");
                 ParticleSystem.MainModule mainModule = particleSystemList[i].main;
                 float originStartSize = mainModule.startSizeMultiplier;
 
