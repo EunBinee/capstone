@@ -10,6 +10,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 {
     [Header("몬스터 무기 : 인덱스 0번 L쪽 무기, 인덱스 1번 R쪽 무기")]
     public Collider[] weapons;
+    private List<MonsterWeapon_CollisionCheck> weaponsChecks;
 
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
     public float findPlayerDistance = 6f;
@@ -56,6 +57,13 @@ public class MonsterPattern_Monster01 : MonsterPattern
         boxCollider.enabled = false;
         CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = true;
+
+        weaponsChecks = new List<MonsterWeapon_CollisionCheck>();
+
+        for (int i = 0; i < weapons.Length; ++i)
+        {
+            weaponsChecks.Add(weapons[i].gameObject.GetComponent<MonsterWeapon_CollisionCheck>());
+        }
 
         playerHide = true;
     }
@@ -728,6 +736,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     IEnumerator Death_co()
     {
         StopAtackCoroutine();
+
         SetAnimation(MonsterAnimation.Idle);
         ChangeMonsterState(MonsterState.Death);
         SetMove_AI(false);
@@ -769,6 +778,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         for (int i = 0; i < weapons.Length; i++)
         {
             weapons[i].enabled = enable;
+            weaponsChecks[i].onEnable = enable;
         }
     }
     // * ---------------------------------------------------------------------------------------//
