@@ -135,7 +135,7 @@ public class DialogueManager : MonoBehaviour
                     //Debug.Log("d");
 
                 }
-                else if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+                else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return))
                 {
                     //선택지가 없고 아직 문장이 끝나지 않은경우
                     Text_Dialogue.text = "";
@@ -189,7 +189,7 @@ public class DialogueManager : MonoBehaviour
                         //람다를 이용해서 익명함수를 만들어주었다.
                         btn01.onClick.AddListener(() =>
                         {
-                            if (!Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))// 아직 문장이 끝나지 않았다면
+                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return))// 아직 문장이 끝나지 않았다면
                             {
                                 curPart = (firstOptDialogPart - 1); //curPart로 다음으로 넘어감. 
                                 curLine = 0;
@@ -207,7 +207,7 @@ public class DialogueManager : MonoBehaviour
                         btn02.onClick.RemoveAllListeners();
                         btn02.onClick.AddListener(() =>
                         {
-                            if (!Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return))
                             {
                                 curPart = (secondOptDialogPart - 1);
                                 curLine = 0;
@@ -301,7 +301,7 @@ public class DialogueManager : MonoBehaviour
             }
 
             player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
-            yield return new WaitForSecondsRealtime(0.05f);
+            yield return new WaitForSecondsRealtime(0.02f);
         }
 
         //엔딩 변화 있는 경우

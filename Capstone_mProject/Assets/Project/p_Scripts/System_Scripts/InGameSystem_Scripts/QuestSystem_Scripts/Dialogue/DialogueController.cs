@@ -75,7 +75,7 @@ public class DialogueController : MonoBehaviour
                 objectText.text = writerText.Replace("'", ",");
                 objectText.text = writerText.Replace("\\n", "\n");
 
-                yield return new WaitForSecondsRealtime(0.03f);
+                yield return new WaitForSecondsRealtime(0.02f);
             }
         }
 
