@@ -574,6 +574,7 @@ public class PlayerMovement : MonoBehaviour
             effect.gameObject.transform.rotation = effectRotation;
 
             //* 공격 애니메이션 재생
+            P_Com.animator.Rebind();
             P_Com.animator.Play(P_Value.curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));

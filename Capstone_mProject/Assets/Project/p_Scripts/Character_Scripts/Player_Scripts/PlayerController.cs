@@ -73,12 +73,12 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();
-
     }
     void FixedUpdate()
     {
         if (!UIManager.gameIsPaused)
         {
+            HPgauge.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -87,6 +87,10 @@ public class PlayerController : MonoBehaviour
             CheckHitTime();
             CheckAnim();
             CheckHP();
+        }
+        else
+        {
+            HPgauge.gameObject.SetActive(false);
         }
     }
 
@@ -160,7 +164,8 @@ public class PlayerController : MonoBehaviour
 
     public void CheckHP()
     {
-        HPgauge.value = P_Value.HP / P_Value.MaxHP;
+        if (HPgauge != null)
+            HPgauge.value = P_Value.HP / P_Value.MaxHP;
     }
 
     // UI 버튼에 의해 호출됩니다.

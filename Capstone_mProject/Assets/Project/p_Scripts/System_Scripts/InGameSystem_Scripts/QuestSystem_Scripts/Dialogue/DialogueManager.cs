@@ -102,6 +102,9 @@ public class DialogueManager : MonoBehaviour
 
         while (!AllFinish && !DoQuest)
         {
+            //* 게임 멈춤 = 참
+            UIManager.gameIsPaused = true;
+
             GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
