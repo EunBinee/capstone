@@ -561,7 +561,7 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(P_Value.index);
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir = this.gameObject.transform.forward.normalized;
-            Vector3 pos = transform.position + dir * 10f;
+            Vector3 pos = transform.position + dir * 3f;
             transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
 
             //* 이펙트
