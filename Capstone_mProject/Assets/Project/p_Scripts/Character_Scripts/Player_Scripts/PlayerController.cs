@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     public Action OnHitPlayerEffect = null;
 
     public PlayerState curPlayerState;
-    private GameObject curEnemy;
+    private Monster curEnemy;
 
     public TMP_Text hitNum;
     public Slider HPgauge;
@@ -245,7 +245,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void GetHit(GameObject enemy)
+    public void GetHit(Monster enemy)
     {
 
         StartCoroutine(PlayerGetHit(enemy, 2f));
@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    IEnumerator PlayerGetHit(GameObject enemy, float Damage)
+    IEnumerator PlayerGetHit(Monster enemy, float Damage)
     {
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
@@ -285,6 +285,11 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         P_States.isGettingHit = false;
 
+    }
+
+    public Monster Get_CurHitEnemy()
+    {
+        return curEnemy;
     }
 
     public void Death()
