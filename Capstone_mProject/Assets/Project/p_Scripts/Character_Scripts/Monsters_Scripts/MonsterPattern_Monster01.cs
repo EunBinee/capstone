@@ -720,7 +720,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 //TODO :  이펙트 사라지게!(공격 이펙트 아님)
             };
 
-            Debug.Log("원거리 공격 : 2초 기다림.");
             yield return new WaitForSeconds(2f);
             curPlayerPos = playerTrans.position;
 
@@ -745,12 +744,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     {
                         //*원거리 공격에 플레이어가 맞았을 경우 
                         attackNum = 3; //공격 끝
-                        Debug.Log("플레이어 공격 원거리 탈출");
                         break;
                     }
                     if (distance <= 0.1f)
                     {
-                        Debug.Log("원거리 공격 : 멈춤");
                         break;
                     }
 
@@ -761,7 +758,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
             else
             {
                 //갈 수 없는 위치면??
-                Debug.LogError("원거리 공격 : 갈 수 없는 곳");
+#if UNITY_EDITOR
+                Debug.LogError("몬스터 01 원거리 공격 : 갈 수 없는 곳");
+#endif
                 //!단거리 공격으로 변환!
                 break;
             }
@@ -769,10 +768,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         EnabledWeaponsCollider(false);
 
-        Debug.LogError($"1  navMeshAgent.speed {navMeshAgent.speed}   navMeshAgent.acceleration {navMeshAgent.acceleration} ");
+
         navMeshAgent.speed = defaultSpeed;
         navMeshAgent.acceleration = defaultAcceleration;
-        Debug.LogError($"2  navMeshAgent.speed {navMeshAgent.speed}   navMeshAgent.acceleration {navMeshAgent.acceleration} ");
+
         noAttack = false;
 
         SetMove_AI(false);
@@ -871,7 +870,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         this.gameObject.SetActive(false);
     }
 
-    private void StopAtackCoroutine()
+    public override void StopAtackCoroutine()
     {
         // * 죽음, 넉백에서 사용.
         if (short_Range_Attack_co != null)

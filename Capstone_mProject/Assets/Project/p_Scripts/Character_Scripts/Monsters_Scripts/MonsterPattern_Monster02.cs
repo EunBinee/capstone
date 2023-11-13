@@ -42,8 +42,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public float findPlayerDistance = 6f;
 
     Coroutine roam_Monster_co = null;
-    Coroutine short_Range_Attack01_co = null;
-    Coroutine long_Range_Attack01_co = null;
+    Coroutine short_Range_Attack_co = null;
+    Coroutine long_Range_Attack_co = null;
     Coroutine hidePlayer_waitMonster_co = null;
     Coroutine shake_co = null;
     public override void Init()
@@ -229,7 +229,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             {
                 if (!playerHide) //*플레이어가 안숨었을 경우에만..
                 {
-                    Debug.Log("안숨음");
                     if (isRoaming)
                     {
                         //* 플레이어가 뒤에 있는지 체크
@@ -332,11 +331,11 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             case MonsterMotion.Short_Range_Attack:
                 //근거리 공격
-                short_Range_Attack01_co = StartCoroutine(Short_Range_Attack_Monster01());
+                short_Range_Attack_co = StartCoroutine(Short_Range_Attack_Monster01());
                 break;
             case MonsterMotion.Long_Range_Attack:
                 //원거리 공격
-                long_Range_Attack01_co = StartCoroutine(Long_Range_Attack01_Monster02());
+                long_Range_Attack_co = StartCoroutine(Long_Range_Attack_Monster02());
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
@@ -400,7 +399,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     // * ---------------------------------------------------------------------------------------------------------//
     // * 원거리 공격 01
-    IEnumerator Long_Range_Attack01_Monster02()
+    IEnumerator Long_Range_Attack_Monster02()
     {
         //좌 우 좌 우 발사 
         float time = 0;
@@ -622,7 +621,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     IEnumerator GetHit_KnockBack_co()
     {
-        Debug.Log("몬스터 02 맞음");
         //플레이어의 반대 방향으로 넉백
         float duration = 0.1f;
 
@@ -644,6 +642,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     IEnumerator Death_co()
     {
+        StopAtackCoroutine();
         ChangeMonsterState(MonsterState.Death);
 
         yield return new WaitForSeconds(0.5f);
@@ -663,6 +662,21 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         //m_monster.gameObject.SetActive(false);
     }
+    public override void StopAtackCoroutine()
+    {
+        // * 죽음, 넉백에서 사용.
+        if (short_Range_Attack_co != null)
+        {
+            StopCoroutine(short_Range_Attack_co);
+            short_Range_Attack_co = null;
+        }
+
+        if (long_Range_Attack_co != null)
+        {
+            StopCoroutine(long_Range_Attack_co);
+            long_Range_Attack_co = null;
+        }
+    }
 
     // * ---------------------------------------------------------------------------------------------------------//
     IEnumerator HidePlayer_waitMonster(float hideDuration)
@@ -679,10 +693,10 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 }
                 if (playerHide && time >= hideDuration)
                 {
-                    if (short_Range_Attack01_co != null)
-                        StopCoroutine(short_Range_Attack01_co);
-                    if (long_Range_Attack01_co != null)
-                        StopCoroutine(long_Range_Attack01_co);
+                    if (short_Range_Attack_co != null)
+                        StopCoroutine(short_Range_Attack_co);
+                    if (long_Range_Attack_co != null)
+                        StopCoroutine(long_Range_Attack_co);
                     ChangeMonsterState(MonsterState.Roaming);
                     break;
                 }
@@ -692,6 +706,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         hidePlayer_waitMonster_co = null;
     }
+
 
     // * ---------------------------------------------------------------------------------------------------------//
     private void OnDrawGizmos()

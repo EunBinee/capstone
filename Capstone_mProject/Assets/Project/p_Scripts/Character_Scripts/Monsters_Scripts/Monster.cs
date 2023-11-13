@@ -85,7 +85,6 @@ public class Monster : MonoBehaviour
                 monsterData.HP -= Damage;
                 m_hPBar.UpdateHP();
 
-                Debug.Log($"AA monsterData.HP {monsterData.HP}");
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
                 {

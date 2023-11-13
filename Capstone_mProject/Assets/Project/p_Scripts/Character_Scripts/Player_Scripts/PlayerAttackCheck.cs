@@ -39,6 +39,10 @@ public class PlayerAttackCheck : MonoBehaviour
                     P_Value.hits = P_Value.hits + 1;
                     Debug.Log("hits : " + P_Value.hits);
                 }
+                else if (monster != null && !P_States.hadAttack)
+                {
+
+                }
                 else
                     Debug.LogError("몬스터 : null");
 
