@@ -41,6 +41,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     P_States.hadAttack = true;
                     monster.GetDamage(15);
+                    P_Value.nowEnemy = monster.gameObject;
                     P_Value.curHitTime = Time.time; //현재 시간 저장
                     P_Controller.CheckHitTime();
                     P_Value.hits = P_Value.hits + 1;
