@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
 
     public TMP_Text hitNum;
     public Slider HPgauge;
+    float nowHitTime;
 
     void Awake()
     {
@@ -119,6 +120,12 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("hits 초기화");
             P_Value.hits = 0;   //히트수 초기화
         }
+
+        hitNum.rectTransform.localScale = Vector3.one *
+            (P_States.isBouncing ?
+                (P_Value.minHitScale++ * 0.1f) : (nowHitTime == P_Value.curHitTime ?
+                    1f : P_Value.maxHitScale-- * 0.1f));
+        nowHitTime = P_Value.curHitTime;
     }
 
     public void ChangePlayerState(PlayerState playerState)

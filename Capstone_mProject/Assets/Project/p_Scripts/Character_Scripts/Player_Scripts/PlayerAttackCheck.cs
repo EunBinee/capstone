@@ -22,6 +22,13 @@ public class PlayerAttackCheck : MonoBehaviour
         _controller = currentTransform.GetComponent<PlayerController>();
     }
 
+    private void isBouncingToFalse()
+    {
+        P_States.isBouncing = false;
+        P_Value.maxHitScale = 1.2f;
+        P_Value.minHitScale = 1f;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (isEnable)
@@ -37,6 +44,8 @@ public class PlayerAttackCheck : MonoBehaviour
                     P_Value.curHitTime = Time.time; //현재 시간 저장
                     P_Controller.CheckHitTime();
                     P_Value.hits = P_Value.hits + 1;
+                    P_States.isBouncing = true;
+                    Invoke("isBouncingToFalse", 0.3f);
                     Debug.Log("hits : " + P_Value.hits);
                 }
                 else
