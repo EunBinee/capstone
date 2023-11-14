@@ -349,6 +349,11 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 몬스터 상태 =>> 추적
     public override void Tracing_Movement()
     {
+        if (!isTracing)
+        {
+            isTracing = true;
+            SetPlayerAttackList(true);
+        }
         //움직임.
         if (navMeshAgent.isStopped == true)
             SetMove_AI(true);
@@ -361,6 +366,12 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 몬스터 상태 =>> 다시 자기자리로
     public override void GoingBack_Movement()
     {
+        if (isTracing)
+        {
+            isTracing = false;
+            SetPlayerAttackList(false);
+        }
+
         SetMove_AI(true);
 
         SetAnimation(MonsterAnimation.Move);
@@ -685,12 +696,11 @@ public class MonsterPattern_Monster01 : MonsterPattern
         navMeshAgent.speed = 120f; //*엄청 빠른 속도!
         navMeshAgent.acceleration = 90f;
 
-
-
         PlayerController playerController = GameManager.instance.gameData.player.GetComponent<PlayerController>();
         Vector3 curPlayerPos = playerTrans.position;
 
         noAttack = true;
+        bool isGoingBack = false;
 
         NavMeshHit hit;
         int attackNum = 0;
@@ -712,56 +722,77 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 //-----------------------------//
             }
 
-            //TODO: 1.5초가 지나기 전에 몬스터가 공격 받았을 경우 
+            //TODO: 2초가 지나기 전에 몬스터가 공격 받았을 경우 
             // => 이펙트 풀리기
             // =>
             GetHit_duringLongRangeAttack += () =>
             {
+                //*원거리 공격 도중에 플레이어가 맞는다면!??
+                SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
+
+                navMeshAgent.speed = defaultSpeed;
+                navMeshAgent.acceleration = defaultAcceleration;
+
+                noAttack = false;
+
+
+
                 //TODO :  이펙트 사라지게!(공격 이펙트 아님)
             };
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             curPlayerPos = playerTrans.position;
 
-
-            if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
+            float m_distance = Vector3.Distance(curPlayerPos, transform.position);
+            //*플레이어와 몬스터의 거리가 n이하일 경우에만 공격, 멀어졌다면 공격 중지..
+            if (m_distance <= 25f)
             {
-                //원거리 공격 애니메이션션
-                noAttack = true;
-                SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                EnabledWeaponsCollider(true);
-
-                navMeshAgent.SetDestination(curPlayerPos); //특정 위치로 이동.
-                SetMove_AI(true);
-
-                while (true)
+                if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
                 {
-                    //공격
-                    navMeshAgent.SetDestination(curPlayerPos);
-                    distance = Vector3.Distance(transform.position, curPlayerPos);
+                    //원거리 공격 애니메이션션
+                    noAttack = true;
+                    SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
+                    EnabledWeaponsCollider(true);
 
-                    if (playerController._currentState.isGettingHit && playerController.Get_CurHitEnemy() == m_monster)
-                    {
-                        //*원거리 공격에 플레이어가 맞았을 경우 
-                        attackNum = 3; //공격 끝
-                        break;
-                    }
-                    if (distance <= 0.1f)
-                    {
-                        break;
-                    }
+                    navMeshAgent.SetDestination(curPlayerPos); //특정 위치로 이동.
+                    SetMove_AI(true);
 
-                    yield return null;
+                    while (true)
+                    {
+                        //공격
+                        navMeshAgent.SetDestination(curPlayerPos);
+                        distance = Vector3.Distance(transform.position, curPlayerPos);
+
+                        if (playerController._currentState.isGettingHit && playerController.Get_CurHitEnemy() == m_monster)
+                        {
+                            //*원거리 공격에 플레이어가 맞았을 경우 
+                            attackNum = 3; //공격 끝
+                            break;
+                        }
+                        if (distance <= 0.5f)
+                        {
+                            break;
+                        }
+
+                        yield return null;
+                    }
+                    attackNum++;
                 }
-                attackNum++;
+                else
+                {
+                    //갈 수 없는 위치면??
+#if UNITY_EDITOR
+                    Debug.LogError("몬스터 01 원거리 공격 : 갈 수 없는 곳");
+#endif
+                    //!단거리 공격으로 변환! 로밍 상태로 돌아가는 거 아님
+                    isGoingBack = false;
+                    break;
+                }
             }
             else
             {
-                //갈 수 없는 위치면??
-#if UNITY_EDITOR
-                Debug.LogError("몬스터 01 원거리 공격 : 갈 수 없는 곳");
-#endif
-                //!단거리 공격으로 변환!
+                //플레이어와 거리가 멀어서 집으로 돌아감
+                isGoingBack = true;
                 break;
             }
         }
@@ -776,7 +807,13 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         SetMove_AI(false);
         SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-        ChangeMonsterState(MonsterState.Tracing);
+
+        if (isGoingBack)
+        {
+            ChangeMonsterState(MonsterState.GoingBack);
+        }
+        else
+            ChangeMonsterState(MonsterState.Tracing);
 
         long_Range_Attack_co = null;
 
@@ -838,7 +875,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
 
         navMeshAgent.Warp(transform.position);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(1.5f);
 
         SetMove_AI(true);
         ChangeMonsterState(MonsterState.Tracing);
@@ -850,6 +887,12 @@ public class MonsterPattern_Monster01 : MonsterPattern
     IEnumerator Death_co()
     {
         StopAtackCoroutine();
+
+        if (isTracing)
+        {
+            isTracing = false;
+            SetPlayerAttackList(false);
+        }
 
         SetAnimation(MonsterAnimation.Idle);
         ChangeMonsterState(MonsterState.Death);

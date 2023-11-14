@@ -132,6 +132,12 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 case MonsterState.Attack:
                     if (m_monster.HPBar_CheckNull() == false)
                         m_monster.GetHPBar();
+                    if (!isTracing)
+                    {
+                        isTracing = true;
+                        SetPlayerAttackList(true);
+                    }
+
                     //* 공격 중에 숨으면..
                     if (playerHide && hidePlayer_waitMonster_co == null)
                     {
@@ -643,6 +649,13 @@ public class MonsterPattern_Monster02 : MonsterPattern
     IEnumerator Death_co()
     {
         StopAtackCoroutine();
+
+        if (isTracing)
+        {
+            isTracing = false;
+            SetPlayerAttackList(false);
+        }
+
         ChangeMonsterState(MonsterState.Death);
 
         yield return new WaitForSeconds(0.5f);
@@ -681,6 +694,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     // * ---------------------------------------------------------------------------------------------------------//
     IEnumerator HidePlayer_waitMonster(float hideDuration)
     {
+        //* hideDuration초만큼 플레이어가 숨어있으면 공격 멈추는 함수.
         float time = 0;
         if (playerHide)
         {
@@ -697,7 +711,16 @@ public class MonsterPattern_Monster02 : MonsterPattern
                         StopCoroutine(short_Range_Attack_co);
                     if (long_Range_Attack_co != null)
                         StopCoroutine(long_Range_Attack_co);
+
+                    //*공격 멈춤
                     ChangeMonsterState(MonsterState.Roaming);
+
+                    if (isTracing)
+                    {
+                        isTracing = false;
+                        SetPlayerAttackList(false);
+                    }
+
                     break;
                 }
                 yield return null;

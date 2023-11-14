@@ -53,7 +53,9 @@ public class PlayerController : MonoBehaviour
     public Action OnHitPlayerEffect = null;
 
     public PlayerState curPlayerState;
-    private Monster curEnemy;
+
+    public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
+    private Monster curEnemy; //*현재 플레이어를 공격한 몬스터
 
     public TMP_Text hitNum;
     public Slider HPgauge;
@@ -68,6 +70,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
 
         P_Value.HP = P_Value.MaxHP;
+
+        monsterUnderAttackList = new List<Monster>();
     }
     // Update is called once per frame
     void Update()
@@ -338,7 +342,7 @@ public class PlayerController : MonoBehaviour
         Vector3 curDirection = P_Com.playerTargetPos.position - curEnemy.transform.position;
         effect.gameObject.transform.position += curDirection * 0.35f;
     }
-    //-----------------------------------------------------------------
+    //-----------------------------------------------------------------//
     //카메라 움직임
 
     private void OnTriggerEnter(Collider other)
@@ -354,9 +358,12 @@ public class PlayerController : MonoBehaviour
                 //GameManager.GetInstance().StartInteraction(interObject);
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
-
-
-
         }
+    }
+    //*-------------------------------------------------------------------//
+    public void SortingMonsterList()
+    {
+        //TODO: monsterUnderAttack 리스트를 새로 정렬하기
+        //플레이어와 거리 순으로.
     }
 }
