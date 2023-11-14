@@ -74,15 +74,15 @@ public class CameraController : MonoBehaviour
     private void CameraActions()
     {
         CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-        CameraRotate();
-        //if (isBeingAttention)
-        //{
-        //    TargetRotate();
-        //}
-        //else
-        //{
-        //           //마우스 방향에 따른 카메라 방향
-        //}
+
+        if (isBeingAttention)
+        {
+            TargetRotate();
+        }
+        else
+        {
+            CameraRotate();  //마우스 방향에 따른 카메라 방향
+        }
     }
 
     private void CameraFollowPlayer()
@@ -103,18 +103,11 @@ public class CameraController : MonoBehaviour
 
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
 
+        //가로 세로
         cameraRot = Vector3.zero;
         cameraRot.y = left_right_LookAngle;
-        //y에서 up_down_LookAngle을 안쓰고 left_right_LookAngle을 쓰는이유
-        //*(중요)마우스가 위로 올라갈때, 유니티 좌표계에서는 좌표가 뒤바뀐다.
-        // 마우스 X좌표가 위아래 좌표가 된다.
-        //그래서 카메라rot y(위아래,세로)에는 마우스의 x축(가로)을 넣어주고
-        // 카메라rot x축(좌우,가로)에는  마우스의 y축(세로)를 넣어준다
-
-        //가로 세로
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCamera.transform.rotation = targetCameraRot;
-
         //위아래
         cameraRot = Vector3.zero;
         cameraRot.x = up_down_LookAngle;
@@ -132,7 +125,27 @@ public class CameraController : MonoBehaviour
             return;
         }
 
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+
+        // 타겟의 위치로 향하는 방향 벡터를 구함
+        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
+        cameraRot = Vector3.zero;
+        cameraRot.y = directionToTarget.x;
+        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성
+        //playerCamera.transform.rotation = targetCameraRot;
+        playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, Time.deltaTime); /* x speed */
+        //playerCamera.transform.position = target.position - transform.forward * dis;
+        //위아래
+        cameraRot = Vector3.zero;
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerCameraPivot.transform.localRotation = targetCameraRot;
     }
+
+
+
+
+
 
     private void TargetRotate_()
     {
@@ -145,7 +158,7 @@ public class CameraController : MonoBehaviour
         Quaternion targetCameraRot;
 
         // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - transform.position;
+        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
         targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성
         // 현재 객체의 회전을 조절
         playerCamera.transform.rotation = targetCameraRot;
