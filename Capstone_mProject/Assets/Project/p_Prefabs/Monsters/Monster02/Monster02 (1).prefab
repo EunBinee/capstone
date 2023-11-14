@@ -533,6 +533,7 @@ MonoBehaviour:
     canSeeMonsterInfo_Distance: 10
   monsterPattern: {fileID: 0}
   monsterSoundClips: []
+  playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
 --- !u!1 &2731508028768614349
 GameObject:
@@ -1028,7 +1029,7 @@ Animator:
   m_GameObject: {fileID: 4865506416288962750}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2d0f4a7ab415c66409cf424699842915, type: 3}
-  m_Controller: {fileID: 9100000, guid: ef32aed2e95b82548bd1f4db48b8f813, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

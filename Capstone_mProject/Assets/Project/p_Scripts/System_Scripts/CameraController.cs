@@ -23,22 +23,66 @@ public class CameraController : MonoBehaviour
     public float left_right_LookAngle;
     public float up_down_LookAngle;
 
+    [Header("주목 기능")]
+    public bool isBeingAttention = false;
+    private Monster curTargetMonster = null;
+
+
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+    }
+
+    private void Update()
+    {
+        //TODO: 주목 Input =>나중에 InputManager로 옮기기
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            //주목 기능
+            if (playerController.monsterUnderAttackList.Count > 0)
+            {
+                if (!isBeingAttention)
+                {
+                    //처음 주목한 경우
+                    isBeingAttention = true;
+                    curTargetMonster = playerController.monsterUnderAttackList[0];
+                }
+                else
+                {
+                    //다른 몬스터로 다시 주목
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            if (isBeingAttention)
+            {
+                isBeingAttention = false;
+                curTargetMonster = null;
+            }
+        }
     }
 
     private void LateUpdate()
     {
         CameraActions();
     }
+
     void OnPreCull() => GL.Clear(true, true, Color.black);
 
     //카메라 움직임
     private void CameraActions()
     {
         CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-        CameraRotate();       //마우스 방향에 따른 카메라 방향
+        CameraRotate();
+        //if (isBeingAttention)
+        //{
+        //    TargetRotate();
+        //}
+        //else
+        //{
+        //           //마우스 방향에 따른 카메라 방향
+        //}
     }
 
     private void CameraFollowPlayer()
@@ -48,14 +92,17 @@ public class CameraController : MonoBehaviour
         Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
         playerCamera.transform.position = cameraPos;
     }
-    private void CameraRotate()
+
+    private void CameraRotate() // 일반 카메라
     {
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
         left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * Time.deltaTime;
         up_down_LookAngle -= (playerController._input.mouseY * up_down_LookSpeed) * Time.deltaTime;
+
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
+
         cameraRot = Vector3.zero;
         cameraRot.y = left_right_LookAngle;
         //y에서 up_down_LookAngle을 안쓰고 left_right_LookAngle을 쓰는이유
@@ -63,8 +110,12 @@ public class CameraController : MonoBehaviour
         // 마우스 X좌표가 위아래 좌표가 된다.
         //그래서 카메라rot y(위아래,세로)에는 마우스의 x축(가로)을 넣어주고
         // 카메라rot x축(좌우,가로)에는  마우스의 y축(세로)를 넣어준다
+
+        //가로 세로
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCamera.transform.rotation = targetCameraRot;
+
+        //위아래
         cameraRot = Vector3.zero;
         cameraRot.x = up_down_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
@@ -72,5 +123,32 @@ public class CameraController : MonoBehaviour
     }
 
 
+
+    private void TargetRotate()
+    {
+        if (curTargetMonster == null)
+        {
+            Debug.Log("카메라. 타겟 몬스터 null이다.");
+            return;
+        }
+
+    }
+
+    private void TargetRotate_()
+    {
+        if (curTargetMonster == null)
+        {
+            Debug.Log("카메라. 타겟 몬스터 null이다.");
+            return;
+        }
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+
+        // 타겟의 위치로 향하는 방향 벡터를 구함
+        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - transform.position;
+        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성
+        // 현재 객체의 회전을 조절
+        playerCamera.transform.rotation = targetCameraRot;
+    }
 
 }

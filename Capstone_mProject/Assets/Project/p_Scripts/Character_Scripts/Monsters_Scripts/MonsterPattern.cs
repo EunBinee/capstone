@@ -69,6 +69,7 @@ public class MonsterPattern : MonoBehaviour
     //* --------------------------------------------------------//
     public bool isRoaming = false;
     public bool isFinding = false;
+    public bool isTracing = false;
     public bool isGoingBack = false;
     public bool isGettingHit = false;
 
@@ -346,6 +347,11 @@ public class MonsterPattern : MonoBehaviour
                 break;
         }
     }
+
+    public virtual void StopAtackCoroutine()
+    {
+
+    }
     // * ---------------------------------------------------------------------------------------//
     //! 특정 범위안에 플레이어가 있는지 파악하고, 데미지 주는 함수
     public bool CheckPlayerDamage(float _overlapRadius, float damage = 0)
@@ -419,14 +425,30 @@ public class MonsterPattern : MonoBehaviour
         if (dotProduct > 0)
         {
             // * 플레이어가 몬스터의 전방에 있을 때:
-            Debug.Log("플레이어는 몬스터의 앞에 있습니다.");
+            //Debug.Log("플레이어는 몬스터의 앞에 있습니다.");
             return true;
         }
         else
         {
             // * 플레이어가 몬스터의 뒤에 있을 때:
-            Debug.Log("플레이어는 몬스터의 뒤에 있습니다.");
+            //Debug.Log("플레이어는 몬스터의 뒤에 있습니다.");
             return false;
+        }
+    }
+    //*------------------------------------------------------------------------------------------//
+    public void SetPlayerAttackList(bool attackMonster)
+    {
+        //* true 공격을 시작한 몬스터 => 리스트에 넣기
+        //* false 공격을 마친 몬스터  => 리스트에서 빼기
+        if (attackMonster)
+        {
+            if (!m_monster.playerController.monsterUnderAttackList.Contains(m_monster))
+                m_monster.playerController.monsterUnderAttackList.Add(m_monster);
+        }
+        else
+        {
+            if (m_monster.playerController.monsterUnderAttackList.Contains(m_monster))
+                m_monster.playerController.monsterUnderAttackList.Remove(m_monster);
         }
     }
 
