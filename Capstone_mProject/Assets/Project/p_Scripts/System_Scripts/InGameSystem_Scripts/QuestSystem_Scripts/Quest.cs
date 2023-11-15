@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-// [System.Serializable]
+[System.Serializable]
 public class Quest
 {
     public int questId; //퀘스트 아이디

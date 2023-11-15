@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEngine;
 
 
@@ -8,28 +9,51 @@ using UnityEngine;
 [Serializable]
 public class DialogueInfo : MonoBehaviour
 {
-    public void StartInteraction(GameObject gameObject)
+    //public Item interaction_Item;
+
+    void Start()
     {
-        Item interaction_Item = gameObject.GetComponent<Item>();
+
+
+    }
+    //public int id;
+    public void StartInteraction(GameObject _gameObject)
+    {
+        //Item interaction_Item = gameObject.GetComponent<Item>();
+
+        Item interaction_Item = _gameObject.GetComponent<Item>();
 
         if (interaction_Item != null)
         {
             if ((interaction_Item.preEndingNum != GameManager.Instance.gameInfo.EndingNum) || (interaction_Item.preEventNum != GameManager.Instance.gameInfo.EventNum))
             {
-                interaction_Item.preEndingNum = GameManager.Instance.gameInfo.EndingNum;
-                interaction_Item.preEventNum = GameManager.Instance.gameInfo.EventNum;
+                // interaction_Item.preEndingNum = GameManager.Instance.gameInfo.EndingNum;
+                // interaction_Item.preEventNum = GameManager.Instance.gameInfo.EventNum;
+                //interaction_Item.dialogueNum = 1;
+                //GameManager.Instance.gameInfo.DialogueNum = 1;
+                // interaction_Item.questNum = GameManager.Instance.gameInfo.QuestNum;
+
+            }
+            //player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+            //Debug.Log(interaction_Item.Name);
+            //! 여기 고치기 
+            if (GameManager.Instance.gameInfo.DialogueNum == 0)
+            {
                 interaction_Item.dialogueNum = 1;
-                interaction_Item.questNum = GameManager.Instance.gameInfo.QuestNum;
+            }
+            else
+            {
+                interaction_Item.dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
             }
 
 
-            //player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
-            Debug.Log(interaction_Item.Name);
+            //if (interaction_Item.dialogueNum != 1)
 
 
             //1 01 001 01 01 00 
             //엔딩, npc id, 이벤트id, 대사단락번호, 퀘스트 번호
             int id = 0;
+            //id = 0;
             string id_String = "";
 
             id_String += GameManager.Instance.gameInfo.EndingNum.ToString();
@@ -63,6 +87,7 @@ public class DialogueInfo : MonoBehaviour
 
 
             Debug.Log(id.ToString());
+            //interaction_Item.dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
 
             if (interaction_Item.isNpc)
             {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public class DatabaseManager : MonoBehaviour
     //List<int> idList01 = new List<int>(); //Start()���� Debug�Ҷ� ���
     //List<int> idList02 = new List<int>();
     int eventID;
+    //int id;
 
     void Awake()
     {
@@ -92,11 +94,13 @@ public class DatabaseManager : MonoBehaviour
         Dialogue[] dialogues = dialogueParser.DialogueParse(csvFileName);
 
 
+
         for (int i = 0; i < dialogues.Length; i++)
         {
             //1 01 001 01 01 00 
             //엔딩, npc id, 이벤트id, 대사단락번호, 퀘스트 번호
             int id = 0;
+            //id = GameManager.Instance.dialogueInfo.id;
             string id_String = "";
 
             id_String += dialogues[i].endingNum.ToString();

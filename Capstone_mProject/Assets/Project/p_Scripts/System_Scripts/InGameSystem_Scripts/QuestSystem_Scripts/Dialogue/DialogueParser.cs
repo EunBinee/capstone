@@ -10,7 +10,7 @@ public class DialogueParser : MonoBehaviour
 {
     int eventNum_in = 0;
     int npcNum_in = 0;
-    int dialogueNum_in = 0;  //E
+    public int dialogueNum_in = 0;  //E
     int endingNum_in = 0;
     int questNum_in = 0;
     //int lineNum_in = 0;
@@ -95,24 +95,24 @@ public class DialogueParser : MonoBehaviour
                 dialogueNum_in = int.Parse(row[3].ToString());
                 dialogue.dialogueNum = dialogueNum_in;
             }
-            if (row[4].ToString() == "")
-            {
-                //dialogue.lineNum = lineNum_in;
-            }
-            else
-            {
-                //lineNum_in = int.Parse(row[4].ToString());
-                //dialogue.lineNum = lineNum_in;
-            }
-            if (row[5].ToString() == "")
-            {
-                //dialogue.lineNum = lineNum_in;
-            }
-            else
-            {
-                //lineNum_in = int.Parse(row[4].ToString());
-                //dialogue.lineNum = lineNum_in;
-            }
+            // if (row[4].ToString() == "")
+            // {
+            //     //dialogue.lineNum = lineNum_in;
+            // }
+            // else
+            // {
+            //     //lineNum_in = int.Parse(row[4].ToString());
+            //     //dialogue.lineNum = lineNum_in;
+            // }
+            // if (row[5].ToString() == "")
+            // {
+            //     //dialogue.lineNum = lineNum_in;
+            // }
+            // else
+            // {
+            //     //lineNum_in = int.Parse(row[4].ToString());
+            //     //dialogue.lineNum = lineNum_in;
+            // }
             do
             {
                 List<Line> LineList = new List<Line>();
@@ -218,8 +218,8 @@ public class DialogueParser : MonoBehaviour
                                     {
                                         line.changeEvnetID = true;
                                         line.evnetIDToBeChange = changeEvnetID;
-                                        Debug.Log(line.evnetIDToBeChange);
-                                        Debug.Log("이벤트 변화 있음");
+                                        //Debug.Log(line.evnetIDToBeChange);
+                                        //Debug.Log("이벤트 변화 있음");
                                     }
                                 }
                                 //대사가 끝나고 엔딩의 변화가 있는지
@@ -329,7 +329,7 @@ public class DialogueParser : MonoBehaviour
                 }
             } while (row[0].ToString() == "");
             quests.Add(quest);
-            Debug.Log(quest.questClearValue);
+            //Debug.Log(quest.questClearValue);
         }
         return quests.ToArray();
     }
