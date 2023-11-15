@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
 
     public TMP_Text hitNum;
     public Slider HPgauge;
+    float nowHitTime;
 
     void Awake()
     {
@@ -123,6 +124,12 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("hits 초기화");
             P_Value.hits = 0;   //히트수 초기화
         }
+
+        hitNum.rectTransform.localScale = Vector3.one *
+            (P_States.isBouncing ?
+                (P_Value.minHitScale++ * 0.1f) : (nowHitTime == P_Value.curHitTime ?
+                    1f : P_Value.maxHitScale-- * 0.1f));
+        nowHitTime = P_Value.curHitTime;
     }
 
     public void ChangePlayerState(PlayerState playerState)
@@ -349,7 +356,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
         {
-            Debug.Log("엔피시 대화 에리어");
+            //Debug.Log("엔피시 대화 에리어");
             GameObject interObject = other.gameObject;
 
             if (interObject != null)

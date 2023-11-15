@@ -11,6 +11,7 @@ public class Popup_Setting : UIBase
     private Image imgSaveBtn;
     private Color enableBtnColor;
     private Color disableBtnColor;
+    private SaveData loadData;
 
     public override void Init()
     {
@@ -86,10 +87,14 @@ public class Popup_Setting : UIBase
         //*----------------------------------------------------------------------//
         //저장 패널 안 버튼
         //저장 버튼
+
         settingInfo.saveBtn.onClick.RemoveAllListeners();
         settingInfo.saveBtn.onClick.AddListener(() =>
         {
             //TODO:저장 기능
+            SaveData dialogue = new SaveData();
+            SaveSystem.Save(dialogue, "GameData");
+
         });
 
         //불러오기 버튼
@@ -97,6 +102,8 @@ public class Popup_Setting : UIBase
         settingInfo.loadBtn.onClick.AddListener(() =>
         {
             //TODO: 불러오기 기능
+            loadData = SaveSystem.Load("GameData");
+            DialogueLoad();
         });
 
         // 게임 나가기 기능
@@ -119,6 +126,19 @@ public class Popup_Setting : UIBase
     private void SaveChangedData()
     {
         // TODO : 닫기전 세팅에서 바뀐 데이터 저장
+
+    }
+
+    //퀘스트, 대화 데이터 로드 함수 
+    public void DialogueLoad()
+    {
+        GameManager.Instance.gameInfo.eventNum = loadData.eventNum;
+        GameManager.Instance.gameInfo.EndingNum = loadData.endingNum;
+        GameManager.Instance.gameInfo.QuestNum = loadData.questNum;
+        GameManager.Instance.dialogueManager.DoQuest = loadData.doQuest;
+        GameManager.Instance.gameInfo.DialogueNum = loadData.dialogueNum;
+        GameManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
+        GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
 
     }
 }

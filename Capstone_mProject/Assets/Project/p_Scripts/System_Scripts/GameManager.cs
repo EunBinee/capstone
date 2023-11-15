@@ -29,6 +29,9 @@ public class GameManager : MonoBehaviour
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;
     public GameInfo gameInfo;
+    //public Item item;
+    public QuestManager questManager;
+
 
     //*---------------------------------------------//
     public Canvas m_canvas;
@@ -61,6 +64,9 @@ public class GameManager : MonoBehaviour
         dialogueManager = GetComponent<DialogueManager>(); //대사 시스템을 위한 스크립트
         //게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
+        //item = GetComponent<Item>();
+        questManager = new QuestManager();
+
     }
 
     static public GameManager GetInstance()
