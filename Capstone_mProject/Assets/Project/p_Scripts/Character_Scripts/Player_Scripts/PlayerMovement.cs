@@ -130,6 +130,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void skillMotion(char a)
     {
+        if (skill_E == null)
+        {
+            return;
+        }
         Vector3 skillDir;
         Vector3 skillPos;
         P_States.isSkill = true;
@@ -269,16 +273,17 @@ public class PlayerMovement : MonoBehaviour
         {
             //걷기와 뛰기는 동일하게
             Vector3 targetDirect = Vector3.zero;
-            if (P_Value.nowEnemy != null)
+            if (P_Value.nowEnemy != null && P_States.isStartComboAttack)   //* 최근에 공격한 적(몬서터)이 있다면
             {
-                targetDirect = (P_Value.nowEnemy.transform.position - this.transform.position).normalized * P_Input.verticalMovement;
-                //targetDirect = targetDirect + (P_Value.nowEnemy.transform.position - this.transform.position).normalized * P_Input.horizontalMovement;
+                Vector3 toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                targetDirect = toMonsterDir * P_Input.verticalMovement;
+                targetDirect = targetDirect + (P_Value.nowEnemy.transform.right - this.transform.right).normalized * P_Input.horizontalMovement;
             }
             else
             {
                 targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+                targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
             }
-            targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
             targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
             targetDirect.y = 0;
             if (targetDirect == Vector3.zero)
@@ -572,13 +577,13 @@ public class PlayerMovement : MonoBehaviour
             if (P_Value.nowEnemy != null)
             {
                 dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                Vector3 pos = transform.position + dir * 10f;
+                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             else
             {
                 dir = this.gameObject.transform.forward.normalized;
             }
-            Vector3 pos = transform.position + dir * 10f;
-            transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
 
             //* 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);

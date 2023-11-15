@@ -41,12 +41,16 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     P_States.hadAttack = true;
                     monster.GetDamage(15);
-                    P_Value.nowEnemy = monster.gameObject;
-                    P_Value.curHitTime = Time.time; //현재 시간 저장
+
+                    P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
+                    P_Value.curHitTime = Time.time; //* 현재 시간 저장
+
                     P_Controller.CheckHitTime();
-                    P_Value.hits = P_Value.hits + 1;
-                    P_States.isBouncing = true;
-                    Invoke("isBouncingToFalse", 0.3f);
+                    P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
+
+                    P_States.isBouncing = true;     //* 히트 UI 출력효과
+                    Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+
                     Debug.Log("hits : " + P_Value.hits);
                 }
                 else if (monster != null && P_States.hadAttack)
