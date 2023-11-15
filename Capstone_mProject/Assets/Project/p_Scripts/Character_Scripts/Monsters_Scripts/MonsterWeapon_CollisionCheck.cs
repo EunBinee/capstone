@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MonsterWeapon_CollisionCheck : MonoBehaviour
 {
+    public bool onEnable = false;
+
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Monster monster;
 
@@ -15,10 +17,14 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (onEnable)
         {
-            monster.OnHit();
+            if (other.CompareTag("Player"))
+            {
+                monster.OnHit();
+            }
         }
+
     }
 
 }

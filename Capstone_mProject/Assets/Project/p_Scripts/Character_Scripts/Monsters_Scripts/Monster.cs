@@ -11,7 +11,7 @@ public class Monster : MonoBehaviour
     public MonsterPattern monsterPattern;
 
     public AudioClip[] monsterSoundClips;
-    private PlayerController playerController;
+    public PlayerController playerController;
     private Transform playerTrans;
 
     [SerializeField] private MonsterUI_Info m_hPBar;
@@ -70,7 +70,7 @@ public class Monster : MonoBehaviour
         {
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
-            playerController.GetHit(this.gameObject);
+            playerController.GetHit(this);
         }
     }
 
@@ -85,7 +85,6 @@ public class Monster : MonoBehaviour
                 monsterData.HP -= Damage;
                 m_hPBar.UpdateHP();
 
-                Debug.Log($"AA monsterData.HP {monsterData.HP}");
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
                 {

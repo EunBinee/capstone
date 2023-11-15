@@ -650,6 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!135 &805779058
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -795,6 +796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!65 &1085686103
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1547,6 +1549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isEnable: 0
   monster: {fileID: 0}
+  _controller: {fileID: 0}
 --- !u!135 &2021277553
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -1704,6 +1707,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 8795022813698526612}
+  skill_E: {fileID: 0}
+  skill_Q: {fileID: 0}
   comboClickTime: 0.5
   attackColliders:
   - {fileID: 1085686103}
@@ -4477,6 +4482,8 @@ MonoBehaviour:
     previousDodgeKeyPress: 0
     currentDodgeKeyPress: 0
     isStartComboAttack: 0
+    isSkill: 0
+    hadAttack: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -4489,11 +4496,14 @@ MonoBehaviour:
     groundCross: {x: 0, y: 0, z: 0}
     playerVelocity: {x: 0, y: 0, z: 0}
     comboCount: 0
+    MaxHP: 100
     HP: 100
     index: 0
     time: 0
     isCombo: 0
     curAnimName: 
+    hits: 0
+    curHitTime: 0
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -4509,8 +4519,8 @@ MonoBehaviour:
   rayCastHeightOffset: 1
   navMeshSurface: {fileID: 1424189438}
   curPlayerState: 0
-  skill_E: {fileID: 0}
-  skill_Q: {fileID: 0}
+  hitNum: {fileID: 0}
+  HPgauge: {fileID: 0}
 --- !u!1 &8795022813698526613
 GameObject:
   m_ObjectHideFlags: 0
