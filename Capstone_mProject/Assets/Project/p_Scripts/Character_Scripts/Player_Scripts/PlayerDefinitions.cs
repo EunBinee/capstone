@@ -119,6 +119,7 @@ public class CurrentValue
     public float curHitTime = 0;
     public float maxHitScale = 1.2f;
     public float minHitScale = 1f;
+    public GameObject nowEnemy;
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리

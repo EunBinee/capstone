@@ -123,6 +123,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("hits 초기화");
             P_Value.hits = 0;   //히트수 초기화
+            P_Value.nowEnemy = null;
         }
 
         hitNum.rectTransform.localScale = Vector3.one *
