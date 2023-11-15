@@ -108,8 +108,8 @@ public class Monster : MonoBehaviour
         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-        QuestManager.instance.currentQuestValue_++;
-        Debug.Log(QuestManager.instance.currentQuestValue_);
+        GameManager.Instance.questManager.currentQuestValue_++;
+        Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //

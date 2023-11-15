@@ -100,6 +100,8 @@ public class DialogueManager : MonoBehaviour
 
         endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.
 
+
+
         while (!AllFinish && !DoQuest)
         {
             //* 게임 멈춤 = 참
@@ -111,7 +113,6 @@ public class DialogueManager : MonoBehaviour
             //대화 스킵 버튼
             if (Input.GetKeyDown(KeyCode.J))
             {
-
                 curContext = curlineContextLen;
             }
 
@@ -167,7 +168,7 @@ public class DialogueManager : MonoBehaviour
                     //만약 대사가 끝났고 선택지가 있는 경우
                     if (!choiceSettingF)
                     {
-                        Debug.Log("선택지 있음");
+                        //Debug.Log("선택지 있음");
                         //선택지 버튼 활성화
                         ObjectTextBox_Button01.SetActive(true);
                         ObjectTextBox_Button02.SetActive(true);
@@ -234,7 +235,8 @@ public class DialogueManager : MonoBehaviour
 
                     //대사후 다음 대사
                     int nextDialogueNum = dialogue.lines[curPart][curLine].nextDialogueNum;
-                    interaction_Item.dialogueNum = nextDialogueNum;
+                    //interaction_Item.dialogueNum = nextDialogueNum;
+                    GameManager.Instance.gameInfo.DialogueNum = nextDialogueNum;
 
 
                     bool eventID = dialogue.lines[curPart][curLine].changeEvnetID; //이벤트ID 변경해야하는지
@@ -243,15 +245,16 @@ public class DialogueManager : MonoBehaviour
                         changeEvnetID = eventID;
                         if (changeEvnetID)
                         {
-                            interaction_Item.dialogueNum = 1;
+                            //interaction_Item.dialogueNum = 1;
+                            GameManager.Instance.gameInfo.DialogueNum = 1;
                             eventIDToBeChange = dialogue.lines[curPart][curLine].evnetIDToBeChange;
                         }
-                        Debug.Log("이벤트 변경 o");
+                        //Debug.Log("이벤트 변경 o");
                     }
                     else
                     {
                         changeEvnetID = false;
-                        Debug.Log("이벤트 변경 x");
+                        //Debug.Log("이벤트 변경 x");
                     }
 
                     bool endingID = dialogue.lines[curPart][curLine].changeEndingID;
@@ -261,9 +264,10 @@ public class DialogueManager : MonoBehaviour
                         if (changeEndingID)
                         {
                             //interaction_Item.dialogueNum = 1;
+                            GameManager.Instance.gameInfo.DialogueNum = 1;
                             endingIDToBeChange = dialogue.lines[curPart][curLine].endingIDToBeChange;
                         }
-                        Debug.Log("엔딩 변경 o");
+                        //Debug.Log("엔딩 변경 o");
                     }
 
                     bool questID = dialogue.lines[curPart][curLine].changeQuestID;
@@ -272,13 +276,13 @@ public class DialogueManager : MonoBehaviour
                         changeQuestID = questID;
                         if (changeQuestID)
                         {
-                            //interaction_Item.dialogueNum = interaction_Item.dialogueNum;
+                            //GameManager.Instance.gameInfo.DialogueNum = 1;
                             questIDToBeChange = dialogue.lines[curPart][curLine].questIDToBeChange;
                             //DoQuest = true;
-                            Debug.Log(questIDToBeChange);
+                            //Debug.Log(questIDToBeChange);
 
                         }
-                        Debug.Log("퀘스트 변경 o");
+                        //Debug.Log("퀘스트 변경 o");
 
                     }
 
@@ -296,7 +300,7 @@ public class DialogueManager : MonoBehaviour
                     curContext = 0;
                     ClickChoiceBtn = false;
 
-                    Debug.Log("대사 이어지는 중..");
+                    //Debug.Log("대사 이어지는 중..");
                 }
             }
 
@@ -322,7 +326,7 @@ public class DialogueManager : MonoBehaviour
         {
             DoQuest = true;
             gameInfo.QuestNum = questIDToBeChange;
-            QuestManager.GetInstance().UpdateQuest(gameInfo.QuestNum);
+            //QuestManager.GetInstance().UpdateQuest(gameInfo.QuestNum);
         }
         go_DialogueBar.SetActive(false); //대화 UI 비활성화
         //GameManager.Instance.dialogueInfo.player_InteractingFalse();

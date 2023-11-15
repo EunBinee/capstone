@@ -10,7 +10,7 @@ public class Item : MonoBehaviour
     public bool isNpc;
 
     //대화 
-    public int dialogueNum; //단락번호, 처음은 항상 1
+    public int dialogueNum; //단락번호, //처음은 항상 1
     public int questNum; //퀘스트 번호
     //public int lineNum;
 

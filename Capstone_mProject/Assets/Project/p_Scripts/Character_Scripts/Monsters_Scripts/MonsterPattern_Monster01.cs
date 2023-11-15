@@ -40,6 +40,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         m_monster.monsterPattern = this;
         if (m_monster.monsterData.movingMonster)
         {
+
+
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.updateRotation = false;
         }

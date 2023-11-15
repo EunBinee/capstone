@@ -356,7 +356,7 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
         {
-            Debug.Log("엔피시 대화 에리어");
+            //Debug.Log("엔피시 대화 에리어");
             GameObject interObject = other.gameObject;
 
             if (interObject != null)
