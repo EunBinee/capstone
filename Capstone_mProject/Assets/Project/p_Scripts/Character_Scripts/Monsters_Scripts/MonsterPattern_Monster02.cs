@@ -104,7 +104,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             case MonsterAttackAnimation.Short_Range_Attack:
                 break;
             case MonsterAttackAnimation.Long_Range_Attack:
-                m_animator.SetTrigger("m_l_Attack");
                 break;
             default:
                 break;
@@ -146,6 +145,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     }
                     break;
                 case MonsterState.GoingBack:
+                    GoingBack_Movement();
                     break;
                 default:
                     break;
@@ -279,10 +279,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     if (isFinding) //* State : Discorvery
                     {
-
                         isFinding = false;
                         ChangeMonsterState(MonsterState.Roaming);
-
                     }
                 }
             }
@@ -328,6 +326,24 @@ public class MonsterPattern_Monster02 : MonsterPattern
         }
 
         CheckPlayerCollider();
+    }
+
+    //*-----------------------------------------------------------------------------------------------------------//
+    //* goingBack => 로밍
+    public override void GoingBack_Movement()
+    {
+        if (isGoingBack)
+        {
+            if (isTracing)
+            {
+                isTracing = false;
+                SetPlayerAttackList(false);
+            }
+            ChangeMonsterState(MonsterState.Roaming);
+
+            isGoingBack = false;
+        }
+
     }
     // * ---------------------------------------------------------------------------------------------------------//
     // * 몬스터 공격 모션, 피격 모션, 죽음 모션
@@ -415,7 +431,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         bool useBack = false;
         bool useLeft = false;
-        bool goingBack = false;
         bool canAttack = true;
 
         while (distance > shortRangeAttackDistance && curMonsterState != MonsterState.GetHit)
@@ -477,7 +492,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     //거리가 13만큼 떨어진다면
                     //어택 멈추기
-                    goingBack = true;
+                    isGoingBack = true;
                     break;
                 }
             }
@@ -489,7 +504,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             // 기울었던 몸 다시 원상 복귀
             if (useBack)
             {
-                if (!goingBack)
+                if (!isGoingBack)
                 {
                     originRotatation.y = transform.rotation.y;
                 }
@@ -502,9 +517,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
                     yield return null;
                 }
-                if (goingBack)
+                if (isGoingBack)
                 {
-                    ChangeMonsterState(MonsterState.Roaming);
+                    ChangeMonsterState(MonsterState.GoingBack);
                 }
                 else
                 {

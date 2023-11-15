@@ -16,8 +16,6 @@ public class MonsterUI_Info : MonoBehaviour
 
     public void Reset(double _monsterMaxHP, Monster _monster)
     {
-
-
         monsterMaxHP = _monsterMaxHP;
         m_Monster = _monster;
         m_HPBarPos = m_Monster.monsterData.HPBarPos;

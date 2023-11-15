@@ -108,6 +108,7 @@ public class Monster : MonoBehaviour
         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
+
         GameManager.Instance.questManager.currentQuestValue_++;
         Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
     }
@@ -122,6 +123,7 @@ public class Monster : MonoBehaviour
     public void GetHPBar()
     {
         m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
+        Debug.Log($"monsterData.MaxHP  {monsterData.MaxHP}");
         m_hPBar.Reset(monsterData.MaxHP, this);
     }
 

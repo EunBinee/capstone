@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
     public CameraShake cameraShake;
+    public CameraController cameraController;
     //* --------------------------------------------//
     void Awake()
     {
@@ -56,6 +57,7 @@ public class GameManager : MonoBehaviour
         objectPooling.InitPooling();
         hPBarManager = GetComponent<HPBarManager>();
         cameraShake = GetComponent<CameraShake>();
+        cameraController = gameData.cameraObj.GetComponent<CameraController>();
 
         //instance = this;
         dialogueInfo = new DialogueInfo();
