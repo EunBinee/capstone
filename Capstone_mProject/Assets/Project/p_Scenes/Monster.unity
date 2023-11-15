@@ -254,6 +254,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8697790301199432525, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4bc0c9df9c7a05949830d13711e53ec5, type: 2}
     - target: {fileID: 8697790301199432527, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_Material
       value: 
@@ -992,6 +996,7 @@ MonoBehaviour:
   gameInfo: {fileID: 0}
   m_canvas: {fileID: 580947144}
   cameraShake: {fileID: 0}
+  cameraController: {fileID: 0}
 --- !u!114 &605036778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1029,6 +1034,10 @@ PrefabInstance:
     - target: {fileID: 2677883335817947639, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_Name
       value: Monster02 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2677883335817947639, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2860404724160415388, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_RootOrder
@@ -1078,9 +1087,21 @@ PrefabInstance:
       propertyPath: monsterData.MaxHP
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 2860404724160415389, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
+      propertyPath: monsterData.overlapRadius
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 6557638582945824283, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_Controller
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7274788857344219882, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
+      propertyPath: stopAttackDistance
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7274788857344219882, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
+      propertyPath: shortRangeAttack_Radius
+      value: 2.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
@@ -1847,6 +1868,7 @@ MonoBehaviour:
   playerCamera: {fileID: 1645457506}
   playerCameraPivot: {fileID: 1095902721}
   cameraObj: {fileID: 1372997702}
+  cameraTrans: {fileID: 0}
   left_right_LookSpeed: 500
   up_down_LookSpeed: 500
   minPivot: 0
@@ -1855,6 +1877,7 @@ MonoBehaviour:
   left_right_LookAngle: 0
   up_down_LookAngle: 0
   isBeingAttention: 0
+  curTargetMonster: {fileID: 0}
 --- !u!114 &1372997705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3651,7 +3674,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2939052637744263124
 Transform:
   m_ObjectHideFlags: 0

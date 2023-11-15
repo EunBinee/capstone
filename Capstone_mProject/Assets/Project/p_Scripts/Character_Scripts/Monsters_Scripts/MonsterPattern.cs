@@ -448,7 +448,19 @@ public class MonsterPattern : MonoBehaviour
         else
         {
             if (m_monster.playerController.monsterUnderAttackList.Contains(m_monster))
+            {
                 m_monster.playerController.monsterUnderAttackList.Remove(m_monster);
+
+                if (GameManager.Instance.cameraController.isBeingAttention)
+                {
+                    if (GameManager.Instance.cameraController.curTargetMonster == this.m_monster)
+                    {
+                        // 주목 되어있는 몬스터면 주목 풀기.
+                        GameManager.Instance.cameraController.UndoAttention();
+                    }
+                }
+            }
+
         }
     }
 

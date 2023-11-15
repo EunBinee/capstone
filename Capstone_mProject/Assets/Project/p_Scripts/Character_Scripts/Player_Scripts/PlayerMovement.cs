@@ -265,6 +265,19 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
+        else if (P_States.isStrafing)
+        {
+            Vector3 rotationDirection = P_Value.moveDirection;
+            if (rotationDirection != Vector3.zero)
+            {
+                rotationDirection = P_Camera.cameraObj.transform.forward;
+                rotationDirection.y = 0;
+                rotationDirection.Normalize();
+                Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+                transform.rotation = targetRotation;
+            }
+        }
         else
         {
             //걷기와 뛰기는 동일하게

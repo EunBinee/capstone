@@ -9,6 +9,7 @@ public class CameraController : MonoBehaviour
     public GameObject playerCamera;      //카메라 오브젝트
     public GameObject playerCameraPivot; //카메라 피봇
     public Camera cameraObj;             //카메라.
+    public Transform cameraTrans;
 
     [Header("회전 스피트")]
     public float left_right_LookSpeed = 500; //왼 오 돌리는 스피드
@@ -25,12 +26,14 @@ public class CameraController : MonoBehaviour
 
     [Header("주목 기능")]
     public bool isBeingAttention = false;
-    private Monster curTargetMonster = null;
+    public Monster curTargetMonster = null;
+    Coroutine resetCameraZ_co = null;
 
 
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+        cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
     }
 
     private void Update()
@@ -43,6 +46,12 @@ public class CameraController : MonoBehaviour
             {
                 if (!isBeingAttention)
                 {
+                    if (resetCameraZ_co != null)
+                        StopCoroutine(resetCameraZ_co);
+                    Vector3 camPos = cameraTrans.localPosition;
+                    camPos.z = -7.5f;
+                    cameraTrans.localPosition = camPos;
+                    playerController._currentState.isStrafing = true;
                     //처음 주목한 경우
                     isBeingAttention = true;
                     curTargetMonster = playerController.monsterUnderAttackList[0];
@@ -50,6 +59,7 @@ public class CameraController : MonoBehaviour
                 else
                 {
                     //다른 몬스터로 다시 주목
+
                 }
             }
         }
@@ -57,15 +67,32 @@ public class CameraController : MonoBehaviour
         {
             if (isBeingAttention)
             {
-                isBeingAttention = false;
-                curTargetMonster = null;
+                UndoAttention();
             }
         }
     }
 
+    public void UndoAttention()
+    {
+        // Vector3 camPos = cameraTrans.localPosition;
+        // camPos.z = -5f;
+        // cameraTrans.localPosition = camPos;
+        ResetCameraZ();
+        playerController._currentState.isStrafing = false;
+
+        Vector3 playerCam = playerCamera.transform.rotation.eulerAngles;
+        left_right_LookAngle = playerCam.y;
+        up_down_LookAngle = playerCam.x;
+
+        isBeingAttention = false;
+        curTargetMonster = null;
+    }
+
+
     private void LateUpdate()
     {
         CameraActions();
+
     }
 
     void OnPreCull() => GL.Clear(true, true, Color.black);
@@ -78,6 +105,7 @@ public class CameraController : MonoBehaviour
         if (isBeingAttention)
         {
             TargetRotate();
+            FixCamZ();
         }
         else
         {
@@ -115,8 +143,6 @@ public class CameraController : MonoBehaviour
         playerCameraPivot.transform.localRotation = targetCameraRot;
     }
 
-
-
     private void TargetRotate()
     {
         if (curTargetMonster == null)
@@ -126,42 +152,74 @@ public class CameraController : MonoBehaviour
         }
 
         Vector3 cameraRot;
-        Quaternion targetCameraRot;
-
+        Quaternion targetCameraRot = Quaternion.identity;
         // 타겟의 위치로 향하는 방향 벡터를 구함
         Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
         cameraRot = Vector3.zero;
         cameraRot.y = directionToTarget.x;
-        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성
-        //playerCamera.transform.rotation = targetCameraRot;
-        playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, Time.deltaTime); /* x speed */
+
+        if (directionToTarget.sqrMagnitude >= 3)
+        {
+            targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
+        }
+        if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 0.5f)
+        {
+            //각도가 1보다 작으면.. 같은걸로 간주
+            playerCamera.transform.rotation = targetCameraRot;
+        }
+        else if (targetCameraRot != Quaternion.identity)
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 3 * Time.deltaTime); /* x speed */
+
         //playerCamera.transform.position = target.position - transform.forward * dis;
         //위아래
         cameraRot = Vector3.zero;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
+
+
     }
 
-
-
-
-
-
-    private void TargetRotate_()
+    private void ResetCameraZ()
     {
-        if (curTargetMonster == null)
+        if (resetCameraZ_co != null)
         {
-            Debug.Log("카메라. 타겟 몬스터 null이다.");
-            return;
+            StopCoroutine(resetCameraZ_co);
         }
-        Vector3 cameraRot;
-        Quaternion targetCameraRot;
+        resetCameraZ_co = StartCoroutine(ResetCameraZ_co(5f));
+    }
 
-        // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
-        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성
-        // 현재 객체의 회전을 조절
-        playerCamera.transform.rotation = targetCameraRot;
+    IEnumerator ResetCameraZ_co(float duration)
+    {
+        Vector3 camPos = cameraTrans.localPosition;
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            //camPos.z = -5f;
+            float value = Mathf.Lerp(camPos.z, -5, time / duration);
+            camPos.z = value;
+            cameraTrans.localPosition = camPos;
+
+            yield return null;
+        }
+
+
+
+    }
+
+    //*----------------------------------------------------------------------------------------//
+    void FixCamZ()
+    {
+        Vector3 pos = playerCamera.transform.rotation.eulerAngles;
+        pos.z = 0;
+
+        playerCamera.transform.rotation = Quaternion.Euler(pos);
+    }
+    // 두 Quaternion 간의 각도 차이를 반환하는 함수
+    float QuaternionAngleDifference(Quaternion a, Quaternion b)
+    {
+        // Quaternion.Angle 함수를 사용하여 각도 차이 계산
+        return Quaternion.Angle(a, b);
     }
 
 }
