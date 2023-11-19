@@ -66,6 +66,7 @@ public class Monster : MonoBehaviour
     //* 몬스터 //
     public virtual void OnHit(float Damage = 0, Action action = null)
     {
+
         if (!playerController._currentState.isGettingHit)
         {
             //몬스터가 플레이어를 때렸을 때 처리.
@@ -111,6 +112,11 @@ public class Monster : MonoBehaviour
 
         GameManager.Instance.questManager.currentQuestValue_++;
         Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+    }
+
+    public void GetMonsterState()
+    {
+        // monsterPattern.GetCurMonsterState();
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //

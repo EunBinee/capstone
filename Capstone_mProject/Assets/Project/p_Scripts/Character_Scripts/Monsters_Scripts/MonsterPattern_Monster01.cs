@@ -40,8 +40,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         m_monster.monsterPattern = this;
         if (m_monster.monsterData.movingMonster)
         {
-
-
             navMeshAgent = GetComponent<NavMeshAgent>();
             navMeshAgent.updateRotation = false;
         }
@@ -976,4 +974,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //사각형 오른쪽 가장 위
         roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
     }
+
+
 }

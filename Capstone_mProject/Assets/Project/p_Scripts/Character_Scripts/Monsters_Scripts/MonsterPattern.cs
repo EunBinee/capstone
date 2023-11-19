@@ -505,5 +505,4 @@ public class MonsterPattern : MonoBehaviour
         return curDirection;
     }
 
-
 }
