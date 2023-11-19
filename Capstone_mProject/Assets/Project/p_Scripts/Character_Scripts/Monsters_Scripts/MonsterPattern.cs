@@ -389,7 +389,7 @@ public class MonsterPattern : MonoBehaviour
 
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.name != this.gameObject.name) //자기자신 제외
+            if (hit.collider.name != this.gameObject.name && hit.collider.gameObject.tag != "Monster") //자기자신과 몬스터 제외
             {
                 float distance = hit.distance;
                 if (distance < shortestDistance)
