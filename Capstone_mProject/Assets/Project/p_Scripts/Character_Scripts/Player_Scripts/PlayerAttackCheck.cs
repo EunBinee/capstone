@@ -35,31 +35,34 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             if (other.gameObject.tag == "Monster")
             {
-                Debug.Log("hit monster");
                 monster = other.GetComponentInParent<Monster>();
-                if (monster != null && !P_States.hadAttack)
+
+                if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
                 {
-                    P_States.hadAttack = true;
-                    monster.GetDamage(15);
+                    //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
+                    if (monster != null && !P_States.hadAttack)
+                    {
+                        P_States.hadAttack = true;
+                        monster.GetDamage(15);
 
-                    P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
-                    P_Value.curHitTime = Time.time; //* 현재 시간 저장
+                        P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
+                        P_Value.curHitTime = Time.time; //* 현재 시간 저장
 
-                    P_Controller.CheckHitTime();
-                    P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
+                        P_Controller.CheckHitTime();
+                        P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
 
-                    P_States.isBouncing = true;     //* 히트 UI 출력효과
-                    Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+                        P_States.isBouncing = true;     //* 히트 UI 출력효과
+                        Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
 
-                    Debug.Log("hits : " + P_Value.hits);
+                        Debug.Log("hits : " + P_Value.hits);
+                    }
+                    else if (monster != null && P_States.hadAttack)
+                    {
+                        //이미 한번 때린 상태
+                    }
+                    else
+                        Debug.LogError("몬스터 : null");
                 }
-                else if (monster != null && P_States.hadAttack)
-                {
-                    //이미 한번 때린 상태
-                }
-                else
-                    Debug.LogError("몬스터 : null");
-
             }
             else
             {

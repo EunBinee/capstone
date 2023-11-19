@@ -54,11 +54,25 @@ public class CameraController : MonoBehaviour
                     playerController._currentState.isStrafing = true;
                     //처음 주목한 경우
                     isBeingAttention = true;
+                    //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
+                    playerController.SortingMonsterList();
                     curTargetMonster = playerController.monsterUnderAttackList[0];
                 }
                 else
                 {
                     //다른 몬스터로 다시 주목
+                    if (playerController.monsterUnderAttackList.Count > 1)
+                    {
+                        playerController.SortingMonsterList();
+                        if (curTargetMonster == playerController.monsterUnderAttackList[0])
+                        {
+                            curTargetMonster = playerController.monsterUnderAttackList[1];
+                        }
+                        else
+                        {
+                            curTargetMonster = playerController.monsterUnderAttackList[0];
+                        }
+                    }
 
                 }
             }
@@ -202,9 +216,6 @@ public class CameraController : MonoBehaviour
 
             yield return null;
         }
-
-
-
     }
 
     //*----------------------------------------------------------------------------------------//

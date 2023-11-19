@@ -371,7 +371,21 @@ public class PlayerController : MonoBehaviour
     //*-------------------------------------------------------------------//
     public void SortingMonsterList()
     {
-        //TODO: monsterUnderAttack 리스트를 새로 정렬하기
+        //TODO: monsterUnderAttackList 리스트를 새로 정렬하기
         //플레이어와 거리 순으로.
+        if (monsterUnderAttackList.Count > 1)
+        {
+            monsterUnderAttackList.Sort((monster01, monster02) =>
+            {
+                float distance1 = Vector3.Distance(monster01.transform.position, transform.position);
+                float distance2 = Vector3.Distance(monster02.transform.position, transform.position);
+
+                // 오름차순으로 정렬
+                return distance1.CompareTo(distance2);
+            });
+
+        }
+
+
     }
 }

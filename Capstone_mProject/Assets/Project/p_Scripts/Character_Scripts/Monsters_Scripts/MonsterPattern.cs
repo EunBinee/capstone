@@ -216,7 +216,8 @@ public class MonsterPattern : MonoBehaviour
 
     protected void ChangeMonsterState(MonsterState monsterState)
     {
-        curMonsterState = monsterState;
+        if (curMonsterState != MonsterState.Death)
+            curMonsterState = monsterState;
 
 #if UNITY_EDITOR
         Debug.Log("상태 변경 " + monsterState);

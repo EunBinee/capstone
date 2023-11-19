@@ -114,9 +114,9 @@ public class Monster : MonoBehaviour
         Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
     }
 
-    public void GetMonsterState()
+    public MonsterPattern.MonsterState GetMonsterState()
     {
-        // monsterPattern.GetCurMonsterState();
+        return monsterPattern.GetCurMonsterState();
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //
