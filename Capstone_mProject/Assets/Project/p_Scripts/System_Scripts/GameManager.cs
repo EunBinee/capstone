@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     public ObjectPooling objectPooling;
     public HPBarManager hPBarManager;
-
+    public DamageManager damageManager;
     //대화
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;
@@ -55,7 +55,10 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
+
         hPBarManager = GetComponent<HPBarManager>();
+        damageManager = GetComponent<DamageManager>();
+
         cameraShake = GetComponent<CameraShake>();
         cameraController = gameData.cameraObj.GetComponent<CameraController>();
 

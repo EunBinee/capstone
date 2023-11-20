@@ -14,7 +14,7 @@ public class Monster : MonoBehaviour
     public PlayerController playerController;
     private Transform playerTrans;
 
-    [SerializeField] private MonsterUI_Info m_hPBar;
+    [SerializeField] private HPBarUI_Info m_hPBar;
 
     public enum monsterSound
     {

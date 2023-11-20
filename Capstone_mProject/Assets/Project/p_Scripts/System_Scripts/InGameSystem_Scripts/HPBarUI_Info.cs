@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class MonsterUI_Info : MonoBehaviour
+public class HPBarUI_Info : MonoBehaviour
 {
     public TMP_Text monsterName;
     public Slider m_slider;
@@ -70,6 +70,4 @@ public class MonsterUI_Info : MonoBehaviour
 
         m_slider.value = monsterHP_Value;
     }
-
-
 }
