@@ -127,9 +127,9 @@ public class PlayerController : MonoBehaviour
         }
 
         hitNum.rectTransform.localScale = Vector3.one *
-            (P_States.isBouncing ?
-                (P_Value.minHitScale++ * 0.1f) : (nowHitTime == P_Value.curHitTime ?
-                    1f : P_Value.maxHitScale-- * 0.1f));
+            (P_States.isBouncing ? (P_Value.minHitScale++ * 0.05f) 
+                : (nowHitTime == P_Value.curHitTime ? 1f 
+                    : P_Value.maxHitScale-- * 0.1f));
         nowHitTime = P_Value.curHitTime;
     }
 

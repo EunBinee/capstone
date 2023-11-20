@@ -313,7 +313,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if ((P_States.isStartComboAttack || P_States.isSkill) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if ((P_States.isStartComboAttack || P_States.isSkill) 
+            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f)
         {
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
@@ -587,15 +589,21 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(P_Value.index);
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null)
+            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked) //앞이 막혀있지 않고 적이 있다면
             {
                 dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
-                Vector3 pos = transform.position + dir * 10f;
+                Vector3 pos = transform.position + dir * 7f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else
+            else if (P_States.isForwardBlocked) //앞에 막혀있다면 
+            {
+                //dir = this.gameObject.transform.forward.normalized;
+            }
+            else    //앞이 막혀있지 않고 적이 없다면
             {
                 dir = this.gameObject.transform.forward.normalized;
+                Vector3 pos = transform.position + dir * 3f;
+                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
             //* 이펙트
