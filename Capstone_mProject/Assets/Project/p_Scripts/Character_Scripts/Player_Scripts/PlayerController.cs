@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -364,6 +365,8 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 //GameManager.GetInstance().StartInteraction(interObject);
+                P_Com.animator.Rebind();
+                P_States.isStop = true; //true이면 캐릭터 움직임 멈춤. 
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
         }
