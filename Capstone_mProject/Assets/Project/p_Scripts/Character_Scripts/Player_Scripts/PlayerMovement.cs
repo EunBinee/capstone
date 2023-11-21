@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
 
     public SkillButton skill_E;
+    public string E_Name = "Player_Skill_E";
     public SkillButton skill_Q;
 
     public float comboClickTime = 0.5f;
@@ -147,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
                     skillDir = this.gameObject.transform.forward.normalized;
                     skillPos = transform.position + skillDir * 30f;
                     transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
+                    P_Controller.playAttackEffect(E_Name);
                 }
                 //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
                 skill_E.OnClicked();
@@ -260,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void PlayerRotation()
     {
-        if (P_States.isSkill || P_States.isJumping)
+        if (P_States.isStop || (P_States.isSkill || P_States.isJumping))
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
@@ -314,9 +316,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if ((P_States.isStartComboAttack || P_States.isSkill)
+        if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill)
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f)
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
         {
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
@@ -607,14 +609,15 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
-            //* 이펙트
+            /*//* 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);
             effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
             //* 이펙트 회전
             Quaternion effectRotation = this.gameObject.transform.rotation;
             effectRotation.x = 0;
             effectRotation.z = 0;
-            effect.gameObject.transform.rotation = effectRotation;
+            effect.gameObject.transform.rotation = effectRotation;*/
+            P_Controller.playAttackEffect(P_Value.curAnimName);
 
             //* 공격 애니메이션 재생
             //P_Com.animator.Rebind();

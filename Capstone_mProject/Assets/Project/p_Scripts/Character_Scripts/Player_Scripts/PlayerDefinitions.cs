@@ -87,6 +87,7 @@ public class CurrentState
     public bool isSkill;
     public bool hadAttack;
     public bool isBouncing;
+    public bool isStop;
 
     [Space]
     public bool isPerformingAction; //액션을 수행 중인지 여부

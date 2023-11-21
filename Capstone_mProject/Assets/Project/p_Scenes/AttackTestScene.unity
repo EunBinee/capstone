@@ -1022,9 +1022,11 @@ MonoBehaviour:
     loofEffectPools: []
     projectilesPoolCount: 50
   hPBarManager: {fileID: 0}
+  damageManager: {fileID: 0}
   dialogueInfo: {fileID: 0}
   dialogueManager: {fileID: 0}
   gameInfo: {fileID: 0}
+  questManager: {fileID: 0}
   m_canvas: {fileID: 580947144}
   cameraShake: {fileID: 0}
   cameraController: {fileID: 0}
@@ -1325,7 +1327,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4593956705340317977, guid: 2f5e4329ef3a5f541b0c00eb3c4dc1ab, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4593956705340317982, guid: 2f5e4329ef3a5f541b0c00eb3c4dc1ab, type: 3}
       propertyPath: m_Pivot.x
@@ -1730,6 +1732,9 @@ MonoBehaviour:
   up_down_LookAngle: 0
   isBeingAttention: 0
   curTargetMonster: {fileID: 0}
+  normal_Z: -5
+  attention_Z: -6.5
+  longAttention_Z: -7.5
 --- !u!1 &1424189437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1839,6 +1844,7 @@ MonoBehaviour:
     shortAttack_Num: 0
     LongAttack_Num: 0
     canSeeMonsterInfo_Distance: 10
+    effectTrans: {fileID: 0}
   monsterPattern: {fileID: 0}
   monsterSoundClips: []
   playerController: {fileID: 0}
@@ -5633,6 +5639,7 @@ MonoBehaviour:
     isStartComboAttack: 0
     isSkill: 0
     hadAttack: 0
+    isBouncing: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -5653,6 +5660,9 @@ MonoBehaviour:
     curAnimName: 
     hits: 0
     curHitTime: 0
+    maxHitScale: 1.2
+    minHitScale: 1
+    nowEnemy: {fileID: 0}
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -6338,6 +6348,7 @@ MonoBehaviour:
     shortAttack_Num: 4
     LongAttack_Num: 1
     canSeeMonsterInfo_Distance: 20
+    effectTrans: {fileID: 0}
   monsterPattern: {fileID: 0}
   monsterSoundClips: []
   playerController: {fileID: 0}

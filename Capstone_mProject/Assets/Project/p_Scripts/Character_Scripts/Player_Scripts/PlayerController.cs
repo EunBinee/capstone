@@ -116,6 +116,11 @@ public class PlayerController : MonoBehaviour
         //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     }
 
+    public void StopToFalse()
+    {
+        P_States.isStop = false;
+    }
+
     public void CheckHitTime()
     {
         float deltaHitTime = Time.time - P_Value.curHitTime;
@@ -127,8 +132,8 @@ public class PlayerController : MonoBehaviour
         }
 
         hitNum.rectTransform.localScale = Vector3.one *
-            (P_States.isBouncing ? (P_Value.minHitScale++ * 0.05f) 
-                : (nowHitTime == P_Value.curHitTime ? 1f 
+            (P_States.isBouncing ? (P_Value.minHitScale++ * 0.05f)
+                : (nowHitTime == P_Value.curHitTime ? 1f
                     : P_Value.maxHitScale-- * 0.1f));
         nowHitTime = P_Value.curHitTime;
     }
@@ -331,6 +336,7 @@ public class PlayerController : MonoBehaviour
 
         knockback_Dir = knockback_Dir.normalized;
         Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        KnockBackPos.y = 0;
 
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
@@ -350,6 +356,19 @@ public class PlayerController : MonoBehaviour
         Vector3 curDirection = P_Com.playerTargetPos.position - curEnemy.transform.position;
         effect.gameObject.transform.position += curDirection * 0.35f;
     }
+
+    public void playAttackEffect(string name)
+    {
+        //* 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        Quaternion effectRotation = this.gameObject.transform.rotation;
+        effectRotation.x = 0;
+        effectRotation.z = 0;
+        effect.gameObject.transform.rotation = effectRotation;
+    }
+
     //-----------------------------------------------------------------//
     //카메라 움직임
 
@@ -363,6 +382,8 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
+                P_Com.animator.Rebind();
+                P_States.isStop = true;
                 //GameManager.GetInstance().StartInteraction(interObject);
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
