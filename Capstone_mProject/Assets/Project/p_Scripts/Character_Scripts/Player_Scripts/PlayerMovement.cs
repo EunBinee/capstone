@@ -95,7 +95,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack
+                && !EventSystem.current.IsPointerOverGameObject())
             {
                 //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                 P_States.isStartComboAttack = true;
@@ -286,11 +287,11 @@ public class PlayerMovement : MonoBehaviour
         {
             //걷기와 뛰기는 동일하게
             Vector3 targetDirect = Vector3.zero;
-            if (P_Value.nowEnemy != null && P_States.isStartComboAttack)   //* 최근에 공격한 적(몬서터)이 있다면
+            if (P_Value.nowEnemy != null && P_States.isStartComboAttack && P_Value.isCombo)   //* 최근에 공격한 적(몬서터)이 있다면
             {
                 Vector3 toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 targetDirect = toMonsterDir * P_Input.verticalMovement;
-                targetDirect = targetDirect + (P_Value.nowEnemy.transform.right - this.transform.right).normalized * P_Input.horizontalMovement;
+                targetDirect = targetDirect + (P_Value.nowEnemy.transform.right.normalized - this.transform.right.normalized).normalized * P_Input.horizontalMovement;
             }
             else
             {
@@ -313,7 +314,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if ((P_States.isStartComboAttack || P_States.isSkill) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if ((P_States.isStartComboAttack || P_States.isSkill)
+            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f)
         {
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
@@ -427,16 +430,16 @@ public class PlayerMovement : MonoBehaviour
         {
             //전력질주
             P_States.isStrafing = false; //뛸때는 주목 해제
-            P_Com.animator.SetFloat("Vertical", 2, 0.2f, Time.deltaTime);   //상
-            P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
+            P_Com.animator.SetFloat("Vertical", 2, 0f, Time.deltaTime);   //상
+            P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);
         }
-        else //뛰기 아닐 경우
+        else //전력질주 아닐 경우
         {
             if (P_States.isStrafing)
             {
                 //주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
                 //걷기일 경우
-                if (P_States.isWalking)
+                /*
                 {
                     //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
                     //value는 내가 할당하고 싶은 값
@@ -444,18 +447,18 @@ public class PlayerMovement : MonoBehaviour
                     //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
                     P_Com.animator.SetFloat("Vertical", snappedVertical / 2, 0.2f, Time.deltaTime);   //상
                     P_Com.animator.SetFloat("Horizontal", snappedHorizontal / 2, 0.2f, Time.deltaTime);               //하
-                }
-                else
+                }*/
+                if (P_States.isRunning)
                 {
                     //뛰기일 경우
-                    P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0.2f, Time.deltaTime);               //하
+                    P_Com.animator.SetFloat("Vertical", snappedVertical, 0f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0f, Time.deltaTime);               //하
                 }
             }
             else
             {
                 //걷기 일 경우
-                if (P_States.isWalking)
+                /*if (P_States.isWalking)
                 {
                     // Debug.Log("걷기");
                     //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
@@ -472,13 +475,13 @@ public class PlayerMovement : MonoBehaviour
                     //그리고 주목 기능을 쓰게 되면, 몸이 한 방향을 주목하고 움직여야하기에
                     //다른 애니메이션도 쓰이게 된다. 
                     //그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
-                }
-                else
+                }*/
+                if (P_States.isRunning)
                 {
                     //뛰기의 경우
                     //Debug.Log("뛰기");
-                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.2f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);          //하
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.05f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);          //하
                 }
                 if (P_Value.moveAmount == 0)
                 {
@@ -587,15 +590,21 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(P_Value.index);
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null)
+            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked) //앞이 막혀있지 않고 적이 있다면
             {
                 dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
-                Vector3 pos = transform.position + dir * 10f;
+                Vector3 pos = transform.position + dir * 7f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else
+            else if (P_States.isForwardBlocked) //앞에 막혀있다면 
+            {
+                //dir = this.gameObject.transform.forward.normalized;
+            }
+            else    //앞이 막혀있지 않고 적이 없다면
             {
                 dir = this.gameObject.transform.forward.normalized;
+                Vector3 pos = transform.position + dir * 3f;
+                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
             //* 이펙트
@@ -608,7 +617,7 @@ public class PlayerMovement : MonoBehaviour
             effect.gameObject.transform.rotation = effectRotation;
 
             //* 공격 애니메이션 재생
-            P_Com.animator.Rebind();
+            //P_Com.animator.Rebind();
             P_Com.animator.Play(P_Value.curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
