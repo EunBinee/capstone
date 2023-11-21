@@ -29,7 +29,6 @@ public class UIManager : MonoBehaviour
 
     public UIPrefabs uiPrefabs;
     public List<GameObject> uiPrefabsInGame;
-    PlayerController playerController = new PlayerController();
 
     void Awake()
     {
@@ -77,19 +76,27 @@ public class UIManager : MonoBehaviour
         //! 다시 시작
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-        //Time.timeScale = 1f;
-        //gameIsPaused = false;
-        playerController.StopToFalse(false);
+        Time.timeScale = 1f;
+        gameIsPaused = false;
     }
 
     public void Pause()
     {
         //! 멈춤
-        Cursor.visible = true;     //마우스 커서를 보이지 않게
-        Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
-        //Time.timeScale = 0f;
-        //gameIsPaused = true;
-        playerController.StopToFalse(true);
+        if (GameManager.instance.dialogueManager.isDialogue)
+        {
+            Cursor.visible = true;     //마우스 커서를 보이지 않게
+            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+            gameIsPaused = true;
+        }
+        else
+        {
+            Cursor.visible = true;     //마우스 커서를 보이지 않게
+            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+            Time.timeScale = 0f;
+            gameIsPaused = true;
+        }
+
     }
 
     public GameObject GetUIPrefab(UI ui)
