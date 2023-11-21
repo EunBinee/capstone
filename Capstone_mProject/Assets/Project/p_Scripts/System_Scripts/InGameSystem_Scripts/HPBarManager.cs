@@ -8,9 +8,9 @@ public class HPBarManager : MonoBehaviour
     public string HPBar_name = "";
     public Transform HPBar_Parent;
 
-    private MonsterUI_Info HPBar_Prefab;
-    private List<MonsterUI_Info> HPBarInUse;
-    private List<MonsterUI_Info> hpBarPools;
+    private HPBarUI_Info HPBar_Prefab;
+    private List<HPBarUI_Info> HPBarInUse;
+    private List<HPBarUI_Info> hpBarPools;
     private int hpBarPoolsCount = 30;
 
     private Camera m_Camera;
@@ -22,13 +22,12 @@ public class HPBarManager : MonoBehaviour
 
     private void InitHPBar()
     {
-        HPBarInUse = new List<MonsterUI_Info>();
-        hpBarPools = new List<MonsterUI_Info>();
+        HPBarInUse = new List<HPBarUI_Info>();
+        hpBarPools = new List<HPBarUI_Info>();
 
         if (HPBar_Prefab == null)
         {
-
-            HPBar_Prefab = Resources.Load<MonsterUI_Info>("SystemPrefabs/" + HPBar_name);
+            HPBar_Prefab = Resources.Load<HPBarUI_Info>("SystemPrefabs/" + HPBar_name);
         }
 
         m_Camera = Camera.main;
@@ -52,16 +51,15 @@ public class HPBarManager : MonoBehaviour
                         HPBarInUse[i].gameObject.transform.position = targetScreenPos;
                     }
                 }
-
             }
         }
     }
     //*----------------------------------------------------------------------------//
     //* hp바 오브젝트 풀링//
     //HP바 받기.
-    public MonsterUI_Info Get_HPBar()
+    public HPBarUI_Info Get_HPBar()
     {
-        MonsterUI_Info curHPBar = null;
+        HPBarUI_Info curHPBar = null;
 
         //오브젝트 풀에 
         if (hpBarPools.Count > 0)
@@ -83,7 +81,7 @@ public class HPBarManager : MonoBehaviour
     }
 
     //HP바 반납.
-    public void Add_HPBarPool(MonsterUI_Info HPBar)
+    public void Add_HPBarPool(HPBarUI_Info HPBar)
     {
         HPBar.gameObject.SetActive(false);
 

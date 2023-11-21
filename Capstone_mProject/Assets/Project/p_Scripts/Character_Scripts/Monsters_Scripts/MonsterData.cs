@@ -46,5 +46,7 @@ public class MonsterData
     [Header("몬스터 정보 보이는 거리")]
     public float canSeeMonsterInfo_Distance = 20;
 
+    [Space]
+    public Transform effectTrans;
 
 }

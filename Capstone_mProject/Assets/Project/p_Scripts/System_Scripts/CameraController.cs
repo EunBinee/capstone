@@ -27,6 +27,18 @@ public class CameraController : MonoBehaviour
     [Header("주목 기능")]
     public bool isBeingAttention = false;
     public Monster curTargetMonster = null;
+
+    public float normal_Z = -5f;
+    public float attention_Z = -6.5f;
+    public float longAttention_Z = -7.5f;
+
+    bool isNormal_Z = false;
+    bool isAttention_Z = false;
+    bool isLongAttention_Z = false;
+
+    float time_Z = 0;
+    float duration = 1f;
+
     Coroutine resetCameraZ_co = null;
 
 
@@ -49,16 +61,30 @@ public class CameraController : MonoBehaviour
                     if (resetCameraZ_co != null)
                         StopCoroutine(resetCameraZ_co);
                     Vector3 camPos = cameraTrans.localPosition;
-                    camPos.z = -7.5f;
+                    camPos.z = attention_Z;
                     cameraTrans.localPosition = camPos;
                     playerController._currentState.isStrafing = true;
                     //처음 주목한 경우
                     isBeingAttention = true;
+                    //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
+                    playerController.SortingMonsterList();
                     curTargetMonster = playerController.monsterUnderAttackList[0];
                 }
                 else
                 {
                     //다른 몬스터로 다시 주목
+                    if (playerController.monsterUnderAttackList.Count > 1)
+                    {
+                        playerController.SortingMonsterList();
+                        if (curTargetMonster == playerController.monsterUnderAttackList[0])
+                        {
+                            curTargetMonster = playerController.monsterUnderAttackList[1];
+                        }
+                        else
+                        {
+                            curTargetMonster = playerController.monsterUnderAttackList[0];
+                        }
+                    }
 
                 }
             }
@@ -74,9 +100,6 @@ public class CameraController : MonoBehaviour
 
     public void UndoAttention()
     {
-        // Vector3 camPos = cameraTrans.localPosition;
-        // camPos.z = -5f;
-        // cameraTrans.localPosition = camPos;
         ResetCameraZ();
         playerController._currentState.isStrafing = false;
 
@@ -92,6 +115,10 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         CameraActions();
+
+    }
+    private void FixedUpdate()
+    {
 
     }
 
@@ -151,6 +178,8 @@ public class CameraController : MonoBehaviour
             return;
         }
 
+        SetCameraZ_AccDistance();
+
         Vector3 cameraRot;
         Quaternion targetCameraRot = Quaternion.identity;
         // 타겟의 위치로 향하는 방향 벡터를 구함
@@ -162,13 +191,13 @@ public class CameraController : MonoBehaviour
         {
             targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
         }
-        if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 0.5f)
+        if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
         {
             //각도가 1보다 작으면.. 같은걸로 간주
             playerCamera.transform.rotation = targetCameraRot;
         }
         else if (targetCameraRot != Quaternion.identity)
-            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 3 * Time.deltaTime); /* x speed */
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 3f * Time.deltaTime); /* x speed */
 
         //playerCamera.transform.position = target.position - transform.forward * dis;
         //위아래
@@ -191,20 +220,107 @@ public class CameraController : MonoBehaviour
     IEnumerator ResetCameraZ_co(float duration)
     {
         Vector3 camPos = cameraTrans.localPosition;
+        Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
         float time = 0;
         while (time < duration)
         {
             time += Time.deltaTime;
             //camPos.z = -5f;
-            float value = Mathf.Lerp(camPos.z, -5, time / duration);
+            float value = Mathf.Lerp(camPos.z, normal_Z, time / duration);
             camPos.z = value;
             cameraTrans.localPosition = camPos;
 
+            value = Mathf.Lerp(camPivotPos.y, 1.7f, time / duration);
+            camPivotPos.y = value;
+            playerCameraPivot.transform.localPosition = camPivotPos;
+
             yield return null;
         }
+    }
 
+    private void SetCameraZ_AccDistance()
+    {
+        //플레이어와 몬스터의 거리에 따른 z값 변경
+        float distance = Vector3.Distance(playerController.gameObject.transform.position, curTargetMonster.gameObject.transform.position);
 
+        Vector3 camPos = cameraTrans.localPosition;
+        Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
 
+        if (distance > 10)
+        {
+            //z 를 normal_Z(-5)로 변경
+            if (camPos.z != normal_Z)
+            {
+                if (isNormal_Z == false)
+                {
+                    time_Z = 0;
+                    isNormal_Z = true;
+                    isAttention_Z = false;
+                    isLongAttention_Z = false;
+                }
+                time_Z += Time.deltaTime;
+
+                float value = Mathf.Lerp(camPos.z, normal_Z, time_Z / duration);
+                camPos.z = value;
+                cameraTrans.localPosition = camPos;
+
+                value = Mathf.Lerp(camPivotPos.y, 1.7f, time_Z / duration);
+                camPivotPos.y = value;
+                playerCameraPivot.transform.localPosition = camPivotPos;
+            }
+        }
+        else if (distance < 4)
+        {
+            //z를 longAttention_Z(-9)으로 변경
+            if (camPos.z != longAttention_Z)
+            {
+                if (isLongAttention_Z == false)
+                {
+                    time_Z = 0;
+                    isNormal_Z = false;
+                    isAttention_Z = false;
+                    isLongAttention_Z = true;
+                }
+                time_Z += Time.deltaTime;
+
+                float value = Mathf.Lerp(camPos.z, longAttention_Z, time_Z / duration);
+                camPos.z = value;
+                cameraTrans.localPosition = camPos;
+
+                if (camPivotPos.y != 1.2f)
+                {
+                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
+                    camPivotPos.y = value;
+                    playerCameraPivot.transform.localPosition = camPivotPos;
+                }
+            }
+        }
+        else
+        {
+            //z를 -6으로 변경
+            if (camPos.z != attention_Z)
+            {
+                if (isAttention_Z == false)
+                {
+                    time_Z = 0;
+                    isNormal_Z = false;
+                    isAttention_Z = true;
+                    isLongAttention_Z = false;
+                }
+                time_Z += Time.deltaTime;
+
+                float value = Mathf.Lerp(camPos.z, attention_Z, time_Z / duration);
+                camPos.z = value;
+                cameraTrans.localPosition = camPos;
+
+                if (camPivotPos.y != 1.2f)
+                {
+                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
+                    camPivotPos.y = value;
+                    playerCameraPivot.transform.localPosition = camPivotPos;
+                }
+            }
+        }
     }
 
     //*----------------------------------------------------------------------------------------//
