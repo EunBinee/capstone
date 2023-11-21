@@ -20,7 +20,6 @@ public class HPBarUI_Info : MonoBehaviour
         m_Monster = _monster;
         m_HPBarPos = m_Monster.monsterData.HPBarPos;
 
-        Debug.Log("text" + _monster.monsterData.monsterName);
         monsterName.text = _monster.monsterData.monsterName;
 
         resetHP();

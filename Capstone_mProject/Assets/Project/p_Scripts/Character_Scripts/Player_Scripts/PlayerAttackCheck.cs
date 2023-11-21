@@ -43,7 +43,8 @@ public class PlayerAttackCheck : MonoBehaviour
                     if (monster != null && !P_States.hadAttack)
                     {
                         P_States.hadAttack = true;
-                        monster.GetDamage(15);
+                        //TODO: 나중에 연산식 사용.
+                        monster.GetDamage(700);
 
                         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
                         P_Value.curHitTime = Time.time; //* 현재 시간 저장

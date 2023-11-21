@@ -60,7 +60,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         capsuleCollider.enabled = true;
 
         weaponsChecks = new List<MonsterWeapon_CollisionCheck>();
-
+        attackEffectPos = m_monster.monsterData.effectTrans;
         for (int i = 0; i < weapons.Length; ++i)
         {
             weaponsChecks.Add(weapons[i].gameObject.GetComponent<MonsterWeapon_CollisionCheck>());
@@ -271,7 +271,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                         if (findPlayer)
                         {
-
                             StopCoroutine(roam_Monster_co);
                             isRoaming = false;
 
@@ -826,6 +825,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         //? 피격 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01", attackEffectPos);
+        //TODO: 나중에 플레이어 방향쪽으로 변경.
         float x = UnityEngine.Random.Range(-1.0f, 1.0f);
         float y = UnityEngine.Random.Range(-1.0f, 1.0f);
         float z = UnityEngine.Random.Range(-1.0f, 1.0f);

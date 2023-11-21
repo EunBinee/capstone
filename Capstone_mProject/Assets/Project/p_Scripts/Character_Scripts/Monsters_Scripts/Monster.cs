@@ -66,7 +66,6 @@ public class Monster : MonoBehaviour
     //* 몬스터 //
     public virtual void OnHit(float Damage = 0, Action action = null)
     {
-
         if (!playerController._currentState.isGettingHit)
         {
             //몬스터가 플레이어를 때렸을 때 처리.
@@ -75,16 +74,22 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public virtual void GetDamage(double Damage)//플레이어에게 공격 당함.
+    public virtual void GetDamage(double damage)//플레이어에게 공격 당함.
     {
         if (monsterData.HP > 0)
         {
             if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
             {
+                //* 데미지 UI 처리---------------------------------------------------------------//
+                Get_DamageUI(damage);
+
+                //* HP 와 HPBar처리---------------------------------------------------------------//
                 if (HPBar_CheckNull() == false)
                     GetHPBar();
-                monsterData.HP -= Damage;
+
+                monsterData.HP -= damage;
                 m_hPBar.UpdateHP();
+                //--------------------------------------------------------------------------------//
 
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
@@ -156,5 +161,20 @@ public class Monster : MonoBehaviour
         if (m_hPBar != null)
             return true;
         return false;
+    }
+    //*------------------------------------------------------------------------------------------//
+    //* 데미지 UI //
+    public void Get_DamageUI(double damage)
+    {
+        Debug.Log("damage UI");
+        DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
+
+        float x = UnityEngine.Random.Range(-0.5f, 0.5f);
+        float y = UnityEngine.Random.Range(-0.5f, 0.5f);
+        float z = UnityEngine.Random.Range(-0.5f, 0.5f);
+        Vector3 randomPos = new Vector3(x, y, z);
+        randomPos = monsterData.effectTrans.position + randomPos;
+
+        damageUI.Reset(this, randomPos, damage);
     }
 }

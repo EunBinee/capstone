@@ -77,6 +77,21 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
+    // 기본 메서드
 
+    public Color HexToColor(string hex)
+    {
+        Color color = Color.white;
+
+        if (UnityEngine.ColorUtility.TryParseHtmlString(hex, out color))
+        {
+            return color;
+        }
+        else
+        {
+            Debug.LogError("Invalid hexadecimal color value: " + hex);
+            return Color.white; // 기본값으로 흰색을 반환하거나 다른 처리를 추가할 수 있습니다.
+        }
+    }
 }
 
