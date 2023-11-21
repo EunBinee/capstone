@@ -70,14 +70,17 @@ public class UIManager : MonoBehaviour
         }
 
     }
+    public CurrentState _currentState = new CurrentState();
+    private CurrentState P_States => _currentState;
 
     public void Resume()
     {
         //! 다시 시작
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-        Time.timeScale = 1f;
-        gameIsPaused = false;
+        P_States.isStop = false;
+        //Time.timeScale = 1f;
+        //gameIsPaused = false;
     }
 
     public void Pause()
@@ -85,8 +88,8 @@ public class UIManager : MonoBehaviour
         //! 멈춤
         Cursor.visible = true;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
-        Time.timeScale = 0f;
-        gameIsPaused = true;
+        //Time.timeScale = 0f;
+        //gameIsPaused = true;
     }
 
     public GameObject GetUIPrefab(UI ui)

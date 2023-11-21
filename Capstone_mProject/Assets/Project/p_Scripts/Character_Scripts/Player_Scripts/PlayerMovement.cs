@@ -259,7 +259,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void PlayerRotation()
     {
-        if (P_States.isSkill || P_States.isJumping)
+        if (P_States.isStop || (P_States.isSkill || P_States.isJumping))
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
@@ -313,8 +313,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if ((P_States.isStartComboAttack || P_States.isSkill) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")))
         {
+            Debug.Log("움직임");
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }
