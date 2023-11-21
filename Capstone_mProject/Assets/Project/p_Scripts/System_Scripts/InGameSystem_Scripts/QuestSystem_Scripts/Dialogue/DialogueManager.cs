@@ -65,6 +65,7 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
+        player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         go_DialogueBar.SetActive(true); //텍스트 UI 활성화
@@ -304,7 +305,7 @@ public class DialogueManager : MonoBehaviour
                 }
             }
 
-            player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+
             yield return new WaitForSecondsRealtime(0.02f);
         }
 

@@ -117,9 +117,10 @@ public class PlayerController : MonoBehaviour
         //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     }
 
-    public void StopToFalse()
+    public void StopToFalse(bool stop)
     {
-        P_States.isStop = false;
+        P_States.isStop = stop;
+        Debug.Log(P_States.isStop);
     }
 
     public void CheckHitTime()
@@ -383,11 +384,8 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-                P_Com.animator.Rebind();
-                P_States.isStop = true;
                 //GameManager.GetInstance().StartInteraction(interObject);
                 P_Com.animator.Rebind();
-                P_States.isStop = true; //true이면 캐릭터 움직임 멈춤. 
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
             }
         }
