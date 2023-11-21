@@ -502,6 +502,7 @@ Transform:
   m_Children:
   - {fileID: 564444908342191927}
   - {fileID: 4079822385235831853}
+  - {fileID: 1678276535083365058}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -531,6 +532,7 @@ MonoBehaviour:
     shortAttack_Num: 0
     LongAttack_Num: 1
     canSeeMonsterInfo_Distance: 10
+    effectTrans: {fileID: 1678276535083365058}
   monsterPattern: {fileID: 0}
   monsterSoundClips: []
   playerController: {fileID: 0}
@@ -1056,6 +1058,7 @@ MonoBehaviour:
   noAttack: 0
   isRoaming: 0
   isFinding: 0
+  isTracing: 0
   isGoingBack: 0
   isGettingHit: 0
   buttomGameObject: {fileID: 909339047786446221}
@@ -1648,6 +1651,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2860404724160415388}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9009242919638903873
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1678276535083365058}
+  m_Layer: 0
+  m_Name: effectPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1678276535083365058
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9009242919638903873}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 5.08, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2860404724160415388}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9161867231979558716
 GameObject:
