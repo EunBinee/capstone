@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack 
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack
                 && !EventSystem.current.IsPointerOverGameObject())
             {
                 //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
@@ -287,11 +287,11 @@ public class PlayerMovement : MonoBehaviour
         {
             //걷기와 뛰기는 동일하게
             Vector3 targetDirect = Vector3.zero;
-            if (P_Value.nowEnemy != null && P_States.isStartComboAttack)   //* 최근에 공격한 적(몬서터)이 있다면
+            if (P_Value.nowEnemy != null && P_States.isStartComboAttack && P_Value.isCombo)   //* 최근에 공격한 적(몬서터)이 있다면
             {
                 Vector3 toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 targetDirect = toMonsterDir * P_Input.verticalMovement;
-                targetDirect = targetDirect + (P_Value.nowEnemy.transform.right - this.transform.right).normalized * P_Input.horizontalMovement;
+                targetDirect = targetDirect + (P_Value.nowEnemy.transform.right.normalized - this.transform.right.normalized).normalized * P_Input.horizontalMovement;
             }
             else
             {
@@ -314,7 +314,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if ((P_States.isStartComboAttack || P_States.isSkill) 
+        if ((P_States.isStartComboAttack || P_States.isSkill)
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f)
         {
@@ -617,7 +617,7 @@ public class PlayerMovement : MonoBehaviour
             effect.gameObject.transform.rotation = effectRotation;
 
             //* 공격 애니메이션 재생
-            P_Com.animator.Rebind();
+            //P_Com.animator.Rebind();
             P_Com.animator.Play(P_Value.curAnimName, 0);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
