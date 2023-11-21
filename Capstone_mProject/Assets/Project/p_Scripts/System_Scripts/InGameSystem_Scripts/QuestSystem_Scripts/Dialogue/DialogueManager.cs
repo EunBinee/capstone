@@ -30,6 +30,7 @@ public class DialogueManager : MonoBehaviour
 
     public bool DoQuest;
     public bool IsQuestDetail;
+    public bool isDialogue;
 
     void Start()
     {
@@ -37,6 +38,7 @@ public class DialogueManager : MonoBehaviour
         gameInfo = GetComponent<GameInfo>();
         DoQuest = false;
         IsQuestDetail = false;
+        isDialogue = false;
     }
 
 
@@ -47,7 +49,6 @@ public class DialogueManager : MonoBehaviour
         //DatabaseManager.GetInstance().NPC_diaglogues_Dictionary[id]를 통해서 현재 id의 맞는 Dialogue를 가지고 온다.
         Dialogue dialogue = DatabaseManager.GetInstance().NPC_diaglogues_Dictionary[id];
         StartCoroutine(StartObjectTextBox(dialogue, interaction_Item));
-
 
     }
     public static IEnumerator WaitForRealTime(float delay)
@@ -66,6 +67,7 @@ public class DialogueManager : MonoBehaviour
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
         player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+        isDialogue = true;
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         go_DialogueBar.SetActive(true); //텍스트 UI 활성화
@@ -334,6 +336,7 @@ public class DialogueManager : MonoBehaviour
 
         //yield return new WaitForSecondsRealtime(0.3f);
         player_InteractingFalse();
+        isDialogue = false;
 
     }
 
