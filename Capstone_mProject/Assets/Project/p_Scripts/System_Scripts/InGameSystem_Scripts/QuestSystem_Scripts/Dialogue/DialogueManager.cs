@@ -308,7 +308,7 @@ public class DialogueManager : MonoBehaviour
             }
 
 
-            yield return new WaitForSecondsRealtime(0.02f);
+            yield return new WaitForSecondsRealtime(0.01f);
         }
 
         //엔딩 변화 있는 경우
