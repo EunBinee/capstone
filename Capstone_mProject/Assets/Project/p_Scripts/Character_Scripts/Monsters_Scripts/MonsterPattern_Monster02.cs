@@ -42,6 +42,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     public float findPlayerDistance = 6f;
 
     Coroutine roam_Monster_co = null;
+    Coroutine discovery_Monster_co = null;
     Coroutine short_Range_Attack_co = null;
     Coroutine long_Range_Attack_co = null;
     Coroutine hidePlayer_waitMonster_co = null;
@@ -120,7 +121,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     if (m_monster.HPBar_CheckNull() == true)
                         m_monster.RetrunHPBar();
                     Roam_Monster();
-                    CheckPlayerCollider();
+                    if (!forcedReturnHome)
+                        CheckPlayerCollider();
                     break;
                 case MonsterState.Discovery:
                     Discovery_Player();
@@ -302,7 +304,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
         if (!isFinding)
         {
             isFinding = true;
-            StartCoroutine(DiscoveryPlayer_co());
+            if (discovery_Monster_co != null)
+                StopCoroutine(discovery_Monster_co);
+            discovery_Monster_co = StartCoroutine(DiscoveryPlayer_co());
         }
     }
 
@@ -760,6 +764,63 @@ public class MonsterPattern_Monster02 : MonsterPattern
             Gizmos.DrawWireSphere(m_monster.gameObject.transform.position, shortRangeAttack_Radius);
         }
     }
+
+    public override void StopMonster()
+    {
+        //상태는 그대로.
+        // 몬스터 is도 그대로.
+        //모든 코루틴 정지
+
+        //각자의 자리로 가기
+        forcedReturnHome = true; //플레이어 대화시 강제로 집으로 보내기
+
+        StopAtackCoroutine();
+
+        if ((curMonsterState != MonsterState.Death || curMonsterState != MonsterState.Roaming) || curMonsterState != MonsterState.GoingBack)
+        {
+            if (curMonsterState == MonsterState.Discovery)
+            {
+                isRoaming = false;
+                isFinding = false;
+                isTracing = false;
+                isGoingBack = false;
+                isGettingHit = false;
+                //로밍 으로 변경
+                if (discovery_Monster_co != null)
+                {
+                    StopCoroutine(discovery_Monster_co);
+                    discovery_Monster_co = null;
+                }
+
+                ChangeMonsterState(MonsterState.Roaming);
+            }
+            else if (curMonsterState == MonsterState.GetHit)
+            {
+                isRoaming = false;
+                isFinding = false;
+                isTracing = false;
+                isGoingBack = true;
+                isGettingHit = false;
+                SetPlayerAttackList(false);
+            }
+            else
+            {
+                isRoaming = false;
+                isFinding = false;
+                isTracing = false;
+                isGoingBack = true;
+                isGettingHit = false;
+                ChangeMonsterState(MonsterState.GoingBack);
+                SetPlayerAttackList(false);
+            }
+        }
+
+    }
+    public override void StartMonster()
+    {
+        forcedReturnHome = false;
+    }
+
 }
 
 

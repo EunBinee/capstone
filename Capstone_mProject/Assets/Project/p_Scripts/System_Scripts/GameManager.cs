@@ -38,6 +38,11 @@ public class GameManager : MonoBehaviour
     //* 카메라 제어---------------------------------//
     public CameraShake cameraShake;
     public CameraController cameraController;
+    //* 현재 몬스터 --------------------------------//
+    public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
+                                                 //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
+    public Monster[] cur_monsters; //위에 꺼할때 배열은 지워도 될듯염
+    public List<Monster> monsters;
     //* --------------------------------------------//
     void Awake()
     {
@@ -61,6 +66,7 @@ public class GameManager : MonoBehaviour
 
         cameraShake = GetComponent<CameraShake>();
         cameraController = gameData.cameraObj.GetComponent<CameraController>();
+        monsterUnderAttackList = new List<Monster>();
 
         //instance = this;
         dialogueInfo = new DialogueInfo();
@@ -69,7 +75,12 @@ public class GameManager : MonoBehaviour
         gameInfo = GetComponent<GameInfo>();
         //item = GetComponent<Item>();
         questManager = new QuestManager();
-
+        cur_monsters = GameObject.FindObjectsOfType<Monster>();
+        monsters = new List<Monster>();
+        for (int i = 0; i < cur_monsters.Length; i++)
+        {
+            monsters.Add(cur_monsters[i]);
+        }
     }
 
     static public GameManager GetInstance()
@@ -77,8 +88,7 @@ public class GameManager : MonoBehaviour
         return instance;
     }
 
-    // 기본 메서드
-
+    // 기본 메서드 
     public Color HexToColor(string hex)
     {
         Color color = Color.white;
@@ -91,6 +101,38 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Invalid hexadecimal color value: " + hex);
             return Color.white; // 기본값으로 흰색을 반환하거나 다른 처리를 추가할 수 있습니다.
+        }
+    }
+
+    public void SortingMonsterList()
+    {
+        //TODO: monsterUnderAttackList 리스트를 새로 정렬하기
+        //플레이어와 거리 순으로.
+        if (monsterUnderAttackList.Count > 1)
+        {
+            monsterUnderAttackList.Sort((monster01, monster02) =>
+            {
+                float distance1 = Vector3.Distance(monster01.transform.position, transform.position);
+                float distance2 = Vector3.Distance(monster02.transform.position, transform.position);
+
+                // 오름차순으로 정렬
+                return distance1.CompareTo(distance2);
+            });
+        }
+    }
+
+    public void Stop_AllMonster()
+    {
+        foreach (var m in monsters)
+        {
+            m.monsterPattern.StopMonster();
+        }
+    }
+    public void Start_AllMonster()
+    {
+        foreach (var m in monsters)
+        {
+            m.monsterPattern.StartMonster();
         }
     }
 }
