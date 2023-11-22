@@ -398,11 +398,14 @@ public class DialogueManager : MonoBehaviour
     public void player_InteractingTrue()
     {
         UIManager.Instance.Pause(false);
+        GameManager.Instance.Stop_AllMonster();
 
     }
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
     public void player_InteractingFalse()
     {
         UIManager.Instance.Resume();
+        GameManager.Instance.Start_AllMonster();
+
     }
 }
