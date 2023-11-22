@@ -320,7 +320,6 @@ public class PlayerMovement : MonoBehaviour
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
         {
-            Debug.Log("움직임");
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }

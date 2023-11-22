@@ -80,22 +80,14 @@ public class UIManager : MonoBehaviour
         gameIsPaused = false;
     }
 
-    public void Pause()
+    public void Pause(bool useTimeScale = true)
     {
         //! 멈춤
-        if (GameManager.instance.dialogueManager.isDialogue)
-        {
-            Cursor.visible = true;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
-            gameIsPaused = true;
-        }
-        else
-        {
-            Cursor.visible = true;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+        Cursor.visible = true;     //마우스 커서를 보이지 않게
+        Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+        gameIsPaused = true;
+        if (!useTimeScale)
             Time.timeScale = 0f;
-            gameIsPaused = true;
-        }
 
     }
 

@@ -66,7 +66,6 @@ public class DialogueManager : MonoBehaviour
 
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
-        player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
         isDialogue = true;
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
@@ -108,7 +107,8 @@ public class DialogueManager : MonoBehaviour
         while (!AllFinish && !DoQuest)
         {
             //* 게임 멈춤 = 참
-            UIManager.gameIsPaused = true;
+            player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
+            //UIManager.gameIsPaused = true;
 
             GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
@@ -397,7 +397,7 @@ public class DialogueManager : MonoBehaviour
     //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
     public void player_InteractingTrue()
     {
-        UIManager.Instance.Pause();
+        UIManager.Instance.Pause(false);
 
     }
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
