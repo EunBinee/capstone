@@ -123,6 +123,9 @@ public class GameManager : MonoBehaviour
 
     public void Stop_AllMonster()
     {
+        //* 구현
+        // 모든 몬스터 roaming상태, 공격 중이던 몬스터는 자기자리로 돌아간 후 roaming상태
+        // 몬스터가 플레이어 인지 못함.
         foreach (var m in monsters)
         {
             m.monsterPattern.StopMonster();
