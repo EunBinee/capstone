@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             //주목 기능
-            if (playerController.monsterUnderAttackList.Count > 0)
+            if (GameManager.instance.monsterUnderAttackList.Count > 0)
             {
                 if (!isBeingAttention)
                 {
@@ -67,22 +67,22 @@ public class CameraController : MonoBehaviour
                     //처음 주목한 경우
                     isBeingAttention = true;
                     //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
-                    playerController.SortingMonsterList();
-                    curTargetMonster = playerController.monsterUnderAttackList[0];
+                    GameManager.instance.SortingMonsterList();
+                    curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
                 }
                 else
                 {
                     //다른 몬스터로 다시 주목
-                    if (playerController.monsterUnderAttackList.Count > 1)
+                    if (GameManager.instance.monsterUnderAttackList.Count > 1)
                     {
-                        playerController.SortingMonsterList();
-                        if (curTargetMonster == playerController.monsterUnderAttackList[0])
+                        GameManager.instance.SortingMonsterList();
+                        if (curTargetMonster == GameManager.instance.monsterUnderAttackList[0])
                         {
-                            curTargetMonster = playerController.monsterUnderAttackList[1];
+                            curTargetMonster = GameManager.instance.monsterUnderAttackList[1];
                         }
                         else
                         {
-                            curTargetMonster = playerController.monsterUnderAttackList[0];
+                            curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
                         }
                     }
 

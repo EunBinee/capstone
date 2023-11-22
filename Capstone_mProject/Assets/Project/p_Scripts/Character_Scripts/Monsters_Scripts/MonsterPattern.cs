@@ -25,7 +25,9 @@ public class MonsterPattern : MonoBehaviour
     protected bool drawDamageCircle = false;
 
     public bool playerHide = false;
-    public bool noAttack = false; //플레이어에게 공격 안받음.
+    public bool noAttack = false;   //플레이어에게 공격 안받음.
+
+    public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 
     public enum MonsterState
     {
@@ -443,14 +445,14 @@ public class MonsterPattern : MonoBehaviour
         //* false 공격을 마친 몬스터  => 리스트에서 빼기
         if (attackMonster)
         {
-            if (!m_monster.playerController.monsterUnderAttackList.Contains(m_monster))
-                m_monster.playerController.monsterUnderAttackList.Add(m_monster);
+            if (!GameManager.instance.monsterUnderAttackList.Contains(m_monster))
+                GameManager.instance.monsterUnderAttackList.Add(m_monster);
         }
         else
         {
-            if (m_monster.playerController.monsterUnderAttackList.Contains(m_monster))
+            if (GameManager.instance.monsterUnderAttackList.Contains(m_monster))
             {
-                m_monster.playerController.monsterUnderAttackList.Remove(m_monster);
+                GameManager.instance.monsterUnderAttackList.Remove(m_monster);
 
                 if (GameManager.Instance.cameraController.isBeingAttention)
                 {
@@ -506,4 +508,13 @@ public class MonsterPattern : MonoBehaviour
         return curDirection;
     }
 
+
+    public virtual void StopMonster()
+    {
+
+    }
+    public virtual void StartMonster()
+    {
+
+    }
 }

@@ -37,13 +37,9 @@ public class Monster : MonoBehaviour
         //임시 테스트 코드---===================//
         if (Input.GetKeyDown(KeyCode.P))
         {
-            GetDamage(3);
+            //monsterPattern.StopMonster();
+        }
 
-        }
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            Death();
-        }
         //---====================================//
     }
     //*------------------------------------------------------------------------------------------//
