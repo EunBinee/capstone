@@ -150,6 +150,14 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: 0.00014983515
       objectReference: {fileID: 0}
+    - target: {fileID: 483705629957874607, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 507124721315963021, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 581614760091153512, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: skill_E
       value: 
@@ -165,6 +173,18 @@ PrefabInstance:
     - target: {fileID: 5487374689296333297, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RotationOffset.x
       value: -48.57595
+      objectReference: {fileID: 0}
+    - target: {fileID: 8005469574279907302, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.28999996
+      objectReference: {fileID: 0}
+    - target: {fileID: 8005469574279907302, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.49
+      objectReference: {fileID: 0}
+    - target: {fileID: 8005469574279907302, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.9500008
       objectReference: {fileID: 0}
     - target: {fileID: 8358419906112528881, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RootOrder
@@ -226,6 +246,14 @@ PrefabInstance:
       propertyPath: skill_Q
       value: 
       objectReference: {fileID: 185195968}
+    - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: cameraObj
+      value: 
+      objectReference: {fileID: 1372997702}
+    - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: cameraTrans
+      value: 
+      objectReference: {fileID: 1645457507}
     - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: navMeshSurface
       value: 
@@ -1633,6 +1661,7 @@ GameObject:
   - component: {fileID: 1372997702}
   - component: {fileID: 1372997701}
   - component: {fileID: 1372997704}
+  - component: {fileID: 1372997705}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1698,8 +1727,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1372997700}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.6170583, y: -0.67999995, z: 1.5899982}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1735,6 +1764,40 @@ MonoBehaviour:
   normal_Z: -5
   attention_Z: -6.5
   longAttention_Z: -7.5
+--- !u!114 &1372997705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372997700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowDebugText: 0
+  m_ShowCameraFrustum: 1
+  m_IgnoreTimeScale: 0
+  m_WorldUpOverride: {fileID: 0}
+  m_UpdateMethod: 2
+  m_BlendUpdateMethod: 1
+  m_DefaultBlend:
+    m_Style: 1
+    m_Time: 2
+    m_CustomCurve:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  m_CustomBlends: {fileID: 11400000, guid: f2dc2c99bcd4bfe46922228f068ca594, type: 2}
+  m_CameraCutEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CameraActivatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1424189437
 GameObject:
   m_ObjectHideFlags: 0
@@ -5640,6 +5703,8 @@ MonoBehaviour:
     isSkill: 0
     hadAttack: 0
     isBouncing: 0
+    isStop: 0
+    isAim: 0
     isPerformingAction: 0
     isForwardBlocked: 0
     isGround: 0
@@ -5681,6 +5746,8 @@ MonoBehaviour:
   monsterUnderAttackList: []
   hitNum: {fileID: 0}
   HPgauge: {fileID: 0}
+  playerFollowCamera: {fileID: 0}
+  onAimCamera: {fileID: 0}
 --- !u!4 &7186952021142837933
 Transform:
   m_ObjectHideFlags: 0

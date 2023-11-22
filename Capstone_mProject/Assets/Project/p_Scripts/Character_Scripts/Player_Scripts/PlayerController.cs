@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
@@ -62,6 +63,9 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
+    public CinemachineVirtualCamera playerFollowCamera;
+    public CinemachineVirtualCamera onAimCamera;
+
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
@@ -74,6 +78,9 @@ public class PlayerController : MonoBehaviour
         P_Value.HP = P_Value.MaxHP;
 
         monsterUnderAttackList = new List<Monster>();
+
+        playerFollowCamera.enabled = true;
+        onAimCamera.enabled = false;
     }
     // Update is called once per frame
     void Update()
@@ -202,8 +209,38 @@ public class PlayerController : MonoBehaviour
     // damage 정보 만큼 피해를 입힙니다.
     public void ActivateSkill(SOSkill skill)
     {
-        P_Com.animator.Play(skill.animationName);
-        //print(string.Format("적에게 스킬 {0} 로 {1} 의 피해를 주었습니다.", skill.name, skill.damage));
+        if (skill.isTwice && !P_States.isAim)
+        {
+            P_States.isAim = true;
+            //P_Com.animator.Play(skill.animationName,1);
+            P_Com.animator.SetBool("isAim", true);
+        }
+        else if (skill.isTwice && P_States.isAim)
+        {
+            //P_Com.animator.Play("AimRecoil", 1);
+            P_Com.animator.SetBool("isAim", false);
+            P_States.isAim = false;
+            skill.isFirsttime = true;
+        }
+        else if (!skill.isTwice)
+        {
+            P_Com.animator.Play(skill.animationName);
+        }
+    }
+
+    public void AimOnCamera()
+    {
+        //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
+        Debug.Log("AimOnCamera()");
+        playerFollowCamera.enabled = false;
+        onAimCamera.enabled = true;
+    }
+    public void AimOnCameraReturn()
+    {
+        //todo: 카메라 원래대로
+        Debug.Log("CameraReturn()");
+        onAimCamera.enabled = false;
+        playerFollowCamera.enabled = true;
     }
 
     private void Update_Physics()
