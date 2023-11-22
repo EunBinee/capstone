@@ -118,13 +118,16 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
+        Debug.Log(GameManager.Instance.dialogueManager.isDialogue);
         if (GameManager.Instance.dialogueManager.isDialogue)
         {
             P_States.isStop = true;
+            Debug.Log("트루");
         }
         else
         {
             P_States.isStop = false;
+            Debug.Log("폴스");
         }
         //stop = GameManager.Instance.dialogueManager.isDialogue;
         //P_States.isStop = stop;
@@ -393,8 +396,9 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 //GameManager.GetInstance().StartInteraction(interObject);
+
+
                 P_Com.animator.Rebind();
-                StopToFalse();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
                 //StopToFalse(true);
             }

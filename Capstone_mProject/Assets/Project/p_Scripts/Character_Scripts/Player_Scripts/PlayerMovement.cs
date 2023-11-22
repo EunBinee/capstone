@@ -157,12 +157,29 @@ public class PlayerMovement : MonoBehaviour
             case 'Q':
                 if (skill_Q.imgCool.fillAmount == 0)
                 {
+                    Debug.Log("스킬Q");
                     //Time.timeScale = 0.1f;
                     //P_Value.gravity = P_COption.gravity;
                     skillDir = this.gameObject.transform.up.normalized;
                     /*skillPos = transform.position + skillDir * 40f;*/
                     //transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
                     P_Com.rigidbody.AddForce(skillDir * 5f, ForceMode.Impulse);
+
+                    // Collider[] colliders = Physics.OverlapSphere(transform.position, 5.0f);
+                    // foreach (Collider collider in colliders)
+                    // {
+                    //     if (collider.CompareTag("Monster"))
+                    //     {
+                    //         Rigidbody enemyRb = collider.GetComponent<Rigidbody>();
+                    //         if (enemyRb != null)
+                    //         {
+                    //             // 튕기는 힘과 스턴 적용
+                    //             enemyRb.AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
+                    //             // 스턴 로직 추가
+                    //             // enemyRb.GetComponent<EnemyController>().Stun(2.0f);
+                    //         }
+                    //     }
+                    // }
                 }
                 //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
                 skill_Q.OnClicked();
@@ -316,48 +333,57 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
-        if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill)
-            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
+        if (!P_States.isStop)
         {
-            P_Com.rigidbody.velocity = Vector3.zero;
-            return;
+            if ((P_States.isStartComboAttack || P_States.isSkill)
+                && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+                && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f)
+            {
+
+                Debug.Log("Hi");
+                P_Com.rigidbody.velocity = Vector3.zero;
+                return;
+            }
+            //플레이어의 움직임을 수행하는 함수.
+            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
+            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
+
+            P_Value.moveDirection.Normalize(); //정규화시켜준다.
+
+            if (P_States.isJumping)
+            {
+                //Time.timeScale = 0.1f;
+                Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
+                P_Com.rigidbody.velocity = p_velocity;
+            }
+            else if (P_States.isDodgeing)
+            {
+                P_Com.animator.Play("dodge", 0);
+                P_Value.moveDirection.y = 0;
+                P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
+
+                Invoke("dodgeOut", 0.15f);    //대시 유지 시간
+
+            }
+            else if (P_States.isSprinting || P_States.isRunning)
+            {
+                //Time.timeScale = 1f;
+                P_Value.moveDirection.y = 0;
+                if (P_States.isSprinting)    //전력질주
+                    P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
+                else if (P_States.isRunning) //뛸때
+                    P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
+
+                Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+                p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+                P_Com.rigidbody.velocity = p_velocity;
+                return;
+            }
         }
-        //플레이어의 움직임을 수행하는 함수.
-        //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-        P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-        P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-
-        P_Value.moveDirection.Normalize(); //정규화시켜준다.
-
-        if (P_States.isJumping)
+        else
         {
-            //Time.timeScale = 0.1f;
-            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
-            P_Com.rigidbody.velocity = p_velocity;
-        }
-        else if (P_States.isDodgeing)
-        {
-            P_Com.animator.Play("dodge", 0);
-            P_Value.moveDirection.y = 0;
-            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-
-            Invoke("dodgeOut", 0.15f);    //대시 유지 시간
-
-        }
-        else if (P_States.isSprinting || P_States.isRunning)
-        {
-            //Time.timeScale = 1f;
-            P_Value.moveDirection.y = 0;
-            if (P_States.isSprinting)    //전력질주
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
-            else if (P_States.isRunning) //뛸때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
-
-            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
-            P_Com.rigidbody.velocity = p_velocity;
-            return;
+            Debug.Log("Hi222");
         }
     }
 

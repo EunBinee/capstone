@@ -67,6 +67,7 @@ public class DialogueManager : MonoBehaviour
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
         isDialogue = true;
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         go_DialogueBar.SetActive(true); //텍스트 UI 활성화
@@ -336,7 +337,6 @@ public class DialogueManager : MonoBehaviour
 
         //yield return new WaitForSecondsRealtime(0.3f);
         player_InteractingFalse();
-        isDialogue = false;
 
     }
 
@@ -403,7 +403,10 @@ public class DialogueManager : MonoBehaviour
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
     public void player_InteractingFalse()
     {
+        isDialogue = false;
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
         UIManager.Instance.Resume();
+
         GameManager.Instance.Start_AllMonster();
     }
 }
