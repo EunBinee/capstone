@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
 
     public SkillButton skill_E;
-    public string E_Name = "Player_Skill_E";
+    private string E_Name = "Player_Skill_E";
     public SkillButton skill_Q;
 
     public float comboClickTime = 0.5f;
@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
             playerAttackChecks.Add(attackCheck);
         }
         P_Value.index = 1;
+        P_States.hadAttack = false;
     }
     // Update is called once per frame
     void Update()
@@ -105,7 +106,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
-                Debug.Log("P_States.isSkill : " + P_States.isSkill);
+                //Debug.Log("P_States.isSkill : " + P_States.isSkill);
                 if (P_States.isSkill)
                 {
                     return;
@@ -136,8 +137,8 @@ public class PlayerMovement : MonoBehaviour
         {
             return;
         }
-        Vector3 skillDir;
-        Vector3 skillPos;
+        //Vector3 skillDir;
+        //Vector3 skillPos;
         P_States.isSkill = true;
 
         switch (a)
@@ -145,9 +146,9 @@ public class PlayerMovement : MonoBehaviour
             case 'E':
                 if (skill_E.imgCool.fillAmount == 0)
                 {
-                    skillDir = this.gameObject.transform.forward.normalized;
+                    /*skillDir = this.gameObject.transform.forward.normalized;
                     skillPos = transform.position + skillDir * 30f;
-                    transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
+                    transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);*/
                     P_Controller.playAttackEffect(E_Name);
                 }
                 //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
@@ -159,10 +160,10 @@ public class PlayerMovement : MonoBehaviour
                 {
                     //Time.timeScale = 0.1f;
                     //P_Value.gravity = P_COption.gravity;
-                    skillDir = this.gameObject.transform.up.normalized;
+                    //skillDir = this.gameObject.transform.up.normalized;
                     /*skillPos = transform.position + skillDir * 40f;*/
                     //transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
-                    P_Com.rigidbody.AddForce(skillDir * 5f, ForceMode.Impulse);
+                    //P_Com.rigidbody.AddForce(skillDir * 5f, ForceMode.Impulse);
                 }
                 //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
                 skill_Q.OnClicked();
