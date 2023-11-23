@@ -488,7 +488,7 @@ public class MonsterPattern : MonoBehaviour
         Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
     }
     //로밍 범위 체크
-    private void CheckRoam_Range()
+    protected void CheckRoam_Range()
     {
         //사각형 왼쪽 가장 위
         roam_vertex01 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
