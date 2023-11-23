@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private Monster curEnemy; //*현재 플레이어를 공격한 몬스터
 
     public TMP_Text hitNum;
+    public GameObject hitUI;
     public Slider HPgauge;
     float nowHitTime;
 
@@ -87,9 +88,16 @@ public class PlayerController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (!UIManager.gameIsPaused)
+        if (UIManager.gameIsPaused == true)
+        {
+            //Debug.Log("HPgauge = false");
+            HPgauge.gameObject.SetActive(false);
+            hitUI.SetActive(false);
+        }
+        else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
+            hitUI.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -98,11 +106,6 @@ public class PlayerController : MonoBehaviour
             CheckHitTime();
             CheckAnim();
             CheckHP();
-        }
-        else
-        {
-            Debug.Log("HPgauge = false");
-            HPgauge.gameObject.SetActive(false);
         }
     }
 
