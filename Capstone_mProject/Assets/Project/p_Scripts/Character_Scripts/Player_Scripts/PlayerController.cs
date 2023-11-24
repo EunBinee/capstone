@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.Instance.dialogueManager.isDialogue)
         {
+
             P_States.isStop = true;
         }
         else
@@ -393,8 +394,10 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 //GameManager.GetInstance().StartInteraction(interObject);
+                // GameManager.instance.dialogueManager.isDialogue = true;
+
                 P_Com.animator.Rebind();
-                StopToFalse();
+                // StopToFalse();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
                 //StopToFalse(true);
             }

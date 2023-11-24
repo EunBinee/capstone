@@ -1,7 +1,6 @@
 *.cs diff=csharp text
 *.cginc text
 *.shader text
-
 *.mat merge=unityyamlmerge eol=lf
 *.anim merge=unityyamlmerge eol=lf
 *.unity merge=unityyamlmerge eol=lf
@@ -11,12 +10,9 @@
 *.asset merge=unityyamlmerge eol=lf
 *.meta merge=unityyamlmerge eol=lf
 *.controller merge=unityyamlmerge eol=lf
-
 *.asset merge=unityyamlmerge eol=lf
-
 LightingData.asset filter=lfs diff=lfs merge=lfs -text
 ## git-lfs ##
-
 #Image
 *.jpg filter=lfs diff=lfs merge=lfs -text
 *.jpeg filter=lfs diff=lfs merge=lfs -text
@@ -24,3 +20,20 @@ LightingData.asset filter=lfs diff=lfs merge=lfs -text
 *.gif filter=lfs diff=lfs merge=lfs -text
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.ai filter=lfs diff=lfs merge=lfs -text
+Capstone_mProject.sln filter=lfs diff=lfs merge=lfs -text
+NavMeshComponents.csproj filter=lfs diff=lfs merge=lfs -text
+NavMeshComponentsEditor.csproj filter=lfs diff=lfs merge=lfs -text
+ProjectSettings filter=lfs diff=lfs merge=lfs -text
+Unity.Postprocessing.Editor.csproj filter=lfs diff=lfs merge=lfs -text
+Unity.Toonshader.Editor.csproj filter=lfs diff=lfs merge=lfs -text
+UserSettings filter=lfs diff=lfs merge=lfs -text
+Assembly-CSharp.csproj filter=lfs diff=lfs merge=lfs -text
+Packages filter=lfs diff=lfs merge=lfs -text
+Logs filter=lfs diff=lfs merge=lfs -text
+Assembly-CSharp-Editor.csproj filter=lfs diff=lfs merge=lfs -text
+Assets filter=lfs diff=lfs merge=lfs -text
+Library filter=lfs diff=lfs merge=lfs -text
+Temp filter=lfs diff=lfs merge=lfs -text
+Unity.Postprocessing.Runtime.csproj filter=lfs diff=lfs merge=lfs -text
+Unity.Toonshader.csproj filter=lfs diff=lfs merge=lfs -text
+obj filter=lfs diff=lfs merge=lfs -text

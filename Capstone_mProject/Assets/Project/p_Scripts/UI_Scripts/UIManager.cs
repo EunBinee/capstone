@@ -86,7 +86,7 @@ public class UIManager : MonoBehaviour
         Cursor.visible = true;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         gameIsPaused = true;
-        if (!useTimeScale)
+        if (useTimeScale)
             Time.timeScale = 0f;
 
     }

@@ -981,18 +981,18 @@ public class MonsterPattern_Monster01 : MonsterPattern
         Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
     }
 
-    //로밍 범위 체크
-    private void CheckRoam_Range()
-    {
-        //사각형 왼쪽 가장 위
-        roam_vertex01 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
-        //사각형 왼쪽 가장 아래
-        roam_vertex02 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
-        //사각형 오른쪽 가장 아래
-        roam_vertex03 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
-        //사각형 오른쪽 가장 위
-        roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
-    }
+    ////로밍 범위 체크
+    //private void CheckRoam_Range()
+    //{
+    //    //사각형 왼쪽 가장 위
+    //    roam_vertex01 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
+    //    //사각형 왼쪽 가장 아래
+    //    roam_vertex02 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
+    //    //사각형 오른쪽 가장 아래
+    //    roam_vertex03 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
+    //    //사각형 오른쪽 가장 위
+    //    roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
+    //}
 
     public override void StopMonster()
     {

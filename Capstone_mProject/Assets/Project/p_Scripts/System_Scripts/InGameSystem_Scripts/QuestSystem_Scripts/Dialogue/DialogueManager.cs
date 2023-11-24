@@ -67,6 +67,7 @@ public class DialogueManager : MonoBehaviour
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
         isDialogue = true;
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         go_DialogueBar.SetActive(true); //텍스트 UI 활성화
@@ -336,8 +337,10 @@ public class DialogueManager : MonoBehaviour
 
         //yield return new WaitForSecondsRealtime(0.3f);
         player_InteractingFalse();
-        isDialogue = false;
 
+
+        isDialogue = false;
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
     }
 
     //퀘스트 디테일에서 퀘스트 제목 ui 활성화
@@ -395,6 +398,7 @@ public class DialogueManager : MonoBehaviour
 
 
     //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
+
     public void player_InteractingTrue()
     {
         UIManager.Instance.Pause(false);

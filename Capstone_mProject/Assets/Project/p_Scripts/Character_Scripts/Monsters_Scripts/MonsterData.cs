@@ -32,9 +32,9 @@ public class MonsterData
     public float overlapRadius;
 
     [Header("몬스터 로밍 범위 (x , z)")]
-    [Range(5f, 30f), Tooltip("몬스터 로밍 범위 x (가로)")]
+    [Range(5f, 50f), Tooltip("몬스터 로밍 범위 x (가로)")]
     public int roaming_RangeX;
-    [Range(5f, 30f), Tooltip("몬스터 로밍 범위 z (세로)")]
+    [Range(5f, 50f), Tooltip("몬스터 로밍 범위 z (세로)")]
     public int roaming_RangeZ;
 
     [Space]
