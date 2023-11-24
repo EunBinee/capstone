@@ -11,7 +11,7 @@ public class MonsterPattern : MonoBehaviour
     protected Monster m_monster;
     protected Animator m_animator;
 
-    protected Rigidbody rigid;
+    public Rigidbody rigid;
     protected Vector3 originPosition; //원래 캐릭터 position
 
     protected int playerLayerId = 3;
