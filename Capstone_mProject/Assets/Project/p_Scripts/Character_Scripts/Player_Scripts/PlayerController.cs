@@ -51,11 +51,9 @@ public class PlayerController : MonoBehaviour
     public NavMeshSurface navMeshSurface;
 
     private bool isGettingHit = false;
-
     public Action OnHitPlayerEffect = null;
 
     public PlayerState curPlayerState;
-
 
     private Monster curEnemy; //*현재 플레이어를 공격한 몬스터
 
@@ -64,8 +62,8 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
-    public CinemachineVirtualCamera playerFollowCamera;
-    public CinemachineVirtualCamera onAimCamera;
+    //public CinemachineVirtualCamera playerFollowCamera;
+    //public CinemachineVirtualCamera onAimCamera;
 
     void Awake()
     {
@@ -78,8 +76,8 @@ public class PlayerController : MonoBehaviour
 
         P_Value.HP = P_Value.MaxHP;
 
-        playerFollowCamera.enabled = true;
-        onAimCamera.enabled = false;
+        //playerFollowCamera.enabled = true;
+        //onAimCamera.enabled = false;
     }
     // Update is called once per frame
     void Update()
@@ -139,6 +137,17 @@ public class PlayerController : MonoBehaviour
         //stop = GameManager.Instance.dialogueManager.isDialogue;
         //P_States.isStop = stop;
         //Debug.Log(P_States.isStop);
+    }
+
+    public void anim_baseOn()
+    {
+        P_Com.animator.SetLayerWeight(1, 0f);
+        P_Com.animator.SetLayerWeight(2, 0f);
+    }
+    public void anim_baseOff()
+    {
+        P_Com.animator.SetLayerWeight(1, 0.9f);
+        P_Com.animator.SetLayerWeight(2, 0.85f);
     }
 
     public void CheckHitTime()
@@ -233,15 +242,15 @@ public class PlayerController : MonoBehaviour
     {
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         Debug.Log("AimOnCamera()");
-        playerFollowCamera.enabled = false;
-        onAimCamera.enabled = true;
+        //playerFollowCamera.enabled = false;
+        //onAimCamera.enabled = true;
     }
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
         Debug.Log("CameraReturn()");
-        onAimCamera.enabled = false;
-        playerFollowCamera.enabled = true;
+        //onAimCamera.enabled = false;
+        //playerFollowCamera.enabled = true;
     }
 
     private void Update_Physics()
