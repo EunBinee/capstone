@@ -131,22 +131,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator BossAbyss_Skill01()
     {
         yield return new WaitForSeconds(2f);
-        //플레이어의 위치를 찾는다.
-        //점프
-        // 내려올 장소에 빨간 공간
-        // 그리고 내려오고, 쿵하는 연기 이펙트 와 
-        // 빨간 장막
-        float time = 0f;
-        float speed = 3;
-        float duration = 2;
 
-        // rigid.velocity = Vector3.zero;
+        float time = 0f;
+        float speed = 0;
         Vector3 originPos = transform.position;
         //* 점프 --------------------------------------------------------------------//
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 0);
         yield return new WaitForSeconds(1f);
         // 점프전 잠깐 밑으로 내려감.
-        speed = 30;
+        speed = 30f;
         while (time < 0.1)
         {
             time += Time.deltaTime;
@@ -154,7 +147,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             yield return null;
         }
-        //! 연기이펙트
+
+        //? 연기이펙트-----------------------------------------------------------------------//
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
+        Vector3 effectPos = originPos;
+        effectPos.y += 3;
+        effect.transform.position = effectPos;
+        //------------------------------------------------------------------------------------//
         //점프
         time = 0;
         speed = 30;
@@ -173,7 +172,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         yield return new WaitForSeconds(2f);
 
-        speed = 40;
+        speed = 40f;
         time = 0;
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
         yield return new WaitForSeconds(1.2f);
@@ -187,14 +186,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             yield return null;
         }
-
-
-
-
-
-
-
-
+        //? 연기이펙트-----------------------------------------------------------------------//
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect");
+        effect.transform.position = transform.position;
+        //------------------------------------------------------------------------------------//
 
         yield return null;
     }
