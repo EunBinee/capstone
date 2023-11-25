@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isAim)
         {
-            P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
+            //P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
             // 마우스로 플레이어 회전
             verticalRotation -= P_Input.mouseY;
             verticalRotation = Mathf.Clamp(verticalRotation, -P_CamController.up_down_LookAngle, P_CamController.up_down_LookAngle); // 상하 각도 제한

@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
+    private CameraController P_CamController;
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     private float _capsuleRadiusDiff;
@@ -62,6 +63,8 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
+    private Vector3 originCamPos;
+
     //public CinemachineVirtualCamera playerFollowCamera;
     //public CinemachineVirtualCamera onAimCamera;
 
@@ -69,6 +72,7 @@ public class PlayerController : MonoBehaviour
     {
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
+        P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
         InitPlayer();
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -214,6 +218,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.value = P_Value.HP / P_Value.MaxHP;
     }
 
+    //* skill
     // UI 버튼에 의해 호출됩니다.
     // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
     // damage 정보 만큼 피해를 입힙니다.
@@ -224,6 +229,7 @@ public class PlayerController : MonoBehaviour
             P_States.isAim = true;
             //P_Com.animator.Play(skill.animationName,1);
             P_Com.animator.SetBool("isAim", true);
+            AimOnCamera();
         }
         else if (skill.isTwice && P_States.isAim)
         {
@@ -231,6 +237,7 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.SetBool("isAim", false);
             P_States.isAim = false;
             skill.isFirsttime = true;
+            AimOnCameraReturn();
         }
         else if (!skill.isTwice)
         {
@@ -238,10 +245,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //* camera controll
     public void AimOnCamera()
     {
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         Debug.Log("AimOnCamera()");
+        originCamPos = P_CamController.cameraTrans.localPosition;
+        P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
         //playerFollowCamera.enabled = false;
         //onAimCamera.enabled = true;
     }
@@ -249,10 +259,12 @@ public class PlayerController : MonoBehaviour
     {
         //todo: 카메라 원래대로
         Debug.Log("CameraReturn()");
+        P_CamController.cameraTrans.localPosition = originCamPos;
         //onAimCamera.enabled = false;
         //playerFollowCamera.enabled = true;
     }
 
+    //* 물리(중력)
     private void Update_Physics()
     {
         if (P_States.isGround && !P_States.isJumping)
@@ -272,6 +284,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    //* 전방체크
     void CheckedForward()
     {
         //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
@@ -293,7 +306,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
-
+    //*바닥 체크
     public void CheckedGround()
     {
         //캐릭터와 지면사이의 높이
@@ -320,7 +333,7 @@ public class PlayerController : MonoBehaviour
         //경사면의 회전축벡터 => 플레이어가 경사면을 따라 움직일수있도록 월드 이동 벡터를 회전
     }
 
-
+    //* 데미지 받는 코루틴 실행
     public void GetHit(Monster enemy)
     {
 
@@ -373,6 +386,7 @@ public class PlayerController : MonoBehaviour
         //죽다.
         P_Value.HP = 0;
         AnimState(PlayerState.Death);
+        Time.timeScale = 0f;
     }
 
     IEnumerator GetHit_KnockBack_co() //넉백만을 수행
