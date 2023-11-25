@@ -65,6 +65,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 originCamPos;
 
+    public GameObject bow;
+    public GameObject sword;
+
     //public CinemachineVirtualCamera playerFollowCamera;
     //public CinemachineVirtualCamera onAimCamera;
 
@@ -80,6 +83,8 @@ public class PlayerController : MonoBehaviour
 
         P_Value.HP = P_Value.MaxHP;
 
+        bow.SetActive(false);
+        sword.SetActive(true);
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
     }
@@ -103,6 +108,7 @@ public class PlayerController : MonoBehaviour
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
+            //Debug.Log("전방 지면 체크");
             CheckedForward();
             CheckedGround();
             CheckHitTime();
@@ -145,17 +151,6 @@ public class PlayerController : MonoBehaviour
         //stop = GameManager.Instance.dialogueManager.isDialogue;
         //P_States.isStop = stop;
         //Debug.Log(P_States.isStop);
-    }
-
-    public void anim_baseOn()
-    {
-        P_Com.animator.SetLayerWeight(1, 0f);
-        P_Com.animator.SetLayerWeight(2, 0f);
-    }
-    public void anim_baseOff()
-    {
-        P_Com.animator.SetLayerWeight(1, 0.9f);
-        P_Com.animator.SetLayerWeight(2, 0.85f);
     }
 
     public void CheckHitTime()
@@ -234,6 +229,8 @@ public class PlayerController : MonoBehaviour
             //P_Com.animator.Play(skill.animationName,1);
             P_Com.animator.SetBool("isAim", true);
             AimOnCamera();
+            bow.SetActive(true);
+            sword.SetActive(false);
         }
         else if (skill.isTwice && P_States.isAim)
         {
@@ -242,6 +239,8 @@ public class PlayerController : MonoBehaviour
             P_States.isAim = false;
             skill.isFirsttime = true;
             AimOnCameraReturn();
+            bow.SetActive(false);
+            sword.SetActive(true);
         }
         else if (!skill.isTwice)
         {
@@ -255,7 +254,7 @@ public class PlayerController : MonoBehaviour
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         Debug.Log("AimOnCamera()");
         originCamPos = P_CamController.cameraTrans.localPosition;
-        P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
+        P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -1.7f);
         //playerFollowCamera.enabled = false;
         //onAimCamera.enabled = true;
     }
@@ -264,6 +263,7 @@ public class PlayerController : MonoBehaviour
         //todo: 카메라 원래대로
         Debug.Log("CameraReturn()");
         P_CamController.cameraTrans.localPosition = originCamPos;
+        P_CamController.cameraTrans.Rotate(new Vector3(6, 0, 0));
         //onAimCamera.enabled = false;
         //playerFollowCamera.enabled = true;
     }
@@ -289,25 +289,33 @@ public class PlayerController : MonoBehaviour
     }
 
     //* 전방체크
-    void CheckedForward()
+    public void CheckedForward()
     {
+        //Debug.Log("CheckedForward()");
         //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
         // 함수 파라미터 : Capsule의 시작점, Capsule의 끝점,
         // Capsule의 크기(x, z 중 가장 큰 값이 크기가 됨), Ray의 방향,
         // RaycastHit 결과, Capsule의 회전값, CapsuleCast를 진행할 거리
+        /*bool cast = Physics.SphereCast(transform.position, 5f, transform.forward,
+        out var hit, Mathf.Infinity, 0);*/
+
         bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
         _castRadius, P_Value.moveDirection + Vector3.down * 0.25f,
         out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
+
+        //Debug.Log("cast : " + cast);
         // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
         P_Value.hitDistance = hit.distance;
         P_States.isForwardBlocked = false;
         if (cast)
         {
+            P_States.isForwardBlocked = true;
+            //Debug.Log("if (cast)");
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            //if (P_States.isForwardBlocked)
-            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
-            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
+            if (P_States.isForwardBlocked)
+                Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
     //*바닥 체크

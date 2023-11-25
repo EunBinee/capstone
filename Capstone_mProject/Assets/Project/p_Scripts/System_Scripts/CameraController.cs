@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     public float attention_Z = -6.5f;
     public float longAttention_Z = -7.5f;
 
-    //public Vector3 aimCam;
+    public float aimSmootly = 0.55f;
 
     bool isNormal_Z = false;
     bool isAttention_Z = false;
@@ -48,11 +48,14 @@ public class CameraController : MonoBehaviour
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
-        //aimCam = new Vector3(0.1f, -0.3f, -1f);
     }
 
     private void Update()
     {
+        if (playerController._currentState.isAim)
+        {
+            return;
+        }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -99,19 +102,6 @@ public class CameraController : MonoBehaviour
                 UndoAttention();
             }
         }
-        // if (playerController._currentState.isAim)
-        // {
-        //     cameraTrans.localPosition = aimCam;
-        // }
-        // else if (!playerController._currentState.isAim)
-        // {
-        //     Vector3 playerCam = playerCamera.transform.rotation.eulerAngles;
-        //     left_right_LookAngle = playerCam.y;
-        //     up_down_LookAngle = playerCam.x;
-
-        //     isBeingAttention = false;
-        //     curTargetMonster = null;
-        // }
     }
 
     public void UndoAttention()
@@ -159,7 +149,9 @@ public class CameraController : MonoBehaviour
     {
         //플레이어를 따라다니는 카메라
         //ref는 call by reference를 하겠다는 것.
-        Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
+        //Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
+        Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position,
+            (playerController._currentState.isAim) ? aimSmootly : 0.125f);
         playerCamera.transform.position = cameraPos;
     }
 
