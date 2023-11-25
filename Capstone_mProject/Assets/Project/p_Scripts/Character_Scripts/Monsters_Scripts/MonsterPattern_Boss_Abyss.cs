@@ -130,11 +130,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 스킬 01 내려찍기
     IEnumerator BossAbyss_Skill01()
     {
-        yield return new WaitForSeconds(2f);
+        Vector3 originPos = transform.position;
+
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("HeartOfBattle_01");
+        effect.transform.position = originPos;
+
+        yield return new WaitForSeconds(1f);
 
         float time = 0f;
         float speed = 0;
-        Vector3 originPos = transform.position;
+
         //* 점프 --------------------------------------------------------------------//
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 0);
         yield return new WaitForSeconds(1f);
@@ -149,7 +154,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         //? 연기이펙트-----------------------------------------------------------------------//
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
         Vector3 effectPos = originPos;
         effectPos.y += 3;
         effect.transform.position = effectPos;
@@ -175,11 +180,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         speed = 40f;
         time = 0;
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1.5f);
         while (time < 5f)
         {
             time += Time.deltaTime;
-            speed = Mathf.Lerp(30, 70, Time.time);
+            speed = Mathf.Lerp(50, 90, Time.time);
             transform.Translate(-Vector3.up * speed * Time.deltaTime);
 
             if (transform.position.y <= originPos.y)
@@ -190,6 +195,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect");
         effect.transform.position = transform.position;
         //------------------------------------------------------------------------------------//
+
+
+
+
+
 
         yield return null;
     }
