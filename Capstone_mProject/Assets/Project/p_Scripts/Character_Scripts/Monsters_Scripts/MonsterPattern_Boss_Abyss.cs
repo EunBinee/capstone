@@ -220,6 +220,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         //* 스킬01 내려찍기 중, 플레이어를 쫒아다니는 이펙트 
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
+        EffectController effectController = effect.gameObject.GetComponent<EffectController>();
+        effectController.ChangeSize();
         effect.transform.position = playerTrans.position;
         float time = 0;
         while (time < duration)
@@ -233,6 +235,31 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.StopEffect();
     }
     // *---------------------------------------------------------------------------------------------------------//
-    //* 스킬 02 
+    //* 스킬 02  폭탄 떨구기
+    //페이즈 1과 2 나누기
+
+    private void Skill02()
+    {
+        switch (curBossPhase)
+        {
+            case BossMonsterPhase.Phase1:
+                break;
+            case BossMonsterPhase.Phase2:
+            case BossMonsterPhase.Phase3:
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    IEnumerator BossAbyss_Skill02()
+    {
+
+        yield return null;
+    }
+
+
+
     // *---------------------------------------------------------------------------------------------------------//
 }
