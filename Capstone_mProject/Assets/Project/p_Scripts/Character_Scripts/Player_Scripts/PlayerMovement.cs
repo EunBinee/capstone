@@ -90,69 +90,45 @@ public class PlayerMovement : MonoBehaviour
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
             P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
             UpdateRotate();
-            //if (!P_States.isAim)    //* 조준 X
+            if (Input.GetKey(KeyCode.W))
             {
-                if (Input.GetKey(KeyCode.W))
-                {
-                    P_Input.verticalMovement = 1;
-                }
-                else if (Input.GetKey(KeyCode.S))
-                {
-                    P_Input.verticalMovement = -1;
-                }
-                else
-                {
-                    P_Input.verticalMovement = 0;
-                }
-                if (Input.GetKey(KeyCode.D))
-                {
-                    P_Input.horizontalMovement = 1;
-                }
-                else if (Input.GetKey(KeyCode.A))
-                {
-                    P_Input.horizontalMovement = -1;
-                }
-                else
-                {
-                    P_Input.horizontalMovement = 0;
-                }
+                P_Input.verticalMovement = 1;
             }
-            // else    //* 조준 O
-            // {
-            //     //this.transform.rotation = new Quaternion(0, 90, 0, 0);
-            //     if (Input.GetKey(KeyCode.W))    //앞 -> 왼
-            //     {
-            //         P_Input.horizontalMovement = -1;
-            //     }
-            //     else if (Input.GetKey(KeyCode.S))   //뒤 -> 오
-            //     {
-            //         P_Input.horizontalMovement = 1;
-            //     }
-            //     else
-            //     {
-            //         P_Input.horizontalMovement = 0;
-            //     }
-            //     if (Input.GetKey(KeyCode.D))    //오 -> 앞
-            //     {
-            //         P_Input.verticalMovement = 1;
-            //     }
-            //     else if (Input.GetKey(KeyCode.A))   //왼 -> 뒤
-            //     {
-            //         P_Input.verticalMovement = -1;
-            //     }
-            //     else
-            //     {
-            //         P_Input.verticalMovement = 0;
-            //     }
-            // }
-            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isStartComboAttack
+            else if (Input.GetKey(KeyCode.S))
+            {
+                P_Input.verticalMovement = -1;
+            }
+            else
+            {
+                P_Input.verticalMovement = 0;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                P_Input.horizontalMovement = 1;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                P_Input.horizontalMovement = -1;
+            }
+            else
+            {
+                P_Input.horizontalMovement = 0;
+            }
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && (!P_States.isStartComboAttack || P_States.isAim)
                 && !EventSystem.current.IsPointerOverGameObject())
             {
-                //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
-                P_States.isStartComboAttack = true;
-                //SetLayerWeight(int layerIndex, float weight);
-                P_Controller.anim_baseOn();
-                StartCoroutine(Attacking());
+                if (P_States.isAim)    //* 조준 모드라면
+                {
+                    //transform.Rotate(Vector3.up, 90f);
+                }
+                else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
+                {
+                    //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
+                    P_States.isStartComboAttack = true;
+                    //SetLayerWeight(int layerIndex, float weight);
+                    P_Controller.anim_baseOn();
+                    StartCoroutine(Attacking());
+                }
             }
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -188,7 +164,7 @@ public class PlayerMovement : MonoBehaviour
             verticalRotation -= P_Input.mouseY;
             verticalRotation = Mathf.Clamp(verticalRotation, -P_CamController.up_down_LookAngle, P_CamController.up_down_LookAngle); // 상하 각도 제한
 
-            transform.Rotate(Vector3.up * P_Input.mouseX);
+            transform.Rotate(Vector3.up * P_Input.mouseX * 2);
             // 카메라의 X축 회전 및 플레이어와 일치시킴
             Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
             transform.localRotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
@@ -342,26 +318,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        // else if (P_States.isAim)
-        // {
-        //     Debug.Log("PlayerRotation() - P_States.isAim");
-        //     Vector3 targetDirect = Vector3.zero;
-        //     targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-        //     targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-        //     targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
-        //     targetDirect.y = 0;
-        //     if (targetDirect == Vector3.zero)
-        //     {
-        //         //vector3.zero는 0,0,0 이다.
-        //         //방향 전환이 없기에 캐릭터의 방향은 고냥 원래 방향.
-        //         targetDirect = transform.forward;
-        //     }
-        //     Quaternion turnRot = Quaternion.LookRotation(targetDirect);
-        //     Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
-        //     targetRot.y = 0;
-        //     transform.rotation = targetRot;
-        //     transform.Rotate(Vector3.up, -90);
-        // }
         else if (P_States.isStrafing || P_States.isAim)
         {
             Vector3 rotationDirection = P_Value.moveDirection;
@@ -386,8 +342,16 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-                targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
+                if (P_States.isAim)
+                {
+                    targetDirect = this.transform.forward * P_Input.verticalMovement;
+                    targetDirect = targetDirect + this.transform.right * P_Input.horizontalMovement;
+                }
+                else
+                {
+                    targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+                    targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
+                }
             }
             targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
             targetDirect.y = 0;
@@ -546,6 +510,11 @@ public class PlayerMovement : MonoBehaviour
                     P_Com.animator.SetFloat("Vertical", snappedVertical / 2, 0.2f, Time.deltaTime);   //상
                     P_Com.animator.SetFloat("Horizontal", snappedHorizontal / 2, 0.2f, Time.deltaTime);               //하
                 }*/
+                if (P_States.isAim)
+                {
+                    P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);
+                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0.2f, Time.deltaTime);
+                }
                 if (P_States.isRunning)
                 {
                     //뛰기일 경우
@@ -574,6 +543,11 @@ public class PlayerMovement : MonoBehaviour
                     //다른 애니메이션도 쓰이게 된다. 
                     //그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
                 }*/
+                if (P_States.isAim)
+                {
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
+                }
                 if (P_States.isRunning)
                 {
                     //뛰기의 경우

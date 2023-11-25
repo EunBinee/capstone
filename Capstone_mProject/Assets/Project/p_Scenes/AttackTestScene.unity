@@ -174,6 +174,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 575549836565290064, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 581614760091153512, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: skill_E
       value: 
@@ -250,6 +254,10 @@ PrefabInstance:
       propertyPath: m_RotationOffset.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 6921255788484085591, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7518830175126920985, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RotationOffset.x
       value: -57.79347
@@ -319,9 +327,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: bow
+      value: 
+      objectReference: {fileID: 265032927}
+    - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: hitUI
       value: 
       objectReference: {fileID: 2139447438}
+    - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: sword
+      value: 
+      objectReference: {fileID: 1952607938}
     - target: {fileID: 8697790301199432522, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: hitNum
       value: 
@@ -377,7 +393,7 @@ PrefabInstance:
     - target: {fileID: 8697790301199432525, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 4bc0c9df9c7a05949830d13711e53ec5, type: 2}
+      objectReference: {fileID: 9100000, guid: b81955c4e82d4254b97a0d93bb1f8929, type: 2}
     - target: {fileID: 8697790301199432527, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_Material
       value: 
@@ -421,6 +437,10 @@ PrefabInstance:
     - target: {fileID: 9063445350690244665, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RotationOffset.z
       value: -89.40444
+      objectReference: {fileID: 0}
+    - target: {fileID: 9212393606244565414, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
@@ -692,6 +712,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &265032927 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6921255788484085591, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+  m_PrefabInstance: {fileID: 19266462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &372950725
 GameObject:
   m_ObjectHideFlags: 0
@@ -1925,7 +1950,6 @@ MonoBehaviour:
   normal_Z: -5
   attention_Z: -6.5
   longAttention_Z: -7.5
-  aimCam: {x: 0, y: 0, z: 0}
 --- !u!1 &1424189437
 GameObject:
   m_ObjectHideFlags: 0
@@ -2147,6 +2171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62f79023d71530c4fa43c387b892d94b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
   playerTargetPos: {fileID: 0}
   playerHide: 0
   noAttack: 0
@@ -2537,6 +2562,11 @@ MeshFilter:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3140816988919453937, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
   m_PrefabInstance: {fileID: 8809667006379700875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1952607938 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6921067678979144487, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
+  m_PrefabInstance: {fileID: 19266462}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2047525829
 GameObject:
@@ -5885,6 +5915,8 @@ MonoBehaviour:
   hitNum: {fileID: 0}
   hitUI: {fileID: 0}
   HPgauge: {fileID: 0}
+  bow: {fileID: 0}
+  sword: {fileID: 0}
 --- !u!4 &7186952021142837933
 Transform:
   m_ObjectHideFlags: 0
@@ -6605,6 +6637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9716bf964484384bb5c2623103dbff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
   playerTargetPos: {fileID: 1079243538}
   playerHide: 0
   noAttack: 0

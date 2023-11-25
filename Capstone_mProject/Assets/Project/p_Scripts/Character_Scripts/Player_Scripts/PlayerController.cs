@@ -65,6 +65,9 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 originCamPos;
 
+    public GameObject bow;
+    public GameObject sword;
+
     //public CinemachineVirtualCamera playerFollowCamera;
     //public CinemachineVirtualCamera onAimCamera;
 
@@ -231,6 +234,8 @@ public class PlayerController : MonoBehaviour
             //P_Com.animator.Play(skill.animationName,1);
             P_Com.animator.SetBool("isAim", true);
             AimOnCamera();
+            bow.SetActive(true);
+            sword.SetActive(false);
         }
         else if (skill.isTwice && P_States.isAim)
         {
@@ -239,6 +244,8 @@ public class PlayerController : MonoBehaviour
             P_States.isAim = false;
             skill.isFirsttime = true;
             AimOnCameraReturn();
+            bow.SetActive(false);
+            sword.SetActive(true);
         }
         else if (!skill.isTwice)
         {
@@ -252,7 +259,7 @@ public class PlayerController : MonoBehaviour
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         Debug.Log("AimOnCamera()");
         originCamPos = P_CamController.cameraTrans.localPosition;
-        P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
+        P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.7f);
         //playerFollowCamera.enabled = false;
         //onAimCamera.enabled = true;
     }
