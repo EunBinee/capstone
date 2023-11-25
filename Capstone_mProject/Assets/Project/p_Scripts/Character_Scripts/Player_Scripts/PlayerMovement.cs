@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private CameraController P_CamController;
 
     public SkillButton skill_E;
-    private string E_Name = "Player_Skill_E";
+    private string E_Name = "Bow_Attack";
     public SkillButton skill_Q;
 
     public float comboClickTime = 0.5f;
@@ -44,18 +44,6 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (P_States.isStartComboAttack && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
-        {
-            P_Value.index = 1;
-            P_Value.time = 0;
-            P_Value.isCombo = false;
-            P_States.isStartComboAttack = false;
-            P_Com.animator.SetInteger("comboCount", P_Value.index);
-            P_Com.animator.SetBool("p_Locomotion", true);
-            //P_Com.animator.Play("locomotion");
-            P_Com.animator.Rebind();
-        }
-
         //캐릭터의 애니메이션 변경을 수행하는 함수
         if (!UIManager.gameIsPaused)
         {
@@ -72,6 +60,18 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
+            && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
+        {
+            P_Value.index = 1;
+            P_Value.time = 0;
+            P_Value.isCombo = false;
+            P_States.isStartComboAttack = false;
+            P_Com.animator.SetInteger("comboCount", P_Value.index);
+            P_Com.animator.SetBool("p_Locomotion", true);
+            //P_Com.animator.Play("locomotion");
+            P_Com.animator.Rebind();
+        }
         P_Controller.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
         {
@@ -114,19 +114,23 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isGround && (!P_States.isStartComboAttack || P_States.isAim)
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isDodgeing
                 && !EventSystem.current.IsPointerOverGameObject())
             {
                 if (P_States.isAim)    //* 조준 모드라면
                 {
-                    //transform.Rotate(Vector3.up, 90f);
+                    P_Com.animator.SetTrigger("shoot");
+                    if (P_States.isSkill)
+                    {
+                        return;
+                    }
+                    skillMotion('E');
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
                     //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                     P_States.isStartComboAttack = true;
                     //SetLayerWeight(int layerIndex, float weight);
-                    P_Controller.anim_baseOn();
                     StartCoroutine(Attacking());
                 }
             }
@@ -186,10 +190,23 @@ public class PlayerMovement : MonoBehaviour
             case 'E':
                 if (skill_E.imgCool.fillAmount == 0)
                 {
-                    /*skillDir = this.gameObject.transform.forward.normalized;
-                    skillPos = transform.position + skillDir * 30f;
-                    transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);*/
-                    P_Controller.playAttackEffect(E_Name);
+                    //* 이펙트
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(E_Name);
+                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                    //* 이펙트 회전
+                    Quaternion effectRotation = this.gameObject.transform.rotation;
+                    //effectRotation.y = 90;
+                    //effect.gameObject.transform.rotation = effectRotation;
+
+                    Vector3 effectR = effect.gameObject.transform.position.normalized;
+                    Vector3 thisR = this.gameObject.transform.position.normalized;
+                    float dotEffectThis = Vector3.Dot(effectR, thisR);
+                    float EffectThisLen = Vector3.Magnitude(effectR) * Vector3.Magnitude(thisR);
+                    float res = Mathf.Acos(dotEffectThis / EffectThisLen);
+
+                    effect.gameObject.transform.Rotate(Vector3.one * res);
+
+                    //P_Controller.playAttackEffect(E_Name);
                 }
                 //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
                 skill_E.OnClicked();
@@ -258,7 +275,6 @@ public class PlayerMovement : MonoBehaviour
         {
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
-            P_Controller.anim_baseOn();
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             P_Com.animator.Play("jump 0");
             P_Com.animator.SetBool("isJump_Up", true);
@@ -286,7 +302,6 @@ public class PlayerMovement : MonoBehaviour
         else if (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("dodge") && P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0)
         {
             P_States.isDodgeing = true;
-            P_Controller.anim_baseOn();
         }
         P_States.previousDodgeKeyPress = P_States.currentDodgeKeyPress;
     }
@@ -375,7 +390,6 @@ public class PlayerMovement : MonoBehaviour
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
         {
-            P_Controller.anim_baseOn();
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }
@@ -389,7 +403,6 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
-            P_Controller.anim_baseOn();
             Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
         }
@@ -398,7 +411,6 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-            P_Controller.anim_baseOn();
 
             Invoke("dodgeOut", 0.15f);    //대시 유지 시간
 
@@ -483,7 +495,6 @@ public class PlayerMovement : MonoBehaviour
         #endregion
         if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
-            P_Controller.anim_baseOn();
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
             P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
             return;
@@ -564,8 +575,6 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
-
-        P_Controller.anim_baseOff();
     }
 
     IEnumerator Attacking() //클릭해서 들어오면
@@ -664,6 +673,7 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log(P_Value.index);
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
+            P_Controller.CheckedForward();
             if (P_Value.nowEnemy != null && !P_States.isForwardBlocked) //앞이 막혀있지 않고 적이 있다면
             {
                 dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
@@ -737,7 +747,6 @@ public class PlayerMovement : MonoBehaviour
                         P_Value.index++;
                         P_Value.isCombo = true;
                         P_States.hadAttack = false;
-                        P_Controller.anim_baseOn();
                     }
                     break;
                 }
@@ -746,9 +755,6 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Com.animator.SetInteger("comboCount", P_Value.index);
                 P_Com.animator.SetBool("p_Locomotion", true);
-
-                P_Com.animator.SetLayerWeight(1, 0.9f);
-                P_Com.animator.SetLayerWeight(2, 0.85f);
                 break;
             }
 
@@ -756,7 +762,4 @@ public class PlayerMovement : MonoBehaviour
 
         P_States.isStartComboAttack = false;
     }
-
-
-
 }
