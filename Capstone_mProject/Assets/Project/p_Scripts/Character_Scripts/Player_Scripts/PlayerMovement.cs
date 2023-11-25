@@ -222,6 +222,7 @@ public class PlayerMovement : MonoBehaviour
             case 'Q':
                 if (skill_Q.imgCool.fillAmount == 0)
                 {
+                    Debug.Log("스킬Q");
                     //Time.timeScale = 0.1f;
                     //P_Value.gravity = P_COption.gravity;
                     //skillDir = this.gameObject.transform.up.normalized;
@@ -411,7 +412,8 @@ public class PlayerMovement : MonoBehaviour
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
         {
-            P_Controller.anim_baseOn();
+
+            Debug.Log("Hi");
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }
@@ -422,6 +424,35 @@ public class PlayerMovement : MonoBehaviour
 
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
+        if (P_States.isJumping)
+        {
+            //Time.timeScale = 0.1f;
+            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
+            P_Com.rigidbody.velocity = p_velocity;
+        }
+        else if (P_States.isDodgeing)
+        {
+            P_Com.animator.Play("dodge", 0);
+            P_Value.moveDirection.y = 0;
+            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
+
+            Invoke("dodgeOut", 0.15f);    //대시 유지 시간
+
+        }
+        else if (P_States.isSprinting || P_States.isRunning)
+        {
+            //Time.timeScale = 1f;
+            P_Value.moveDirection.y = 0;
+            if (P_States.isSprinting)    //전력질주
+                P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
+            else if (P_States.isRunning) //뛸때
+                P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
+
+            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            P_Com.rigidbody.velocity = p_velocity;
+            return;
+        }
         if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
