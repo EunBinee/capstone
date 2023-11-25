@@ -130,6 +130,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 스킬 01 내려찍기
     IEnumerator BossAbyss_Skill01()
     {
+        yield return new WaitForSeconds(2f);
         Vector3 originPos = transform.position;
 
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("HeartOfBattle_01");
@@ -156,7 +157,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //? 연기이펙트-----------------------------------------------------------------------//
         effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
         Vector3 effectPos = originPos;
-        effectPos.y += 3;
+        effectPos.y += 2.5f;
         effect.transform.position = effectPos;
         //------------------------------------------------------------------------------------//
         //점프
@@ -175,38 +176,55 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
 
-        yield return new WaitForSeconds(2f);
+        //*-------------------------------------------------------------------------------//
+        //* 플레이어를 쫓아 다니는 이펙트 
+        float duration = 5f;
+        StartCoroutine(FollowPlayer_Effect_InSkill01(duration));
 
-        speed = 40f;
+        yield return new WaitForSeconds(duration);
+        Vector3 curPlayerPos = playerTrans.position;
+        transform.position = new Vector3(curPlayerPos.x, transform.position.y, curPlayerPos.z);
+
+        speed = 50f;
         time = 0;
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         while (time < 5f)
         {
             time += Time.deltaTime;
             speed = Mathf.Lerp(50, 90, Time.time);
             transform.Translate(-Vector3.up * speed * Time.deltaTime);
 
-            if (transform.position.y <= originPos.y)
+            if (transform.position.y <= curPlayerPos.y)
                 break;
             yield return null;
         }
+
+        CheckPlayerDamage(6f, 20);
         //? 연기이펙트-----------------------------------------------------------------------//
         effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect");
         effect.transform.position = transform.position;
+
+
         //------------------------------------------------------------------------------------//
-
-
-
-
-
-
         yield return null;
     }
 
+    IEnumerator FollowPlayer_Effect_InSkill01(float duration)
+    {
+        //* 스킬01 내려찍기 중, 플레이어를 쫒아다니는 이펙트 
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
+        effect.transform.position = playerTrans.position;
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
 
-
-
+            effect.transform.position = playerTrans.position;
+            yield return null;
+        }
+        yield return new WaitForSeconds(2f);
+        effect.StopEffect();
+    }
     // *---------------------------------------------------------------------------------------------------------//
-
 }

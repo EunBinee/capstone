@@ -2,15 +2,20 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HeartOfBattle_CenterCurve_01
   m_Shader: {fileID: 4800000, guid: 09a48c3e92464c2289e53652a9098cc7, type: 3}
-  m_ShaderKeywords: _CAMERADEPTHFADEENABLED_ON _FRESNELMASKENABLED_ON _MAINMASKCHANNELSADDORMULTIPLY_ON
-    _RAMPENABLED1_ON _SOFTPARTICLESENABLED_ON
+  m_ValidKeywords:
+  - _FRESNELMASKENABLED_ON
+  - _MAINMASKCHANNELSADDORMULTIPLY_ON
+  - _RAMPENABLED1_ON
+  m_InvalidKeywords:
+  - _CAMERADEPTHFADEENABLED_ON
+  - _SOFTPARTICLESENABLED_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Ramp:
-        m_Texture: {fileID: 2800000, guid: 6844a24f1b1b407e8deb3b0e4d3f41e5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 88d644ec43c64556a9bf187bc4f2f85a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SecondMask:
@@ -92,6 +97,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _CameraDepthFadeEnabled: 1
     - _CameraDepthFadeLength: 1
@@ -151,7 +157,8 @@ Material:
     - _SoftParticlesExp: 2
     - __dirty: 0
     m_Colors:
-    - _FinalColor: {r: 1, g: 0, b: 0, a: 1}
+    - _FinalColor: {r: 1, g: 0.4188679, b: 0.4188679, a: 1}
     - _MainMaskChannelsAdd: {r: 0, g: 0, b: 1, a: 1}
     - _MainMaskChannelsMultiply: {r: 1, g: 1, b: 0, a: 0}
-    - _RampColorTint: {r: 1, g: 0.5801887, b: 0.5801887, a: 1}
+    - _RampColorTint: {r: 1, g: 0.44716978, b: 0.44716978, a: 1}
+  m_BuildTextureStacks: []
