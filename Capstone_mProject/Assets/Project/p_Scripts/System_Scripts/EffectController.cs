@@ -10,7 +10,7 @@ public class EffectController : MonoBehaviour
     ParticleSystem[] particleSystemList;
     void Start()
     {
-        particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
+        //particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
 
         ChangeSize();
     }
@@ -23,6 +23,7 @@ public class EffectController : MonoBehaviour
 
     public void ChangeSize()
     {
+        particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
         for (int i = 0; i < particleSystemList.Length; i++)
         {
             if (particleSystemList[i].main.startSize3D)

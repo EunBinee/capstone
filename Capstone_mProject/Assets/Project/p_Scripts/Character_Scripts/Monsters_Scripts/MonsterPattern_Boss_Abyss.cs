@@ -126,7 +126,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
     //*----------------------------------------------------------------------------------------------------------//
-
     //* 스킬 01 내려찍기
     IEnumerator BossAbyss_Skill01()
     {
@@ -200,12 +199,19 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
 
-        CheckPlayerDamage(6f, 20);
+        CheckPlayerDamage(8f, 20);
         //? 연기이펙트-----------------------------------------------------------------------//
-        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect");
-        effect.transform.position = transform.position;
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
 
-
+        effect.finishAction = () =>
+        {
+            EffectController effectController = effect.gameObject.GetComponent<EffectController>();
+            effectController.size = 2;
+            effectController.ChangeSize();
+        };
         //------------------------------------------------------------------------------------//
         yield return null;
     }
@@ -226,5 +232,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return new WaitForSeconds(2f);
         effect.StopEffect();
     }
+    // *---------------------------------------------------------------------------------------------------------//
+    //* 스킬 02 
     // *---------------------------------------------------------------------------------------------------------//
 }
