@@ -32,6 +32,8 @@ public class CameraController : MonoBehaviour
     public float attention_Z = -6.5f;
     public float longAttention_Z = -7.5f;
 
+    //public Vector3 aimCam;
+
     bool isNormal_Z = false;
     bool isAttention_Z = false;
     bool isLongAttention_Z = false;
@@ -46,6 +48,7 @@ public class CameraController : MonoBehaviour
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        //aimCam = new Vector3(0.1f, -0.3f, -1f);
     }
 
     private void Update()
@@ -96,6 +99,19 @@ public class CameraController : MonoBehaviour
                 UndoAttention();
             }
         }
+        // if (playerController._currentState.isAim)
+        // {
+        //     cameraTrans.localPosition = aimCam;
+        // }
+        // else if (!playerController._currentState.isAim)
+        // {
+        //     Vector3 playerCam = playerCamera.transform.rotation.eulerAngles;
+        //     left_right_LookAngle = playerCam.y;
+        //     up_down_LookAngle = playerCam.x;
+
+        //     isBeingAttention = false;
+        //     curTargetMonster = null;
+        // }
     }
 
     public void UndoAttention()
@@ -114,12 +130,12 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraActions();
+
 
     }
     private void FixedUpdate()
     {
-
+        CameraActions();
     }
 
     void OnPreCull() => GL.Clear(true, true, Color.black);
@@ -128,7 +144,6 @@ public class CameraController : MonoBehaviour
     private void CameraActions()
     {
         CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-
         if (isBeingAttention)
         {
             TargetRotate();
@@ -329,6 +344,11 @@ public class CameraController : MonoBehaviour
         Vector3 pos = playerCamera.transform.rotation.eulerAngles;
         pos.z = 0;
 
+        playerCamera.transform.rotation = Quaternion.Euler(pos);
+    }
+    void FixCamXYZ()
+    {
+        Vector3 pos = playerCamera.transform.rotation.eulerAngles;
         playerCamera.transform.rotation = Quaternion.Euler(pos);
     }
     // 두 Quaternion 간의 각도 차이를 반환하는 함수
