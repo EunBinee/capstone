@@ -96,7 +96,12 @@ public class Monster : MonoBehaviour
                 else
                 {
                     //아직 살아있음.
-                    monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+                    if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+                    {
+
+                    }
+                    else
+                        monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
                 }
             }
         }
@@ -107,7 +112,12 @@ public class Monster : MonoBehaviour
     {
         //죽다.
         monsterData.HP = 0;
-        monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
+        if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+        {
+
+        }
+        else
+            monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
 

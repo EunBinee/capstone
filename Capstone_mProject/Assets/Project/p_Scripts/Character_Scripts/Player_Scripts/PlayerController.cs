@@ -62,6 +62,8 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
+
+
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();

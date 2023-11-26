@@ -10,7 +10,7 @@ public class Effect : MonoBehaviour
     //OnEnable() //풀링할거라서 
     private ParticleSystem mEffect;
     List<ParticleSystem> mEffect_ParticleList;
-    public event Action callBack = null;
+    public Action callBack = null;
     public Action finishAction; //이펙트가 끝났을때 필요한 것
     bool particleNull = false;
 
@@ -21,7 +21,6 @@ public class Effect : MonoBehaviour
     {
         isStop = false;
         mEffect = GetComponent<ParticleSystem>();
-        Debug.Log($"mEffect {mEffect}");
         if (mEffect == null)
         {
             particleNull = true;
@@ -101,25 +100,24 @@ public class Effect : MonoBehaviour
 
             if (!isAlive)
             {
-                this.gameObject.SetActive(false);
-                mEffect_ParticleList.Clear();
-
                 finishAction?.Invoke();
                 finishAction = null;
                 callBack?.Invoke();
                 isStop = true;
+
+                this.gameObject.SetActive(false);
+                mEffect_ParticleList.Clear();
             }
         }
         else if (particleNull == false && !isStop)
         {
             if (!mEffect.IsAlive())
             {
-                mEffect.gameObject.SetActive(false);
-
                 finishAction?.Invoke();
                 finishAction = null;
                 callBack?.Invoke();
                 isStop = true;
+                mEffect.gameObject.SetActive(false);
             }
         }
 

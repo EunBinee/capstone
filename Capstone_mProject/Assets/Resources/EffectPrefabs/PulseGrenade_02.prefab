@@ -14736,7 +14736,7 @@ GameObject:
   - component: {fileID: 3398798335827809447}
   - component: {fileID: 956417836119754518}
   m_Layer: 0
-  m_Name: PulseGrenade_01
+  m_Name: PulseGrenade_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14771,6 +14771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a42d2183fb9ffe4e843f353f1e4e6a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectLog: 1
 --- !u!114 &956417836119754518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14783,9 +14784,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da1adaae441422041ae3b21b8752748f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 0.2
-  curSize: 0
-  canChangeSize: 0
+  size: 1
 --- !u!1 &4493575836929147052
 GameObject:
   m_ObjectHideFlags: 0

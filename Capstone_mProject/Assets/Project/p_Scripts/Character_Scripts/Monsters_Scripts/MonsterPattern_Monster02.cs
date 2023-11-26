@@ -398,7 +398,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         yield return new WaitForSeconds(0.2f);
 
-        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius);
+        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10);
 
         if (playerGetDamage)
         {

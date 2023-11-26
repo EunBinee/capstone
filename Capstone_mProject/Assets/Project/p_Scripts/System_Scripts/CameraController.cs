@@ -208,6 +208,7 @@ public class CameraController : MonoBehaviour
 
     }
 
+
     private void ResetCameraZ()
     {
         if (resetCameraZ_co != null)
@@ -246,7 +247,16 @@ public class CameraController : MonoBehaviour
         Vector3 camPos = cameraTrans.localPosition;
         Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
 
-        if (distance > 10)
+        float normalDistance = 10;
+        float longAttention_Distance = 4;
+        if (GameManager.instance.bossBattle)
+        {
+            normalDistance = 20;
+            longAttention_Distance = 12;
+        }
+
+
+        if (distance > normalDistance)
         {
             //z 를 normal_Z(-5)로 변경
             if (camPos.z != normal_Z)
@@ -269,7 +279,7 @@ public class CameraController : MonoBehaviour
                 playerCameraPivot.transform.localPosition = camPivotPos;
             }
         }
-        else if (distance < 4)
+        else if (distance < longAttention_Distance)
         {
             //z를 longAttention_Z(-9)으로 변경
             if (camPos.z != longAttention_Z)
@@ -323,6 +333,21 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void Check_Z()
+    {
+        if (!GameManager.instance.bossBattle)
+        {
+            normal_Z = -5f;
+            attention_Z = -6.5f;
+            longAttention_Z = -7.5f;
+        }
+        else
+        {
+            normal_Z = -5f;
+            attention_Z = -10f;
+            longAttention_Z = -13f;
+        }
+    }
     //*----------------------------------------------------------------------------------------//
     void FixCamZ()
     {
