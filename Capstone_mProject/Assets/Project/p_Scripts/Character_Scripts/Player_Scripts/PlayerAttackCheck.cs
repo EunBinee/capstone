@@ -21,6 +21,14 @@ public class PlayerAttackCheck : MonoBehaviour
         }
         _controller = currentTransform.GetComponent<PlayerController>();
     }
+    void FixedUpdate()
+    {
+        if (gameObject.tag == "Arrow" && !P_States.isAim)
+        {
+            Vector3 dir = Camera.main.transform.forward;
+            transform.position += dir * 0.1f;
+        }
+    }
 
     private void isBouncingToFalse()
     {

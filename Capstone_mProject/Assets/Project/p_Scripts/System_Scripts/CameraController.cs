@@ -338,11 +338,6 @@ public class CameraController : MonoBehaviour
 
         playerCamera.transform.rotation = Quaternion.Euler(pos);
     }
-    void FixCamXYZ()
-    {
-        Vector3 pos = playerCamera.transform.rotation.eulerAngles;
-        playerCamera.transform.rotation = Quaternion.Euler(pos);
-    }
     // 두 Quaternion 간의 각도 차이를 반환하는 함수
     float QuaternionAngleDifference(Quaternion a, Quaternion b)
     {

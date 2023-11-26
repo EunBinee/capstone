@@ -30,13 +30,16 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     [SerializeField] public CurrentValue _currentValue = new CurrentValue();
     [SerializeField] public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
+    public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
+    private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
+
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     private float _capsuleRadiusDiff;
@@ -67,9 +70,9 @@ public class PlayerController : MonoBehaviour
 
     public GameObject bow;
     public GameObject sword;
+    public TMP_Text crosshairImage; // 조준점 이미지
 
-    //public CinemachineVirtualCamera playerFollowCamera;
-    //public CinemachineVirtualCamera onAimCamera;
+    public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
     void Awake()
     {
@@ -114,6 +117,7 @@ public class PlayerController : MonoBehaviour
             CheckHitTime();
             CheckAnim();
             CheckHP();
+            checkCamOnAim();
         }
     }
 
@@ -124,6 +128,9 @@ public class PlayerController : MonoBehaviour
         InitCapsuleCollider();
 
         navMeshSurface.BuildNavMesh();
+
+        //플레이어 스킬
+        _playerSkills.Init();
     }
 
     void InitCapsuleCollider()
@@ -231,6 +238,7 @@ public class PlayerController : MonoBehaviour
             AimOnCamera();
             bow.SetActive(true);
             sword.SetActive(false);
+            crosshairImage.gameObject.SetActive(true);
         }
         else if (skill.isTwice && P_States.isAim)
         {
@@ -238,34 +246,58 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.SetBool("isAim", false);
             P_States.isAim = false;
             skill.isFirsttime = true;
+            ShootArrow();
             AimOnCameraReturn();
             bow.SetActive(false);
             sword.SetActive(true);
+            crosshairImage.gameObject.SetActive(false);
         }
         else if (!skill.isTwice)
         {
             P_Com.animator.Play(skill.animationName);
         }
     }
+    void ShootArrow()
+    {
+        // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
+        GameObject arrow = P_Skills.GetArrowFromPool();
+        if (arrow == null) Debug.LogError("arrow null!");
+        arrow.transform.position = shootPoint.position;
+        arrow.transform.rotation = Camera.main.transform.rotation;
+
+        arrow.SetActive(true);
+
+        // 화살 발사 속도 설정 (필요에 따라 조절)
+        //float arrowSpeed = 10f;
+        //arrow.GetComponent<Rigidbody>().velocity += arrow.transform.up * arrowSpeed;
+    }
 
     //* camera controll
     public void AimOnCamera()
     {
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
-        Debug.Log("AimOnCamera()");
+        //Debug.Log("AimOnCamera()");
         originCamPos = P_CamController.cameraTrans.localPosition;
-        P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -1.7f);
+        P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -2f);
+        P_CamController.minPivot = -25;
+        P_CamController.maxPivot = 25;
         //playerFollowCamera.enabled = false;
         //onAimCamera.enabled = true;
     }
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
-        Debug.Log("CameraReturn()");
+        //Debug.Log("CameraReturn()");
         P_CamController.cameraTrans.localPosition = originCamPos;
         P_CamController.cameraTrans.Rotate(new Vector3(6, 0, 0));
+        P_CamController.minPivot = 0;
+        P_CamController.maxPivot = 0;
         //onAimCamera.enabled = false;
         //playerFollowCamera.enabled = true;
+    }
+
+    public void checkCamOnAim()
+    {
     }
 
     //* 물리(중력)
@@ -313,9 +345,9 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("if (cast)");
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            if (P_States.isForwardBlocked)
-                Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
-            Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
+            //if (P_States.isForwardBlocked)
+            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
     //*바닥 체크

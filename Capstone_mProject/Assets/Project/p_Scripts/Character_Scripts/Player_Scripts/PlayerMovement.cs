@@ -16,7 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private CameraController P_CamController;
 
     public SkillButton skill_E;
-    private string E_Name = "Bow_Attack";
+    private string E_Start_Name = "Bow_Attack_Charging";
+    private string E_Name = "Bow_Attack_launch";
     public SkillButton skill_Q;
 
     public float comboClickTime = 0.5f;
@@ -48,13 +49,6 @@ public class PlayerMovement : MonoBehaviour
         if (!UIManager.gameIsPaused)
         {
             AnimationParameters();
-            if (P_States.isAim)
-            {
-                UpdateRotate();
-            }
-            else
-            {
-            }
             Inputs();
         }
     }
@@ -166,12 +160,18 @@ public class PlayerMovement : MonoBehaviour
             //P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
             // 마우스로 플레이어 회전
             verticalRotation -= P_Input.mouseY;
-            verticalRotation = Mathf.Clamp(verticalRotation, -P_CamController.up_down_LookAngle, P_CamController.up_down_LookAngle); // 상하 각도 제한
+            verticalRotation = Mathf.Clamp(verticalRotation, P_CamController.minPivot, P_CamController.maxPivot); // 상하 각도 제한
 
             transform.Rotate(Vector3.up * P_Input.mouseX * 2);
             // 카메라의 X축 회전 및 플레이어와 일치시킴
             Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
             transform.localRotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
+
+            // // 마우스의 현재 위치를 기준으로 플레이어를 회전
+            // Vector3 mousePosition = new Vector3(P_Input.mouseX, P_Input.mouseY, 0);
+            // //mousePosition.z = 0f;
+
+            // transform.LookAt(mousePosition);
         }
     }
 
@@ -191,24 +191,21 @@ public class PlayerMovement : MonoBehaviour
                 if (skill_E.imgCool.fillAmount == 0)
                 {
                     //* 이펙트
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(E_Name);
+                    Effect effect = null;
+                    if (skill_E.skill.isFirsttime)  //* 장전
+                    {
+                        effect = GameManager.Instance.objectPooling.ShowEffect(E_Start_Name);
+                    }
+                    else    //* 발사
+                    {
+                        effect = GameManager.Instance.objectPooling.ShowEffect(E_Name);
+                    }
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     //* 이펙트 회전
                     Quaternion effectRotation = this.gameObject.transform.rotation;
                     //effectRotation.y = 90;
-                    //effect.gameObject.transform.rotation = effectRotation;
-
-                    Vector3 effectR = effect.gameObject.transform.position.normalized;
-                    Vector3 thisR = this.gameObject.transform.position.normalized;
-                    float dotEffectThis = Vector3.Dot(effectR, thisR);
-                    float EffectThisLen = Vector3.Magnitude(effectR) * Vector3.Magnitude(thisR);
-                    float res = Mathf.Acos(dotEffectThis / EffectThisLen);
-
-                    effect.gameObject.transform.Rotate(Vector3.one * res);
-
-                    //P_Controller.playAttackEffect(E_Name);
+                    effect.gameObject.transform.rotation = effectRotation;
                 }
-                //P_Com.rigidbody.AddForce(skillDir * 10.0f, ForceMode.Impulse);
                 skill_E.OnClicked();
                 break;
 
@@ -216,14 +213,7 @@ public class PlayerMovement : MonoBehaviour
                 if (skill_Q.imgCool.fillAmount == 0)
                 {
                     Debug.Log("스킬Q");
-                    //Time.timeScale = 0.1f;
-                    //P_Value.gravity = P_COption.gravity;
-                    //skillDir = this.gameObject.transform.up.normalized;
-                    /*skillPos = transform.position + skillDir * 40f;*/
-                    //transform.position = Vector3.Lerp(transform.position, skillPos, 5 * Time.deltaTime);
-                    //P_Com.rigidbody.AddForce(skillDir * 5f, ForceMode.Impulse);
                 }
-                //P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
                 skill_Q.OnClicked();
                 break;
 
