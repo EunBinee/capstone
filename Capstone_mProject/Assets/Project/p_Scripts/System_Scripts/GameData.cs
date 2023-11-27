@@ -12,7 +12,10 @@ public class GameData
     {
         return player.transform;
     }
-
+    public PlayerController GetPlayerController()
+    {
+        return player.gameObject.GetComponent<PlayerController>();
+    }
     public GameObject playerCamera;      //카메라 오브젝트
     public GameObject playerCameraPivot; //카메라 피봇
     public Camera cameraObj;             //카메라.

@@ -343,7 +343,7 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            normal_Z = -5f;
+            normal_Z = -7f;
             attention_Z = -10f;
             longAttention_Z = -13f;
         }

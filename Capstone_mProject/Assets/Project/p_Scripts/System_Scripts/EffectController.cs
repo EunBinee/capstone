@@ -9,8 +9,8 @@ public class EffectController : MonoBehaviour
     public float size = 1;
     ParticleSystem[] particleSystemList;
 
-    public float curSize = 0;
-    public bool canChangeSize = false;
+    float curSize = 0;
+    bool canChangeSize = false;
 
     void Start()
     {
