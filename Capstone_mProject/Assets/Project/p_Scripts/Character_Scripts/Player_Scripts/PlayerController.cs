@@ -67,11 +67,13 @@ public class PlayerController : MonoBehaviour
     float nowHitTime;
 
     private Vector3 originCamPos;
+    private Vector3 originCamQua;
 
     public GameObject bow;
     public GameObject sword;
     public TMP_Text crosshairImage; // 조준점 이미지
 
+    GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
     void Awake()
@@ -117,8 +119,12 @@ public class PlayerController : MonoBehaviour
             CheckHitTime();
             CheckAnim();
             CheckHP();
-            checkCamOnAim();
         }
+    }
+
+    public bool returnIsAim()
+    {
+        return P_States.isAim;
     }
 
     private void InitPlayer()
@@ -239,14 +245,15 @@ public class PlayerController : MonoBehaviour
             bow.SetActive(true);
             sword.SetActive(false);
             crosshairImage.gameObject.SetActive(true);
+            PoolingArrow();
         }
         else if (skill.isTwice && P_States.isAim)
         {
             //P_Com.animator.Play("AimRecoil", 1);
+            arrow.SetActive(true);
             P_Com.animator.SetBool("isAim", false);
             P_States.isAim = false;
             skill.isFirsttime = true;
-            ShootArrow();
             AimOnCameraReturn();
             bow.SetActive(false);
             sword.SetActive(true);
@@ -257,15 +264,15 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.Play(skill.animationName);
         }
     }
-    void ShootArrow()
+    void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        GameObject arrow = P_Skills.GetArrowFromPool();
+        arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        arrow.transform.position = shootPoint.position;
-        arrow.transform.rotation = Camera.main.transform.rotation;
+        //arrow.transform.position = shootPoint.position;
+        //arrow.transform.position = this.transform.position;
+        //arrow.transform.rotation = Camera.main.transform.rotation;
 
-        arrow.SetActive(true);
 
         // 화살 발사 속도 설정 (필요에 따라 조절)
         //float arrowSpeed = 10f;
@@ -278,6 +285,7 @@ public class PlayerController : MonoBehaviour
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         //Debug.Log("AimOnCamera()");
         originCamPos = P_CamController.cameraTrans.localPosition;
+        originCamQua = P_CamController.cameraTrans.rotation.eulerAngles;
         P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -2f);
         P_CamController.minPivot = -25;
         P_CamController.maxPivot = 25;
@@ -289,15 +297,12 @@ public class PlayerController : MonoBehaviour
         //todo: 카메라 원래대로
         //Debug.Log("CameraReturn()");
         P_CamController.cameraTrans.localPosition = originCamPos;
+        //P_CamController.cameraTrans.Rotate(originCamQua);
         P_CamController.cameraTrans.Rotate(new Vector3(6, 0, 0));
         P_CamController.minPivot = 0;
         P_CamController.maxPivot = 0;
         //onAimCamera.enabled = false;
         //playerFollowCamera.enabled = true;
-    }
-
-    public void checkCamOnAim()
-    {
     }
 
     //* 물리(중력)

@@ -157,21 +157,14 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isAim)
         {
-            //P_CamController.cameraTrans.localPosition = new Vector3(0.1f, -0.3f, -1.2f);
             // 마우스로 플레이어 회전
             verticalRotation -= P_Input.mouseY;
             verticalRotation = Mathf.Clamp(verticalRotation, P_CamController.minPivot, P_CamController.maxPivot); // 상하 각도 제한
 
-            transform.Rotate(Vector3.up * P_Input.mouseX * 2);
+            transform.Rotate(Vector3.up * P_Input.mouseX * 1.9f);
             // 카메라의 X축 회전 및 플레이어와 일치시킴
             Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
             transform.localRotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
-
-            // // 마우스의 현재 위치를 기준으로 플레이어를 회전
-            // Vector3 mousePosition = new Vector3(P_Input.mouseX, P_Input.mouseY, 0);
-            // //mousePosition.z = 0f;
-
-            // transform.LookAt(mousePosition);
         }
     }
 
