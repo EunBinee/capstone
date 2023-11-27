@@ -15,11 +15,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     [Header("스킬 02 잔해물 범위")]
     public Transform ground_Center;
     public int rangeXZ;
-    GameObject wreckagesPrefab;
     public List<Wreckage> wreckages;
     public Transform prefabPos;
-    public GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
+    GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
     List<Vector3> randomPos_skill02;
+    [Space]
+    [Header("스킬 03")]
+    public Transform bossNeck;
+
+    public
     bool isJump = false;
     bool isDodge = false;
 
@@ -134,7 +138,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case BossMonsterMotion.Skill03:
                 if (curBossPhase != BossMonsterPhase.Phase1)
                 {
-
+                    Skill03();
                 }
                 break;
             case BossMonsterMotion.Skill04:
@@ -233,8 +237,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //Monster_Motion(BossMonsterMotion.Skill01);
             //스킬 2
             Monster_Motion(BossMonsterMotion.Skill02);
-
             //StartCoroutine(SetWreckage());
+            //스킬 3
+            //Monster_Motion(BossMonsterMotion.Skill03);
         }
     }
     //*----------------------------------------------------------------------------------------------------------//
@@ -373,7 +378,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     #endregion
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 02  폭탄 떨구기
-    //페이즈 1과 2 나누기
+    #region 스킬 02
 
     private void Skill02()
     {
@@ -572,12 +577,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         Vector3 wreckageRandomPos = Vector3.zero;
 
-        //잔해물 프리펩 확인
-        if (wreckagesPrefab == null)
+        if (wreckage_obj == null)
         {
-            //TODO: 나중에 리소스 폴더에서 가져오는 형식으로
-            //현재는 그냥 넣어서 사용.4
-            wreckagesPrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "Wreckages");
+            GameObject wreckagesPrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "Wreckages");
 
             if (wreckagesPrefab == null)
             {
@@ -585,23 +587,22 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 Debug.LogError("Projectile 프리펩 없음. 오류.");
 #endif
             }
-        }
-
-        if (wreckage_obj == null)
-        {
-            //prefabPos에 생성
-            wreckage_obj = UnityEngine.Object.Instantiate(wreckagesPrefab);
-            wreckage_obj.gameObject.transform.SetParent(prefabPos);
-
-            wreckages = new List<Wreckage>();
-
-            Transform[] childTransforms = wreckage_obj.GetComponentsInChildren<Transform>(true);
-
-            foreach (Transform childTransform in childTransforms)
+            else
             {
-                Wreckage wreckageComponent = childTransform.GetComponent<Wreckage>();
-                if (wreckageComponent != null)
-                    wreckages.Add(wreckageComponent);
+                //prefabPos에 생성
+                wreckage_obj = UnityEngine.Object.Instantiate(wreckagesPrefab);
+                wreckage_obj.gameObject.transform.SetParent(prefabPos);
+
+                wreckages = new List<Wreckage>();
+
+                Transform[] childTransforms = wreckage_obj.GetComponentsInChildren<Transform>(true);
+
+                foreach (Transform childTransform in childTransforms)
+                {
+                    Wreckage wreckageComponent = childTransform.GetComponent<Wreckage>();
+                    if (wreckageComponent != null)
+                        wreckages.Add(wreckageComponent);
+                }
             }
         }
         else
@@ -687,7 +688,34 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
+    #endregion
 
+    // *---------------------------------------------------------------------------------------------------------//
+    //* 스킬 03  총쏘기
+
+    public void Skill03()
+    {
+        StartCoroutine(BossAbyss_Skill03());
+    }
+
+    IEnumerator BossAbyss_Skill03()
+    {
+        //애니메이터 끄기
+        SetAnimation(MonsterAnimation.Idle);
+        yield return new WaitForSeconds(0.5f);
+
+        m_animator.enabled = false;
+        //--------------------------------------------------//
+
+
+
+
+
+        //--------------------------------------------------//
+        //m_animator.enabled = true;
+        //SetAnimation(MonsterAnimation.Idle);
+        yield return null;
+    }
 
     // *---------------------------------------------------------------------------------------------------------//
     public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
