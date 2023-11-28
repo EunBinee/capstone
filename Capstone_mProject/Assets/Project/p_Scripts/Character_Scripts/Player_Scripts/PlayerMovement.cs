@@ -164,13 +164,13 @@ public class PlayerMovement : MonoBehaviour
             // float mouseX = Input.GetAxisRaw("Mouse X") * mouseSpeed * Time.deltaTime;
             // float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSpeed * Time.deltaTime;
 
-            // yRotation += mouseX;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
+            yRotation += P_Input.mouseX * 2f;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
             // xRotation -= mouseY;    // 마우스 Y축 입력에 따라 수직 회전 값을 조정
 
             // xRotation = Mathf.Clamp(xRotation, -25f, 25f);  // 수직 회전 값을 -90도에서 90도 사이로 제한
 
             // P_Camera.cameraObj.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); // 카메라의 회전을 조절
-            // transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
+            transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
         }
     }
 
