@@ -234,9 +234,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isFinding = true;
             ChangeMonsterState(MonsterState.Tracing);
             //스킬 1
-            //Monster_Motion(BossMonsterMotion.Skill01);
+            Monster_Motion(BossMonsterMotion.Skill01);
             //스킬 2
-            Monster_Motion(BossMonsterMotion.Skill02);
+            //Monster_Motion(BossMonsterMotion.Skill02);
             //StartCoroutine(SetWreckage());
             //스킬 3
             //Monster_Motion(BossMonsterMotion.Skill03);
@@ -345,15 +345,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectPos.y -= 1.5f;
         effect.transform.position = effectPos;
 
-        //effect.finishAction = () =>
-        //{
-        //    EffectController effectController = effect.gameObject.GetComponent<EffectController>();
-        //    effectController.size = 2;
-        //    effectController.ChangeSize();
-        //};
-
         isJump = false;
         NavMesh_Enable(true);
+
+        if (curBossPhase != BossMonsterPhase.Phase1)
+        {
+            //* 잔해물 떨어지기
+
+            yield return new WaitForSeconds(2f);
+            StartCoroutine(SetWreckage());
+        }
 
     }
     IEnumerator FollowPlayer_Effect_InSkill01(float duration)
@@ -451,14 +452,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
 
-        if (curBossPhase != BossMonsterPhase.Phase1)
-        {
-            //* 잔해물 떨어지기
 
-            yield return new WaitForSeconds(5f);
-            StartCoroutine(SetWreckage());
-
-        }
     }
 
     IEnumerator MoveMonster_Skill02()
@@ -572,6 +566,85 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
 
+
+
+    #endregion
+
+    // *---------------------------------------------------------------------------------------------------------//
+    //* 스킬 03  총쏘기
+
+    public void Skill03()
+    {
+        StartCoroutine(BossAbyss_Skill03());
+    }
+
+    IEnumerator BossAbyss_Skill03()
+    {
+        //애니메이터 끄기
+        SetAnimation(MonsterAnimation.Idle);
+        yield return new WaitForSeconds(0.5f);
+
+        m_animator.enabled = false;
+        //--------------------------------------------------//
+
+        Quaternion curRotation = bossNeck.rotation;
+        Vector3 curRotation_Euler = bossNeck.eulerAngles;
+        Debug.Log("X: " + curRotation_Euler.x + ", Y: " + curRotation_Euler.y + ", Z: " + curRotation_Euler.z);
+
+
+
+        //--------------------------------------------------//
+        //m_animator.enabled = true;
+        //SetAnimation(MonsterAnimation.Idle);
+        yield return null;
+    }
+
+    // *---------------------------------------------------------------------------------------------------------//
+    public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
+    {
+        if (!useY)
+            targetY = targetPos.y;
+
+        float rangeX = range;
+        float rangeZ = range;
+        //로밍시, 랜덤한 위치 생성
+        float randomX = UnityEngine.Random.Range(targetPos.x + ((rangeX / 2) * -1), targetPos.x + (rangeX / 2));
+        float randomZ = UnityEngine.Random.Range(targetPos.z + ((rangeZ / 2) * -1), targetPos.z + (rangeZ / 2));
+
+        return new Vector3(randomX, targetY, randomZ);
+    }
+
+    public List<Vector3> GetRoundPos(Vector3 targetPos)
+    {
+        //* 타겟의 radius 길이의 12 ~ 10시 반 포지션을 가지고 옴.
+        float radius = 10f; // 원의 반지름
+        List<float> angleList = new List<float>();
+        List<Vector3> posList = new List<Vector3>();
+        int num = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            if (i == 0)
+                num = 0;
+            else
+                num += 45;
+
+            angleList.Add(num);
+        }
+        for (int i = 0; i < angleList.Count; i++)
+        {
+            float angle = angleList[i];
+
+            // 삼각 함수를 사용하여 좌표를 계산합니다.
+            float x = targetPos.x + radius * Mathf.Cos(Mathf.Deg2Rad * angle);
+            float z = targetPos.z + radius * Mathf.Sin(Mathf.Deg2Rad * angle);
+
+            Vector3 pos = new Vector3(x, targetPos.y, z);
+            posList.Add(pos);
+
+        }
+
+        return posList;
+    }
     // 잔해물
     IEnumerator SetWreckage()
     {
@@ -687,83 +760,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         // wreckage_obj.gameObject.transform.SetParent(GameManager.Instance.transform);
         yield return null;
     }
-
-    #endregion
-
-    // *---------------------------------------------------------------------------------------------------------//
-    //* 스킬 03  총쏘기
-
-    public void Skill03()
-    {
-        StartCoroutine(BossAbyss_Skill03());
-    }
-
-    IEnumerator BossAbyss_Skill03()
-    {
-        //애니메이터 끄기
-        SetAnimation(MonsterAnimation.Idle);
-        yield return new WaitForSeconds(0.5f);
-
-        m_animator.enabled = false;
-        //--------------------------------------------------//
-
-
-
-
-
-        //--------------------------------------------------//
-        //m_animator.enabled = true;
-        //SetAnimation(MonsterAnimation.Idle);
-        yield return null;
-    }
-
-    // *---------------------------------------------------------------------------------------------------------//
-    public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
-    {
-        if (!useY)
-            targetY = targetPos.y;
-
-        float rangeX = range;
-        float rangeZ = range;
-        //로밍시, 랜덤한 위치 생성
-        float randomX = UnityEngine.Random.Range(targetPos.x + ((rangeX / 2) * -1), targetPos.x + (rangeX / 2));
-        float randomZ = UnityEngine.Random.Range(targetPos.z + ((rangeZ / 2) * -1), targetPos.z + (rangeZ / 2));
-
-        return new Vector3(randomX, targetY, randomZ);
-    }
-
-    public List<Vector3> GetRoundPos(Vector3 targetPos)
-    {
-        //* 타겟의 radius 길이의 12 ~ 10시 반 포지션을 가지고 옴.
-        float radius = 10f; // 원의 반지름
-        List<float> angleList = new List<float>();
-        List<Vector3> posList = new List<Vector3>();
-        int num = 0;
-        for (int i = 0; i < 8; i++)
-        {
-            if (i == 0)
-                num = 0;
-            else
-                num += 45;
-
-            angleList.Add(num);
-        }
-        for (int i = 0; i < angleList.Count; i++)
-        {
-            float angle = angleList[i];
-
-            // 삼각 함수를 사용하여 좌표를 계산합니다.
-            float x = targetPos.x + radius * Mathf.Cos(Mathf.Deg2Rad * angle);
-            float z = targetPos.z + radius * Mathf.Sin(Mathf.Deg2Rad * angle);
-
-            Vector3 pos = new Vector3(x, targetPos.y, z);
-            posList.Add(pos);
-
-        }
-
-        return posList;
-    }
-
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw
