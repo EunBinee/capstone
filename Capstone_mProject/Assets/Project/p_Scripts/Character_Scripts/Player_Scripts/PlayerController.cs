@@ -66,8 +66,10 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
-    private Vector3 originCamPos;
-    private Vector3 originCamQua;
+    //private Vector3 originCamPos;
+    //private Quaternion originCamQua;
+    public Camera mainCam;
+    public Camera AimmingCam;
 
     public GameObject bow;
     public GameObject sword;
@@ -90,6 +92,7 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
+        AimOnCameraReturn();
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
     }
@@ -284,25 +287,25 @@ public class PlayerController : MonoBehaviour
     {
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         //Debug.Log("AimOnCamera()");
-        originCamPos = P_CamController.cameraTrans.localPosition;
-        originCamQua = P_CamController.cameraTrans.rotation.eulerAngles;
-        P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -2f);
+        P_CamController.left_right_LookAngle = 0;
+        P_CamController.up_down_LookAngle = 0;
+        AimmingCam.enabled = true;
+        P_Camera.cameraObj.enabled = false;
+        P_Camera.cameraObj = AimmingCam;
         P_CamController.minPivot = -25;
         P_CamController.maxPivot = 25;
-        //playerFollowCamera.enabled = false;
-        //onAimCamera.enabled = true;
     }
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
         //Debug.Log("CameraReturn()");
-        P_CamController.cameraTrans.localPosition = originCamPos;
-        //P_CamController.cameraTrans.Rotate(originCamQua);
-        P_CamController.cameraTrans.Rotate(new Vector3(6, 0, 0));
+        P_CamController.left_right_LookAngle = 0;
+        P_CamController.up_down_LookAngle = 0;
+        P_Camera.cameraObj = mainCam;
+        AimmingCam.enabled = false;
+        P_Camera.cameraObj.enabled = true;
         P_CamController.minPivot = 0;
         P_CamController.maxPivot = 0;
-        //onAimCamera.enabled = false;
-        //playerFollowCamera.enabled = true;
     }
 
     //* 물리(중력)

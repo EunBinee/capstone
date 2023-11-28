@@ -33,6 +33,7 @@ public class CameraController : MonoBehaviour
     public float longAttention_Z = -7.5f;
 
     public float aimSmootly = 0.55f;
+    public Transform campos;
 
     bool isNormal_Z = false;
     bool isAttention_Z = false;
@@ -54,7 +55,10 @@ public class CameraController : MonoBehaviour
     {
         if (playerController._currentState.isAim)
         {
-            return;
+            //this.transform.position = campos.position;  //* 위치 고정
+            //this.transform.localRotation = Quaternion.LookRotation(campos.transform.position);
+            //FixCamZ();
+
         }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab))

@@ -27,6 +27,10 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 targetDirect = Vector3.zero;
     private float verticalRotation = 0f;
+    public float mouseSensitivity = 2.0f;
+    public float mouseSpeed;
+    float yRotation;
+    float xRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -157,14 +161,16 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isAim)
         {
-            // 마우스로 플레이어 회전
-            verticalRotation -= P_Input.mouseY;
-            verticalRotation = Mathf.Clamp(verticalRotation, P_CamController.minPivot, P_CamController.maxPivot); // 상하 각도 제한
+            // float mouseX = Input.GetAxisRaw("Mouse X") * mouseSpeed * Time.deltaTime;
+            // float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSpeed * Time.deltaTime;
 
-            transform.Rotate(Vector3.up * P_Input.mouseX * 1.9f);
-            // 카메라의 X축 회전 및 플레이어와 일치시킴
-            Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-            transform.localRotation = Quaternion.Euler(0, transform.localRotation.eulerAngles.y, 0);
+            // yRotation += mouseX;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
+            // xRotation -= mouseY;    // 마우스 Y축 입력에 따라 수직 회전 값을 조정
+
+            // xRotation = Mathf.Clamp(xRotation, -25f, 25f);  // 수직 회전 값을 -90도에서 90도 사이로 제한
+
+            // P_Camera.cameraObj.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); // 카메라의 회전을 조절
+            // transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
         }
     }
 
@@ -317,7 +323,21 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        else if (P_States.isStrafing || P_States.isAim)
+        /*if (P_States.isAim)
+        {
+            Vector3 rotationDirection = P_Value.moveDirection;
+            if (rotationDirection != Vector3.zero)
+            {
+                rotationDirection = P_Controller.AimmingCam.transform.forward;
+                rotationDirection.y = 0;
+                rotationDirection.Normalize();
+                Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+                transform.rotation = targetRotation;
+            }
+        }
+        else*/
+        if (P_States.isStrafing)
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -370,6 +390,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMovements()
     {
+        //플레이어의 움직임을 수행하는 함수.
         if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill)
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
@@ -377,12 +398,22 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = Vector3.zero;
             return;
         }
-        //플레이어의 움직임을 수행하는 함수.
-        //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-        P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-        P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
 
-        P_Value.moveDirection.Normalize(); //정규화시켜준다.
+        /*if (P_States.isAim)
+        {
+            P_Value.moveDirection = P_Controller.AimmingCam.transform.forward * P_Input.verticalMovement;
+            P_Value.moveDirection = P_Value.moveDirection + P_Controller.AimmingCam.transform.right * P_Input.horizontalMovement;
+
+            P_Value.moveDirection.Normalize(); //정규화시켜준다.
+        }
+        else*/
+        {
+            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
+            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
+
+            P_Value.moveDirection.Normalize(); //정규화시켜준다.
+        }
 
         if (P_States.isJumping)
         {
