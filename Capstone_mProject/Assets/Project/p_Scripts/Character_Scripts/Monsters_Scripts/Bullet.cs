@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -36,6 +37,7 @@ public class Bullet : MonoBehaviour
 
     public void Reset(Monster _monster = null, string _projectileName = "", Transform muzzlePos = null)
     {
+        Debug.Log("reset!!");
         trailRenderer = GetComponent<TrailRenderer>();
         rigid = GetComponent<Rigidbody>();
         this.gameObject.SetActive(true);
@@ -43,6 +45,7 @@ public class Bullet : MonoBehaviour
         this.gameObject.transform.position = muzzlePos.position;
         this.gameObject.transform.Rotate(Vector3.zero);
         curOriginPos = muzzlePos.position;
+
 
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         time = 0;
@@ -104,29 +107,44 @@ public class Bullet : MonoBehaviour
         hits = Physics.RaycastAll(curOriginPos, targetDir, range);
 
         float shortDist = 1000f;
-        RaycastHit shortHit = hits[0];
-
-        foreach (RaycastHit hit in hits)
+        bool isPass = false;
+        if (hits.Length != 0)
         {
-            if (hit.collider.name != this.gameObject.name)
-            {
-                //자기 자신은 패스
-                float distance = hit.distance;
-                if (curBulletDistance < distance && shortDist > distance)
-                {
-                    shortHit = hit;
-                    shortDist = distance;
+            RaycastHit shortHit = hits[0];
 
-                    if (hit.collider.tag == "Player")
-                        attackPlayer = true;
-                    else
-                        attackPlayer = false;
+            foreach (RaycastHit hit in hits)
+            {
+                isPass = false;
+                if (hit.collider.tag == "Monster")
+                {
+                    //자기 자신인지확인
+                    Transform _transform = FindTopParent(hit.collider.gameObject.GetComponent<Transform>());
+                    if (_transform.name == monster.gameObject.name)
+                    {
+                        isPass = true;
+                    }
+                }
+                if (hit.collider.name != this.gameObject.name && !isPass)
+                {
+                    //자기 자신은 패스
+                    float distance = hit.distance;
+                    if (curBulletDistance < distance && shortDist > distance)
+                    {
+                        shortHit = hit;
+                        shortDist = distance;
+
+                        if (hit.collider.tag == "Player")
+                            attackPlayer = true;
+                        else
+                            attackPlayer = false;
+                    }
                 }
             }
+
+            if (shortDist != 1000)
+                targetDistance = shortDist;
         }
 
-        if (shortDist != 1000)
-            targetDistance = shortDist;
     }
 
 
@@ -144,9 +162,23 @@ public class Bullet : MonoBehaviour
     private void DisappearBullet()
     {
         //풀링
+        rigid.velocity = Vector3.zero;
+
         GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
         OnHitPlayerEffect = null;
         isReset = false;
+    }
+
+    Transform FindTopParent(Transform childTransform)
+    {
+        Transform topParent = childTransform;
+
+        while (topParent.parent != null)
+        {
+            topParent = topParent.parent;
+        }
+
+        return topParent;
     }
 
 }

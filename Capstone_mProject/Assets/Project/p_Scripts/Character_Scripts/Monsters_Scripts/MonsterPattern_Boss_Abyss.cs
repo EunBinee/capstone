@@ -8,6 +8,7 @@ using UnityEngine.Animations;
 using UnityEditor.Rendering;
 using System.Threading;
 
+
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
@@ -22,12 +23,18 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     [Space]
     [Header("스킬 03")]
     public Transform bossNeck;
+    bool findPlayer = false;
+    [Header("스킬 03 총알이 나가는 위치")]
+    public Transform[] muzzlesL;
+    public Transform[] muzzlesR;
+    public Transform[] muzzlePos;
 
-    public
     bool isJump = false;
     bool isDodge = false;
 
-
+    Coroutine aim_co = null;
+    Coroutine fire_R_co = null;
+    Coroutine fire_L_co = null;
 
     public override void Init()
     {
@@ -62,6 +69,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetPlayerAttackList(true);
         GameManager.instance.bossBattle = true;
         GameManager.instance.cameraController.Check_Z();
+        GameManager.instance.cameraController.ResetCameraZ();
 
         playerController.NavMeshSurface_ReBuild();
     }
@@ -184,6 +192,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case MonsterAnimation.Death:
                 GameManager.instance.bossBattle = false;
                 GameManager.instance.cameraController.Check_Z();
+                GameManager.instance.cameraController.ResetCameraZ();
                 break;
             default:
                 break;
@@ -234,10 +243,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isFinding = true;
             ChangeMonsterState(MonsterState.Tracing);
             //스킬 1
-            Monster_Motion(BossMonsterMotion.Skill01);
+            //Monster_Motion(BossMonsterMotion.Skill01);
             //스킬 2
             //Monster_Motion(BossMonsterMotion.Skill02);
-            //StartCoroutine(SetWreckage());
+            StartCoroutine(SetWreckage());
             //스킬 3
             //Monster_Motion(BossMonsterMotion.Skill03);
         }
@@ -298,7 +307,18 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectPos.y += 2.5f;
         effect.transform.position = effectPos;
         //------------------------------------------------------------------------------------//
-        //점프
+        //*점프전 주목 풀기
+        if (GameManager.instance.cameraController.isBeingAttention)
+        {
+            //주목중.
+            GameManager.instance.cameraController.UndoAttention();
+            GameManager.instance.cameraController.banAttention = true;
+        }
+        else
+        {
+            GameManager.instance.cameraController.banAttention = true;
+        }
+        //*점프
         time = 0;
         Vector3 targetPos = transform.position + (Vector3.up * 60);
         while (time < 5f)
@@ -345,16 +365,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectPos.y -= 1.5f;
         effect.transform.position = effectPos;
 
+        //* 점프 후 주목 가능
+        GameManager.instance.cameraController.banAttention = false;
+
         isJump = false;
         NavMesh_Enable(true);
 
-        if (curBossPhase != BossMonsterPhase.Phase1)
-        {
-            //* 잔해물 떨어지기
-
-            yield return new WaitForSeconds(2f);
-            StartCoroutine(SetWreckage());
-        }
 
     }
     IEnumerator FollowPlayer_Effect_InSkill01(float duration)
@@ -452,6 +468,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
 
+        if (curBossPhase != BossMonsterPhase.Phase1)
+        {
+            //* 잔해물 떨어지기
+
+            yield return new WaitForSeconds(4f);
+            StartCoroutine(SetWreckage());
+        }
 
     }
 
@@ -528,7 +551,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-
     IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false)
     {
         float time = 0;
@@ -566,85 +588,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
 
-
-
-    #endregion
-
-    // *---------------------------------------------------------------------------------------------------------//
-    //* 스킬 03  총쏘기
-
-    public void Skill03()
-    {
-        StartCoroutine(BossAbyss_Skill03());
-    }
-
-    IEnumerator BossAbyss_Skill03()
-    {
-        //애니메이터 끄기
-        SetAnimation(MonsterAnimation.Idle);
-        yield return new WaitForSeconds(0.5f);
-
-        m_animator.enabled = false;
-        //--------------------------------------------------//
-
-        Quaternion curRotation = bossNeck.rotation;
-        Vector3 curRotation_Euler = bossNeck.eulerAngles;
-        Debug.Log("X: " + curRotation_Euler.x + ", Y: " + curRotation_Euler.y + ", Z: " + curRotation_Euler.z);
-
-
-
-        //--------------------------------------------------//
-        //m_animator.enabled = true;
-        //SetAnimation(MonsterAnimation.Idle);
-        yield return null;
-    }
-
-    // *---------------------------------------------------------------------------------------------------------//
-    public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
-    {
-        if (!useY)
-            targetY = targetPos.y;
-
-        float rangeX = range;
-        float rangeZ = range;
-        //로밍시, 랜덤한 위치 생성
-        float randomX = UnityEngine.Random.Range(targetPos.x + ((rangeX / 2) * -1), targetPos.x + (rangeX / 2));
-        float randomZ = UnityEngine.Random.Range(targetPos.z + ((rangeZ / 2) * -1), targetPos.z + (rangeZ / 2));
-
-        return new Vector3(randomX, targetY, randomZ);
-    }
-
-    public List<Vector3> GetRoundPos(Vector3 targetPos)
-    {
-        //* 타겟의 radius 길이의 12 ~ 10시 반 포지션을 가지고 옴.
-        float radius = 10f; // 원의 반지름
-        List<float> angleList = new List<float>();
-        List<Vector3> posList = new List<Vector3>();
-        int num = 0;
-        for (int i = 0; i < 8; i++)
-        {
-            if (i == 0)
-                num = 0;
-            else
-                num += 45;
-
-            angleList.Add(num);
-        }
-        for (int i = 0; i < angleList.Count; i++)
-        {
-            float angle = angleList[i];
-
-            // 삼각 함수를 사용하여 좌표를 계산합니다.
-            float x = targetPos.x + radius * Mathf.Cos(Mathf.Deg2Rad * angle);
-            float z = targetPos.z + radius * Mathf.Sin(Mathf.Deg2Rad * angle);
-
-            Vector3 pos = new Vector3(x, targetPos.y, z);
-            posList.Add(pos);
-
-        }
-
-        return posList;
-    }
     // 잔해물
     IEnumerator SetWreckage()
     {
@@ -754,12 +697,214 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         playerController.NavMeshSurface_ReBuild();
         // 사라지게 하기
+        yield return null;
+        Skill03();
 
         //잔해물 위치 다시 돌려두기
         //비활성화해서 나중에 재활용..
         // wreckage_obj.gameObject.transform.SetParent(GameManager.Instance.transform);
         yield return null;
     }
+
+    #endregion
+
+    // *---------------------------------------------------------------------------------------------------------//
+    //* 스킬 03  총쏘기
+    #region 스킬 03
+
+    public void Skill03()
+    {
+        StartCoroutine(BossAbyss_Skill03());
+    }
+
+    IEnumerator BossAbyss_Skill03()
+    {
+        float time = 0;
+        float fireTime = 0;
+        Vector3 targetPos = playerTargetPos.position;
+        //애니메이터 끄기
+        SetAnimation(MonsterAnimation.Idle);
+        yield return new WaitForSeconds(1f);
+
+        m_animator.enabled = false;
+        //--------------------------------------------------//
+
+        Quaternion childWorldRotation = GetWorldRotation(bossNeck);
+        bossNeck.rotation = childWorldRotation;
+        // 가져온 월드 회전값을 출력해보기
+        Debug.Log("Child World Rotation: " + childWorldRotation.eulerAngles);
+
+        Vector3 rayPos = new Vector3(bossNeck.position.x, playerTargetPos.position.y, bossNeck.position.z);
+
+        while (time < 30)
+        {
+            time += Time.deltaTime;
+            fireTime += Time.deltaTime;
+            if (fireTime >= 0.2f)
+            {
+                fireTime = 0;
+                GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
+                //L
+                StartCoroutine(Fire(playerTargetPos.position, muzzlePos[0]));
+                //R
+                StartCoroutine(Fire(playerTargetPos.position, muzzlePos[1]));
+            }
+            else
+            {
+                childWorldRotation = GetWorldRotation(bossNeck);
+                Vector3 currentRotation = childWorldRotation.eulerAngles;
+
+                bossNeck.rotation = Quaternion.Euler(currentRotation.x, currentRotation.y + (1 * Time.timeScale), currentRotation.z);
+
+                CheckCheckPlayer_Front(rayPos);
+            }
+
+
+            yield return null;
+        }
+
+        //muzzles[1]> 왼쪽 [2] 오른쪽
+        //--------------------------------------------------//
+        m_animator.enabled = true;
+        SetAnimation(MonsterAnimation.Idle);
+        yield return null;
+    }
+
+    IEnumerator Fire(Vector3 targetPos, Transform muzzlePos, bool findPlayer = false)
+    {
+        //* 총알 //
+        GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab("BossMonsterAbyss_Bullet", prefabPos);
+        Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
+
+        Bullet bullet = bulletObj.GetComponent<Bullet>();
+        bullet.Reset(m_monster, "BossMonsterAbyss_Bullet", muzzlePos);
+        // 플레이어에게  총알이 맞았을 경우
+        bullet.OnHitPlayerEffect = () =>
+        {
+            //*플레이어가 총에 맞았을 경우, 이펙트
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+
+            effect.gameObject.transform.position = targetPos;
+            Vector3 curDirection = targetPos - bulletObj.transform.position;
+            effect.gameObject.transform.position += curDirection * 0.35f;
+        };
+        //총알 발사.
+
+        if (findPlayer)
+        {
+            Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
+            bullet.GetDistance(curDirection.normalized);
+            bulletRigid.velocity = curDirection.normalized * 80f;
+        }
+        else
+        {
+            bullet.GetDistance(muzzlePos.forward); //* Bullet.cs에 방향 벡터 보냄
+            bulletRigid.velocity = (muzzlePos.forward) * 80f;
+        }
+
+        //총쏠때 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+        effect.gameObject.transform.position = muzzlePos.position;
+
+
+
+        yield return null;
+    }
+
+    private float CheckCheckPlayer_Front(Vector3 rayPos)
+    {
+        // 바로 앞에 플레이어가 있는지 확인
+        float range = 100f;
+        float angle = 0;
+        Debug.DrawRay(rayPos, (-bossNeck.up) * range, Color.blue);
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(rayPos, (-bossNeck.up), range, playerlayerMask);
+
+        if (hits.Length != 0 && !findPlayer)
+        {
+            findPlayer = true;
+            Debug.Log("Player 발견");
+
+            for (int i = 0; i < muzzlesL.Length; i++)
+            {
+                Vector3 direction = (playerTrans.position - muzzlesL[i].position).normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+
+                // targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, muzzlesL[i].eulerAngles.y, muzzlesL[i].eulerAngles.z);
+                targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, muzzlesL[i].eulerAngles.z);
+                muzzlesL[i].rotation = targetRotation;
+            }
+            for (int i = 0; i < muzzlesR.Length; i++)
+            {
+                Vector3 direction = (playerTrans.position - muzzlesR[i].position).normalized;
+                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+                // targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, muzzlesR[i].eulerAngles.y, muzzlesR[i].eulerAngles.z);
+                targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, muzzlesR[i].eulerAngles.z);
+                muzzlesR[i].rotation = targetRotation;
+            }
+
+            StartCoroutine(Fire(playerTargetPos.position, muzzlePos[0], true));
+            //R
+            StartCoroutine(Fire(playerTargetPos.position, muzzlePos[1], true));
+        }
+
+        else if (hits.Length == 0 && findPlayer)
+        {
+            findPlayer = false;
+        }
+
+        return angle;
+    }
+
+    #endregion
+    // *---------------------------------------------------------------------------------------------------------//
+    public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
+    {
+        if (!useY)
+            targetY = targetPos.y;
+
+        float rangeX = range;
+        float rangeZ = range;
+        //로밍시, 랜덤한 위치 생성
+        float randomX = UnityEngine.Random.Range(targetPos.x + ((rangeX / 2) * -1), targetPos.x + (rangeX / 2));
+        float randomZ = UnityEngine.Random.Range(targetPos.z + ((rangeZ / 2) * -1), targetPos.z + (rangeZ / 2));
+
+        return new Vector3(randomX, targetY, randomZ);
+    }
+
+    public List<Vector3> GetRoundPos(Vector3 targetPos)
+    {
+        //* 타겟의 radius 길이의 12 ~ 10시 반 포지션을 가지고 옴.
+        float radius = 10f; // 원의 반지름
+        List<float> angleList = new List<float>();
+        List<Vector3> posList = new List<Vector3>();
+        int num = 0;
+        for (int i = 0; i < 8; i++)
+        {
+            if (i == 0)
+                num = 0;
+            else
+                num += 45;
+
+            angleList.Add(num);
+        }
+        for (int i = 0; i < angleList.Count; i++)
+        {
+            float angle = angleList[i];
+
+            // 삼각 함수를 사용하여 좌표를 계산합니다.
+            float x = targetPos.x + radius * Mathf.Cos(Mathf.Deg2Rad * angle);
+            float z = targetPos.z + radius * Mathf.Sin(Mathf.Deg2Rad * angle);
+
+            Vector3 pos = new Vector3(x, targetPos.y, z);
+            posList.Add(pos);
+
+        }
+
+        return posList;
+    }
+
+
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw

@@ -25,6 +25,7 @@ public class CameraController : MonoBehaviour
     public float up_down_LookAngle;
 
     [Header("주목 기능")]
+    public bool banAttention = false;
     public bool isBeingAttention = false;
     public Monster curTargetMonster = null;
 
@@ -51,7 +52,7 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
         {
             //주목 기능
             if (GameManager.instance.monsterUnderAttackList.Count > 0)
@@ -209,7 +210,7 @@ public class CameraController : MonoBehaviour
     }
 
 
-    private void ResetCameraZ()
+    public void ResetCameraZ()
     {
         if (resetCameraZ_co != null)
         {
@@ -237,6 +238,14 @@ public class CameraController : MonoBehaviour
 
             yield return null;
         }
+
+        camPos = cameraTrans.localPosition;
+        camPos.z = normal_Z;
+        cameraTrans.localPosition = camPos;
+
+        camPivotPos = playerCameraPivot.transform.localPosition;
+        camPivotPos.y = 1.7f;
+        playerCameraPivot.transform.localPosition = camPivotPos;
     }
 
     private void SetCameraZ_AccDistance()

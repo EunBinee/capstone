@@ -527,6 +527,14 @@ public class MonsterPattern : MonoBehaviour
 
         return curDirection;
     }
+    //* 특정 자식의 로테이션 값 가져오는 함수
+    protected Quaternion GetWorldRotation(Transform currentTransform)
+    {
+        if (currentTransform == null)
+            return Quaternion.identity;
+
+        return GetWorldRotation(currentTransform.parent) * currentTransform.localRotation;
+    }
 
 
     public virtual void StopMonster()
