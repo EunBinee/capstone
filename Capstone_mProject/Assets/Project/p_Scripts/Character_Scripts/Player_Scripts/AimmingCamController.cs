@@ -25,7 +25,7 @@ public class AimmingCamController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        CameraRotate();
+        //CameraRotate();
     }
     private void CameraRotate() // 일반 카메라
     {

@@ -292,8 +292,8 @@ public class PlayerController : MonoBehaviour
         AimmingCam.enabled = true;
         P_Camera.cameraObj.enabled = false;
         P_Camera.cameraObj = AimmingCam;
-        P_CamController.minPivot = -25;
-        P_CamController.maxPivot = 25;
+        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = -25;
+        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 25;
     }
     public void AimOnCameraReturn()
     {
@@ -301,11 +301,11 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("CameraReturn()");
         P_CamController.left_right_LookAngle = 0;
         P_CamController.up_down_LookAngle = 0;
+        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = 0;
+        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 0;
         P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
         P_Camera.cameraObj.enabled = true;
-        P_CamController.minPivot = 0;
-        P_CamController.maxPivot = 0;
     }
 
     //* 물리(중력)

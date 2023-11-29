@@ -59,6 +59,8 @@ public class CameraController : MonoBehaviour
             //this.transform.localRotation = Quaternion.LookRotation(campos.transform.position);
             //FixCamZ();
 
+            minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정
+            maxPivot = 35;
         }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab))

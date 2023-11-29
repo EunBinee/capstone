@@ -323,21 +323,17 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        /*if (P_States.isAim)
+        /**/
+        if (P_States.isAim)
         {
-            Vector3 rotationDirection = P_Value.moveDirection;
-            if (rotationDirection != Vector3.zero)
-            {
-                rotationDirection = P_Controller.AimmingCam.transform.forward;
-                rotationDirection.y = 0;
-                rotationDirection.Normalize();
-                Quaternion tr = Quaternion.LookRotation(rotationDirection);
-                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
-                transform.rotation = targetRotation;
-            }
+            Vector3 rotationDirection = P_Controller.AimmingCam.transform.forward;
+            rotationDirection.y = 0;
+            rotationDirection.Normalize();
+            Quaternion tr = Quaternion.LookRotation(rotationDirection);
+            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+            transform.rotation = targetRotation;
         }
-        else*/
-        if (P_States.isStrafing)
+        else if (P_States.isStrafing)
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -361,16 +357,8 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                if (P_States.isAim)
-                {
-                    targetDirect = this.transform.forward * P_Input.verticalMovement;
-                    targetDirect = targetDirect + this.transform.right * P_Input.horizontalMovement;
-                }
-                else
-                {
-                    targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-                    targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-                }
+                targetDirect = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+                targetDirect = targetDirect + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
             }
             targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
             targetDirect.y = 0;
