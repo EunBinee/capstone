@@ -24,7 +24,7 @@ public class SpawnProjectiles : MonoBehaviour
     void Update()
     {
         // Shoot Effect
-        if (Input.GetMouseButton(0) && Time.time >= timeToFire)
+        if(Input.GetMouseButton (0) && Time.time >= timeToFire)
         {
             timeToFire = Time.time + 1 / effectToSpawn.GetComponent<ProjectileMove>().fireRate;
             SpawnEffects();
@@ -60,18 +60,19 @@ public class SpawnProjectiles : MonoBehaviour
     void SpawnEffects()
     {
         GameObject Effects;
-
+        
         if (firePoint != null)
         {
             Effects = Instantiate(effectToSpawn, firePoint.transform.position, Quaternion.identity);
             if (rotateToMouse != null)
-            {
+            { 
                 Effects.transform.localRotation = rotateToMouse.GetRotation();
             }
-        }
+        } 
         else
         {
             Debug.Log("No Fire Point");
         }
     }
 }
+ 
