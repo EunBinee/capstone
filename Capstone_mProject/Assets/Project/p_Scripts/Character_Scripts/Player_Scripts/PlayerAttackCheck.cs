@@ -14,6 +14,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private GameObject player;
     private bool isArrow;
+    Vector3 dir = Vector3.zero;
 
     void Start()
     {
@@ -38,9 +39,12 @@ public class PlayerAttackCheck : MonoBehaviour
                 // 키네매틱 끄기
                 GetComponent<Rigidbody>().isKinematic = false;
                 //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
-                Vector3 dir = Camera.main.transform.forward;
+                if (dir == Vector3.zero)
+                {
+                    dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
+                }
                 //transform.position += dir * 0.1f;
-                GetComponent<Rigidbody>().velocity += dir * 30f;
+                GetComponent<Rigidbody>().velocity += dir * 3f;
             }
         }
     }
