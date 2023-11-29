@@ -7,19 +7,42 @@ public class PlayerAttackCheck : MonoBehaviour
     public bool isEnable = false;
     [SerializeField] private Monster monster;
 
-    public PlayerController _controller;// = new PlayerController();
-    private PlayerController P_Controller => _controller;
-    private CurrentValue P_Value => P_Controller._currentValue;
-    private CurrentState P_States => P_Controller._currentState;
+    public PlayerController _playerController;// = new PlayerController();
+    public PlayerController P_Controller => _playerController;
+    private CurrentValue P_Value => _playerController._currentValue;
+    private CurrentState P_States => _playerController._currentState;
+
+    private GameObject player;
+    private bool isArrow;
 
     void Start()
     {
-        Transform currentTransform = transform;
-        while (currentTransform.parent != null)
+        player = GameManager.Instance.gameData.player;
+        // Transform currentTransform = transform;
+        // while (currentTransform.parent != null)
+        // {
+        //     currentTransform = currentTransform.parent;
+        // }
+        _playerController = player.GetComponent<PlayerController>();
+        //currentTransform.GetComponent<PlayerController>();
+    }
+    void FixedUpdate()
+    {
+        if (gameObject.tag == "Arrow")
         {
-            currentTransform = currentTransform.parent;
+            isArrow = true;
+            transform.position = P_Controller.shootPoint.position;
+            transform.rotation = player.transform.rotation;
+            if (!P_Controller.returnIsAim())
+            {
+                // 키네매틱 끄기
+                GetComponent<Rigidbody>().isKinematic = false;
+                //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
+                Vector3 dir = Camera.main.transform.forward;
+                //transform.position += dir * 0.1f;
+                GetComponent<Rigidbody>().velocity += dir * 30f;
+            }
         }
-        _controller = currentTransform.GetComponent<PlayerController>();
     }
 
     private void isBouncingToFalse()
@@ -71,5 +94,13 @@ public class PlayerAttackCheck : MonoBehaviour
             }
         }
 
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (isArrow)
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 }

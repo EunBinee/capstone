@@ -32,6 +32,8 @@ public class CameraController : MonoBehaviour
     public float attention_Z = -6.5f;
     public float longAttention_Z = -7.5f;
 
+    public float aimSmootly = 0.55f;
+
     bool isNormal_Z = false;
     bool isAttention_Z = false;
     bool isLongAttention_Z = false;
@@ -50,6 +52,10 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+        if (playerController._currentState.isAim)
+        {
+            return;
+        }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -114,12 +120,12 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraActions();
+
 
     }
     private void FixedUpdate()
     {
-
+        CameraActions();
     }
 
     void OnPreCull() => GL.Clear(true, true, Color.black);
@@ -128,7 +134,6 @@ public class CameraController : MonoBehaviour
     private void CameraActions()
     {
         CameraFollowPlayer(); //플레이어를 따라다니는 카메라
-
         if (isBeingAttention)
         {
             TargetRotate();
@@ -144,7 +149,9 @@ public class CameraController : MonoBehaviour
     {
         //플레이어를 따라다니는 카메라
         //ref는 call by reference를 하겠다는 것.
-        Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
+        //Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
+        Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position,
+            (playerController._currentState.isAim) ? aimSmootly : 0.125f);
         playerCamera.transform.position = cameraPos;
     }
 
