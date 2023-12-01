@@ -16,6 +16,7 @@ public class Monster : MonoBehaviour
 
     [SerializeField] private HPBarUI_Info m_hPBar;
 
+
     public enum monsterSound
     {
         Hit,
@@ -48,14 +49,17 @@ public class Monster : MonoBehaviour
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
-        monsterData.HP = monsterData.MaxHP;
-        m_hPBar = null;
         //GetHPBar();
     }
 
     private void Reset()
     {
 
+    }
+
+    public void ResetHP()
+    {
+        monsterData.HP = monsterData.MaxHP;
     }
 
     //*------------------------------------------------------------------------------------------//
@@ -139,9 +143,16 @@ public class Monster : MonoBehaviour
     //* HP바 //
     public void GetHPBar()
     {
-        m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
-        Debug.Log($"monsterData.MaxHP  {monsterData.MaxHP}");
-        m_hPBar.Reset(monsterData.MaxHP, this);
+        if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+        {
+            m_hPBar = GameManager.instance.hPBarManager.Get_BossHPBar();
+            m_hPBar.Reset(monsterData.MaxHP, this, true);
+        }
+        else
+        {
+            m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
+            m_hPBar.Reset(monsterData.MaxHP, this);
+        }
     }
 
     public void SetActive_HPBar()
@@ -154,13 +165,24 @@ public class Monster : MonoBehaviour
 
     public void RetrunHPBar()
     {
-        if (m_hPBar != null)
+        if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-            GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
-            m_hPBar = null;
+            if (m_hPBar != null)
+            {
+                GameManager.Instance.hPBarManager.Return_BossHPBar();
+                m_hPBar = null;
+            }
         }
-
+        else
+        {
+            if (m_hPBar != null)
+            {
+                GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
+                m_hPBar = null;
+            }
+        }
     }
+
 
     public bool HPBar_CheckNull()
     {
@@ -172,12 +194,21 @@ public class Monster : MonoBehaviour
     //* 데미지 UI //
     public void Get_DamageUI(double damage)
     {
+        float randomRange = 0;
+
+        if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+        {
+            //보스전일때는 좀더 크게
+            randomRange = 1.5f;
+        }
+        else
+            randomRange = 0.5f;
         Debug.Log("damage UI");
         DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
 
-        float x = UnityEngine.Random.Range(-0.5f, 0.5f);
-        float y = UnityEngine.Random.Range(-0.5f, 0.5f);
-        float z = UnityEngine.Random.Range(-0.5f, 0.5f);
+        float x = UnityEngine.Random.Range(-randomRange, randomRange);
+        float y = UnityEngine.Random.Range(-randomRange, randomRange);
+        float z = UnityEngine.Random.Range(-randomRange, randomRange);
         Vector3 randomPos = new Vector3(x, y, z);
         randomPos = monsterData.effectTrans.position + randomPos;
 

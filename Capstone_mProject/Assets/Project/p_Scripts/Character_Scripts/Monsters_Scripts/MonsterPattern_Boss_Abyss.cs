@@ -68,6 +68,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.ResetCameraZ();
 
         playerController.NavMeshSurface_ReBuild();
+
+        if (m_monster.HPBar_CheckNull() == false)
+        {
+            if (m_monster.monsterData.MaxHP != m_monster.monsterData.HP)
+                m_monster.ResetHP();
+            m_monster.GetHPBar();
+        }
+
     }
 
     public override void UpdateRotation()
@@ -133,7 +141,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         switch (monsterMotion)
         {
             case BossMonsterMotion.Skill01:
-                //내려찍기      //* 네비 메쉬 꺼야함.
+                //내려찍기
                 StartCoroutine(BossAbyss_Skill01());
                 break;
             case BossMonsterMotion.Skill02:
@@ -154,6 +162,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case BossMonsterMotion.GetHit:
                 break;
             case BossMonsterMotion.Death:
+                m_monster.RetrunHPBar();
+
+                GameManager.instance.bossBattle = false;
+                GameManager.instance.cameraController.Check_Z();
+                GameManager.instance.cameraController.ResetCameraZ();
                 break;
             default:
                 break;
@@ -186,9 +199,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case MonsterAnimation.GetHit:
                 break;
             case MonsterAnimation.Death:
-                GameManager.instance.bossBattle = false;
-                GameManager.instance.cameraController.Check_Z();
-                GameManager.instance.cameraController.ResetCameraZ();
+
                 break;
             default:
                 break;

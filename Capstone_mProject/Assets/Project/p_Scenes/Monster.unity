@@ -246,7 +246,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8358419906112528881, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8358419906112528881, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -929,7 +929,7 @@ Transform:
   - {fileID: 1424189439}
   - {fileID: 1793988852}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &244765971 stripped
 MonoBehaviour:
@@ -1479,8 +1479,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   monsterData:
     monsterid: 31
-    monsterName: abyss
+    monsterName: "\uC2E4\uD5D8\uCCB4 N9999 \u2018\uB098\uB77D\u2019"
+    monsterExplanation: "\uD1F4\uB9C8 \uC5F0\uAD6C \uC2DC\uC124\uC5D0\uC11C \uD0C4\uC0DD\uD55C"
     monsterType: 3
+    useWeakness: 0
+    weakness: []
     HPBarPos: {fileID: 0}
     MaxHP: 50000
     HP: 0
@@ -1533,7 +1536,7 @@ Transform:
   - {fileID: 1780207935}
   - {fileID: 2107128247}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &457840927
 GameObject:
@@ -1581,7 +1584,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &485073648
 GameObject:
@@ -1983,7 +1986,7 @@ RectTransform:
   - {fileID: 5424296417493038986}
   - {fileID: 485337090}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2134,7 +2137,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &605036777
 MonoBehaviour:
@@ -2197,6 +2200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HPBar_name: Monster_Info
+  bossHPBar_name: BossMonster_Info
   HPBar_Parent: {fileID: 380694363}
 --- !u!114 &605036780
 MonoBehaviour:
@@ -2504,7 +2508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2860404724160415388, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2860404724160415388, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3159,7 +3163,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &843222910
 GameObject:
@@ -3498,7 +3502,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &927281226
 GameObject:
@@ -5300,7 +5304,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2047525830}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 41.668, y: -25.483, z: 6.278}
 --- !u!1001 &1599396023
@@ -5613,7 +5617,7 @@ Transform:
   m_Children:
   - {fileID: 1095902722}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1661277560
 GameObject:
@@ -6866,8 +6870,9 @@ Transform:
   - {fileID: 1619249213}
   - {fileID: 154985895}
   - {fileID: 549844948}
+  - {fileID: 1551161470}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2055978611
 GameObject:
@@ -7376,7 +7381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8475924474056708985, guid: 100f88e2cc5b07f4a9969f715360c82e, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8475924474056708985, guid: 100f88e2cc5b07f4a9969f715360c82e, type: 3}
       propertyPath: m_LocalPosition.x
