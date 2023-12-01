@@ -40,7 +40,7 @@ public class ProjectileMove : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter (Collision co)
+    void OnCollisionEnter(Collision co)
     {
         speed = 0;
 
@@ -48,11 +48,11 @@ public class ProjectileMove : MonoBehaviour
         Quaternion rot = Quaternion.FromToRotation(Vector3.up, contact.normal);
         Vector3 pos = contact.point;
 
-        if(hitPrefab != null)
+        if (hitPrefab != null)
         {
             var hitVFX = Instantiate(hitPrefab, pos, rot);
             var psHit = hitVFX.GetComponent<ParticleSystem>();
-            if (psHit != null) 
+            if (psHit != null)
             {
                 Destroy(hitVFX, psHit.main.duration);
             }

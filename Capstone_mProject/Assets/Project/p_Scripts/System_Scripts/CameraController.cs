@@ -212,6 +212,10 @@ public class CameraController : MonoBehaviour
 
     public void ResetCameraZ()
     {
+        if (cameraTrans == null)
+        {
+            cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        }
         if (resetCameraZ_co != null)
         {
             StopCoroutine(resetCameraZ_co);

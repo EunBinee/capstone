@@ -30,6 +30,9 @@ public class Bullet : MonoBehaviour
     private Vector3 curOriginPos;
     private Vector3 targetDir;
 
+    // [Header("맞은 부위 체크")]
+    private Vector3 hitPoint;
+    private Vector3 normalHitPoint;
 
     private void Start()
     {
@@ -37,7 +40,6 @@ public class Bullet : MonoBehaviour
 
     public void Reset(Monster _monster = null, string _projectileName = "", Transform muzzlePos = null)
     {
-        Debug.Log("reset!!");
         trailRenderer = GetComponent<TrailRenderer>();
         rigid = GetComponent<Rigidbody>();
         this.gameObject.SetActive(true);
@@ -55,8 +57,8 @@ public class Bullet : MonoBehaviour
 
         monster = _monster;
         projectileName = _projectileName;
-
-        trailRenderer.Clear();
+        if (trailRenderer != null)
+            trailRenderer.Clear();
         isReset = true;
         firstUpdate = true;
     }
@@ -69,14 +71,17 @@ public class Bullet : MonoBehaviour
             {
                 time += Time.deltaTime;
             }
+            //* 유지 시간이 지났는데 아직 안사라지고 움직이고 있다면 없애기
             if (time > disappearTime && !isdisappear)
             {
                 isdisappear = true;
                 DisappearBullet();
             }
 
+            //* 현재 Bullt이 이동한 거리
             float curBulletDistance = Vector3.Distance(curOriginPos, this.gameObject.transform.position);
 
+            //처음 시작할 때의 Ray 체크 무시 안되도록
             if (firstUpdate)
             {
                 firstUpdate = false;
@@ -104,13 +109,14 @@ public class Bullet : MonoBehaviour
     {
         float range = 100f;
         RaycastHit[] hits;
+        RaycastHit shortHit;
         hits = Physics.RaycastAll(curOriginPos, targetDir, range);
 
         float shortDist = 1000f;
         bool isPass = false;
         if (hits.Length != 0)
         {
-            RaycastHit shortHit = hits[0];
+            shortHit = hits[0];
 
             foreach (RaycastHit hit in hits)
             {
@@ -124,8 +130,11 @@ public class Bullet : MonoBehaviour
                         isPass = true;
                     }
                 }
+
                 if (hit.collider.name != this.gameObject.name && !isPass)
                 {
+                    Vector3 hitPoint = hit.point;
+
                     //자기 자신은 패스
                     float distance = hit.distance;
                     if (curBulletDistance < distance && shortDist > distance)
@@ -142,12 +151,14 @@ public class Bullet : MonoBehaviour
             }
 
             if (shortDist != 1000)
+            {
                 targetDistance = shortDist;
+                hitPoint = shortHit.point;
+                normalHitPoint = shortHit.normal;
+            }
         }
 
     }
-
-
 
     public void GetDistance(Vector3 _targetDir)
     {
@@ -161,12 +172,35 @@ public class Bullet : MonoBehaviour
 
     private void DisappearBullet()
     {
-        //풀링
-        rigid.velocity = Vector3.zero;
+        if (isReset)
+        {
+            //사라지기 전 이펙트
+            {
+                //*보스전일때만
+                if (Vector3.Distance(hitPoint, playerController.gameObject.transform.position) < 4)
+                {
+                    //가까운곳에 떨어졌을때. 
+                    GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
+                }
+                Quaternion rot = Quaternion.FromToRotation(Vector3.up, normalHitPoint);
+                Vector3 pos = hitPoint;
 
-        GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
-        OnHitPlayerEffect = null;
-        isReset = false;
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_10_hit");
+                effect.gameObject.transform.position = pos;
+                effect.gameObject.transform.rotation = rot;
+            }
+
+            //풀링
+            rigid.velocity = Vector3.zero;
+
+            GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
+            OnHitPlayerEffect = null;
+            isReset = false;
+        }
+        else
+        {
+            Debug.LogError("HI");
+        }
     }
 
     Transform FindTopParent(Transform childTransform)
@@ -179,6 +213,12 @@ public class Bullet : MonoBehaviour
         }
 
         return topParent;
+    }
+
+
+    public void FinishEffect()
+    {
+
     }
 
 }
