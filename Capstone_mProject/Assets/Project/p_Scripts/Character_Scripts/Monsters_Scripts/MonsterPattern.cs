@@ -29,6 +29,9 @@ public class MonsterPattern : MonoBehaviour
 
     public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 
+    protected Vector3 curHitPos;
+    protected Quaternion curHitQuaternion;
+
     public enum MonsterState
     {
         Roaming,
@@ -44,6 +47,7 @@ public class MonsterPattern : MonoBehaviour
     {
         Idle,
         Move,
+        Move_Dodge,
         GetHit,
         Death
     }
@@ -127,12 +131,17 @@ public class MonsterPattern : MonoBehaviour
     public void Update()
     {
         Monster_Pattern();
-
+        useUpdate();
 
         if (m_monster.monsterData.movingMonster)
         {
             UpdateRotation();
         }
+    }
+
+    public virtual void useUpdate()
+    {
+
     }
 
     private void FixedUpdate()
@@ -149,7 +158,7 @@ public class MonsterPattern : MonoBehaviour
         rigid.angularVelocity = Vector3.zero;
     }
 
-    private void UpdateRotation()
+    public virtual void UpdateRotation()
     {
         if (navMeshAgent.desiredVelocity.sqrMagnitude >= 0.1f * 0.1f)
         {
@@ -198,12 +207,26 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+    protected void NavMesh_Enable(bool enable)
+    {
+        if (enable)
+        {
+            //네비메쉬 키기
+            navMeshAgent.enabled = true;
+        }
+        else
+        {
+            //끄기 
+            navMeshAgent.enabled = false;
+        }
+    }
+
     protected void SetMove_AI(bool moveAI)
     {
         if (moveAI)
         {
             //움직임.
-            navMeshAgent.ResetPath();
+            // navMeshAgent.ResetPath();
             navMeshAgent.isStopped = false;
             navMeshAgent.updatePosition = true;
         }
@@ -351,16 +374,17 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+
     public virtual void StopAtackCoroutine()
     {
 
     }
     // * ---------------------------------------------------------------------------------------//
     //! 특정 범위안에 플레이어가 있는지 파악하고, 데미지 주는 함수
-    public bool CheckPlayerDamage(float _overlapRadius, float damage = 0)
+    public bool CheckPlayerDamage(float _overlapRadius, Vector3 _targetPos, float damage = 0)
     {
         drawDamageCircle = true;
-        Collider[] playerColliders = Physics.OverlapSphere(transform.position, _overlapRadius, playerlayerMask);
+        Collider[] playerColliders = Physics.OverlapSphere(_targetPos, _overlapRadius, playerlayerMask);
         if (0 < playerColliders.Length)
         {
             m_monster.OnHit(damage);
@@ -467,6 +491,12 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+    //*-----------------------------------------------------------------------------------------//
+    public void SetGetDemageMonster(Vector3 pos, Quaternion qua)
+    {
+        curHitPos = pos;
+        curHitQuaternion = qua;
+    }
     // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
@@ -506,6 +536,14 @@ public class MonsterPattern : MonoBehaviour
         Vector3 curDirection = target - startPos;
 
         return curDirection;
+    }
+    //* 특정 자식의 로테이션 값 가져오는 함수
+    protected Quaternion GetWorldRotation(Transform currentTransform)
+    {
+        if (currentTransform == null)
+            return Quaternion.identity;
+
+        return GetWorldRotation(currentTransform.parent) * currentTransform.localRotation;
     }
 
 

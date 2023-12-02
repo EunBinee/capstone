@@ -1958,9 +1958,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9716bf964484384bb5c2623103dbff0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigid: {fileID: 0}
   playerTargetPos: {fileID: 0}
   playerHide: 0
   noAttack: 0
+  forcedReturnHome: 0
   isRoaming: 0
   isFinding: 0
   isTracing: 0
@@ -1981,7 +1983,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9145501094011521475}
   m_Enabled: 1
-  m_AgentTypeID: 0
+  m_AgentTypeID: -1372625422
   m_Radius: 0.4
   m_Speed: 3.5
   m_Acceleration: 15

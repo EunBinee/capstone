@@ -8,9 +8,13 @@ public class EffectController : MonoBehaviour
     [Header("이펙트 사이즈 조절 크기")]
     public float size = 1;
     ParticleSystem[] particleSystemList;
+
+    float curSize = 0;
+    bool canChangeSize = false;
+
     void Start()
     {
-        particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
+        //particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
 
         ChangeSize();
     }
@@ -23,24 +27,32 @@ public class EffectController : MonoBehaviour
 
     public void ChangeSize()
     {
-        for (int i = 0; i < particleSystemList.Length; i++)
+        if (!canChangeSize && curSize != size)
         {
-            if (particleSystemList[i].main.startSize3D)
-            {
-                ParticleSystem.MainModule mainModule = particleSystemList[i].main;
-                mainModule.startSizeXMultiplier = (float)Math.Round((mainModule.startSizeXMultiplier * size), 1);
-                mainModule.startSizeYMultiplier = (float)Math.Round((mainModule.startSizeYMultiplier * size), 1);
-                mainModule.startSizeZMultiplier = (float)Math.Round((mainModule.startSizeZMultiplier * size), 1);
-            }
-            else
-            {
-                ParticleSystem.MainModule mainModule = particleSystemList[i].main;
-                float originStartSize = mainModule.startSizeMultiplier;
+            curSize = size;
+            canChangeSize = true;
+            particleSystemList = GetComponentsInChildren<ParticleSystem>(true);
 
-                float curStartSize = originStartSize * size;
-                curStartSize = (float)Math.Round(curStartSize, 1);
-                mainModule.startSizeMultiplier = curStartSize;
+            for (int i = 0; i < particleSystemList.Length; i++)
+            {
+                if (particleSystemList[i].main.startSize3D)
+                {
+                    ParticleSystem.MainModule mainModule = particleSystemList[i].main;
+                    mainModule.startSizeXMultiplier = (float)Math.Round((mainModule.startSizeXMultiplier * size), 1);
+                    mainModule.startSizeYMultiplier = (float)Math.Round((mainModule.startSizeYMultiplier * size), 1);
+                    mainModule.startSizeZMultiplier = (float)Math.Round((mainModule.startSizeZMultiplier * size), 1);
+                }
+                else
+                {
+                    ParticleSystem.MainModule mainModule = particleSystemList[i].main;
+                    float originStartSize = mainModule.startSizeMultiplier;
+
+                    float curStartSize = originStartSize * size;
+                    curStartSize = (float)Math.Round(curStartSize, 1);
+                    mainModule.startSizeMultiplier = curStartSize;
+                }
             }
         }
     }
+
 }

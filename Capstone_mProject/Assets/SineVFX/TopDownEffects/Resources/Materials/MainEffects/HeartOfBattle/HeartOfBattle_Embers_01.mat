@@ -2,14 +2,17 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: HeartOfBattle_Embers_01
   m_Shader: {fileID: 4800000, guid: a11c402da186435cb7cdd325647bd0f3, type: 3}
-  m_ShaderKeywords: _DISSOLVETEXTUREFLIP_ON _RAMPENABLED_ON
+  m_ValidKeywords:
+  - _DISSOLVETEXTUREFLIP_ON
+  - _RAMPENABLED_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -28,7 +31,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Ramp:
-        m_Texture: {fileID: 2800000, guid: 6844a24f1b1b407e8deb3b0e4d3f41e5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 88d644ec43c64556a9bf187bc4f2f85a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _tex4coord:
@@ -43,6 +46,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _DissolveExp: 8
     - _DissolveExpReversed: 2
@@ -61,6 +65,7 @@ Material:
     - _RampOffsetExp: 1
     - __dirty: 0
     m_Colors:
-    - _FinalColor: {r: 1, g: 0.12787381, b: 0, a: 1}
+    - _FinalColor: {r: 0.4056604, g: 0.33036333, b: 0.31917053, a: 1}
     - _MainTexChannels: {r: 1, g: 0, b: 0, a: 0}
-    - _RampColorTint: {r: 1, g: 0.6084906, b: 0.6084906, a: 1}
+    - _RampColorTint: {r: 0.5377358, g: 0.34699178, b: 0.34699178, a: 1}
+  m_BuildTextureStacks: []

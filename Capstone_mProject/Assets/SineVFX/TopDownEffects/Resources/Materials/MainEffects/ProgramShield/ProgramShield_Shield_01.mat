@@ -2,15 +2,20 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ProgramShield_Shield_01
   m_Shader: {fileID: 4800000, guid: 243f2b1a73c7480da823f2f7f830cbb2, type: 3}
-  m_ShaderKeywords: _DEPTHMASKFLIP_ON _DISSOLVETEXTUREFLIP_ON _RAMPENABLED_ON _TRISGLAREENABLED_ON
-    _VERTICALGRADIENTENABLED_ON
+  m_ValidKeywords:
+  - _RAMPENABLED_ON
+  - _TRISGLAREENABLED_ON
+  - _VERTICALGRADIENTENABLED_ON
+  m_InvalidKeywords:
+  - _DEPTHMASKFLIP_ON
+  - _DISSOLVETEXTUREFLIP_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -45,7 +50,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Ramp:
-        m_Texture: {fileID: 2800000, guid: 19aa359da51c45cb9ef16dad6d690a8b, type: 3}
+        m_Texture: {fileID: 2800000, guid: b52053da5a6848c886816aae0e2c7032, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TextureSample0:
@@ -88,6 +93,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _AppearGradientAbsSwitch: 1
     - _AppearGradientClampSwitch: 0
@@ -108,7 +114,7 @@ Material:
     - _DissolveTextureFlip: 1
     - _DissolveTextureScale: 1
     - _FinalOpacityPower: 2
-    - _FinalPower: 25
+    - _FinalPower: 2.5
     - _FlipbookColums: 1
     - _FlipbookRows: 1
     - _Float7: 0.636
@@ -139,7 +145,7 @@ Material:
     - _OffsetToOpacityTopFixExp: 8
     - _OffsetToOpacityTopFixValue: 0.25
     - _OffsetTrisOpacityNegate: 0.25
-    - _RampAffectedByDynamics: 0.975
+    - _RampAffectedByDynamics: 0.039
     - _RampAffectedByDynamics1: 0.85
     - _RampEnabled: 1
     - _RampOffsetExp: 8
@@ -162,7 +168,8 @@ Material:
     - _WavesSpeed: 4
     - __dirty: 0
     m_Colors:
-    - _FinalColor: {r: 1, g: 0, b: 0, a: 1}
+    - _FinalColor: {r: 1, g: 0, b: 0, a: 0.5058824}
     - _MainTexChannels: {r: 0.25, g: 0, b: 0, a: 0.0125}
-    - _RampColorTint: {r: 1, g: 1, b: 1, a: 1}
+    - _RampColorTint: {r: 0.764151, g: 0, b: 0, a: 0.50980395}
     - _RampColorTint1: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []

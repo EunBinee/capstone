@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -29,6 +30,11 @@ public class Bullet : MonoBehaviour
     private Vector3 curOriginPos;
     private Vector3 targetDir;
 
+    // [Header("맞은 부위 체크")]
+    private Vector3 hitPoint;
+    private Vector3 normalHitPoint;
+
+    string hitEffectName = "";
 
     private void Start()
     {
@@ -44,6 +50,7 @@ public class Bullet : MonoBehaviour
         this.gameObject.transform.Rotate(Vector3.zero);
         curOriginPos = muzzlePos.position;
 
+
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         time = 0;
         isdisappear = false;
@@ -52,8 +59,8 @@ public class Bullet : MonoBehaviour
 
         monster = _monster;
         projectileName = _projectileName;
-
-        trailRenderer.Clear();
+        if (trailRenderer != null)
+            trailRenderer.Clear();
         isReset = true;
         firstUpdate = true;
     }
@@ -66,14 +73,17 @@ public class Bullet : MonoBehaviour
             {
                 time += Time.deltaTime;
             }
+            //* 유지 시간이 지났는데 아직 안사라지고 움직이고 있다면 없애기
             if (time > disappearTime && !isdisappear)
             {
                 isdisappear = true;
-                DisappearBullet();
+                DisappearBullet(false);
             }
 
+            //* 현재 Bullt이 이동한 거리
             float curBulletDistance = Vector3.Distance(curOriginPos, this.gameObject.transform.position);
 
+            //처음 시작할 때의 Ray 체크 무시 안되도록
             if (firstUpdate)
             {
                 firstUpdate = false;
@@ -87,7 +97,7 @@ public class Bullet : MonoBehaviour
                     AttackPlayer();
                 }
                 isdisappear = true;
-                DisappearBullet();
+                DisappearBullet(true);
             }
             else
             {
@@ -101,39 +111,61 @@ public class Bullet : MonoBehaviour
     {
         float range = 100f;
         RaycastHit[] hits;
+        RaycastHit shortHit;
         hits = Physics.RaycastAll(curOriginPos, targetDir, range);
 
         float shortDist = 1000f;
-        RaycastHit shortHit = hits[0];
-
-        foreach (RaycastHit hit in hits)
+        bool isPass = false;
+        if (hits.Length != 0)
         {
-            if (hit.collider.name != this.gameObject.name)
-            {
-                //자기 자신은 패스
-                float distance = hit.distance;
-                if (curBulletDistance < distance && shortDist > distance)
-                {
-                    shortHit = hit;
-                    shortDist = distance;
+            shortHit = hits[0];
 
-                    if (hit.collider.tag == "Player")
-                        attackPlayer = true;
-                    else
-                        attackPlayer = false;
+            foreach (RaycastHit hit in hits)
+            {
+                isPass = false;
+                if (hit.collider.tag == "Monster")
+                {
+                    //자기 자신인지확인
+                    Transform _transform = FindTopParent(hit.collider.gameObject.GetComponent<Transform>());
+                    if (_transform.name == monster.gameObject.name)
+                    {
+                        isPass = true;
+                    }
                 }
+
+                if (hit.collider.name != this.gameObject.name && !isPass)
+                {
+                    Vector3 hitPoint = hit.point;
+
+                    //자기 자신은 패스
+                    float distance = hit.distance;
+                    if (curBulletDistance < distance && shortDist > distance)
+                    {
+                        shortHit = hit;
+                        shortDist = distance;
+
+                        if (hit.collider.tag == "Player")
+                            attackPlayer = true;
+                        else
+                            attackPlayer = false;
+                    }
+                }
+            }
+
+            if (shortDist != 1000)
+            {
+                targetDistance = shortDist;
+                hitPoint = shortHit.point;
+                normalHitPoint = shortHit.normal;
             }
         }
 
-        if (shortDist != 1000)
-            targetDistance = shortDist;
     }
 
-
-
-    public void GetDistance(Vector3 _targetDir)
+    public void SetInfo(Vector3 _targetDir, string _hitEffectName = "")
     {
         targetDir = _targetDir;
+        hitEffectName = _hitEffectName;
     }
 
     public void AttackPlayer()
@@ -141,12 +173,60 @@ public class Bullet : MonoBehaviour
         monster.OnHit(3, OnHitPlayerEffect);
     }
 
-    private void DisappearBullet()
+    private void DisappearBullet(bool isHitDisappear = false)
     {
-        //풀링
-        GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
-        OnHitPlayerEffect = null;
-        isReset = false;
+        if (isReset)
+        {
+            //사라지기 전 이펙트
+            if (isHitDisappear)
+            {
+                //*보스전일때만
+                if (Vector3.Distance(hitPoint, playerController.gameObject.transform.position) < 4)
+                {
+                    //가까운곳에 떨어졌을때. 
+                    GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
+                }
+                if (hitEffectName != "")
+                {
+                    Quaternion rot = Quaternion.FromToRotation(Vector3.up, normalHitPoint);
+                    Vector3 pos = hitPoint;
+
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(hitEffectName);
+                    effect.gameObject.transform.position = pos;
+                    effect.gameObject.transform.rotation = rot;
+                }
+
+            }
+
+            //풀링
+            rigid.velocity = Vector3.zero;
+
+            GameManager.Instance.objectPooling.AddProjectilePool(projectileName, this.gameObject);
+            OnHitPlayerEffect = null;
+            isReset = false;
+        }
+        else
+        {
+            Debug.LogError("HI");
+        }
+    }
+
+    Transform FindTopParent(Transform childTransform)
+    {
+        Transform topParent = childTransform;
+
+        while (topParent.parent != null)
+        {
+            topParent = topParent.parent;
+        }
+
+        return topParent;
+    }
+
+
+    public void FinishEffect()
+    {
+
     }
 
 }

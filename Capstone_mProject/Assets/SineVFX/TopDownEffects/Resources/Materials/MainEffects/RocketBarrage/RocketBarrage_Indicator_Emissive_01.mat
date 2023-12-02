@@ -2,18 +2,24 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: RocketBarrage_Indicator_Emissive_01
   m_Shader: {fileID: 4800000, guid: 815a0b5fe3a04de6878117020fc75f04, type: 3}
-  m_ShaderKeywords: _DISSOLVETEXTUREFLIP_ON _DISTORTIONENABLED_ON _DISTORTIONRADIAL_ON
-    _DISTORTIONUVORSPHERICAL_ON _EMISSIONVERTEXSTREAMENABLED_ON _NOISE01RADIAL1_ON
-    _NOISE01RADIAL_ON
+  m_ValidKeywords:
+  - _DISTORTIONENABLED_ON
+  - _DISTORTIONRADIAL_ON
+  - _DISTORTIONUVORSPHERICAL_ON
+  - _EMISSIONVERTEXSTREAMENABLED_ON
+  - _NOISE01RADIAL_ON
+  m_InvalidKeywords:
+  - _DISSOLVETEXTUREFLIP_ON
+  - _NOISE01RADIAL1_ON
   m_LightmapFlags: 0
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -109,6 +115,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _CustomColorMaskAffectedByDynamics: 1
     - _CustomColorMaskAffectedByDynamics1: 1
@@ -163,6 +170,8 @@ Material:
     - _FinalPower: 6
     - _Float4: 0.25
     - _MainMaskExp: 1
+    - _MainMaskScaleU: 1
+    - _MainMaskScaleV: 1
     - _MainMaskScrollSpeedU: 0
     - _MainMaskScrollSpeedV: 0
     - _Noise01Exp: 1
@@ -212,6 +221,8 @@ Material:
     - _SecondaryMaskNegate: 0
     - _SecondaryMaskVSMoveU: 0
     - _SecondayMaskVSMoveV: 0
+    - _SoftParticlesDistance: 0.2
+    - _SoftParticlesEnabled: 0
     - __dirty: 0
     m_Colors:
     - _CustomColorMaskChannels: {r: 1, g: 0, b: 0, a: 0}
@@ -220,3 +231,4 @@ Material:
     - _MainMaskChannelsMultiply: {r: 1, g: 0, b: 0, a: 0}
     - _Noise01ScrollSpeedUV: {r: 1, g: 1, b: 0, a: 0}
     - _RampColorTint: {r: 1, g: 0.31603763, b: 0.31603763, a: 1}
+  m_BuildTextureStacks: []

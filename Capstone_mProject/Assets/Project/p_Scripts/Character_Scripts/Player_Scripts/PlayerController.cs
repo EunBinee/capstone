@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 CapsuleBottomCenterPoint
    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
 
-    public NavMeshSurface navMeshSurface;
+    public List<NavMeshSurface> navMeshSurface;
 
     private bool isGettingHit = false;
     public Action OnHitPlayerEffect = null;
@@ -138,10 +138,14 @@ public class PlayerController : MonoBehaviour
             P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
 
-        navMeshSurface.BuildNavMesh();
+        NavMeshSurface_ReBuild();
+    }
 
-        //플레이어 스킬
-        _playerSkills.Init();
+    public void NavMeshSurface_ReBuild()
+    {
+        for (int i = 0; i < navMeshSurface.Count; ++i)
+            navMeshSurface[i].BuildNavMesh();
+
     }
 
     void InitCapsuleCollider()

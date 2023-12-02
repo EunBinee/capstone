@@ -89,7 +89,13 @@ public class PlayerAttackCheck : MonoBehaviour
                     {
                         P_States.hadAttack = true;
                         //TODO: 나중에 연산식 사용.
-                        monster.GetDamage(700);
+
+                        // 충돌한 객체의 Transform을 얻기
+                        Transform collidedTransform = other.transform;
+                        // 충돌 지점의 좌표를 얻기
+                        Vector3 collisionPoint = other.ClosestPoint(transform.position);
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
+                        monster.GetDamage(700, collisionPoint, otherQuaternion);
 
                         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
                         P_Value.curHitTime = Time.time; //* 현재 시간 저장

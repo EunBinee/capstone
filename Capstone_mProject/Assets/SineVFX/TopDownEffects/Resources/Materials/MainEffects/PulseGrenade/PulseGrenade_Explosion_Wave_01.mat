@@ -2,14 +2,18 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PulseGrenade_Explosion_Wave_01
   m_Shader: {fileID: 4800000, guid: 815a0b5fe3a04de6878117020fc75f04, type: 3}
-  m_ShaderKeywords: _DISSOLVETEXTUREFLIP_ON _EMISSIONVERTEXSTREAMENABLED_ON _RAMPENABLED_ON
+  m_ValidKeywords:
+  - _EMISSIONVERTEXSTREAMENABLED_ON
+  - _RAMPENABLED_ON
+  m_InvalidKeywords:
+  - _DISSOLVETEXTUREFLIP_ON
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -99,6 +103,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _CustomColorMaskAffectedByDynamics: 1
     - _CustomColorMaskAffectedByDynamics1: 1
@@ -203,7 +208,8 @@ Material:
     m_Colors:
     - _CustomColorMaskChannels: {r: 1, g: 0, b: 0, a: 0}
     - _CustomColorMaskChannels1: {r: 1, g: 0, b: 0, a: 0}
-    - _FinalColor: {r: 1, g: 0, b: 0, a: 1}
+    - _FinalColor: {r: 0.6132076, g: 0, b: 0, a: 1}
     - _MainMaskChannelsMultiply: {r: 1, g: 0, b: 0, a: 0}
     - _Noise01ScrollSpeedUV: {r: 1, g: 1, b: 0, a: 0}
     - _RampColorTint: {r: 0.39215687, g: 0.44705883, b: 1, a: 1}
+  m_BuildTextureStacks: []
