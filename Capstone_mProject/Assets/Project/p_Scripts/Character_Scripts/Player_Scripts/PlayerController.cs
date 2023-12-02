@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
+    private PlayerMovement P_Movement;
 
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
@@ -66,8 +67,10 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
 
-    private Vector3 originCamPos;
-    private Vector3 originCamQua;
+    //private Vector3 originCamPos;
+    //private Quaternion originCamQua;
+    public Camera mainCam;
+    public Camera AimmingCam;
 
     public GameObject bow;
     public GameObject sword;
@@ -81,6 +84,7 @@ public class PlayerController : MonoBehaviour
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
+        P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -90,6 +94,7 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
+        AimOnCameraReturn();
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
     }
@@ -183,14 +188,9 @@ public class PlayerController : MonoBehaviour
         nowHitTime = P_Value.curHitTime;
     }
 
-    public void ChangePlayerState(PlayerState playerState)
+    public void AnimState(PlayerState playerState, float knockbackDistance = 1.5f, int index = 0)
     {
         curPlayerState = playerState;
-
-    }
-
-    public void AnimState(PlayerState playerState, int index = 0)
-    {
         switch (playerState)
         {
             case PlayerState.Idle:
@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
-                    StartCoroutine(GetHit_KnockBack_co());
+                    StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
 
@@ -284,25 +284,25 @@ public class PlayerController : MonoBehaviour
     {
         //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
         //Debug.Log("AimOnCamera()");
-        originCamPos = P_CamController.cameraTrans.localPosition;
-        originCamQua = P_CamController.cameraTrans.rotation.eulerAngles;
-        P_CamController.cameraTrans.localPosition = new Vector3(0.5f, -0.3f, -2f);
-        P_CamController.minPivot = -25;
-        P_CamController.maxPivot = 25;
-        //playerFollowCamera.enabled = false;
-        //onAimCamera.enabled = true;
+        P_CamController.left_right_LookAngle = 0;
+        P_CamController.up_down_LookAngle = 0;
+        AimmingCam.enabled = true;
+        P_Camera.cameraObj.enabled = false;
+        P_Camera.cameraObj = AimmingCam;
+        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = -25;
+        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 25;
     }
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
         //Debug.Log("CameraReturn()");
-        P_CamController.cameraTrans.localPosition = originCamPos;
-        //P_CamController.cameraTrans.Rotate(originCamQua);
-        P_CamController.cameraTrans.Rotate(new Vector3(6, 0, 0));
-        P_CamController.minPivot = 0;
-        P_CamController.maxPivot = 0;
-        //onAimCamera.enabled = false;
-        //playerFollowCamera.enabled = true;
+        P_CamController.left_right_LookAngle = 0;
+        P_CamController.up_down_LookAngle = 0;
+        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = 0;
+        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 0;
+        P_Camera.cameraObj = mainCam;
+        AimmingCam.enabled = false;
+        P_Camera.cameraObj.enabled = true;
     }
 
     //* 물리(중력)
@@ -412,8 +412,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            //P_Com.animator.SetTrigger("isGetDamage");
-            P_Com.animator.Play("Get_Damage", 0);
+            if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
+            {
+                P_Com.animator.SetTrigger("shoot");
+                P_Movement.skillMotion('E');
+            }
 
             AnimState(PlayerState.GetHit_KnockBack);
         }
@@ -438,33 +441,33 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    IEnumerator GetHit_KnockBack_co() //넉백만을 수행
+    IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
-        PlayerState preState = curPlayerState;
-        //ChangePlayerState(PlayerState.GetHit);
-
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
 
         OnHitPlayerEffect?.Invoke();
         if (OnHitPlayerEffect == null)
         {
-
             //transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-
-
             //null일시 기본 이펙트.
             playerGetHitEffect();
         }
 
         knockback_Dir = knockback_Dir.normalized;
-        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        Vector3 KnockBackPos = transform.position + knockback_Dir * knockbackDistance; // 넉백 시 이동할 위치
         KnockBackPos.y = 0;
 
+        if (knockbackDistance > 1.5f)
+        {
+            P_Com.animator.SetTrigger("isKnockback");
+        }
+        else
+        {
+            P_Com.animator.Play("Get_Damage", 0);
+        }
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         yield return null;
-
-        ChangePlayerState(preState);
 
         isGettingHit = false;
     }
