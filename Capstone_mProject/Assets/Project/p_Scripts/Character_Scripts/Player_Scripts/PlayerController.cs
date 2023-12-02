@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
+    private PlayerMovement P_Movement;
 
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
@@ -83,6 +84,7 @@ public class PlayerController : MonoBehaviour
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
+        P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -186,14 +188,9 @@ public class PlayerController : MonoBehaviour
         nowHitTime = P_Value.curHitTime;
     }
 
-    public void ChangePlayerState(PlayerState playerState)
+    public void AnimState(PlayerState playerState, float knockbackDistance = 1.5f, int index = 0)
     {
         curPlayerState = playerState;
-
-    }
-
-    public void AnimState(PlayerState playerState, int index = 0)
-    {
         switch (playerState)
         {
             case PlayerState.Idle:
@@ -211,7 +208,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
-                    StartCoroutine(GetHit_KnockBack_co());
+                    StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
 
@@ -415,8 +412,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            //P_Com.animator.SetTrigger("isGetDamage");
-            P_Com.animator.Play("Get_Damage", 0);
+            if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
+            {
+                P_Com.animator.SetTrigger("shoot");
+                P_Movement.skillMotion('E');
+            }
 
             AnimState(PlayerState.GetHit_KnockBack);
         }
@@ -443,9 +443,6 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
-        PlayerState preState = curPlayerState;
-        //ChangePlayerState(PlayerState.GetHit);
-
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
 
         OnHitPlayerEffect?.Invoke();
@@ -460,11 +457,17 @@ public class PlayerController : MonoBehaviour
         Vector3 KnockBackPos = transform.position + knockback_Dir * knockbackDistance; // 넉백 시 이동할 위치
         KnockBackPos.y = 0;
 
+        if (knockbackDistance > 1.5f)
+        {
+            P_Com.animator.SetTrigger("isKnockback");
+        }
+        else
+        {
+            P_Com.animator.Play("Get_Damage", 0);
+        }
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         yield return null;
-
-        //ChangePlayerState(preState);
 
         isGettingHit = false;
     }

@@ -15,6 +15,7 @@ public class CameraShake : MonoBehaviour
 
     public void ShakeCamera(float duration, float shakeSpeed, float shakeAmount)
     {
+        cam = GameManager.instance.cameraController.cameraObj.transform;
         if (!isShaking)
         {
             isShaking = true;

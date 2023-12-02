@@ -174,7 +174,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void skillMotion(char a)
+    public void skillMotion(char a)
     {
         if (skill_E == null)
         {
