@@ -52,7 +52,7 @@ public class EffectController : MonoBehaviour
                     mainModule.startSizeMultiplier = curStartSize;
                 }
             }
-
         }
     }
+
 }

@@ -289,11 +289,34 @@ public class PlayerMovement : MonoBehaviour
         {
             //걷기와 뛰기는 동일하게
             Vector3 targetDirect = Vector3.zero;
+
             if (P_Value.nowEnemy != null && P_States.isStartComboAttack && P_Value.isCombo)   //* 최근에 공격한 적(몬서터)이 있다면
             {
-                Vector3 toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
+                Vector3 toMonsterDir = Vector3.zero;
+                if (nowEnemy_Monster.monsterData.useWeakness)
+                {
+                    float distance = 10000;
+                    int curW_index = 0;
+                    for (int i = 0; i < nowEnemy_Monster.monsterData.weakness.Count; ++i)
+                    {
+                        float m_distance = Vector3.Distance(nowEnemy_Monster.monsterData.weakness[i].position, this.transform.position);
+                        if (m_distance < distance)
+                        {
+                            distance = m_distance;
+                            curW_index = i;
+                        }
+                    }
+                    Vector3 _monster = new Vector3(nowEnemy_Monster.monsterData.weakness[curW_index].position.x, 0, nowEnemy_Monster.monsterData.weakness[curW_index].position.z);
+                    toMonsterDir = (_monster - this.transform.position).normalized;
+                }
+                else
+                {
+                    toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                }
                 targetDirect = toMonsterDir * P_Input.verticalMovement;
                 targetDirect = targetDirect + (P_Value.nowEnemy.transform.right.normalized - this.transform.right.normalized).normalized * P_Input.horizontalMovement;
+
             }
             else
             {

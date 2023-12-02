@@ -239,6 +239,25 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
         }
     }
+    //*----------------------------------------------------------------------------------------------------------//
+    public override void ChangeBossPhase(BossMonsterPhase bossMonsterPhase)
+    {
+        curBossPhase = bossMonsterPhase;
+
+        switch (curBossPhase)
+        {
+            case BossMonsterPhase.Phase1:
+                // 등장 연출
+                break;
+            case BossMonsterPhase.Phase2:
+                // 2페이지 시작 연출
+                break;
+            case BossMonsterPhase.Phase3:
+                // 3페이지 시작 연출
+                break;
+        }
+    }
+
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> 로밍(시네머신 등장 신.)
     public override void Roam_Monster()
@@ -258,7 +277,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //Monster_Motion(BossMonsterMotion.Skill02);
             //StartCoroutine(SetWreckage());
             //스킬 3
-            //Monster_Motion(BossMonsterMotion.Skill03);
+            Monster_Motion(BossMonsterMotion.Skill03);
         }
     }
     //*----------------------------------------------------------------------------------------------------------//
@@ -742,9 +761,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         StartCoroutine(BossAbyss_Skill03());
     }
-
+    float skillTime = 0;
     IEnumerator BossAbyss_Skill03()
     {
+        CheckPlayerInMonster_skill03(9);
+
+        //yield return new WaitForSeconds(3f);
+
         //* 총구들과 Neck 부분의 원래 Rotation 얻기
         List<Quaternion> muzzleL_OriginQ = new List<Quaternion>();
         List<Quaternion> muzzleR_OriginQ = new List<Quaternion>();
@@ -753,7 +776,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         for (int i = 0; i < muzzlesR.Length; i++)
             muzzleR_OriginQ.Add(GetWorldRotation(muzzlesR[i]));
         //------------------------------------------------
-        float time = 0;
+        skillTime = 0;
         float fireTime = 0;
         Vector3 targetPos = playerTargetPos.position;
         //애니메이터 끄기
@@ -762,18 +785,29 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         m_animator.enabled = false;
         //--------------------------------------------------//
-
         Quaternion childWorldRotation = GetWorldRotation(bossNeck);
         Quaternion originChildWorldRot = childWorldRotation;
         bossNeck.rotation = childWorldRotation;
         // 가져온 월드 회전값을 출력해보기
-
         Vector3 rayPos = new Vector3(bossNeck.position.x, playerTargetPos.position.y, bossNeck.position.z);
+
+
+        for (int i = 0; i < muzzlesL.Length; i++)
+        {
+            muzzlesL[i].rotation = Quaternion.Euler(muzzlesL[i].eulerAngles.x + 20, muzzlesL[i].eulerAngles.y, muzzlesL[i].eulerAngles.z);
+        }
+        for (int i = 0; i < muzzlesR.Length; i++)
+        {
+            muzzlesR[i].rotation = Quaternion.Euler(muzzlesR[i].eulerAngles.x + 20, muzzlesR[i].eulerAngles.y, muzzlesR[i].eulerAngles.z);
+        }
+
 
         bool isStop = false;
         while (!isStop)
         {
-            time += Time.deltaTime;
+            CheckPlayerInMonster_skill03(9);
+
+            skillTime += Time.deltaTime;
             fireTime += Time.deltaTime;
             if (fireTime >= 0.2f)
             {
@@ -793,7 +827,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
                 CheckCheckPlayer_Front(rayPos);
 
-                if (time >= 10)
+                if (skillTime >= 10)
                 {
                     //계속 체크
                     if (Mathf.Abs(bossNeck.rotation.eulerAngles.y - originChildWorldRot.eulerAngles.y) < 2)
@@ -804,6 +838,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     }
                 }
             }
+
             yield return null;
         }
 
@@ -822,6 +857,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos, bool findPlayer = false)
     {
+
         //* 총알 //
         GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab("BossMonsterAbyss_Bullet_02", prefabPos);
         Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
@@ -847,7 +883,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Quaternion targetAngle = Quaternion.LookRotation(curDirection);
             bulletObj.transform.rotation = targetAngle;
 
-            bullet.GetDistance(curDirection.normalized);
+            bullet.SetInfo(curDirection.normalized, "FX_Shoot_10_hit");
             bulletRigid.velocity = curDirection.normalized * 80f;
         }
         else
@@ -855,7 +891,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Quaternion targetAngle = Quaternion.LookRotation(muzzlePos.forward);
             bulletObj.transform.rotation = targetAngle;
 
-            bullet.GetDistance(muzzlePos.forward); //* Bullet.cs에 방향 벡터 보냄
+            bullet.SetInfo(muzzlePos.forward, "FX_Shoot_10_hit"); //* Bullet.cs에 방향 벡터 보냄
             bulletRigid.velocity = (muzzlePos.forward) * 80f;
         }
 
@@ -865,7 +901,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectController.ChangeSize();
         effect.gameObject.transform.position = muzzlePos.position + (muzzlePos.forward * 0.2f);
         effect.gameObject.transform.rotation = muzzlePos.rotation;
-
 
         yield return null;
     }
@@ -915,11 +950,58 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         return angle;
     }
 
+
+
+    Effect Shield_Effect_skill03 = null;
+    public void CheckPlayerInMonster_skill03(float radius)
+    {
+        //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
+        float distance = Vector3.Distance(this.transform.position, playerTrans.position);
+        {
+            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius, playerlayerMask);
+
+            if (0 < playerColliders.Length)
+            {
+                //넉백!! 튕겨내기 후, 이펙트 생성.
+                //TODO: 민지쪽에서 구현 완료하면 구현
+            }
+            else
+            {
+                //* 스킬 3번일때 플레이어가 몬스터 근처에 왔을경우.
+                //* 장벽 치기
+                playerColliders = Physics.OverlapSphere(this.transform.position, radius + 5, playerlayerMask);
+
+                if (0 < playerColliders.Length)
+                {
+                    //이펙트생성으로 들어오는 것 막기
+                    if (Shield_Effect_skill03 == null)
+                    {
+                        //null이면 이펙트가 없는것.
+                        Shield_Effect_skill03 = GameManager.Instance.objectPooling.ShowEffect("BossMonsterShield_01", prefabPos);
+                        Shield_Effect_skill03.gameObject.transform.position = transform.position;
+                        //지속 시간 바꾸기
+                        Shield_Effect_skill03.finishAction = () =>
+                        {
+                            Shield_Effect_skill03 = null;
+                        };
+                    }
+                }
+                else
+                {
+                    if (Shield_Effect_skill03 != null)
+                    {
+                        //이펙트가 있다면 없애기.
+                        Shield_Effect_skill03.StopEffect();
+                    }
+                }
+            }
+        }
+    }
+
     #endregion
 
     //*----------------------------------------------------------------------------------------------------------//
     //* 피격 이펙트
-
     private void GetHit()
     {
 
@@ -928,8 +1010,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.gameObject.transform.rotation = curHitQuaternion;
     }
 
+    //*----------------------------------------------------------------------------------------------------------//
+    //* --
+
+    //*----------------------------------------------------------------------------------------------------------//
+    //* --
 
     // *---------------------------------------------------------------------------------------------------------//
+    //* 공동 함수
     public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
     {
         if (!useY)
@@ -976,7 +1064,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         return posList;
     }
 
-
     private void OnDrawGizmos()
     {
         //몬스터 감지 범위 Draw
@@ -984,6 +1071,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(ground_Center.position, rangeXZ);
 
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, 9);
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(transform.position, 14);
     }
 
 

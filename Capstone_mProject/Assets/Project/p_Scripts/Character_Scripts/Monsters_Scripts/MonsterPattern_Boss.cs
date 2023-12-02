@@ -78,4 +78,20 @@ public class MonsterPattern_Boss : MonsterPattern
                 break;
         }
     }
+
+    public virtual void ChangeBossPhase(BossMonsterPhase bossMonsterPhase)
+    {
+        curBossPhase = bossMonsterPhase;
+
+        switch (curBossPhase)
+        {
+            case BossMonsterPhase.Phase1:
+                break;
+            case BossMonsterPhase.Phase2:
+                break;
+            case BossMonsterPhase.Phase3:
+                break;
+        }
+
+    }
 }

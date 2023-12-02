@@ -565,8 +565,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             Quaternion targetAngle = Quaternion.LookRotation(curDirection);
             bulletObj.transform.rotation = targetAngle;
 
-            bullet.GetDistance(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
-                                                         //총알 발사.
+            bullet.SetInfo(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
+                                                     //총알 발사.
             bulletRigid.velocity = curDirection.normalized * 50f;
             //총쏠때 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");

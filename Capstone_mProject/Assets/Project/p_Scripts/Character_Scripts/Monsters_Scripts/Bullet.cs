@@ -34,6 +34,8 @@ public class Bullet : MonoBehaviour
     private Vector3 hitPoint;
     private Vector3 normalHitPoint;
 
+    string hitEffectName = "";
+
     private void Start()
     {
     }
@@ -75,7 +77,7 @@ public class Bullet : MonoBehaviour
             if (time > disappearTime && !isdisappear)
             {
                 isdisappear = true;
-                DisappearBullet();
+                DisappearBullet(false);
             }
 
             //* 현재 Bullt이 이동한 거리
@@ -95,7 +97,7 @@ public class Bullet : MonoBehaviour
                     AttackPlayer();
                 }
                 isdisappear = true;
-                DisappearBullet();
+                DisappearBullet(true);
             }
             else
             {
@@ -160,9 +162,10 @@ public class Bullet : MonoBehaviour
 
     }
 
-    public void GetDistance(Vector3 _targetDir)
+    public void SetInfo(Vector3 _targetDir, string _hitEffectName = "")
     {
         targetDir = _targetDir;
+        hitEffectName = _hitEffectName;
     }
 
     public void AttackPlayer()
@@ -170,11 +173,12 @@ public class Bullet : MonoBehaviour
         monster.OnHit(3, OnHitPlayerEffect);
     }
 
-    private void DisappearBullet()
+    private void DisappearBullet(bool isHitDisappear = false)
     {
         if (isReset)
         {
             //사라지기 전 이펙트
+            if (isHitDisappear)
             {
                 //*보스전일때만
                 if (Vector3.Distance(hitPoint, playerController.gameObject.transform.position) < 4)
@@ -182,12 +186,16 @@ public class Bullet : MonoBehaviour
                     //가까운곳에 떨어졌을때. 
                     GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
                 }
-                Quaternion rot = Quaternion.FromToRotation(Vector3.up, normalHitPoint);
-                Vector3 pos = hitPoint;
+                if (hitEffectName != "")
+                {
+                    Quaternion rot = Quaternion.FromToRotation(Vector3.up, normalHitPoint);
+                    Vector3 pos = hitPoint;
 
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_10_hit");
-                effect.gameObject.transform.position = pos;
-                effect.gameObject.transform.rotation = rot;
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(hitEffectName);
+                    effect.gameObject.transform.position = pos;
+                    effect.gameObject.transform.rotation = rot;
+                }
+
             }
 
             //풀링
