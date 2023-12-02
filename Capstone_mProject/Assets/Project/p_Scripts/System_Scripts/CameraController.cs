@@ -55,12 +55,7 @@ public class CameraController : MonoBehaviour
     {
         if (playerController._currentState.isAim)
         {
-            //this.transform.position = campos.position;  //* 위치 고정
-            //this.transform.localRotation = Quaternion.LookRotation(campos.transform.position);
-            //FixCamZ();
 
-            minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정
-            maxPivot = 35;
         }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -127,11 +122,11 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
 
+        CameraActions();
 
     }
     private void FixedUpdate()
     {
-        CameraActions();
     }
 
     void OnPreCull() => GL.Clear(true, true, Color.black);

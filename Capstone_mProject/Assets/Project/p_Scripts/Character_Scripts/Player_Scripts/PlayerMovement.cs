@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     public SkillButton skill_E;
     private string E_Start_Name = "Bow_Attack_Charging";
-    private string E_Name = "Bow_Attack_launch";
+    private string E_Name = "Bow_Attack_launch_02";
     public SkillButton skill_Q;
 
     public float comboClickTime = 0.5f;
@@ -201,9 +201,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     //* 이펙트 회전
-                    Quaternion effectRotation = this.gameObject.transform.rotation;
-                    //effectRotation.y = 90;
-                    effect.gameObject.transform.rotation = effectRotation;
+                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
                 }
                 skill_E.OnClicked();
                 break;
@@ -625,7 +623,7 @@ public class PlayerMovement : MonoBehaviour
         while (true)
         {
             P_Value.isCombo = false;
-            P_Controller.ChangePlayerState(PlayerState.ComboAttack);
+            //P_Controller.ChangePlayerState(PlayerState.ComboAttack);
             //AnimState(PlayerState.ComboAttack, index);
 
             switch (P_Value.index)
@@ -752,7 +750,7 @@ public class PlayerMovement : MonoBehaviour
                 playerAttackCheckList.Clear();
             }
 
-            P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
+            //P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
             P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
 
             int curIndex = P_Value.index;
@@ -767,7 +765,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (P_Value.index == 5)
                     {
-                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1f);
+                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f);
                         P_Value.index = 1;
                         P_Value.time = 0;
                         P_Value.isCombo = false;

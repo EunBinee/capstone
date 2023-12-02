@@ -441,7 +441,7 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    IEnumerator GetHit_KnockBack_co() //넉백만을 수행
+    IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
         PlayerState preState = curPlayerState;
         //ChangePlayerState(PlayerState.GetHit);
@@ -451,23 +451,20 @@ public class PlayerController : MonoBehaviour
         OnHitPlayerEffect?.Invoke();
         if (OnHitPlayerEffect == null)
         {
-
             //transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
-
-
             //null일시 기본 이펙트.
             playerGetHitEffect();
         }
 
         knockback_Dir = knockback_Dir.normalized;
-        Vector3 KnockBackPos = transform.position + knockback_Dir * 1.5f; // 넉백 시 이동할 위치
+        Vector3 KnockBackPos = transform.position + knockback_Dir * knockbackDistance; // 넉백 시 이동할 위치
         KnockBackPos.y = 0;
 
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         yield return null;
 
-        ChangePlayerState(preState);
+        //ChangePlayerState(preState);
 
         isGettingHit = false;
     }
