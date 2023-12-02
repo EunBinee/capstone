@@ -139,6 +139,8 @@ public class PlayerController : MonoBehaviour
         InitCapsuleCollider();
 
         NavMeshSurface_ReBuild();
+
+        _playerSkills.Init();
     }
 
     public void NavMeshSurface_ReBuild()

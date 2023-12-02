@@ -16,13 +16,13 @@ public class PlayerSkills
 
     public void Init()
     {
-
         playerController = GameManager.instance.gameData.player.GetComponent<PlayerController>();
         InitializeArrowPool();
     }
 
     void InitializeArrowPool()
     {
+        Debug.Log("비상");
         arrowPool = new GameObject[poolSize];
 
         for (int i = 0; i < poolSize; i++)
@@ -33,6 +33,7 @@ public class PlayerSkills
                 Debug.Log("arrowPrefab = null");
             }
             arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
+            arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
             arrowPool[i].SetActive(false);
         }
     }
