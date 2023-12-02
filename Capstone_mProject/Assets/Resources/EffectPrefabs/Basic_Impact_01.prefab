@@ -9776,7 +9776,8 @@ GameObject:
   - component: {fileID: 4508697052550027469}
   - component: {fileID: 8364321965150800503}
   - component: {fileID: 3528156189495065921}
-  - component: {fileID: 1961826584235010}
+  - component: {fileID: 5594455159281908809}
+  - component: {fileID: 8788621166718756597}
   m_Layer: 0
   m_Name: Basic_Impact_01
   m_TagString: Untagged
@@ -14663,8 +14664,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 947bb5d419d1e604da393bb20c440007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleNumber: 0.6
---- !u!114 &1961826584235010
+  scaleNumber: 1
+--- !u!114 &5594455159281908809
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -14676,6 +14677,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a42d2183fb9ffe4e843f353f1e4e6a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8788621166718756597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2475165869058690141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da1adaae441422041ae3b21b8752748f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: 1
 --- !u!1 &7863619818062576740
 GameObject:
   m_ObjectHideFlags: 0

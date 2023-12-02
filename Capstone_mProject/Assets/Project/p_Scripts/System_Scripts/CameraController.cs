@@ -25,6 +25,7 @@ public class CameraController : MonoBehaviour
     public float up_down_LookAngle;
 
     [Header("주목 기능")]
+    public bool banAttention = false;
     public bool isBeingAttention = false;
     public Monster curTargetMonster = null;
 
@@ -58,7 +59,7 @@ public class CameraController : MonoBehaviour
 
         }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
         {
             //주목 기능
             if (GameManager.instance.monsterUnderAttackList.Count > 0)
@@ -216,8 +217,13 @@ public class CameraController : MonoBehaviour
 
     }
 
-    private void ResetCameraZ()
+
+    public void ResetCameraZ()
     {
+        if (cameraTrans == null)
+        {
+            cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        }
         if (resetCameraZ_co != null)
         {
             StopCoroutine(resetCameraZ_co);
@@ -244,6 +250,14 @@ public class CameraController : MonoBehaviour
 
             yield return null;
         }
+
+        camPos = cameraTrans.localPosition;
+        camPos.z = normal_Z;
+        cameraTrans.localPosition = camPos;
+
+        camPivotPos = playerCameraPivot.transform.localPosition;
+        camPivotPos.y = 1.7f;
+        playerCameraPivot.transform.localPosition = camPivotPos;
     }
 
     private void SetCameraZ_AccDistance()
@@ -254,7 +268,16 @@ public class CameraController : MonoBehaviour
         Vector3 camPos = cameraTrans.localPosition;
         Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
 
-        if (distance > 10)
+        float normalDistance = 10;
+        float longAttention_Distance = 4;
+        if (GameManager.instance.bossBattle)
+        {
+            normalDistance = 20;
+            longAttention_Distance = 12;
+        }
+
+
+        if (distance > normalDistance)
         {
             //z 를 normal_Z(-5)로 변경
             if (camPos.z != normal_Z)
@@ -277,7 +300,7 @@ public class CameraController : MonoBehaviour
                 playerCameraPivot.transform.localPosition = camPivotPos;
             }
         }
-        else if (distance < 4)
+        else if (distance < longAttention_Distance)
         {
             //z를 longAttention_Z(-9)으로 변경
             if (camPos.z != longAttention_Z)
@@ -331,6 +354,21 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void Check_Z()
+    {
+        if (!GameManager.instance.bossBattle)
+        {
+            normal_Z = -5f;
+            attention_Z = -6.5f;
+            longAttention_Z = -7.5f;
+        }
+        else
+        {
+            normal_Z = -7f;
+            attention_Z = -10f;
+            longAttention_Z = -13f;
+        }
+    }
     //*----------------------------------------------------------------------------------------//
     void FixCamZ()
     {

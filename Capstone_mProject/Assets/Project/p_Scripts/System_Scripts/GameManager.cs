@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
                                                  //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
     public Monster[] cur_monsters; //위에 꺼할때 배열은 지워도 될듯염
     public List<Monster> monsters;
+
+    public bool bossBattle = false;
     //* --------------------------------------------//
     void Awake()
     {

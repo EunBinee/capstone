@@ -6,12 +6,17 @@ public class HPBarManager : MonoBehaviour
 {
     //! 몬스터 HP바를 관리하는 스크립트입니다.
     public string HPBar_name = "";
+    public string bossHPBar_name = "";
     public Transform HPBar_Parent;
 
+    //* 일반 몬스터 HP바
     private HPBarUI_Info HPBar_Prefab;
     private List<HPBarUI_Info> HPBarInUse;
     private List<HPBarUI_Info> hpBarPools;
     private int hpBarPoolsCount = 30;
+
+    //* 보스 몬스터 HP바
+    private HPBarUI_Info curBossHPBar;
 
     private Camera m_Camera;
 
@@ -97,7 +102,27 @@ public class HPBarManager : MonoBehaviour
         }
     }
 
+    //--------------------------------------------------------------------------------------------
+    //HP바 받기.
+    public HPBarUI_Info Get_BossHPBar()
+    {
+        //보스전의 HP바 
+        if (curBossHPBar == null)
+        {
+            HPBarUI_Info HPBar_Prefab = Resources.Load<HPBarUI_Info>("SystemPrefabs/" + bossHPBar_name);
+            curBossHPBar = UnityEngine.Object.Instantiate(HPBar_Prefab);
+        }
+        curBossHPBar.gameObject.transform.SetParent(HPBar_Parent);
+        curBossHPBar.gameObject.SetActive(true);
 
+        return curBossHPBar;
+    }
+
+    public void Return_BossHPBar()
+    {
+        //보스 HP바 반납
+        curBossHPBar.gameObject.SetActive(false);
+    }
 
 
 

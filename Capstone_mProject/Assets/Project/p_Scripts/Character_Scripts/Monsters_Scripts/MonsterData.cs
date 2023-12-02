@@ -17,7 +17,12 @@ public class MonsterData
     [Header("몬스터 정보")]
     public int monsterid;
     public string monsterName;
+    public string monsterExplanation; //* 보스 몬스터일 경우 필수
     public MonsterType monsterType;
+
+    [Header("몬스터 약점")]
+    public bool useWeakness = false;
+    public List<Transform> weakness;
 
     [Header("몬스터 체력")]
     public Transform HPBarPos;

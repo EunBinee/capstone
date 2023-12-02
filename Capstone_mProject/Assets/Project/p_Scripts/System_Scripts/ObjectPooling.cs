@@ -90,7 +90,7 @@ public class ObjectPooling
             Transform effecParent = (parent == null) ? GameManager.Instance.transform : parent;
             curEffect.gameObject.transform.SetParent(effecParent);
             curEffect.ShowEffect();
-            curEffect.callBack += () =>
+            curEffect.callBack = () =>
             {
                 AddEffectPool(effectName, curEffect);
             };
