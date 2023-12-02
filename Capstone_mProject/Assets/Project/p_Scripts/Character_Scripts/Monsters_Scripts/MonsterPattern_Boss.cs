@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -56,6 +57,7 @@ public class MonsterPattern_Boss : MonsterPattern
                 break;
         }
     }
+
     public virtual void Monster_Motion(BossMonsterMotion monsterMotion)
     {
         switch (monsterMotion)

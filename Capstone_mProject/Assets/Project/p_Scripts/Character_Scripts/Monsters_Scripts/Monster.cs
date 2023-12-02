@@ -9,7 +9,7 @@ public class Monster : MonoBehaviour
 {
     public MonsterData monsterData;
     public MonsterPattern monsterPattern;
-
+    public MonsterPattern_Boss bossMonsterPattern;
     public AudioClip[] monsterSoundClips;
     public PlayerController playerController;
     private Transform playerTrans;
@@ -74,7 +74,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public virtual void GetDamage(double damage)//플레이어에게 공격 당함.
+    public virtual void GetDamage(double damage, Vector3 attackPos, Quaternion atteckRot)//플레이어에게 공격 당함.
     {
         if (monsterData.HP > 0)
         {
@@ -102,7 +102,8 @@ public class Monster : MonoBehaviour
                     //아직 살아있음.
                     if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
                     {
-
+                        monsterPattern.SetGetDemageMonster(attackPos, atteckRot);
+                        bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.GetHit);
                     }
                     else
                         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);

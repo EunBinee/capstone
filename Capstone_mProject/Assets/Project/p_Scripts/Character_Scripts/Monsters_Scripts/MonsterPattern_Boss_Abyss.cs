@@ -160,6 +160,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 }
                 break;
             case BossMonsterMotion.GetHit:
+                //getHit
+                GetHit();
+
                 break;
             case BossMonsterMotion.Death:
                 m_monster.RetrunHPBar();
@@ -250,12 +253,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isFinding = true;
             ChangeMonsterState(MonsterState.Tracing);
             //스킬 1
-            //Monster_Motion(BossMonsterMotion.Skill01);
+            // Monster_Motion(BossMonsterMotion.Skill01);
             //스킬 2
             //Monster_Motion(BossMonsterMotion.Skill02);
             //StartCoroutine(SetWreckage());
             //스킬 3
-            Monster_Motion(BossMonsterMotion.Skill03);
+            //Monster_Motion(BossMonsterMotion.Skill03);
         }
     }
     //*----------------------------------------------------------------------------------------------------------//
@@ -912,9 +915,20 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         return angle;
     }
 
-
-
     #endregion
+
+    //*----------------------------------------------------------------------------------------------------------//
+    //* 피격 이펙트
+
+    private void GetHit()
+    {
+
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
+        effect.gameObject.transform.position = curHitPos;
+        effect.gameObject.transform.rotation = curHitQuaternion;
+    }
+
+
     // *---------------------------------------------------------------------------------------------------------//
     public Vector3 GetRandomPos(float range, Vector3 targetPos, float targetY = 0, bool useY = false)
     {

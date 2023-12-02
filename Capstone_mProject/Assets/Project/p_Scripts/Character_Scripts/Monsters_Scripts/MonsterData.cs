@@ -22,7 +22,7 @@ public class MonsterData
 
     [Header("몬스터 약점")]
     public bool useWeakness = false;
-    public List<GameObject> weakness;
+    public List<Transform> weakness;
 
     [Header("몬스터 체력")]
     public Transform HPBarPos;

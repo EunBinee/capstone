@@ -29,6 +29,9 @@ public class MonsterPattern : MonoBehaviour
 
     public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 
+    protected Vector3 curHitPos;
+    protected Quaternion curHitQuaternion;
+
     public enum MonsterState
     {
         Roaming,
@@ -371,6 +374,7 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+
     public virtual void StopAtackCoroutine()
     {
 
@@ -487,6 +491,12 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
+    //*-----------------------------------------------------------------------------------------//
+    public void SetGetDemageMonster(Vector3 pos, Quaternion qua)
+    {
+        curHitPos = pos;
+        curHitQuaternion = qua;
+    }
     // * ---------------------------------------------------------------------------------------//
     private void OnDrawGizmos()
     {
