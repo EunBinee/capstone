@@ -115,8 +115,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.0534303, y: 0.061259314, z: 0.9296659}
-  m_Center: {x: 9.3131935e-10, y: -3.13638e-15, z: 0.000000029802322}
+  m_Size: {x: 0.15641823, y: 0.16069733, z: 0.9296659}
+  m_Center: {x: 0.00459712, y: 0.0007321015, z: 0.000000045849728}
 --- !u!114 &1473112062453802305
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,7 +152,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e14ce00259969804e9c7d86ab84ce72b, type: 2}
+  - {fileID: 2100000, guid: 74344c64437d12143a5781a4722c56d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -174,8 +174,8 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  - {x: -0.055, y: -0.01, z: 0}
+  - {x: -0.055, y: -0.01, z: 1}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -183,8 +183,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0
-        value: 0.07185668
+        time: 0.01574803
+        value: 0.025127705
         inSlope: 0
         outSlope: 0
         tangentMode: 0

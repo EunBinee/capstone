@@ -21,6 +21,8 @@ public class PlayerAttackCheck : MonoBehaviour
     Quaternion arrrot = Quaternion.identity;
     Transform nowArrow;
 
+    bool attackEnemy = false;
+
     void Start()
     {
         player = GameManager.Instance.gameData.player;
@@ -88,19 +90,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     if (monster != null && !P_States.hadAttack)
                     {
                         P_States.hadAttack = true;
-                        //TODO: 나중에 연산식 사용.
-                        monster.GetDamage(700);
-
-                        P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
-                        P_Value.curHitTime = Time.time; //* 현재 시간 저장
-
-                        P_Controller.CheckHitTime();
-                        P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
-
-                        P_States.isBouncing = true;     //* 히트 UI 출력효과
-                        Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
-
-                        Debug.Log("hits : " + P_Value.hits);
+                        playerHitMonster();
                     }
                     else if (monster != null && P_States.hadAttack)
                     {
@@ -117,7 +107,55 @@ public class PlayerAttackCheck : MonoBehaviour
         }
 
     }
+    private void playerHitMonster()
+    {
+        //TODO: 나중에 연산식 사용.
+        monster.GetDamage(700);
 
+        P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
+        P_Value.curHitTime = Time.time; //* 현재 시간 저장
+
+        P_Controller.CheckHitTime();
+        P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
+
+        P_States.isBouncing = true;     //* 히트 UI 출력효과
+        Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+    }
+
+    private void ArrowRay(float curArrowDistance)
+    {
+        float range = 100f;
+        RaycastHit[] hits;
+        hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
+
+        float shortDist = 1000f;
+        RaycastHit shortHit = hits[0];
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.name != this.gameObject.name)
+            {
+                //자기 자신은 패스
+                float distance = hit.distance;
+                if (curArrowDistance < distance && shortDist > distance)
+                {
+                    shortHit = hit;
+                    shortDist = distance;
+
+                    if (hit.collider.tag == "Monster")
+                    {
+                        attackEnemy = true;
+                        playerHitMonster();
+                    }
+                    else
+                        attackEnemy = false;
+                }
+            }
+        }
+
+        // if (shortDist != 1000)
+        //     targetDistance = shortDist;
+    }
     private void OnCollisionEnter(Collision other)
     {
 
