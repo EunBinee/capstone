@@ -289,29 +289,32 @@ public class PlayerController : MonoBehaviour
         P_CamController.left_right_LookAngle = 0;
         P_CamController.up_down_LookAngle = 0;
 
+        //* 카메라 전환
         AimmingCam.enabled = true;
         P_Camera.cameraObj.enabled = false;
         P_Camera.cameraObj = AimmingCam;
 
+        //* 카메라 주목 기능 밴 처리 맟 주목 해제
         if (AimmingCamCon.isBeingAttention)
         {
             AimmingCamCon.isBeingAttention = false;
         }
         AimmingCamCon.banAttention = true;
 
-        P_CamController.minPivot = -25;
-        P_CamController.maxPivot = 25;
+        //* 카메라 회전 높낮이 제한 설정
+        AimmingCamCon.minPivot = -45;
+        AimmingCamCon.maxPivot = 45;
     }
 
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
         //Debug.Log("CameraReturn()");
-        P_CamController.left_right_LookAngle = 0;
-        P_CamController.up_down_LookAngle = 0;
+        AimmingCamCon.left_right_LookAngle = 0;
+        AimmingCamCon.up_down_LookAngle = 0;
 
-        P_CamController.minPivot = 0;
-        P_CamController.maxPivot = 0;
+        AimmingCamCon.minPivot = 0;
+        AimmingCamCon.maxPivot = 0;
         AimmingCamCon.banAttention = false;
 
         P_Camera.cameraObj = mainCam;
