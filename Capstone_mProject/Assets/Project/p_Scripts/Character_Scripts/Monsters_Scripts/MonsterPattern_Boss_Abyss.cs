@@ -33,6 +33,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool isJump = false;
     bool isDodge = false;
 
+    bool startSkill = false;
+    bool ing_skill01 = false;
+    bool ing_skill02 = false;
+    bool ing_skill03 = false;
+    bool ing_skill04 = false;
+
+
+
     public override void Init()
     {
         m_monster = GetComponent<Monster>();
@@ -124,6 +132,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case MonsterState.Discovery:
                     break;
                 case MonsterState.Tracing:
+                    Tracing_Movement();
                     break;
                 case MonsterState.Attack:
                 case MonsterState.GetHit:
@@ -141,22 +150,29 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         switch (monsterMotion)
         {
             case BossMonsterMotion.Skill01:
-                //내려찍기
-                StartCoroutine(BossAbyss_Skill01());
+                //*내려찍기
+                ing_skill01 = true;
+                Skill01();
                 break;
             case BossMonsterMotion.Skill02:
+                //* 폭탄
+                ing_skill02 = true;
                 Skill02();
                 break;
             case BossMonsterMotion.Skill03:
                 if (curBossPhase != BossMonsterPhase.Phase1)
                 {
+                    //* 총
+                    ing_skill03 = true;
                     Skill03();
                 }
                 break;
             case BossMonsterMotion.Skill04:
                 if (curBossPhase != BossMonsterPhase.Phase1)
                 {
-
+                    //* 전기
+                    //(구현 안됨)
+                    ing_skill04 = true;
                 }
                 break;
             case BossMonsterMotion.GetHit:
@@ -269,15 +285,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
 
             isRoaming = false;
-            isFinding = true;
+            ChangeBossPhase(BossMonsterPhase.Phase1);
             ChangeMonsterState(MonsterState.Tracing);
-            //스킬 1
-            // Monster_Motion(BossMonsterMotion.Skill01);
-            //스킬 2
-            //Monster_Motion(BossMonsterMotion.Skill02);
-            //StartCoroutine(SetWreckage());
-            //스킬 3
-            Monster_Motion(BossMonsterMotion.Skill03);
+
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -285,26 +295,131 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void Tracing_Movement()
     {
-
-
-    }
-
-    IEnumerator Phase01_Abyss_Tracing()
-    {
-
-        while (curBossPhase == BossMonsterPhase.Phase1)
+        //*페이즈 마다 실행되도록.
+        if (!isTracing)
         {
+            Debug.Log("HI");
+            //! 연출 씬 있을때는 멈추기 (나중에 구현)
+            isTracing = true;
+            switch (curBossPhase)
+            {
+                case BossMonsterPhase.Phase1:
+                    StartCoroutine(Phase01_Abyss_Tracing());
+                    break;
+                case BossMonsterPhase.Phase2:
+                case BossMonsterPhase.Phase3:
+                    //! 일단은 페이즈 1이랑 2,3랑 실행시키는 건 똑같으니깐 페이즈가 달라도 이 코루틴 사용.
+                    StartCoroutine(Phase01_Abyss_Tracing());
+                    break;
+                default:
+                    break;
+            }
 
         }
 
+    }
 
+    //! 일단은 페이즈 1이랑 2랑 실행시키는 건 똑같으니깐 페이즈가 달라도 이 코루틴 사용.
+    IEnumerator Phase01_Abyss_Tracing()
+    {
+        int skill = 0;
+        bool pickAgain = false;
+        float breakTime = 0; //* 스킬 있은 후, 쉬는 시간
+        while (curBossPhase == BossMonsterPhase.Phase1)
+        {
+            skill = UnityEngine.Random.Range(0, 2);
+            pickAgain = false;
+            //스킬 시작
+            switch (skill)
+            {
+                case 0:
+                    if (!ing_skill01) //실행중이 아닐 때만...
+                    {
+                        Monster_Motion(BossMonsterMotion.Skill01);
+                        breakTime = 2;
+                    }
+
+                    else
+                        pickAgain = true;
+                    break;
+                case 1:
+                    if (!ing_skill02)
+                    {
+                        Monster_Motion(BossMonsterMotion.Skill02);
+                        breakTime = 4;
+                    }
+                    else
+                        pickAgain = true;
+                    break;
+                default:
+                    break;
+            }
+            if (!pickAgain)
+            {
+                startSkill = true;
+
+                //* 스킬이 끝날 때까지 기다림.
+                yield return new WaitUntil(() => startSkill == false);
+
+                //* 쉬는 시간 (플레이어 공격 시간)
+                yield return new WaitForSeconds(breakTime);
+            }
+            else
+            {
+                //다시 뽑기
+                yield return null;
+            }
+        }
+
+        //* 페이즈가 바꼈을때 빠져나옴.
+        Debug.Log("bye");
+        isTracing = false;
         yield return null;
     }
 
+    //* 스킬 끝났을 때 무조건 실행해주는 함수. (변수 수정할때 사용.)
+    public void EndSkill(BossMonsterMotion skill)
+    {
+        //monsterMotion 스킬 끝
+        switch (skill)
+        {
+            case BossMonsterMotion.Skill01:
+                startSkill = false;
+                ing_skill01 = false;
+                break;
+            case BossMonsterMotion.Skill02:
+                if (curBossPhase == BossMonsterPhase.Phase1)
+                {
+                    //스킬 2는 페이즈 2,3 일때 바로 스킬 3으로 들어감.
+                    startSkill = false;
+                }
+                ing_skill02 = false;
+                break;
+            case BossMonsterMotion.Skill03:
+                startSkill = false;
+                ing_skill03 = false;
+                break;
+            case BossMonsterMotion.Skill04:
+                startSkill = false;
+                ing_skill04 = false;
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
 
     //*----------------------------------------------------------------------------------------------------------//
     //* 스킬 01 내려찍기
     #region 스킬 01
+
+    private void Skill01()
+    {
+        StartCoroutine(BossAbyss_Skill01());
+    }
+
     IEnumerator BossAbyss_Skill01()
     {
         yield return new WaitForSeconds(2f);
@@ -331,7 +446,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         StartCoroutine(JumpDown(curPlayerPos));
         yield return new WaitUntil(() => isJump == false);
         //------------------------------------------------------------------------------------//
-        yield return null;
+        EndSkill(BossMonsterMotion.Skill01);
     }
 
     IEnumerator JumpUp()
@@ -421,9 +536,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         isJump = false;
         NavMesh_Enable(true);
-
-
     }
+
     IEnumerator FollowPlayer_Effect_InSkill01(float duration)
     {
         //* 스킬01 내려찍기 중, 플레이어를 쫒아다니는 이펙트 
@@ -531,17 +645,23 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(SetBomb(pos, true));
         }
 
-
         if (curBossPhase != BossMonsterPhase.Phase1)
         {
             //* 잔해물 떨어지기
-
             yield return new WaitForSeconds(4f);
             StartCoroutine(SetWreckage());
+            yield return new WaitForSeconds(1f);
+            EndSkill(BossMonsterMotion.Skill02);
         }
-
+        else
+        {
+            yield return new WaitForSeconds(1f);
+            EndSkill(BossMonsterMotion.Skill02);
+        }
     }
 
+
+    //* 보스 뒤로 이동
     IEnumerator MoveMonster_Skill02()
     {
         float time = 0;
@@ -783,8 +903,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         StartCoroutine(BossAbyss_Skill03());
     }
+
     float skillTime = 0;
     bool canFire = false;
+
     IEnumerator BossAbyss_Skill03()
     {
         canFire = CheckPlayerInMonster_skill03(skillRadius);
@@ -873,6 +995,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         m_animator.enabled = true;
         SetAnimation(MonsterAnimation.Idle);
+
+        yield return new WaitForSeconds(1f);
+        EndSkill(BossMonsterMotion.Skill03);
 
         yield return null;
     }
@@ -972,9 +1097,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         return angle;
     }
 
-
-
     Effect Shield_Effect_skill03 = null;
+
     public bool CheckPlayerInMonster_skill03(float radius)
     {
         //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
@@ -984,10 +1108,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             if (0 < playerColliders.Length)
             {
-                //넉백!! 튕겨내기 후, 이펙트 생성.
-                //TODO: 민지쪽에서 구현 완료하면 구현
+                //넉백!! 튕겨내기 후, 이펙트 생성.\
                 StartCoroutine(BouncePlayer());
-
                 return false;
             }
             else
