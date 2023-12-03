@@ -106,6 +106,8 @@ public class CameraController : MonoBehaviour
         }
     }
 
+
+    //*주목 풀기
     public void UndoAttention()
     {
         ResetCameraZ();

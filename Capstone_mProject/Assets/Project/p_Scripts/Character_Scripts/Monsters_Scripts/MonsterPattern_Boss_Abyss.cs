@@ -809,7 +809,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             skillTime += Time.deltaTime;
             fireTime += Time.deltaTime;
-            if (fireTime >= 0.2f)
+            if (fireTime >= 0.1f)
             {
                 fireTime = 0;
                 //GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
@@ -823,7 +823,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 childWorldRotation = GetWorldRotation(bossNeck);
                 Vector3 currentRotation = childWorldRotation.eulerAngles;
 
-                bossNeck.rotation = Quaternion.Euler(currentRotation.x, currentRotation.y + (0.7f * Time.timeScale), currentRotation.z);
+                bossNeck.rotation = Quaternion.Euler(currentRotation.x, currentRotation.y + (1f * Time.timeScale), currentRotation.z);
 
                 CheckCheckPlayer_Front(rayPos);
 
@@ -884,7 +884,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             bulletObj.transform.rotation = targetAngle;
 
             bullet.SetInfo(curDirection.normalized, "FX_Shoot_10_hit");
-            bulletRigid.velocity = curDirection.normalized * 80f;
+            bulletRigid.velocity = curDirection.normalized * 100f;
         }
         else
         {
@@ -892,7 +892,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             bulletObj.transform.rotation = targetAngle;
 
             bullet.SetInfo(muzzlePos.forward, "FX_Shoot_10_hit"); //* Bullet.cs에 방향 벡터 보냄
-            bulletRigid.velocity = (muzzlePos.forward) * 80f;
+            bulletRigid.velocity = (muzzlePos.forward) * 100f;
         }
 
         //총쏠때 이펙트
