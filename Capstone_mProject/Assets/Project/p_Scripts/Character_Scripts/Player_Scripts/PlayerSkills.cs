@@ -22,7 +22,6 @@ public class PlayerSkills
 
     void InitializeArrowPool()
     {
-        Debug.Log("비상");
         arrowPool = new GameObject[poolSize];
 
         for (int i = 0; i < poolSize; i++)

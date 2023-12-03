@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     //private Quaternion originCamQua;
     public Camera mainCam;
     public Camera AimmingCam;
+    public CameraController AimmingCamCon;
 
     public GameObject bow;
     public GameObject sword;
@@ -84,6 +85,7 @@ public class PlayerController : MonoBehaviour
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
+        AimmingCamCon = AimmingCam.GetComponent<CameraController>();
         P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
 
@@ -256,8 +258,8 @@ public class PlayerController : MonoBehaviour
         else if (skill.isTwice && P_States.isAim)
         {
             //P_Com.animator.Play("AimRecoil", 1);
-            arrow.SetActive(true);
             P_Com.animator.SetBool("isAim", false);
+            P_Com.animator.SetTrigger("shoot");
             P_States.isAim = false;
             skill.isFirsttime = true;
             AimOnCameraReturn();
@@ -275,6 +277,7 @@ public class PlayerController : MonoBehaviour
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
+        arrow.SetActive(true);
         //arrow.transform.position = shootPoint.position;
         //arrow.transform.position = this.transform.position;
         //arrow.transform.rotation = Camera.main.transform.rotation;
@@ -292,11 +295,19 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("AimOnCamera()");
         P_CamController.left_right_LookAngle = 0;
         P_CamController.up_down_LookAngle = 0;
+
         AimmingCam.enabled = true;
         P_Camera.cameraObj.enabled = false;
         P_Camera.cameraObj = AimmingCam;
-        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = -25;
-        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 25;
+
+        if (AimmingCamCon.isBeingAttention)
+        {
+            AimmingCamCon.isBeingAttention = false;
+        }
+        AimmingCamCon.banAttention = true;
+
+        P_CamController.minPivot = -25;
+        P_CamController.maxPivot = 25;
     }
     public void AimOnCameraReturn()
     {
@@ -304,8 +315,11 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("CameraReturn()");
         P_CamController.left_right_LookAngle = 0;
         P_CamController.up_down_LookAngle = 0;
-        P_Camera.cameraObj.GetComponent<CameraController>().minPivot = 0;
-        P_Camera.cameraObj.GetComponent<CameraController>().maxPivot = 0;
+
+        P_CamController.minPivot = 0;
+        P_CamController.maxPivot = 0;
+        AimmingCamCon.banAttention = false;
+
         P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
         P_Camera.cameraObj.enabled = true;

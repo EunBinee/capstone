@@ -23,30 +23,4 @@ public class AimmingCamController : MonoBehaviour
     {
         this.transform.position = campos.position;  //* 위치 고정
     }
-    private void FixedUpdate()
-    {
-        //CameraRotate();
-    }
-    private void CameraRotate() // 일반 카메라
-    {
-        //마우스 방향에 따른 카메라 방향
-        Vector3 cameraRot;
-        Quaternion targetCameraRot;
-        left_right_LookAngle += (player.GetComponent<PlayerController>()._input.mouseX * left_right_LookSpeed) * Time.deltaTime;
-        up_down_LookAngle -= (player.GetComponent<PlayerController>()._input.mouseY * up_down_LookSpeed) * Time.deltaTime;
-
-        //left_right_LookAngle = Mathf.Clamp(left_right_LookAngle, -70, 50); //좌우 고정
-        up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, -25, 25); //위아래 고정
-
-        //가로 세로
-        cameraRot = Vector3.zero;
-        cameraRot.y = left_right_LookAngle;
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        transform.rotation = targetCameraRot;
-        //위아래
-        cameraRot = Vector3.zero;
-        cameraRot.x = up_down_LookAngle;
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        campos.transform.localRotation = targetCameraRot;
-    }
 }

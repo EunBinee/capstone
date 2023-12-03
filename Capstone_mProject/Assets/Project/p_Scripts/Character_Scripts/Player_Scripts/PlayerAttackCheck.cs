@@ -66,9 +66,6 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-
-
-
     private void isBouncingToFalse()
     {
         P_States.isBouncing = false;
@@ -90,7 +87,12 @@ public class PlayerAttackCheck : MonoBehaviour
                     if (monster != null && !P_States.hadAttack)
                     {
                         P_States.hadAttack = true;
-                        playerHitMonster();
+                        // 충돌한 객체의 Transform을 얻기
+                        Transform collidedTransform = other.transform;
+                        // 충돌 지점의 좌표를 얻기
+                        Vector3 collisionPoint = other.ClosestPoint(transform.position);
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
+                        playerHitMonster(collisionPoint, otherQuaternion);
                     }
                     else if (monster != null && P_States.hadAttack)
                     {
@@ -107,10 +109,10 @@ public class PlayerAttackCheck : MonoBehaviour
         }
 
     }
-    private void playerHitMonster()
+    private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
         //TODO: 나중에 연산식 사용.
-        monster.GetDamage(700);
+        monster.GetDamage(700, collisionPoint, otherQuaternion);
 
         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
         P_Value.curHitTime = Time.time; //* 현재 시간 저장
@@ -130,7 +132,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         float shortDist = 1000f;
         RaycastHit shortHit = hits[0];
-
+        RaycastHit m_Hit;
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.name != this.gameObject.name)
@@ -145,7 +147,11 @@ public class PlayerAttackCheck : MonoBehaviour
                     if (hit.collider.tag == "Monster")
                     {
                         attackEnemy = true;
-                        playerHitMonster();
+                        m_Hit = hit;
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                        playerHitMonster(collisionPoint, otherQuaternion);
                     }
                     else
                         attackEnemy = false;

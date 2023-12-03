@@ -54,10 +54,14 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
-        if (playerController._currentState.isAim)
-        {
-
-        }
+        // if (playerController._currentState.isAim)
+        // {
+        //     if (isBeingAttention)
+        //     {
+        //         isBeingAttention = false;
+        //     }
+        //     banAttention = true;
+        // }
         //TODO: 주목 Input =>나중에 InputManager로 옮기기
         if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
         {
@@ -115,6 +119,7 @@ public class CameraController : MonoBehaviour
         left_right_LookAngle = playerCam.y;
         up_down_LookAngle = playerCam.x;
 
+        banAttention = false;
         isBeingAttention = false;
         curTargetMonster = null;
     }
