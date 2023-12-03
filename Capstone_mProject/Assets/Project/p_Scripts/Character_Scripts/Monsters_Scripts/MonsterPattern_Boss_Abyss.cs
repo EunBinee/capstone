@@ -80,7 +80,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         if (m_monster.HPBar_CheckNull() == false)
         {
-            if (m_monster.monsterData.MaxHP != m_monster.monsterData.HP)
+            if (!m_monster.resetHP)
                 m_monster.ResetHP();
             m_monster.GetHPBar();
         }
@@ -422,15 +422,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator BossAbyss_Skill01()
     {
-        yield return new WaitForSeconds(2f);
-
-        //*네비메쉬 끄기
+        //* 이펙트
         Vector3 originPos = transform.position;
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("HeartOfBattle_01");
         effect.transform.position = originPos;
 
         yield return new WaitForSeconds(1f);
-
         //* 점프 --------------------------------------------------------------------//
         isJump = true;
         StartCoroutine(JumpUp());
@@ -451,6 +448,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator JumpUp()
     {
+        //*네비메쉬 끄기
         NavMesh_Enable(false);
         Vector3 originPos = transform.position;
         float speed = 30;
@@ -503,7 +501,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator JumpDown(Vector3 curPlayerPos, bool getDamage = true)
     {
-        yield return new WaitForSeconds(3);
         float speed;
         float time = 0;
         transform.position = new Vector3(curPlayerPos.x, transform.position.y, curPlayerPos.z);
@@ -512,7 +509,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
 
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         while (time < 5f)
         {
             time += Time.deltaTime;
@@ -522,6 +519,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             yield return null;
         }
+
+        transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
+
         if (getDamage)
             CheckPlayerDamage(8f, transform.position, 20, true);
         //? 연기이펙트-----------------------------------------------------------------------//
@@ -536,6 +536,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         isJump = false;
         NavMesh_Enable(true);
+
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
     }
 
     IEnumerator FollowPlayer_Effect_InSkill01(float duration)
@@ -553,7 +557,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             effect.transform.position = playerTrans.position;
             yield return null;
         }
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         effect.StopEffect();
     }
 
@@ -706,7 +710,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
                     //TODO: 몬스터 방향 플레이어 쪽으로 돌리기
                     time = 0;
-                    while (time < 20)
+                    while (time < 5)
                     {
                         time += Time.deltaTime;
                         Vector3 direction = playerTrans.position - transform.position;
@@ -1248,8 +1252,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(transform.position, skillRadius + 5);
     }
-
-
 
 
 }
