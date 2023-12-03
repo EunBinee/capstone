@@ -18,6 +18,9 @@ public class Bullet : MonoBehaviour
     public string projectileName = "";
 
     private float time = 0;
+    [Header("맞으면 무조건 넘어지는 총알인지")]
+    public bool isFallDown = false;
+
     private bool isdisappear = false;
     private bool isReset = false;
     private bool firstUpdate = true;
@@ -170,7 +173,12 @@ public class Bullet : MonoBehaviour
 
     public void AttackPlayer()
     {
-        monster.OnHit(3, OnHitPlayerEffect);
+        if (isFallDown)
+        {
+            monster.OnHit_FallDown(3, 30, OnHitPlayerEffect);
+        }
+        else
+            monster.OnHit(3, OnHitPlayerEffect);
     }
 
     private void DisappearBullet(bool isHitDisappear = false)

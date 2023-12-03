@@ -196,7 +196,7 @@ public class PlayerController : MonoBehaviour
         nowHitTime = P_Value.curHitTime;
     }
 
-    public void AnimState(PlayerState playerState, float knockbackDistance = 1.5f, int index = 0)
+    public void AnimState(PlayerState playerState, int index = 0, float knockbackDistance = 1.5f)
     {
         curPlayerState = playerState;
         switch (playerState)
@@ -272,20 +272,13 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.Play(skill.animationName);
         }
     }
+
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
-        //arrow.transform.position = shootPoint.position;
-        //arrow.transform.position = this.transform.position;
-        //arrow.transform.rotation = Camera.main.transform.rotation;
-
-
-        // 화살 발사 속도 설정 (필요에 따라 조절)
-        //float arrowSpeed = 10f;
-        //arrow.GetComponent<Rigidbody>().velocity += arrow.transform.up * arrowSpeed;
     }
 
     //* camera controll
@@ -309,6 +302,7 @@ public class PlayerController : MonoBehaviour
         P_CamController.minPivot = -25;
         P_CamController.maxPivot = 25;
     }
+
     public void AimOnCameraReturn()
     {
         //todo: 카메라 원래대로
@@ -375,6 +369,7 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
+
     //*바닥 체크
     public void CheckedGround()
     {
@@ -403,15 +398,24 @@ public class PlayerController : MonoBehaviour
     }
 
     //* 데미지 받는 코루틴 실행
-    public void GetHit(Monster enemy)
+    public void GetHit(Monster enemy, float damage)
     {
+        //* 데미지에 따른 넉백 Distance 계산
+        float distance = Calculate_KnockBackDistance(damage);
 
-        StartCoroutine(PlayerGetHit(enemy, 2f));
-
+        StartCoroutine(PlayerGetHit(enemy, damage, distance));
     }
 
+    //* 무조건 넘어지는 GetHit
+    public void GetHit_FallDown(Monster enemy, float damage, float fallDownDistance = 5f)
+    {
+        if (fallDownDistance < 5f)
+            fallDownDistance = 5f;
 
-    IEnumerator PlayerGetHit(Monster enemy, float Damage)
+        StartCoroutine(PlayerGetHit(enemy, damage, fallDownDistance));
+    }
+
+    IEnumerator PlayerGetHit(Monster enemy, float damage, float knockbackDistance = 1.5f)
     {
         P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
@@ -421,7 +425,7 @@ public class PlayerController : MonoBehaviour
 
         curEnemy = enemy;
 
-        P_Value.HP -= Damage;
+        P_Value.HP -= damage;
         //플레이어의 반대 방향으로 넉백
 
         if (P_Value.HP <= 0)
@@ -438,11 +442,12 @@ public class PlayerController : MonoBehaviour
                 P_Movement.skillMotion('E');
             }
 
-            AnimState(PlayerState.GetHit_KnockBack);
+            //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.
+
+            AnimState(PlayerState.GetHit_KnockBack, 0, knockbackDistance);
         }
 
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
-
         yield return new WaitForSeconds(1f);
         P_States.isGettingHit = false;
 
@@ -463,6 +468,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
+        //* ~ 1.5f : 안넘어지고 가벼운 피격 모션. 
+        //*   1.6f ~ : 넘어지면서 뒹구는 큰 피격 모션.
         Vector3 knockback_Dir = transform.position - curEnemy.transform.position;
 
         OnHitPlayerEffect?.Invoke();
@@ -514,9 +521,28 @@ public class PlayerController : MonoBehaviour
         effect.gameObject.transform.rotation = effectRotation;
     }
 
-    //-----------------------------------------------------------------//
-    //카메라 움직임
+    //*-------------------------------------------------------------------//
+    //* 데미지에 따른 넉백 Distance 계산
 
+    private float Calculate_KnockBackDistance(float playerDamage)
+    {
+        float distance = 1.5f;
+        if (playerDamage > GameManager.instance.gameData.bigDamage) //임시 수치. 나중에 기획자가 변경할 수 있도록 수정.
+        {
+            distance = 10f;
+        }
+        else if (playerDamage > GameManager.instance.gameData.midDamage)
+        {
+            distance = 1.5f;
+        }
+        else
+        {
+            distance = 1.5f;
+        }
+        return distance;
+    }
+
+    //*-------------------------------------------------------------------//
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
@@ -537,6 +563,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    //*-------------------------------------------------------------------//
+
 
 }

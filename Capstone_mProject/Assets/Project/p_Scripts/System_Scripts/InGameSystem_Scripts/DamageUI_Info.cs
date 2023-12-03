@@ -17,9 +17,7 @@ public class DamageUI_Info : MonoBehaviour
     Coroutine size_co = null;
     public void Reset(Monster _monster, Vector3 pos, double damage)
     {
-
-
-        if (damage > 1000) //임시 수치. 나중에 기획자가 변경할 수 있도록 수정.
+        if (damage > GameManager.instance.gameData.bigDamage) //임시 수치. 나중에 기획자가 변경할 수 있도록 수정.
         {
             Color l_Color = GameManager.Instance.HexToColor("#FF8C80");
             txt_monsterDamage.color = l_Color;
@@ -27,7 +25,7 @@ public class DamageUI_Info : MonoBehaviour
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
-        else if (damage > 500)
+        else if (damage > GameManager.instance.gameData.midDamage)
         {
             Color m_Color = GameManager.Instance.HexToColor("#FFEC80");
             txt_monsterDamage.color = m_Color;
@@ -43,6 +41,8 @@ public class DamageUI_Info : MonoBehaviour
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
+
+
 
         m_Monster = _monster;
         m_DamagePos = pos;

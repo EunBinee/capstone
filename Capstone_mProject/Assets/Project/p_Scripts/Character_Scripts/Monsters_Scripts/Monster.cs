@@ -64,13 +64,23 @@ public class Monster : MonoBehaviour
 
     //*------------------------------------------------------------------------------------------//
     //* 몬스터 //
-    public virtual void OnHit(float Damage = 0, Action action = null)
+    public virtual void OnHit(float damage = 0, Action action = null)
     {
         if (!playerController._currentState.isGettingHit)
         {
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
-            playerController.GetHit(this);
+            playerController.GetHit(this, damage);
+        }
+    }
+
+    public virtual void OnHit_FallDown(float damage = 0, float distance = 10f, Action action = null)
+    {
+        if (!playerController._currentState.isGettingHit)
+        {
+            //몬스터가 플레이어를 때렸을 때 처리.
+            playerController.OnHitPlayerEffect = action;
+            playerController.GetHit_FallDown(this, damage, distance);
         }
     }
 
@@ -196,7 +206,7 @@ public class Monster : MonoBehaviour
     public void Get_DamageUI(double damage)
     {
         float randomRange = 0;
-
+        Debug.Log(damage);
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
             //보스전일때는 좀더 크게
