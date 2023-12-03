@@ -175,7 +175,7 @@ public class Bullet : MonoBehaviour
     {
         if (isFallDown)
         {
-            monster.OnHit_FallDown(3, 30, OnHitPlayerEffect);
+            monster.OnHit_FallDown(3, 60, OnHitPlayerEffect);
         }
         else
             monster.OnHit(3, OnHitPlayerEffect);

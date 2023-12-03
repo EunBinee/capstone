@@ -76,7 +76,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 m_monster.ResetHP();
             m_monster.GetHPBar();
         }
-
     }
 
     public override void UpdateRotation()
@@ -281,6 +280,28 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Monster_Motion(BossMonsterMotion.Skill03);
         }
     }
+    // *---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> Tracing
+
+    public override void Tracing_Movement()
+    {
+
+
+    }
+
+    IEnumerator Phase01_Abyss_Tracing()
+    {
+
+        while (curBossPhase == BossMonsterPhase.Phase1)
+        {
+
+        }
+
+
+        yield return null;
+    }
+
+
     //*----------------------------------------------------------------------------------------------------------//
     //* 스킬 01 내려찍기
     #region 스킬 01
@@ -1017,7 +1038,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         if (!checkPlayer)
         {
             //넉백
-            m_monster.OnHit_FallDown(3, 25);
+            m_monster.OnHit_FallDown(3, 60);
 
             yield return new WaitForSeconds(1f);
             //그리고 다시 체크
