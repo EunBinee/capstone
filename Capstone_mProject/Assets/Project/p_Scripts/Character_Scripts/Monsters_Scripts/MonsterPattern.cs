@@ -381,13 +381,18 @@ public class MonsterPattern : MonoBehaviour
     }
     // * ---------------------------------------------------------------------------------------//
     //! 특정 범위안에 플레이어가 있는지 파악하고, 데미지 주는 함수
-    public bool CheckPlayerDamage(float _overlapRadius, Vector3 _targetPos, float damage = 0)
+    public bool CheckPlayerDamage(float _overlapRadius, Vector3 _targetPos, float damage = 0, bool isFallDown = false)
     {
         drawDamageCircle = true;
         Collider[] playerColliders = Physics.OverlapSphere(_targetPos, _overlapRadius, playerlayerMask);
         if (0 < playerColliders.Length)
         {
-            m_monster.OnHit(damage);
+            if (isFallDown)
+            {
+                m_monster.OnHit_FallDown(damage, 8);
+            }
+            else
+                m_monster.OnHit(damage);
             return true;
         }
         else
