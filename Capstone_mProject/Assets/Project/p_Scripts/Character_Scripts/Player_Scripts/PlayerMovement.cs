@@ -54,6 +54,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
+            && !P_States.isGettingHit
             && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
         {
             P_Value.index = 1;
@@ -404,6 +405,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
         if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill)
+            || (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown") || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
         {
@@ -783,7 +785,7 @@ public class PlayerMovement : MonoBehaviour
             //P_Com.animator.Rebind();
             P_Com.animator.Play(P_Value.curAnimName, 0);
 
-            //yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
             //플레이어 공격 콜라이더 비활성화

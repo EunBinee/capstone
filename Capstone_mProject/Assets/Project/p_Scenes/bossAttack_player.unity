@@ -761,6 +761,7 @@ GameObject:
   - component: {fileID: 580947143}
   - component: {fileID: 580947142}
   - component: {fileID: 580947147}
+  - component: {fileID: 580947148}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -870,6 +871,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   setWidth: 1920
   setHeight: 1080
+--- !u!114 &580947148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 580947140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0f0955b3099e604e967e183c994971d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage_name: Damage_UI
+  damage_Parent: {fileID: 1117140319}
 --- !u!1 &605036774
 GameObject:
   m_ObjectHideFlags: 0
@@ -6503,6 +6518,7 @@ MonoBehaviour:
   wreckages: []
   prefabPos: {fileID: 7726829935760178629}
   bossNeck: {fileID: 7726829936113163413}
+  skillRadius: 10
   muzzlesL:
   - {fileID: 7726829934563636722}
   - {fileID: 7726829934292748521}

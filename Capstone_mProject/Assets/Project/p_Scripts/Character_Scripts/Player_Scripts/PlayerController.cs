@@ -497,9 +497,8 @@ public class PlayerController : MonoBehaviour
         }
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
-        yield return null;
-
         isGettingHit = false;
+        yield return null;
     }
 
     private void playerGetHitEffect()
