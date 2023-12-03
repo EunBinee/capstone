@@ -999,7 +999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2677883335817947639, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2860404724160415388, guid: bea6dd0c39c73fc4fbfbc405e4a69410, type: 3}
       propertyPath: m_RootOrder
@@ -3180,7 +3180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2939052637744263124
 Transform:
   m_ObjectHideFlags: 0
@@ -6393,7 +6393,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &7726829935337350017
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6449,6 +6449,7 @@ MonoBehaviour:
   monsterSoundClips: []
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
+  resetHP: 0
 --- !u!95 &7726829935337350021
 Animator:
   serializedVersion: 4
@@ -9377,12 +9378,13 @@ MonoBehaviour:
     shortAttack_Num: 4
     LongAttack_Num: 1
     canSeeMonsterInfo_Distance: 20
-    effectTrans: {fileID: 0}
+    effectTrans: {fileID: 1466523380}
   monsterPattern: {fileID: 0}
   bossMonsterPattern: {fileID: 0}
   monsterSoundClips: []
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
+  resetHP: 0
 --- !u!195 &8479997268570067486
 NavMeshAgent:
   m_ObjectHideFlags: 0

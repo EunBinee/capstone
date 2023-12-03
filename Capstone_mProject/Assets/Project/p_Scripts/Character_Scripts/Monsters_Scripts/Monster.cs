@@ -15,7 +15,7 @@ public class Monster : MonoBehaviour
     private Transform playerTrans;
 
     [SerializeField] private HPBarUI_Info m_hPBar;
-
+    public bool resetHP = false;
 
     public enum monsterSound
     {
@@ -50,6 +50,8 @@ public class Monster : MonoBehaviour
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         //GetHPBar();
+        if (!resetHP)
+            ResetHP();
     }
 
     private void Reset()
@@ -59,6 +61,8 @@ public class Monster : MonoBehaviour
 
     public void ResetHP()
     {
+        //* 처음 시작햇을때 HP 
+        resetHP = true;
         monsterData.HP = monsterData.MaxHP;
     }
 
@@ -105,6 +109,7 @@ public class Monster : MonoBehaviour
                 if (monsterData.HP <= 0)
                 {
                     //죽음
+
                     Death();
                 }
                 else
@@ -134,6 +139,7 @@ public class Monster : MonoBehaviour
     {
         //죽다.
         monsterData.HP = 0;
+        resetHP = false;
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
 
