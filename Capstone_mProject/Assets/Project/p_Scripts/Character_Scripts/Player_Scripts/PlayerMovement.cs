@@ -25,12 +25,7 @@ public class PlayerMovement : MonoBehaviour
     public Collider[] attackColliders;
     private List<PlayerAttackCheck> playerAttackChecks;
 
-    Vector3 targetDirect = Vector3.zero;
-    private float verticalRotation = 0f;
-    public float mouseSensitivity = 2.0f;
-    public float mouseSpeed;
     float yRotation;
-    float xRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -161,9 +156,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isAim)
         {
-            // float mouseX = Input.GetAxisRaw("Mouse X") * mouseSpeed * Time.deltaTime;
-            // float mouseY = Input.GetAxisRaw("Mouse Y") * mouseSpeed * Time.deltaTime;
-
             yRotation += P_Input.mouseX * 2f;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
             // xRotation -= mouseY;    // 마우스 Y축 입력에 따라 수직 회전 값을 조정
 
@@ -310,7 +302,17 @@ public class PlayerMovement : MonoBehaviour
     }
     private void PlayerRotation()
     {
-
+        if (P_States.isGettingHit)
+        {
+            Monster curmonster = P_Controller.Get_CurHitEnemy();
+            Vector3 rotationDirection;
+            rotationDirection = curmonster.transform.position - this.transform.position;
+            rotationDirection.y = 0;
+            rotationDirection.Normalize();
+            Quaternion tr = Quaternion.LookRotation(rotationDirection);
+            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+            transform.rotation = targetRotation;
+        }
         if (P_States.isStop || (P_States.isSkill || P_States.isJumping))
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
@@ -321,7 +323,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        /**/
         if (P_States.isAim)
         {
             Vector3 rotationDirection = P_Controller.AimmingCam.transform.forward;

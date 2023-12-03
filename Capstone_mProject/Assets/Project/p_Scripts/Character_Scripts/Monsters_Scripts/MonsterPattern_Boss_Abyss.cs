@@ -1017,7 +1017,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         if (!checkPlayer)
         {
             //넉백
-            m_monster.OnHit_FallDown(3, 25);
+            m_monster.OnHit_FallDown(3, 50);
 
             yield return new WaitForSeconds(1f);
             //그리고 다시 체크
