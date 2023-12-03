@@ -118,9 +118,16 @@ public class Monster : MonoBehaviour
                     else
                         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
                 }
+
+                if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+                {
+                    //! 만약 보스라면?
+                    //! HP에 따른! 페이즈 수정.!
+
+
+                }
             }
         }
-
     }
 
     public virtual void Death()
