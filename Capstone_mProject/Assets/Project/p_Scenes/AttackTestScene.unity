@@ -874,6 +874,10 @@ MonoBehaviour:
     playerCamera: {fileID: 1645457506}
     playerCameraPivot: {fileID: 1095902721}
     cameraObj: {fileID: 1372997702}
+    smallDamage: 100
+    midDamage: 300
+    bigDamage: 600
+    criticalAdditionalMultiples: 2
   objectPooling:
     PoolCount: 50
     loofEffectPools: []
@@ -1718,6 +1722,7 @@ MonoBehaviour:
   monsterSoundClips: []
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
+  resetHP: 0
 --- !u!54 &1426778202
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6127,6 +6132,10 @@ PrefabInstance:
       propertyPath: skill_Q
       value: 
       objectReference: {fileID: 185195968}
+    - target: {fileID: 7385353718067525967, guid: bb77a7cc96b678d4fa5768570eebeb64, type: 3}
+      propertyPath: attackColliders.Array.data[3]
+      value: 
+      objectReference: {fileID: 5043616183923541767, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bb77a7cc96b678d4fa5768570eebeb64, type: 3}
 --- !u!4 &7988687090360101585
@@ -6531,6 +6540,7 @@ MonoBehaviour:
   monsterSoundClips: []
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
+  resetHP: 0
 --- !u!195 &8479997268570067486
 NavMeshAgent:
   m_ObjectHideFlags: 0

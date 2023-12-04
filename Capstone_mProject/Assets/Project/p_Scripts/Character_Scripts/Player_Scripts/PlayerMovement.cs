@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
             && !P_States.isGettingHit
-            && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
+            && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
         {
             P_Value.index = 1;
             P_Value.time = 0;
@@ -76,7 +76,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Inputs()
     {
-        if (!HandleJump())
+        if (!HandleJump()
+                || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
             HandleSprint();
             HandleWalkOrRun();
@@ -266,8 +267,6 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = false;
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
-            //P_Com.animator.SetLayerWeight(1, 0.9f);
-            //P_Com.animator.SetLayerWeight(2, 0.85f);
         }
     }
 
@@ -314,7 +313,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        if (P_States.isStop || (P_States.isSkill || P_States.isJumping))
+        if (P_States.isStop || P_States.isSkill || P_States.isJumping)
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
@@ -404,30 +403,23 @@ public class PlayerMovement : MonoBehaviour
     private void PlayerMovements()
     {
         //플레이어의 움직임을 수행하는 함수.
-        if (P_States.isStop || ((P_States.isStartComboAttack || P_States.isSkill)
-            || (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown") || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))
-            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))
+        if (P_States.isStop     //* 대화 시작 시 or
+            || (P_States.isStartComboAttack     //* 공격 시 or
+                || P_States.isSkill     //* 스킬 사용 시 or
+                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
+                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
+            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")  //* 가만히 있지 않을 시 and
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))    //* 애니메이션 재생 70이상 진행되었을 시 and
         {
-            P_Com.rigidbody.velocity = Vector3.zero;
+            P_Com.rigidbody.velocity = Vector3.zero;    //* 꼼짝마
             return;
         }
 
-        /*if (P_States.isAim)
-        {
-            P_Value.moveDirection = P_Controller.AimmingCam.transform.forward * P_Input.verticalMovement;
-            P_Value.moveDirection = P_Value.moveDirection + P_Controller.AimmingCam.transform.right * P_Input.horizontalMovement;
+        //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
+        P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+        P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
 
-            P_Value.moveDirection.Normalize(); //정규화시켜준다.
-        }
-        else*/
-        {
-            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-
-            P_Value.moveDirection.Normalize(); //정규화시켜준다.
-        }
+        P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
         if (P_States.isJumping)
         {
@@ -569,16 +561,6 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isStrafing)
             {
                 //주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
-                //걷기일 경우
-                /*
-                {
-                    //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
-                    //value는 내가 할당하고 싶은 값
-                    //dampTime은 이전값에서 value에 도달하는데 걸리는데 소요될것이라 가정하는 "지연시간"
-                    //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
-                    P_Com.animator.SetFloat("Vertical", snappedVertical / 2, 0.2f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal / 2, 0.2f, Time.deltaTime);               //하
-                }*/
                 if (P_States.isAim)
                 {
                     P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);
@@ -593,25 +575,6 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                //걷기 일 경우
-                /*if (P_States.isWalking)
-                {
-                    // Debug.Log("걷기");
-                    //P_Com.animatorator.SetFloat("애니파라미터", value , damptime, Time.deltaTime);
-                    //value는 내가 할당하고 싶은 값
-                    //dampTime은 이전값에서 value에 도달하는데 걸리는데 소요될것이라 가정하는 "지연시간"
-                    //Time.deltaTime: 직전의 실행과 현재 실행 사이의 시간 차가 Time.deltaTime만큼 나오므로 Time.deltaTime을 할당
-                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);               //하
-
-                    //Vertical에만 값을 넣어주는 이유
-                    //걷기 모션은 Front만 쓴다.
-                    //이유 : 애니메이션은 딱 하나 Front만 쓰기 때문
-                    // 몸을 돌리는 건 코드에서 돌려준다.
-                    //그리고 주목 기능을 쓰게 되면, 몸이 한 방향을 주목하고 움직여야하기에
-                    //다른 애니메이션도 쓰이게 된다. 
-                    //그래서 snappedVertical과 snappedHorizontal을 통해서.. 모든 값을 준다. 그래야 여러 애니메이션을 쓸 수 있기 때문
-                }*/
                 if (P_States.isAim)
                 {
                     P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);
@@ -758,7 +721,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 Vector3 pos = transform.position + dir * 7f;
-                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+                //transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             else if (P_States.isForwardBlocked) //앞에 막혀있다면 
             {
@@ -766,9 +729,9 @@ public class PlayerMovement : MonoBehaviour
             }
             else    //앞이 막혀있지 않고 적이 없다면
             {
-                dir = this.gameObject.transform.forward.normalized;
-                Vector3 pos = transform.position + dir * 3f;
-                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+                // dir = this.gameObject.transform.forward.normalized;
+                // Vector3 pos = transform.position + dir * 3f;
+                // transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
             /*//* 이펙트
@@ -779,7 +742,11 @@ public class PlayerMovement : MonoBehaviour
             effectRotation.x = 0;
             effectRotation.z = 0;
             effect.gameObject.transform.rotation = effectRotation;*/
-            P_Controller.playAttackEffect(P_Value.curAnimName);
+            if (P_States.isStartComboAttack)
+            {
+                P_Controller.playAttackEffect(P_Value.curAnimName);
+
+            }
 
             //* 공격 애니메이션 재생
             //P_Com.animator.Rebind();
@@ -810,17 +777,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Value.time += Time.deltaTime;
                 yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
+                P_States.isStartComboAttack = false;
 
                 if (Input.GetMouseButton(0) && curIndex == P_Value.index)
                 {
-                    if (P_Value.index == 5)
+                    P_States.isStartComboAttack = true;
+                    if (P_Value.index >= 5)
                     {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.9f);
                         P_Value.index = 1;
                         P_Value.time = 0;
                         P_Value.isCombo = false;
                         P_States.hadAttack = false;
-                        //P_States.isPerformingAction = false;
+                        Debug.Log("P_Value.index >= 5");
+                        //P_States.isStartComboAttack = false;
                     }
                     else
                     {
