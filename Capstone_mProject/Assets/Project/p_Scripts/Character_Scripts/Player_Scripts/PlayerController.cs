@@ -266,10 +266,12 @@ public class PlayerController : MonoBehaviour
             bow.SetActive(false);
             sword.SetActive(true);
             crosshairImage.gameObject.SetActive(false);
+            P_States.isSkill = false;
         }
         else if (!skill.isTwice)
         {
             P_Com.animator.Play(skill.animationName);
+            P_States.isSkill = false;
         }
     }
 
