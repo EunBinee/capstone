@@ -39,7 +39,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool ing_skill03 = false;
     bool ing_skill04 = false;
 
-
+    //보스 페이즈 체력 기준
+    //코루틴
+    Coroutine skill02_MoveMonster_Co = null;
 
     public override void Init()
     {
@@ -84,6 +86,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 m_monster.ResetHP();
             m_monster.GetHPBar();
         }
+
+        CheckBossHP();
     }
 
     public override void UpdateRotation()
@@ -138,6 +142,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case MonsterState.GetHit:
                     break;
                 case MonsterState.GoingBack:
+                    break;
+                case MonsterState.Stop:
                     break;
                 default:
                     break;
@@ -267,12 +273,63 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             case BossMonsterPhase.Phase2:
                 // 2페이지 시작 연출
+                //! 연출후, Tracing으로 변환
+                StartCoroutine(Phase02_Production());
                 break;
             case BossMonsterPhase.Phase3:
                 // 3페이지 시작 연출
                 break;
         }
     }
+
+    //* 보스 연출
+    //* 페이즈 02
+
+    IEnumerator Phase02_Production()
+    {
+        yield return new WaitUntil(() => startSkill == false);
+        playerController.P_Movement.StopPlayer();
+        //* 모든 스킬이 끝났다면 연출 시작
+
+        //* 몬스터 지정된 장소로 점프
+
+        //* 플레이어도 지정된 장소로 이동. 
+
+        //* 카메라 로테이션.
+
+        //* 플레이어 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        yield return new WaitForSeconds(1f);
+        playerController.P_Movement.PlayPlayer();
+        ChangeMonsterState(MonsterState.Tracing);
+    }
+
+
+
+
 
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> 로밍(시네머신 등장 신.)
@@ -284,10 +341,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
 
-            isRoaming = false;
+            //isRoaming = false;
             ChangeBossPhase(BossMonsterPhase.Phase1);
             ChangeMonsterState(MonsterState.Tracing);
-
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -325,7 +381,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         int skill = 0;
         bool pickAgain = false;
         float breakTime = 0; //* 스킬 있은 후, 쉬는 시간
-        while (curBossPhase == BossMonsterPhase.Phase1)
+        BossMonsterPhase curBossP = curBossPhase;
+        while (curBossPhase == curBossP)
         {
             skill = UnityEngine.Random.Range(0, 2);
             pickAgain = false;
@@ -372,9 +429,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         //* 페이즈가 바꼈을때 빠져나옴.
-        Debug.Log("bye");
+        ChangeMonsterState(MonsterState.Stop);
         isTracing = false;
-        yield return null;
     }
 
     //* 스킬 끝났을 때 무조건 실행해주는 함수. (변수 수정할때 사용.)
@@ -580,7 +636,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         yield return new WaitForSeconds(4f);
         //* 몬스터 뒤로 이동하는 코루틴
-        StartCoroutine(MoveMonster_Skill02());
+        if (skill02_MoveMonster_Co != null)
+        {
+            StopCoroutine(skill02_MoveMonster_Co);
+        }
+        skill02_MoveMonster_Co = StartCoroutine(MoveMonster_Skill02());
 
         yield return new WaitForSeconds(2f);
         float time = 0;
@@ -629,7 +689,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
 
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
         Vector3 effectPos = transform.position;
@@ -648,6 +708,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //* 보스 주변에 공격--------------------------------------------
         //* 보스의 마지막 공격
+
+        if (skill02_MoveMonster_Co != null)
+        {
+            StopCoroutine(skill02_MoveMonster_Co);
+            skill02_MoveMonster_Co = null;
+
+            SetMove_AI(false);
+            SetAnimation(MonsterAnimation.Idle);
+        }
+
         List<Vector3> roundPos = GetRoundPos(transform.position);
         foreach (Vector3 pos in roundPos)
         {
@@ -678,11 +748,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
 
+        if (!playerController._currentState.canGoForwardInAttack)
+            playerController._currentState.canGoForwardInAttack = true;
+
         //*-------------------------------------------------------------
         if (curBossPhase != BossMonsterPhase.Phase1)
         {
             //* 잔해물 떨어지기
-            yield return new WaitForSeconds(4f);
+            yield return new WaitForSeconds(3f);
             StartCoroutine(SetWreckage());
             yield return new WaitForSeconds(1f);
             EndSkill(BossMonsterMotion.Skill02);
@@ -690,6 +763,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         else
         {
             yield return new WaitForSeconds(1f);
+
             EndSkill(BossMonsterMotion.Skill02);
         }
     }
@@ -740,7 +814,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
                     //TODO: 몬스터 방향 플레이어 쪽으로 돌리기
                     time = 0;
-                    while (time < 5)
+                    while (time < 3)
                     {
                         time += Time.deltaTime;
                         Vector3 direction = playerTrans.position - transform.position;
@@ -759,11 +833,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
 
         }
-        else
-        {
-            //!점프 갈겨
-            //점프 끝나면 startAttack == true만들기
-        }
+        else { }
 
         SetAnimation(MonsterAnimation.Idle);
 
@@ -828,7 +898,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 //prefabPos에 생성
                 wreckage_obj = UnityEngine.Object.Instantiate(wreckagesPrefab);
-                wreckage_obj.gameObject.transform.SetParent(prefabPos);
+                wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
 
                 wreckages = new List<Wreckage>();
 
@@ -844,7 +914,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         else
         {
-            wreckage_obj.gameObject.transform.SetParent(prefabPos);
+            wreckage_obj.SetActive(true);
+            wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
         }
 
         //*잔해물 배치(플레이어와 떨어진 곳으로 지정)
@@ -916,7 +987,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
 
-        playerController.NavMeshSurface_ReBuild();
+        //playerController.NavMeshSurface_ReBuild();
         // 사라지게 하기
         yield return null;
         Skill03();
@@ -1032,6 +1103,31 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         yield return new WaitForSeconds(1f);
         EndSkill(BossMonsterMotion.Skill03);
+
+
+        //* 잔해물 치우기
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < wreckages.Count; ++i)
+        {
+            wreckages[i].DisappearWreckage();
+        }
+        bool wreckageActive = false;
+
+        while (!wreckageActive)
+        {
+            wreckageActive = true;
+            for (int i = 0; i < wreckages.Count; ++i)
+            {
+                if (wreckages[i].gameObject.activeSelf)
+                {
+                    wreckageActive = false;
+                    break;
+                }
+            }
+            yield return null;
+        }
+        wreckage_obj.SetActive(false);
+        playerController.NavMeshSurface_ReBuild();
 
         yield return null;
     }
@@ -1220,6 +1316,43 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //*----------------------------------------------------------------------------------------------------------//
     //* --
 
+    public override void Base_Phase_HP()
+    {
+        //HP로 나누는 페이즈
+        //* 2페이즈 >> 70%
+        //* 3페이즈 >> 20%
+        float curHP = (float)m_monster.monsterData.HP;
+        switch (curBossPhase)
+        {
+            case BossMonsterPhase.Phase1:
+                //70%, 20%모두 체크
+                if (curHP < Phase3_BossHP)
+                {
+                    //*페이즈 3
+                    ChangeBossPhase(BossMonsterPhase.Phase3);
+                }
+                else if (curHP < Phase2_BossHP)
+                {
+                    //*페이즈 2
+                    ChangeBossPhase(BossMonsterPhase.Phase2);
+                }
+                break;
+            case BossMonsterPhase.Phase2:
+                //20%체크
+                if (curHP < Phase3_BossHP)
+                {
+                    //*페이즈 3
+                    ChangeBossPhase(BossMonsterPhase.Phase3);
+                }
+                break;
+            case BossMonsterPhase.Phase3:
+                //0%체크
+                break;
+            default:
+                break;
+        }
+
+    }
     //*----------------------------------------------------------------------------------------------------------//
     //* --
 

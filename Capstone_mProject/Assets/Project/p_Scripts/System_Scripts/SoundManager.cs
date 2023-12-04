@@ -24,6 +24,7 @@ public class SoundManager : MonoBehaviour
     {
         Title,
         Ingame
+
     }
 
     [Header("PlayerSound")]
@@ -109,7 +110,6 @@ public class SoundManager : MonoBehaviour
             sfxPlayer[i].volume = 1;
         }
     }
-
     public void Play_BGM(BGM bgm)
     {
         bgmPlayer.clip = playerSoundClips[(int)bgm];
