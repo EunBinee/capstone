@@ -55,7 +55,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
             && !P_States.isGettingHit
-            && (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
+            && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
         {
             P_Value.index = 1;
             P_Value.time = 0;
@@ -729,12 +729,15 @@ public class PlayerMovement : MonoBehaviour
             }
             //Time.timeScale = 0.1f;
             //Debug.Log(P_Value.index);
+
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
             P_Controller.CheckedForward();
-            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked) //앞이 막혀있지 않고 적이 있다면
+
+            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
+
                 if (nowEnemy_Monster.monsterData.useWeakness)
                 {
                     float distance = 10000;
@@ -748,8 +751,8 @@ public class PlayerMovement : MonoBehaviour
                             curW_index = i;
                         }
                     }
+
                     Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.weakness[curW_index].position.x, 0, nowEnemy_Monster.monsterData.weakness[curW_index].position.z);
-                    //dir = (nowEnemy_Monster.monsterData.weakness[curW_index].position - this.transform.position).normalized;
                     dir = (monster_ - this.transform.position).normalized;
                 }
                 else
@@ -760,7 +763,7 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 pos = transform.position + dir * 7f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else if (P_States.isForwardBlocked) //앞에 막혀있다면 
+            else if (P_States.isForwardBlocked || !P_States.canGoForwardInAttack) //앞에 막혀있다면 
             {
                 //dir = this.gameObject.transform.forward.normalized;
             }

@@ -24,12 +24,12 @@ public enum PlayerState
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] public PlayerComponents _playerComponents = new PlayerComponents();
+    public PlayerComponents _playerComponents = new PlayerComponents();
     public PlayerInput _input = new PlayerInput();
-    [SerializeField] public CheckOption _checkOption = new CheckOption();
+    public CheckOption _checkOption = new CheckOption();
     public CurrentState _currentState = new CurrentState();
-    [SerializeField] public CurrentValue _currentValue = new CurrentValue();
-    [SerializeField] public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
+    public CurrentValue _currentValue = new CurrentValue();
+    public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;

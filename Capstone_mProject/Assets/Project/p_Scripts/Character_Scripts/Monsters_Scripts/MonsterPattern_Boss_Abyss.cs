@@ -298,7 +298,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //*페이즈 마다 실행되도록.
         if (!isTracing)
         {
-            Debug.Log("HI");
+
             //! 연출 씬 있을때는 멈추기 (나중에 구현)
             isTracing = true;
             switch (curBossPhase)
@@ -319,7 +319,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-    //! 일단은 페이즈 1이랑 2랑 실행시키는 건 똑같으니깐 페이즈가 달라도 이 코루틴 사용.
+    //! 일단은 페이즈 1이랑 2랑 실행시키는 건 똑같으니깐 페이즈가 달라도 일단은? 이 코루틴 사용.
     IEnumerator Phase01_Abyss_Tracing()
     {
         int skill = 0;
@@ -509,7 +509,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
 
 
-        yield return new WaitForSeconds(1.5f);
+        // yield return new WaitForSeconds(1.5f);
         while (time < 5f)
         {
             time += Time.deltaTime;
@@ -548,15 +548,19 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
         EffectController effectController = effect.gameObject.GetComponent<EffectController>();
         effectController.ChangeSize();
-        effect.transform.position = playerTrans.position;
+
+        Vector3 GroundPos = GetGroundPos(playerTrans);
+        effect.transform.position = GroundPos; // playerTrans.position;
         float time = 0;
+
         while (time < duration)
         {
             time += Time.deltaTime;
-
-            effect.transform.position = playerTrans.position;
+            GroundPos = GetGroundPos(playerTrans);
+            effect.transform.position = GroundPos; // playerTrans.position;
             yield return null;
         }
+
         yield return new WaitForSeconds(4f);
         effect.StopEffect();
     }
@@ -642,13 +646,39 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         yield return new WaitForSeconds(0.7f);
 
-        //* 보스 주변에 공격
+        //* 보스 주변에 공격--------------------------------------------
+        //* 보스의 마지막 공격
         List<Vector3> roundPos = GetRoundPos(transform.position);
         foreach (Vector3 pos in roundPos)
         {
             StartCoroutine(SetBomb(pos, true));
         }
+        //만약 플레이어가 현재 몬스터 아래에 있으면.. 공격할때 앞으로 이동하는 거 멈추기
 
+        float radius = 5;
+        while (randomPos_skill02.Count != 0)
+        {
+            // 몬스터 아래에 있는지 확인
+            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
+
+            if (0 < playerColliders.Length)
+            {
+                // player 공격시 앞으로 이동 금지
+                // 플레이어
+                if (playerController._currentState.canGoForwardInAttack)
+                    playerController._currentState.canGoForwardInAttack = false;
+            }
+            else
+            {
+                //여기 없으면 이동 풀기
+                if (!playerController._currentState.canGoForwardInAttack)
+                    playerController._currentState.canGoForwardInAttack = true;
+            }
+
+            yield return null;
+        }
+
+        //*-------------------------------------------------------------
         if (curBossPhase != BossMonsterPhase.Phase1)
         {
             //* 잔해물 떨어지기
@@ -1107,6 +1137,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
         float distance = Vector3.Distance(this.transform.position, playerTrans.position);
+
         {
             Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
 

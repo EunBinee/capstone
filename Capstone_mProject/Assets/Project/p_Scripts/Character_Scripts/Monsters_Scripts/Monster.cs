@@ -128,8 +128,6 @@ public class Monster : MonoBehaviour
                 {
                     //! 만약 보스라면?
                     //! HP에 따른! 페이즈 수정.!
-
-
                 }
             }
         }
@@ -219,7 +217,6 @@ public class Monster : MonoBehaviour
     public void Get_DamageUI(double damage)
     {
         float randomRange = 0;
-        Debug.Log(damage);
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
             //보스전일때는 좀더 크게

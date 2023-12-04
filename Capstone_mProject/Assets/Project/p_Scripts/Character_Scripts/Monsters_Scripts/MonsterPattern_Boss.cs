@@ -92,6 +92,12 @@ public class MonsterPattern_Boss : MonsterPattern
             case BossMonsterPhase.Phase3:
                 break;
         }
+    }
+
+    public virtual void Base_Phase_HP()
+    {
+        //HP로 나누는 페이즈
+
 
     }
 }
