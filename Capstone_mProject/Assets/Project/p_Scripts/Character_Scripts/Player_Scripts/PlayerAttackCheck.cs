@@ -33,7 +33,7 @@ public class PlayerAttackCheck : MonoBehaviour
         // }
         _playerController = player.GetComponent<PlayerController>();
         rigid = GetComponent<Rigidbody>();
-        if (gameObject.tag == "Arrow")  //* 화살인지 확인을 해
+        if (this.gameObject.tag == "Arrow")  //* 화살인지 확인을 해
         {
             isArrow = true;
         }
@@ -41,8 +41,6 @@ public class PlayerAttackCheck : MonoBehaviour
     }
     void FixedUpdate()
     {
-        //! 발사 후에 위치랑 회전이 계속 저장되서 화살이 유도탄마냥 움직임
-
         if (isArrow && !goShoot)
         {
             //nowArrow.position = P_Controller.shootPoint.position;   //* 위치 방향 저장
@@ -62,6 +60,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 //transform.position += dir * 0.1f;
                 rigid.velocity = dir.normalized * 40f; ; //* 발사
                 goShoot = true;
+                //ArrowRay();
             }
         }
     }
@@ -124,7 +123,7 @@ public class PlayerAttackCheck : MonoBehaviour
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
     }
 
-    private void ArrowRay(float curArrowDistance)
+    private void ArrowRay()//float curArrowDistance)
     {
         float range = 100f;
         RaycastHit[] hits;
@@ -139,7 +138,7 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 //자기 자신은 패스
                 float distance = hit.distance;
-                if (curArrowDistance < distance && shortDist > distance)
+                if (/*curArrowDistance < distance &&*/ shortDist > distance)
                 {
                     shortHit = hit;
                     shortDist = distance;
