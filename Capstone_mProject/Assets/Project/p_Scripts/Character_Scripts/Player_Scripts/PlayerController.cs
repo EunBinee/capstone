@@ -30,14 +30,14 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    public PlayerSkills _playerSkills = new PlayerSkills();
+    //public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    private PlayerSkills P_Skills => _playerSkills;
+    //private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
     public PlayerMovement P_Movement;
 
@@ -96,9 +96,14 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        AimOnCameraReturn();
+        //AimOnCameraReturn();
+        P_Camera.cameraObj = mainCam;
+        AimmingCam.enabled = false;
+        P_Camera.cameraObj.enabled = true;
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
+        //mainCam.enabled = true;
+
     }
     // Update is called once per frame
     void Update()
@@ -113,14 +118,14 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            P_Movement.skill_E.gameObject.SetActive(false);
+            //P_Movement.skill_E.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            P_Movement.skill_E.gameObject.SetActive(true);
+            //P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -146,7 +151,7 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        _playerSkills.Init();
+        //_playerSkills.Init();
     }
 
     public void NavMeshSurface_ReBuild()
@@ -280,7 +285,7 @@ public class PlayerController : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Skills.GetArrowFromPool();
+        //arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
         //arrow.SetActive(true);
     }
