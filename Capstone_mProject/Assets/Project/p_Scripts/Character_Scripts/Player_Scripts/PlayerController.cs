@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
         AimOnCameraReturn();
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
+        //mainCam.enabled = true;
+
     }
     // Update is called once per frame
     void Update()
@@ -146,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        //_playerSkills.Init();
+        _playerSkills.Init();
     }
 
     public void NavMeshSurface_ReBuild()
