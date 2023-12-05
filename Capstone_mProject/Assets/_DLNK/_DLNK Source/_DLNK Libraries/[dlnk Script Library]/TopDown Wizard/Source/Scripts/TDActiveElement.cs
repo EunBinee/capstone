@@ -31,14 +31,14 @@ public class TDActiveElement : MonoBehaviour
         ActiveCollider.gameObject.GetComponent<Collider>().isTrigger = true;
 
         //Check if TopDown exists in the scene
-        if (GameObject.FindWithTag("TdLevelManager") == null)
-            UseTopDown = false;
+        // if (GameObject.FindWithTag("TdLevelManager") == null)
+        //     UseTopDown = false;
 
         //Link TopDown control if enabled
-            if (UseTopDown)
+        if (UseTopDown)
         {
             // find scene control component
-            tdscene = GameObject.FindWithTag("TdLevelManager").GetComponent<TDScene>();
+            //tdscene = GameObject.FindWithTag("TdLevelManager").GetComponent<TDScene>();
 
             // find keycode override in scene settings
             ActiveElementKey = tdscene.ActiveKey;

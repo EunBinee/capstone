@@ -110,32 +110,8 @@ public class CameraController : MonoBehaviour
             GameManager.instance.SortingMonsterList();
             curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
         }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Debug.Log("Dd");
-            BossTimelineCam();
-        }
     }
 
-    //* 처음 주목
-    public void AttentionMonster()
-    {
-        if (GameManager.instance.monsterUnderAttackList.Count > 0)
-        {
-            if (resetCameraZ_co != null)
-                StopCoroutine(resetCameraZ_co);
-            Vector3 camPos = cameraTrans.localPosition;
-            camPos.z = attention_Z;
-            cameraTrans.localPosition = camPos;
-            playerController._currentState.isStrafing = true;
-            //처음 주목한 경우
-            isBeingAttention = true;
-            //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
-            GameManager.instance.SortingMonsterList();
-            curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
-        }
-    }
 
     //*주목 풀기
     public void UndoAttention()
