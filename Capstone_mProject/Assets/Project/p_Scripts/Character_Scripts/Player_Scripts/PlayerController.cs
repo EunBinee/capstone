@@ -505,6 +505,7 @@ public class PlayerController : MonoBehaviour
         {
             P_Com.animator.Play("Get_Damage", 0);
         }
+        P_Value.hits = 0;   //* 피격 시 히트 초기화
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         isGettingHit = false;
