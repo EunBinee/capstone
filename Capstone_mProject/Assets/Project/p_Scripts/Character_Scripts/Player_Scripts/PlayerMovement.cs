@@ -63,8 +63,15 @@ public class PlayerMovement : MonoBehaviour
             P_States.isStartComboAttack = false;
             P_Com.animator.SetInteger("comboCount", P_Value.index);
             P_Com.animator.SetBool("p_Locomotion", true);
-            //P_Com.animator.Play("locomotion");
             P_Com.animator.Rebind();
+            if (P_States.isAim)    //* 조준 모드라면
+            {
+                P_Com.animator.SetTrigger("shoot");
+                if (!P_States.isSkill)
+                {
+                    skillMotion('E');
+                }
+            }
         }
         P_Controller.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
@@ -693,10 +700,8 @@ public class PlayerMovement : MonoBehaviour
             //Time.timeScale = 0.1f;
             //Debug.Log(P_Value.index);
 
-            //* 공격 시 앞으로 찔끔찔끔 가도록
+            /*//* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            P_Controller.CheckedForward();
-
             if (P_Value.nowEnemy != null && !P_States.isForwardBlocked && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
@@ -735,7 +740,7 @@ public class PlayerMovement : MonoBehaviour
                 // dir = this.gameObject.transform.forward.normalized;
                 // Vector3 pos = transform.position + dir * 3f;
                 // transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
-            }
+            }*/
 
             /*//* 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(P_Value.curAnimName);

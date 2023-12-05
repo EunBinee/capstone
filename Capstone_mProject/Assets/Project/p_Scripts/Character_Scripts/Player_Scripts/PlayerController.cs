@@ -280,7 +280,7 @@ public class PlayerController : MonoBehaviour
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        arrow.SetActive(true);
+        //arrow.SetActive(true);
     }
 
     //* camera controll
@@ -318,6 +318,14 @@ public class PlayerController : MonoBehaviour
         AimmingCamCon.minPivot = 0;
         AimmingCamCon.maxPivot = 0;
         AimmingCamCon.banAttention = false;
+        if (GameManager.instance.monsterUnderAttackList.Count > 0)
+        {
+            MonsterData isBoss = GameManager.instance.monsterUnderAttackList[0].monsterData;
+            if (isBoss.monsterType == MonsterData.MonsterType.BossMonster)
+            {
+                GameManager.instance.cameraController.AttentionMonster();
+            }
+        }
 
         P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
