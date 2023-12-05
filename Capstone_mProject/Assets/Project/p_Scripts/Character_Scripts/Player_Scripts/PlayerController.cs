@@ -112,12 +112,14 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("HPgauge = false");
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
+            hitNum.gameObject.SetActive(false);
             P_Movement.skill_E.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
+            hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();

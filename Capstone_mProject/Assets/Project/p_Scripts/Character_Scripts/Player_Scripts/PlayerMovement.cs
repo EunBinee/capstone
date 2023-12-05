@@ -126,27 +126,26 @@ public class PlayerMovement : MonoBehaviour
                 {
                     P_Com.animator.SetTrigger("shoot");
                     skillMotion('E');
-                    /*if (P_States.isSkill)   //* 스킬 시전중이라면
-                    {
-                        return;
-                    }*/
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
                     //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                     P_States.isStartComboAttack = true;
-                    //SetLayerWeight(int layerIndex, float weight);
                     StartCoroutine(Attacking());
                 }
             }
-            if (Input.GetKeyDown(KeyCode.E))
+            //* skills input
+            /*if (Input.GetKeyDown(KeyCode.E))
             {
                 //Debug.Log("P_States.isSkill : " + P_States.isSkill);
                 if (P_States.isSkill)
                 {
                     return;
                 }
-                skillMotion('E');
+                else
+                {
+                    skillMotion('E');
+                }
             }
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -155,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
                     return;
                 }
                 skillMotion('Q');
-            }
+            }*/
 
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
@@ -419,13 +418,16 @@ public class PlayerMovement : MonoBehaviour
     private void PlayerMovements()
     {
         //플레이어의 움직임을 수행하는 함수.
-        if (P_States.isStop     //* 대화 시작 시 or
-            || (P_States.isStartComboAttack     //* 공격 시 or
-                /*|| P_States.isSkill     //* 스킬 사용 시 or*/
+        if (P_States.isStop)
+        {
+            P_Com.rigidbody.velocity = Vector3.zero;
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+            return;
+        }
+        if (P_States.isStartComboAttack     //* 공격 시 or
+                || P_States.isSkill     //* 스킬 사용 시 or/**/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
-                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
-            && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")  //* 가만히 있지 않을 시 and
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.7f))    //* 애니메이션 재생 70이상 진행되었을 시 and
+                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
             P_Com.rigidbody.velocity = Vector3.zero;    //* 꼼짝마
             return;
@@ -466,7 +468,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = p_velocity;
             //return;
         }
-        else if (P_States.isAim)
+        /*else if (P_States.isAim)
         {
             //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
             P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
@@ -477,7 +479,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
-        }
+        }*/
     }
 
     //애니메이터 블랜더 트리의 파라미터 변경
