@@ -46,9 +46,7 @@ public class HPBarUI_Info : MonoBehaviour
 
     public void resetHP()
     {
-        Debug.Log($"Reset {m_Monster.monsterData.HP}, {m_Monster.monsterData.MaxHP}");
         float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
-        Debug.Log($"Reset2 {monsterHP_Value}");
         m_slider.value = monsterHP_Value;
     }
 
@@ -65,7 +63,6 @@ public class HPBarUI_Info : MonoBehaviour
 
     IEnumerator UpdateHPBar_Anim(float monsterHP_Value)
     {
-        Debug.Log($"update : {monsterHP_Value}");
         float time = 0;
         while (time < 0.5f)
         {
@@ -74,7 +71,6 @@ public class HPBarUI_Info : MonoBehaviour
             m_slider.value = Mathf.Lerp(m_slider.value, monsterHP_Value, 0.5f);
             if (m_slider.value == monsterHP_Value)
             {
-                Debug.Log($"끝~");
                 break;
             }
             yield return null;

@@ -100,8 +100,8 @@ public class MonsterPattern_Boss : MonsterPattern
     protected void CheckBossHP()
     {
         Phase1_BossHP = (float)m_monster.monsterData.MaxHP;
-        Phase2_BossHP = (float)(m_monster.monsterData.MaxHP * 0.7);
-        Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2);
+        Phase2_BossHP = (float)(m_monster.monsterData.MaxHP * 0.7f);
+        Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2f);
     }
 
     public virtual void Base_Phase_HP()

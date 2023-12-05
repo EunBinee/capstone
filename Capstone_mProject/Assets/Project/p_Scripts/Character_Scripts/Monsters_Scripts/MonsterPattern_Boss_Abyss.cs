@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using UnityEngine.AI;
 using Unity.VisualScripting;
@@ -18,7 +19,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public int rangeXZ;
     public List<Wreckage> wreckages;
     public Transform prefabPos;
+
     GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
+    public GameObject redImage;
+    public GameObject BossText;
+
     List<Vector3> randomPos_skill02;
     [Space]
     [Header("스킬 03")]
@@ -42,6 +47,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //보스 페이즈 체력 기준
     //코루틴
     Coroutine skill02_MoveMonster_Co = null;
+    Coroutine changePhase02_Co = null;
 
     public override void Init()
     {
@@ -53,6 +59,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         m_monster.monsterPattern = this;
+
         if (m_monster.monsterData.movingMonster)
         {
             navMeshAgent = GetComponent<NavMeshAgent>();
@@ -78,6 +85,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.Check_Z();
         GameManager.instance.cameraController.ResetCameraZ();
 
+        GameManager.instance.cameraController.AttentionMonster();
+
         playerController.NavMeshSurface_ReBuild();
 
         if (m_monster.HPBar_CheckNull() == false)
@@ -88,6 +97,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         CheckBossHP();
+        GameManager.instance.cameraController.controlCam = false;
     }
 
     public override void UpdateRotation()
@@ -192,6 +202,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 GameManager.instance.bossBattle = false;
                 GameManager.instance.cameraController.Check_Z();
                 GameManager.instance.cameraController.ResetCameraZ();
+                GameManager.instance.cameraController.controlCam = false;
+                GameManager.instance.cameraController.UndoAttention();
                 break;
             default:
                 break;
@@ -274,10 +286,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case BossMonsterPhase.Phase2:
                 // 2페이지 시작 연출
                 //! 연출후, Tracing으로 변환
-                StartCoroutine(Phase02_Production());
+                if (changePhase02_Co == null)
+                    changePhase02_Co = StartCoroutine(Phase02_Production());
                 break;
             case BossMonsterPhase.Phase3:
                 // 3페이지 시작 연출
+                if (changePhase02_Co == null)
+                    changePhase02_Co = StartCoroutine(Phase02_Production());
                 break;
         }
     }
@@ -285,51 +300,126 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 연출
     //* 페이즈 02
 
+    bool CheckPlayerPos = false;
     IEnumerator Phase02_Production()
     {
+        float time = 0;
+        Debug.LogError("페이즈 2_01");
         yield return new WaitUntil(() => startSkill == false);
-        playerController.P_Movement.StopPlayer();
-        //* 모든 스킬이 끝났다면 연출 시작
 
+        yield return new WaitForSeconds(0.5f);
         //* 몬스터 지정된 장소로 점프
 
-        //* 플레이어도 지정된 장소로 이동. 
-
-        //* 카메라 로테이션.
-
-        //* 플레이어 
+        isJump = true;
+        StartCoroutine(JumpUp());
+        yield return new WaitUntil(() => isJump == false);
 
 
+        //*랜덤 포스로 이동(플레이어와 20정도 떨어진 곳으로)
+        //- 랜덤 Pos
+        NavMeshHit hit;
+        Vector3 newRandomPos = Vector3.zero;
+        Vector3 playerPos = playerTrans.position;
+        bool getRandomPos = false;
+
+        while (!getRandomPos)
+        {
+            time += Time.deltaTime;
+            getRandomPos = true;
+            newRandomPos = GetRandomPos(40f, playerPos);
+
+            if (NavMesh.SamplePosition(newRandomPos, out hit, 20f, NavMesh.AllAreas))
+            {
+                float distance = Vector3.Distance(newRandomPos, playerPos);
+                if (distance <= 20f || distance >= 40f) //10보다 작거나 20보다 크면  pos 다시 받아오기'
+                    getRandomPos = false;
+            }
+            else
+            {
+                getRandomPos = false;
+            }
+
+            if (time > 3f)
+            {
+                //3초 동안 못찾으면 걍 break;
+                time = 0;
+                break;
+            }
+
+            yield return null;
+        }
+        isJump = true;
+        StartCoroutine(JumpDown(newRandomPos));
+        yield return new WaitUntil(() => isJump == false);
+
+        //* 연출 중, 플레이어 못다가오도록 이펙트
+        CheckPlayerPos = true;
+        StartCoroutine(CheckPlayer_Production());
+
+        //* 빨간색 화면 PadeIn
+        if (redImage == null)
+        {
+            //! 
+            //TODO: 현재는 그냥 인스펙터에서 redImage를 가져오지만 여기처럼 나중에 resource폴더에서 가져올 수 있도록.
+
+            Debug.Log("보스 redImage 넣어주세여 null입니다.00");
+
+            //GameObject redImagePrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "redImage");
+            //redImage = UnityEngine.Object.Instantiate(redImagePrefab);
+            //redImage.transform.SetParent(GameManager.instance.m_canvas.gameObject.transform);
+
+            //RectTransform rectTransform = redImagePrefab.GetComponent<RectTransform>();
+            //rectTransform.anchoredPosition = new Vector2(0, 0);
+        }
+        redImage.SetActive(true);
+        GameManager.instance.PadeIn_Alpha(redImage, true, 90);
+        BossText.SetActive(true);
+        // GameManager.instance.PadeIn_Alpha(redImage, true, 255, false);
+        //* 카메라 흔들림        
+        GameManager.Instance.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
+
+        //* 연기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        //* 검은 오오라 => 12초
+        Vector3 originPos = transform.position;
+        effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+        effect.transform.position = originPos;
+        //- 대화 시스템 ON
 
 
+        yield return new WaitForSeconds(10f);
+        GameManager.Instance.cameraShake.ShakeCamera(1f, 3f, 3f);
+        //* 연기 이펙트
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
+        effectPos = transform.position;
+        effectPos.y -= 2.5f;
+        effect.transform.position = effectPos;
 
+        yield return new WaitForSeconds(2f);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //*s나중에 주석 풀기 !
+        GameManager.instance.PadeIn_Alpha(redImage, false, 0);
+        // GameManager.instance.PadeIn_Alpha(redImage, true, 0, false);
+        BossText.SetActive(false);
+        CheckPlayerPos = false;
         yield return new WaitForSeconds(1f);
-        playerController.P_Movement.PlayPlayer();
         ChangeMonsterState(MonsterState.Tracing);
+        changePhase02_Co = null;
     }
 
+    IEnumerator CheckPlayer_Production()
+    {
+        while (CheckPlayerPos)
+        {
+            CheckPlayerInMonster_skill03(skillRadius);
+            yield return null;
+        }
 
-
-
+    }
 
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> 로밍(시네머신 등장 신.)
@@ -354,7 +444,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //*페이즈 마다 실행되도록.
         if (!isTracing)
         {
-
             //! 연출 씬 있을때는 멈추기 (나중에 구현)
             isTracing = true;
             switch (curBossPhase)
@@ -382,8 +471,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         bool pickAgain = false;
         float breakTime = 0; //* 스킬 있은 후, 쉬는 시간
         BossMonsterPhase curBossP = curBossPhase;
-        while (curBossPhase == curBossP)
+        while (true)
         {
+            Base_Phase_HP();
+            if (curBossPhase != curBossP)
+                break;
+
             skill = UnityEngine.Random.Range(0, 2);
             pickAgain = false;
             //스킬 시작
@@ -417,7 +510,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
                 //* 스킬이 끝날 때까지 기다림.
                 yield return new WaitUntil(() => startSkill == false);
-
                 //* 쉬는 시간 (플레이어 공격 시간)
                 yield return new WaitForSeconds(breakTime);
             }
@@ -564,8 +656,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         speed = 50f;
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
 
-
-        // yield return new WaitForSeconds(1.5f);
         while (time < 5f)
         {
             time += Time.deltaTime;
@@ -589,6 +679,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //* 점프 후 주목 가능
         GameManager.instance.cameraController.banAttention = false;
+        //- 떨어지고 나서 주목 On
+        GameManager.instance.cameraController.AttentionMonster();
 
         isJump = false;
         NavMesh_Enable(true);
@@ -622,6 +714,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     #endregion
+
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 02  폭탄 떨구기
     #region 스킬 02
@@ -640,6 +733,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         {
             StopCoroutine(skill02_MoveMonster_Co);
         }
+        Debug.Log("코루틴 시작");
         skill02_MoveMonster_Co = StartCoroutine(MoveMonster_Skill02());
 
         yield return new WaitForSeconds(2f);
@@ -674,7 +768,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     randomPos_skill02.Add(newRandomPos);
                 }
 
-                if (getrandomTime < 3f)
+                if (getrandomTime > 3f)
                 {
                     //1.5초 동안 못찾으면 걍 break;
                     getrandomTime = 0;
@@ -833,7 +927,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
 
         }
-        else { }
+        else
+        {
+            Debug.Log("보스가 못가는 곳입니다..");
+        }
 
         SetAnimation(MonsterAnimation.Idle);
 
@@ -1232,7 +1329,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public bool CheckPlayerInMonster_skill03(float radius)
     {
         //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
+        //* false 플레이어가 아래에 있다. true 플레이어가 밖에 있다.
         float distance = Vector3.Distance(this.transform.position, playerTrans.position);
+
 
         {
             Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
@@ -1307,7 +1406,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 피격 이펙트
     private void GetHit()
     {
-
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
         effect.gameObject.transform.position = curHitPos;
         effect.gameObject.transform.rotation = curHitQuaternion;

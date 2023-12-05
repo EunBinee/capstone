@@ -25,8 +25,9 @@ public class CameraController : MonoBehaviour
     public float up_down_LookAngle;
 
     [Header("주목 기능")]
-    public bool banAttention = false;
+    public bool banAttention = false; // 주목 금지
     public bool isBeingAttention = false;
+    public bool controlCam = true;
     public Monster curTargetMonster = null;
 
     public float normal_Z = -5f;
@@ -50,37 +51,20 @@ public class CameraController : MonoBehaviour
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        CamReset();
     }
+
 
     private void Update()
     {
-        // if (playerController._currentState.isAim)
-        // {
-        //     if (isBeingAttention)
-        //     {
-        //         isBeingAttention = false;
-        //     }
-        //     banAttention = true;
-        // }
-        //TODO: 주목 Input =>나중에 InputManager로 옮기기
-        if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
+        if (controlCam)
         {
-            //주목 기능
-            if (GameManager.instance.monsterUnderAttackList.Count > 0)
+            //TODO: 주목 Input =>나중에 InputManager로 옮기기
+            if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
             {
-                if (!isBeingAttention)
+                if (!isBeingAttention)// 주목 기능
                 {
-                    if (resetCameraZ_co != null)
-                        StopCoroutine(resetCameraZ_co);
-                    Vector3 camPos = cameraTrans.localPosition;
-                    camPos.z = attention_Z;
-                    cameraTrans.localPosition = camPos;
-                    playerController._currentState.isStrafing = true;
-                    //처음 주목한 경우
-                    isBeingAttention = true;
-                    //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
-                    GameManager.instance.SortingMonsterList();
-                    curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+                    AttentionMonster();
                 }
                 else
                 {
@@ -97,19 +81,36 @@ public class CameraController : MonoBehaviour
                             curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
                         }
                     }
-
                 }
             }
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            if (isBeingAttention)
+            else if (Input.GetKeyDown(KeyCode.LeftControl))
             {
-                UndoAttention();
+                if (isBeingAttention)
+                {
+                    UndoAttention();
+                }
             }
         }
     }
 
+    //* 처음 주목
+    public void AttentionMonster()
+    {
+        if (GameManager.instance.monsterUnderAttackList.Count > 0)
+        {
+            if (resetCameraZ_co != null)
+                StopCoroutine(resetCameraZ_co);
+            Vector3 camPos = cameraTrans.localPosition;
+            camPos.z = attention_Z;
+            cameraTrans.localPosition = camPos;
+            playerController._currentState.isStrafing = true;
+            //처음 주목한 경우
+            isBeingAttention = true;
+            //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
+            GameManager.instance.SortingMonsterList();
+            curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+        }
+    }
 
     //*주목 풀기
     public void UndoAttention()
@@ -283,7 +284,6 @@ public class CameraController : MonoBehaviour
             longAttention_Distance = 12;
         }
 
-
         if (distance > normalDistance)
         {
             //z 를 normal_Z(-5)로 변경
@@ -389,6 +389,11 @@ public class CameraController : MonoBehaviour
     {
         // Quaternion.Angle 함수를 사용하여 각도 차이 계산
         return Quaternion.Angle(a, b);
+    }
+
+    void CamReset()
+    {
+        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, normal_Z);
     }
 
 }
