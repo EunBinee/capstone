@@ -101,6 +101,7 @@ public class QuestManager : MonoBehaviour
     //퀘스트 업데이트 함수 
     public void UpdateQuest(int id)
     {
+        Debug.Log("업뎃퀘");
         GameManager.instance.dialogueManager.DoQuest = true;
         quest_.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;//currentQuestValue_;
 
@@ -151,9 +152,8 @@ public class QuestManager : MonoBehaviour
                 text_content += "\n";
             }
         }
+        Debug.Log("sdad");
         GameManager.GetInstance().dialogueManager.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
-
-        //Debug.Log(GameManager.Instance.dialogueManager.);
 
     }
 

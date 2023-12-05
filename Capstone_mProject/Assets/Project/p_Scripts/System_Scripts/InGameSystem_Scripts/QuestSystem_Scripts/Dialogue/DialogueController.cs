@@ -68,24 +68,14 @@ public class DialogueController : MonoBehaviour
 
                 switch (sentence[i])
                 {
-                    case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; Debug.Log("흰색"); break;
-                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; Debug.Log("노랑"); break;
-                }
-                string t_letter = sentence[i].ToString();
-
-                if (!t_ignore)
-                {
-                    if (t_white) { t_letter = "<color=#ffffff>" + t_letter + "</color>"; }
-                    else if (t_yellow) { t_letter = "<color=#ffff00>" + t_letter + "</color>"; }
-                    writerText += t_letter;
+                    case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; break;
+                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; break;
                 }
 
 
-                writerText = sentence.Replace("'", ",");
+
+                writerText = sentence.Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>");
                 objectText.text = writerText;
-
-                // writerText = sentence.Replace("ⓦ", "<color=#ffffff>" + t_letter + "</color>");
-                //writerText = sentence.Replace("ⓨ", "<color=#ffff00>" + t_letter + "</color>");
                 //writerText = sentence.Replace("\\n", "\n");
 
                 //break;
@@ -96,7 +86,7 @@ public class DialogueController : MonoBehaviour
                 switch (sentence[i])
                 {
                     case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; break;
-                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; Debug.Log("노랑22"); break;
+                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; break;
                 }
 
                 string t_letter = sentence[i].ToString();
