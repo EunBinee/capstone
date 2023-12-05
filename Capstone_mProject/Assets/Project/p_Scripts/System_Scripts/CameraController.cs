@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -108,6 +109,12 @@ public class CameraController : MonoBehaviour
             //* 처음에 주목할 때는 가장 가까이에 있는 몬스터부터 주목
             GameManager.instance.SortingMonsterList();
             curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Dd");
+            BossTimelineCam();
         }
     }
 

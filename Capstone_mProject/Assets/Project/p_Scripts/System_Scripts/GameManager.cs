@@ -31,6 +31,8 @@ public class GameManager : MonoBehaviour
     public GameInfo gameInfo;
     //public Item item;
     public QuestManager questManager;
+    //탐라
+    public TimeLineController timeLineController;
 
     //*---------------------------------------------//
     public Canvas m_canvas;
@@ -84,6 +86,7 @@ public class GameManager : MonoBehaviour
         {
             monsters.Add(cur_monsters[i]);
         }
+        timeLineController = GetComponent<TimeLineController>();
     }
 
     static public GameManager GetInstance()
