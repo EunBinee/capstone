@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        _playerSkills.Init();
+        //_playerSkills.Init();
     }
 
     public void NavMeshSurface_ReBuild()
