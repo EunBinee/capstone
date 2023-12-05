@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
         if (!HandleJump()
                 || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
-            HandleSprint();
+            //HandleSprint();
             HandleWalkOrRun();
 
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
@@ -449,7 +449,7 @@ public class PlayerMovement : MonoBehaviour
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 
-            Invoke("dodgeOut", 0.15f);    //대시 유지 시간
+            Invoke("dodgeOut", 0.07f);    //대시 유지 시간
 
         }
         else if (P_States.isSprinting || P_States.isRunning)
@@ -788,7 +788,6 @@ public class PlayerMovement : MonoBehaviour
                         P_Value.time = 0;
                         P_Value.isCombo = false;
                         P_States.hadAttack = false;
-                        Debug.Log("P_Value.index >= 5");
                         //P_States.isStartComboAttack = false;
                     }
                     else
