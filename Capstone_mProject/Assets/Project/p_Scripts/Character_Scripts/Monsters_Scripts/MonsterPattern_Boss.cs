@@ -32,7 +32,9 @@ public class MonsterPattern_Boss : MonsterPattern
     }
 
     protected BossMonsterPhase curBossPhase;
-
+    protected float Phase1_BossHP = 0;
+    protected float Phase2_BossHP = 0;
+    protected float Phase3_BossHP = 0;
 
     public virtual void SetBossAttackAnimation(BossMonsterAttackAnimation bossMonsterAttackAnimation, int animIndex = 0)
     {
@@ -54,6 +56,7 @@ public class MonsterPattern_Boss : MonsterPattern
                 }
                 break;
             default:
+
                 break;
         }
     }
@@ -92,6 +95,13 @@ public class MonsterPattern_Boss : MonsterPattern
             case BossMonsterPhase.Phase3:
                 break;
         }
+    }
+
+    protected void CheckBossHP()
+    {
+        Phase1_BossHP = (float)m_monster.monsterData.MaxHP;
+        Phase2_BossHP = (float)(m_monster.monsterData.MaxHP * 0.7f);
+        Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2f);
     }
 
     public virtual void Base_Phase_HP()

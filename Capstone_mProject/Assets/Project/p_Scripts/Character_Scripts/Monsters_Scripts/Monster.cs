@@ -103,20 +103,24 @@ public class Monster : MonoBehaviour
 
                 monsterData.HP -= damage;
                 m_hPBar.UpdateHP();
-                //--------------------------------------------------------------------------------//
+                //*-------------------------------------------------------------------------------//
 
+
+                //*-------------------------------------------------------------------------------//
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
                 {
                     //죽음
-
                     Death();
                 }
                 else
                 {
                     //아직 살아있음.
-                    if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+                    if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)//* 만약 보스라면?
                     {
+                        //* HP에 따른! 페이즈 수정.!
+                        //bossMonsterPattern.Base_Phase_HP();
+
                         monsterPattern.SetGetDemageMonster(attackPos, atteckRot);
                         bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.GetHit);
                     }
@@ -124,11 +128,6 @@ public class Monster : MonoBehaviour
                         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
                 }
 
-                if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
-                {
-                    //! 만약 보스라면?
-                    //! HP에 따른! 페이즈 수정.!
-                }
             }
         }
     }
@@ -224,7 +223,6 @@ public class Monster : MonoBehaviour
         }
         else
             randomRange = 0.5f;
-        Debug.Log("damage UI");
         DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
 
         float x = UnityEngine.Random.Range(-randomRange, randomRange);

@@ -40,7 +40,8 @@ public class MonsterPattern : MonoBehaviour
         Attack,
         GetHit,
         GoingBack,
-        Death
+        Death,
+        Stop // 잠깐 멈추는 상태. ex.연출씬
     }
 
     public enum MonsterAnimation
@@ -569,8 +570,8 @@ public class MonsterPattern : MonoBehaviour
         float range = 50f;
         RaycastHit[] hits;
         RaycastHit shortHit;
-        Debug.DrawRay(raySelf.position + (raySelf.up * 5), -raySelf.up * 100, Color.red);
-        hits = Physics.RaycastAll(raySelf.position + (raySelf.up * 5), -raySelf.up, range);
+        Debug.DrawRay(raySelf.position + (raySelf.up * 1), -raySelf.up * 100, Color.red);
+        hits = Physics.RaycastAll(raySelf.position + (raySelf.up * 1), -raySelf.up, range);
 
         float shortDist = 1000f;
 

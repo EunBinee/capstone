@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         }
         P_Value.index = 1;
         P_States.hadAttack = false;
+        P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임
     }
     // Update is called once per frame
     void Update()
@@ -811,5 +812,24 @@ public class PlayerMovement : MonoBehaviour
         }
 
         P_States.isStartComboAttack = false;
+    }
+
+    public void StopPlayer() //연출쪽에서 Player멈추도록.
+    {
+        P_States.isStop = true;
+
+        P_Value.index = 1;
+        P_Value.time = 0;
+        P_Value.isCombo = false;
+        P_States.isStartComboAttack = false;
+        P_Com.animator.SetInteger("comboCount", P_Value.index);
+        P_Com.animator.SetBool("p_Locomotion", true);
+        //P_Com.animator.Play("locomotion");
+        P_Com.animator.Rebind();
+    }
+
+    public void PlayPlayer()
+    {
+        P_States.isStop = false;
     }
 }

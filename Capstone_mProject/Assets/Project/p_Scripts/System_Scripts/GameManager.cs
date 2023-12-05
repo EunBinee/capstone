@@ -32,19 +32,20 @@ public class GameManager : MonoBehaviour
     //public Item item;
     public QuestManager questManager;
 
-
     //*---------------------------------------------//
     public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
     public CameraShake cameraShake;
     public CameraController cameraController;
     //* 현재 몬스터 --------------------------------//
+
     public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
                                                  //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
     public Monster[] cur_monsters; //위에 꺼할때 배열은 지워도 될듯염
     public List<Monster> monsters;
 
     public bool bossBattle = false;
+
     //* --------------------------------------------//
     void Awake()
     {
@@ -103,6 +104,99 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogError("Invalid hexadecimal color value: " + hex);
             return Color.white; // 기본값으로 흰색을 반환하거나 다른 처리를 추가할 수 있습니다.
+        }
+    }
+
+    public void PadeIn_Alpha(GameObject image, bool padeIn, float alphaValue, bool isImage = true)
+    {
+        //pade In 변수  true => Pade In, false => Pade Out
+        alphaValue /= 255;
+
+        if (padeIn)
+        {
+            StartCoroutine(padeIn_Alpha(image, alphaValue, isImage));
+        }
+        else
+        {
+            StartCoroutine(padeOut_Alpha(image, alphaValue, isImage));
+        }
+    }
+
+    IEnumerator padeIn_Alpha(GameObject image, float alphaValue, bool isImage = true)
+    {
+        if (isImage)
+        {
+            Image obj_img = image.GetComponent<Image>();
+
+            while (true)
+            {
+                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a + (0.15f * Time.deltaTime));
+                // 페이드 인이 완료되면 플래그를 false로 설정
+                if (obj_img.color.a >= alphaValue)
+                {
+                    obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, alphaValue);
+                    break;
+                }
+                yield return null;
+            }
+        }
+        else
+        {
+            TMP_Text obj_text = image.GetComponent<TMP_Text>();
+
+            while (true)
+            {
+                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a + (0.15f * Time.deltaTime));
+                // 페이드 인이 완료되면 플래그를 false로 설정
+                if (obj_text.color.a >= alphaValue)
+                {
+                    obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, alphaValue);
+                    break;
+                }
+                yield return null;
+            }
+        }
+
+
+    }
+
+    IEnumerator padeOut_Alpha(GameObject image, float alphaValue, bool isImage = true)
+    {
+        if (isImage)
+        {
+            Image obj_img = image.GetComponent<Image>();
+            Debug.LogError("PadeOut시작");
+            while (true)
+            {
+                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a - (0.15f * Time.deltaTime));
+
+                // 페이드 인이 완료되면 플래그를 false로 설정
+                if (obj_img.color.a <= alphaValue)
+                {
+                    obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, alphaValue);
+                    break;
+                }
+                yield return null;
+            }
+            image.SetActive(false);
+        }
+        else
+        {
+            TMP_Text obj_text = image.GetComponent<TMP_Text>();
+
+            while (true)
+            {
+                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a - (0.15f * Time.deltaTime));
+
+                // 페이드 인이 완료되면 플래그를 false로 설정
+                if (obj_text.color.a <= alphaValue)
+                {
+                    obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, alphaValue);
+                    break;
+                }
+                yield return null;
+            }
+            image.SetActive(false);
         }
     }
 

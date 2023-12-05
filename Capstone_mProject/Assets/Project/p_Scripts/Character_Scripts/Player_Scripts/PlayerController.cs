@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
-    private PlayerMovement P_Movement;
+    public PlayerMovement P_Movement;
 
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
