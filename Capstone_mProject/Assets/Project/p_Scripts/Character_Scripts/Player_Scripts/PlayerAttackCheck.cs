@@ -60,7 +60,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 //transform.position += dir * 0.1f;
                 rigid.velocity = dir.normalized * 40f; ; //* 발사
                 goShoot = true;
-                //ArrowRay();
+                ArrowRay();
             }
         }
     }
@@ -160,15 +160,5 @@ public class PlayerAttackCheck : MonoBehaviour
 
         // if (shortDist != 1000)
         //     targetDistance = shortDist;
-    }
-    private void OnCollisionEnter(Collision other)
-    {
-
-        if (isArrow)
-        {
-            //! 사용 금지 Bullet.cs에 BulletRay()참고해서 
-            //! 충돌 처리 다시..하기.....
-            this.gameObject.SetActive(false);
-        }
     }
 }

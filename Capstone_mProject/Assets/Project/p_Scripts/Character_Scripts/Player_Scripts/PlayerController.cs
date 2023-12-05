@@ -112,11 +112,13 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("HPgauge = false");
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
+            P_Movement.skill_E.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
+            P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -247,17 +249,15 @@ public class PlayerController : MonoBehaviour
         if (skill.isTwice && !P_States.isAim)
         {
             P_States.isAim = true;
-            //P_Com.animator.Play(skill.animationName,1);
-            P_Com.animator.SetBool("isAim", true);
-            AimOnCamera();
-            bow.SetActive(true);
+            P_Com.animator.SetBool("isAim", true);  //* 애니메이션
+            AimOnCamera();  //* 카메라
+            bow.SetActive(true);    //* 무기 교체
             sword.SetActive(false);
-            crosshairImage.gameObject.SetActive(true);
-            PoolingArrow();
+            crosshairImage.gameObject.SetActive(true);  //* 조준점
+            PoolingArrow(); //* 화살 풀링
         }
         else if (skill.isTwice && P_States.isAim)
         {
-            //P_Com.animator.Play("AimRecoil", 1);
             P_Com.animator.SetBool("isAim", false);
             P_Com.animator.SetTrigger("shoot");
             P_States.isAim = false;
@@ -477,6 +477,7 @@ public class PlayerController : MonoBehaviour
         P_Value.HP = 0;
         AnimState(PlayerState.Death);
         Time.timeScale = 0f;
+        Debug.Log("플레이어 사망");
     }
 
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행

@@ -64,6 +64,15 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.SetInteger("comboCount", P_Value.index);
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
+        }
+        P_Controller.CheckedGround();
+        if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
+        {
+            //캐릭터의 실제 이동을 수행하는 함수
+            AllPlayerLocomotion();
+        }
+        if (P_States.isStop)
+        {
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
@@ -72,12 +81,6 @@ public class PlayerMovement : MonoBehaviour
                     skillMotion('E');
                 }
             }
-        }
-        P_Controller.CheckedGround();
-        if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
-        {
-            //캐릭터의 실제 이동을 수행하는 함수
-            AllPlayerLocomotion();
         }
     }
 
@@ -122,11 +125,11 @@ public class PlayerMovement : MonoBehaviour
                 if (P_States.isAim)    //* 조준 모드라면
                 {
                     P_Com.animator.SetTrigger("shoot");
-                    if (P_States.isSkill)
+                    skillMotion('E');
+                    /*if (P_States.isSkill)   //* 스킬 시전중이라면
                     {
                         return;
-                    }
-                    skillMotion('E');
+                    }*/
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
@@ -227,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
             //moveAmount > 0 하는 이유
             //제자리에서 멈춰서 자꾸 뛴다.
             P_States.isSprinting = true;
-            P_States.isWalking = false;
+            //P_States.isWalking = false;
             P_States.isRunning = false;
             //P_States.isJumping = false;
         }
@@ -244,8 +247,16 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.isSprinting)
             return;
 
-        P_States.isWalking = false;
-        P_States.isRunning = true;
+        if (P_Value.moveAmount > 0)
+        {
+            //P_States.isWalking = false;
+            P_States.isRunning = true;
+        }
+        else
+        {
+            //P_States.isWalking = false;
+            P_States.isRunning = false;
+        }
     }
 
     private bool HandleJump()
@@ -320,12 +331,10 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        if (P_States.isStop || P_States.isSkill || P_States.isJumping)
+        if (P_States.isStop || P_States.isJumping)
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
-                Time.timeScale = 1f;
-                P_States.isSkill = false;
                 P_Value.gravity = 0;
             }
             return;
@@ -412,7 +421,7 @@ public class PlayerMovement : MonoBehaviour
         //플레이어의 움직임을 수행하는 함수.
         if (P_States.isStop     //* 대화 시작 시 or
             || (P_States.isStartComboAttack     //* 공격 시 or
-                || P_States.isSkill     //* 스킬 사용 시 or
+                /*|| P_States.isSkill     //* 스킬 사용 시 or*/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
             && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")  //* 가만히 있지 않을 시 and
@@ -455,37 +464,19 @@ public class PlayerMovement : MonoBehaviour
             Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
-            return;
+            //return;
         }
-        if (P_States.isJumping)
+        else if (P_States.isAim)
         {
-            //Time.timeScale = 0.1f;
-            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
-            P_Com.rigidbody.velocity = p_velocity;
-        }
-        else if (P_States.isDodgeing)
-        {
-            P_Com.animator.Play("dodge", 0);
-            P_Value.moveDirection.y = 0;
-            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
+            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
+            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
+            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
 
-            Invoke("dodgeOut", 0.15f);    //대시 유지 시간
-
-        }
-        else if (P_States.isSprinting || P_States.isRunning)
-        {
-            //Time.timeScale = 1f;
-            //P_Controller.anim_baseOff();
-            P_Value.moveDirection.y = 0;
-            if (P_States.isSprinting)    //전력질주
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
-            else if (P_States.isRunning) //뛸때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
+            P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
             Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
-            return;
         }
     }
 
@@ -568,11 +559,11 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isStrafing)
             {
                 //주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
-                if (P_States.isAim)
+                /*if (P_States.isAim)
                 {
                     P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);
                     P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0.2f, Time.deltaTime);
-                }
+                }*/
                 if (P_States.isRunning)
                 {
                     //뛰기일 경우
@@ -802,7 +793,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                     else
                     {
-                        P_Value.index++;
+                        ++P_Value.index;
                         P_Value.isCombo = true;
                         P_States.hadAttack = false;
                     }
