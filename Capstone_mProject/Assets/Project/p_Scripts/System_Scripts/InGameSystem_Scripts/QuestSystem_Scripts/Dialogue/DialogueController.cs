@@ -57,6 +57,8 @@ public class DialogueController : MonoBehaviour
     IEnumerator ObjectChat(string sentence)
     {
         string writerText = "";
+        bool t_white = false, t_yellow = false;
+        bool t_ignore = false;
 
         for (int i = 0; i < sentence.Length; i++)
         {
@@ -64,23 +66,57 @@ public class DialogueController : MonoBehaviour
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록.
 
+                switch (sentence[i])
+                {
+                    case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; Debug.Log("흰색"); break;
+                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; Debug.Log("노랑"); break;
+                }
+                string t_letter = sentence[i].ToString();
+
+                if (!t_ignore)
+                {
+                    if (t_white) { t_letter = "<color=#ffffff>" + t_letter + "</color>"; }
+                    else if (t_yellow) { t_letter = "<color=#ffff00>" + t_letter + "</color>"; }
+                    writerText += t_letter;
+                }
+
+
                 writerText = sentence.Replace("'", ",");
-                //writerText = sentence.Replace("\\n", "\n");
                 objectText.text = writerText;
-                break;
+
+                // writerText = sentence.Replace("ⓦ", "<color=#ffffff>" + t_letter + "</color>");
+                //writerText = sentence.Replace("ⓨ", "<color=#ffff00>" + t_letter + "</color>");
+                //writerText = sentence.Replace("\\n", "\n");
+
+                //break;
+
             }
             else
             {
-                writerText += sentence[i];
+                switch (sentence[i])
+                {
+                    case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; break;
+                    case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; Debug.Log("노랑22"); break;
+                }
+
+                string t_letter = sentence[i].ToString();
+
+                if (!t_ignore)
+                {
+                    if (t_white) { t_letter = "<color=#ffffff>" + t_letter + "</color>"; }
+                    else if (t_yellow) { t_letter = "<color=#ffff00>" + t_letter + "</color>"; }
+                    writerText += t_letter;
+                }
+                //writerText += sentence[i];
                 objectText.text = writerText.Replace("'", ",");
                 objectText.text = writerText.Replace("\\n", "\n");
-
+                t_ignore = false;
                 yield return new WaitForSecondsRealtime(0.02f);
+
                 //yield return new WaitForSeconds(0.02f);
 
             }
         }
-
         //모든 대사가 타이핑 되고 초기화
         dialogueManager.endChat_inController = true;
         startChat = false;

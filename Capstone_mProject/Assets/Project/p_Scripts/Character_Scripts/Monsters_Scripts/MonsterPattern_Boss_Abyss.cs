@@ -286,7 +286,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             isRoaming = false;
             ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeMonsterState(MonsterState.Tracing);
 
         }
     }

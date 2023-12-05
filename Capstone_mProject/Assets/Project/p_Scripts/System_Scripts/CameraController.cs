@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -107,6 +108,12 @@ public class CameraController : MonoBehaviour
             {
                 UndoAttention();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("Dd");
+            BossTimelineCam();
         }
     }
 
@@ -391,4 +398,37 @@ public class CameraController : MonoBehaviour
         return Quaternion.Angle(a, b);
     }
 
+    void BossTimelineCam()
+    {
+        // 보스 타임라인에서 호출되는 함수
+        // 해당 위치로 카메라를 이동시킴
+
+        Vector3 targetPosition = new Vector3(-0.78192f, 0.095323f, -0.0013981f);
+        Quaternion targetRotation = Quaternion.identity; // 여기에 목표 회전을 설정할 수 있음
+
+        StartCoroutine(MoveCamera(targetPosition, targetRotation, 2.0f)); // 이동에 걸리는 시간을 조절할 수 있음
+    }
+
+    IEnumerator MoveCamera(Vector3 targetPosition, Quaternion targetRotation, float duration)
+    {
+        float time = 0;
+
+        Vector3 initialPosition = cameraTrans.localPosition;
+        Quaternion initialRotation = cameraTrans.localRotation;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            // 보간을 사용하여 부드럽게 이동
+            cameraTrans.localPosition = Vector3.Lerp(initialPosition, targetPosition, time / duration);
+            cameraTrans.localRotation = Quaternion.Slerp(initialRotation, targetRotation, time / duration);
+
+            yield return null;
+        }
+
+        // 이동이 완료된 후 최종 위치와 회전 설정
+        cameraTrans.localPosition = targetPosition;
+        cameraTrans.localRotation = targetRotation;
+    }
 }
