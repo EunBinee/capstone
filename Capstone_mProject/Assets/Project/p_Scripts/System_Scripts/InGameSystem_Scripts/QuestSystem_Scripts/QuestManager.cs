@@ -105,19 +105,13 @@ public class QuestManager : MonoBehaviour
         GameManager.instance.dialogueManager.DoQuest = true;
         quest_.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;//currentQuestValue_;
 
-        quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
-        // switch (GameManager.Instance.gameInfo.QuestNum)
-        // {
-        //     case 1:
-        //         Debug.Log("퀘스트 1번");
-        //         quest_ = DatabaseManager.GetInstance().Quest_Dictionary[id];
-        //         //QuestList(1);
-        //         break;
-        //     default:
-        //         break;
-        // }
-        Quest_ValueUpdate();
-        TextUpdate();
+        if (GameManager.Instance.gameInfo.QuestNum != 0)
+        {
+            quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
+            Quest_ValueUpdate();
+            TextUpdate();
+        }
+
 
 
     }
