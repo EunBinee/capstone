@@ -658,7 +658,28 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Vector3 randomPos = new Vector3(x, y, z);
 
         effect.transform.position = transform.position + randomPos;
-        GetDamage_electricity(effect.transform.position);
+
+        StartCoroutine(electricity_Damage(0.8f));
+    }
+
+    IEnumerator electricity_Damage(float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float x = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float y = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float z = UnityEngine.Random.Range(-1.5f, 1.5f);
+            Vector3 randomPos = new Vector3(x, y, z);
+            randomPos = transform.position + randomPos;
+            GetDamage_electricity(randomPos);
+
+            float randomTime = UnityEngine.Random.Range(0, 0.5f);
+            yield return new WaitForSeconds(randomTime);
+            time += randomTime;
+        }
     }
 
     IEnumerator GetHit_KnockBack_co()
