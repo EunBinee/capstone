@@ -111,10 +111,12 @@ public class HPBarManager : MonoBehaviour
         {
             HPBarUI_Info HPBar_Prefab = Resources.Load<HPBarUI_Info>("SystemPrefabs/" + bossHPBar_name);
             curBossHPBar = UnityEngine.Object.Instantiate(HPBar_Prefab);
+
         }
         curBossHPBar.gameObject.transform.SetParent(HPBar_Parent);
         curBossHPBar.gameObject.SetActive(true);
 
+        curBossHPBar.gameObject.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
         return curBossHPBar;
     }
 
