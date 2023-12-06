@@ -122,6 +122,11 @@ public class Popup_Setting : UIBase
             popup_Window.SetButtonValue("Quit", "Do you really want to quit game?", () =>
             {
                 //TODO: 나가기 기능 
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 어플리케이션 종료
+#endif
                 Debug.Log("나가기");
             });
         });
