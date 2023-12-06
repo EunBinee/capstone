@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     public QuestManager questManager;
     //탐라
     public TimeLineController timeLineController;
+    //씬 로드
+    public LoadScene loadScene;
 
     //*---------------------------------------------//
     public Canvas m_canvas;
@@ -87,6 +89,7 @@ public class GameManager : MonoBehaviour
             monsters.Add(cur_monsters[i]);
         }
         timeLineController = GetComponent<TimeLineController>();
+        loadScene = new LoadScene();
     }
 
     static public GameManager GetInstance()
@@ -110,22 +113,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PadeIn_Alpha(GameObject image, bool padeIn, float alphaValue, bool isImage = true)
+    public void PadeIn_Alpha(GameObject image, bool padeIn, float alphaValue, float speed = 0.15f, bool isImage = true)
     {
         //pade In 변수  true => Pade In, false => Pade Out
         alphaValue /= 255;
 
         if (padeIn)
         {
-            StartCoroutine(padeIn_Alpha(image, alphaValue, isImage));
+            StartCoroutine(padeIn_Alpha(image, alphaValue, speed, isImage));
         }
         else
         {
-            StartCoroutine(padeOut_Alpha(image, alphaValue, isImage));
+            StartCoroutine(padeOut_Alpha(image, alphaValue, speed, isImage));
         }
     }
 
-    IEnumerator padeIn_Alpha(GameObject image, float alphaValue, bool isImage = true)
+    IEnumerator padeIn_Alpha(GameObject image, float alphaValue, float speed = 0.15f, bool isImage = true)
     {
         if (isImage)
         {
@@ -133,7 +136,7 @@ public class GameManager : MonoBehaviour
 
             while (true)
             {
-                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a + (0.15f * Time.deltaTime));
+                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a + (speed * Time.deltaTime));
                 // 페이드 인이 완료되면 플래그를 false로 설정
                 if (obj_img.color.a >= alphaValue)
                 {
@@ -149,7 +152,7 @@ public class GameManager : MonoBehaviour
 
             while (true)
             {
-                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a + (0.15f * Time.deltaTime));
+                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a + (speed * Time.deltaTime));
                 // 페이드 인이 완료되면 플래그를 false로 설정
                 if (obj_text.color.a >= alphaValue)
                 {
@@ -163,7 +166,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    IEnumerator padeOut_Alpha(GameObject image, float alphaValue, bool isImage = true)
+    IEnumerator padeOut_Alpha(GameObject image, float alphaValue, float speed = 0.15f, bool isImage = true)
     {
         if (isImage)
         {
@@ -171,7 +174,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("PadeOut시작");
             while (true)
             {
-                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a - (0.15f * Time.deltaTime));
+                obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a - (speed * Time.deltaTime));
 
                 // 페이드 인이 완료되면 플래그를 false로 설정
                 if (obj_img.color.a <= alphaValue)
@@ -189,7 +192,7 @@ public class GameManager : MonoBehaviour
 
             while (true)
             {
-                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a - (0.15f * Time.deltaTime));
+                obj_text.color = new Color(obj_text.color.r, obj_text.color.g, obj_text.color.b, obj_text.color.a - (speed * Time.deltaTime));
 
                 // 페이드 인이 완료되면 플래그를 false로 설정
                 if (obj_text.color.a <= alphaValue)
@@ -237,5 +240,6 @@ public class GameManager : MonoBehaviour
             m.monsterPattern.StartMonster();
         }
     }
+
 }
 

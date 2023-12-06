@@ -27,10 +27,26 @@ public class DialogueController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록 하기 위함.
+
                 stopChat = true;
             }
         }
+        // if (startChat && !stopChat)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+        //     {
+        //         // Enter 키를 누르거나 마우스 클릭이 발생하면 딜레이를 주고 StopChat 메서드 호출
+        //         StartCoroutine(DelayedStopChat(0.02f));
+        //     }
+        // }
     }
+    // IEnumerator DelayedStopChat(float delay)
+    // {
+    //     yield return new WaitForSeconds(delay);
+
+    //     // 애니메이션 중지 및 글씨 나오도록 하는 로직을 여기에 추가
+    //     stopChat = true;
+    // }
 
 
 
@@ -77,8 +93,8 @@ public class DialogueController : MonoBehaviour
                 writerText = sentence.Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>");
                 objectText.text = writerText;
                 //writerText = sentence.Replace("\\n", "\n");
-
-                //break;
+                yield return new WaitForSecondsRealtime(0.05f);
+                break;
 
             }
             else

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +14,7 @@ public class LoadScene : MonoBehaviour
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         Time.timeScale = 0f;
         UIManager.gameIsPaused = true;
+
     }
 
     public void LoadMainScene()
@@ -51,4 +53,5 @@ public class LoadScene : MonoBehaviour
         GameManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
         GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
     }
+
 }

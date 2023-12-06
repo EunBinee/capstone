@@ -82,6 +82,8 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
+
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
@@ -145,6 +147,7 @@ public class PlayerController : MonoBehaviour
 
     private void InitPlayer()
     {
+
         if (P_Com.playerTargetPos == null)
             P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
@@ -175,12 +178,10 @@ public class PlayerController : MonoBehaviour
         {
 
             P_States.isStop = true;
-            Debug.Log("트루");
         }
         else
         {
             P_States.isStop = false;
-            Debug.Log("폴스");
         }
         //stop = GameManager.Instance.dialogueManager.isDialogue;
         //P_States.isStop = stop;
@@ -574,10 +575,20 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-                //GameManager.GetInstance().StartInteraction(interObject);
+
                 P_Com.animator.Rebind();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
                 //StopToFalse(true);
+            }
+        }
+        if (other.gameObject.tag == "LoadScene") //플레이어가 들어가면 대화창 활성화
+        {
+            //Debug.Log("엔피시 대화 에리어");
+            GameObject interObject = other.gameObject;
+
+            if (interObject != null)
+            {
+                UIManager.Instance.GoBossField();
             }
         }
     }
