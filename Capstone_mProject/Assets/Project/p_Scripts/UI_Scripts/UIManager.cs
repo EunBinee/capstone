@@ -60,6 +60,15 @@ public class UIManager : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            if (!GameManager.instance.bossBattle)
+            {
+
+                GoBossField(true);
+            }
+        }
+
         //왼쪽Alt키를 누르고 있는동안 마우스 커서 활성화
         if (Input.GetKey(KeyCode.LeftAlt))
         {
@@ -153,17 +162,22 @@ public class UIManager : MonoBehaviour
 
         return prefab;
     }
-    public void GoBossField()
+    public void GoBossField(bool changeP = false)
     {
         GameManager.instance.isLoading = true;
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
         //Pause(false);
-        StartCoroutine(LoadSceneAfterDelay());
+        StartCoroutine(LoadSceneAfterDelay(changeP));
     }
-    IEnumerator LoadSceneAfterDelay()
+    IEnumerator LoadSceneAfterDelay(bool changeP = false)
     {
         // 0.5초 대기
         yield return new WaitForSeconds(1.5f);
+        if (changeP)
+        {
+            GameManager.instance.gameData.player.transform.position = new Vector3(-25, 0, 35);
+            GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
+        }
         // BossFieldScene으로 씬 이동
         SceneManager.LoadScene("BossFieldScene");
         yield return new WaitForSeconds(1.5f);
