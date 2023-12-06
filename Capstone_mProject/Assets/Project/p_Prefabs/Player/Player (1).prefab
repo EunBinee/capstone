@@ -176,7 +176,10 @@ MonoBehaviour:
   cameraFllowVelocity: {x: 0, y: 0, z: 0}
   left_right_LookAngle: 0
   up_down_LookAngle: 0
+  stopRotation: 0
+  banAttention: 0
   isBeingAttention: 0
+  controlCam: 1
   curTargetMonster: {fileID: 0}
   normal_Z: -5
   attention_Z: -6.5
@@ -229,7 +232,7 @@ PrefabInstance:
     - target: {fileID: 581614760091153512, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: attackColliders.Array.data[3]
       value: 
-      objectReference: {fileID: 199755604411200110, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
+      objectReference: {fileID: 5043616183923541767, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
     - target: {fileID: 2460872699813785664, guid: 59a27d3629fe6b144b61ba8b72e7e30d, type: 3}
       propertyPath: m_RotationOffset.x
       value: 88.70668

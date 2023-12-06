@@ -25,6 +25,8 @@ public class CameraController : MonoBehaviour
     public float left_right_LookAngle;
     public float up_down_LookAngle;
 
+    public bool stopRotation = false;
+
     [Header("주목 기능")]
     public bool banAttention = false; // 주목 금지
     public bool isBeingAttention = false;
@@ -53,6 +55,7 @@ public class CameraController : MonoBehaviour
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
         CamReset();
+        stopRotation = false;
     }
 
 
@@ -152,7 +155,8 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            CameraRotate();  //마우스 방향에 따른 카메라 방향
+            if (!stopRotation)
+                CameraRotate();  //마우스 방향에 따른 카메라 방향
         }
     }
 

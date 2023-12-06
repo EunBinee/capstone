@@ -67,6 +67,7 @@ public class DialogueManager : MonoBehaviour
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
         isDialogue = true;
+        GameManager.instance.cameraController.stopRotation = true;
         GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
@@ -340,6 +341,7 @@ public class DialogueManager : MonoBehaviour
 
 
         isDialogue = false;
+        GameManager.instance.cameraController.stopRotation = false;
         GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
     }
 

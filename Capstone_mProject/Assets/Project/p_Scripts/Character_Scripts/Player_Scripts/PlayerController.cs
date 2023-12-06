@@ -171,7 +171,6 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
-        Debug.Log(GameManager.Instance.dialogueManager.isDialogue);
         if (GameManager.Instance.dialogueManager.isDialogue)
         {
 
@@ -575,9 +574,6 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 //GameManager.GetInstance().StartInteraction(interObject);
-
-
-
                 P_Com.animator.Rebind();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
                 //StopToFalse(true);
