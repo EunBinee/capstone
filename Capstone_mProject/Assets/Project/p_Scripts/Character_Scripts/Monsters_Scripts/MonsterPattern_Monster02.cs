@@ -538,8 +538,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
     {
         //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
         Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
-
         playerHide = HidePlayer(muzzlePos.position, curDirection.normalized);
+
         if (!playerHide)
         {
             //* 어택 에니메이션
@@ -554,23 +554,26 @@ public class MonsterPattern_Monster02 : MonsterPattern
             bullet.OnHitPlayerEffect = () =>
             {
                 //플레이어가 총에 맞았을 경우, 이펙트
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+                //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
 
-                effect.gameObject.transform.position = targetPos;
-                Vector3 curDirection = targetPos - bulletObj.transform.position;
-                effect.gameObject.transform.position += curDirection * 0.35f;
+                //effect.gameObject.transform.position = targetPos;
+                //Vector3 curDirection = targetPos - bulletObj.transform.position;
+                //effect.gameObject.transform.position += curDirection * 0.35f;
             };
 
             //총알 방향//
+
             Quaternion targetAngle = Quaternion.LookRotation(curDirection);
             bulletObj.transform.rotation = targetAngle;
 
-            bullet.SetInfo(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
-                                                     //총알 발사.
-            bulletRigid.velocity = curDirection.normalized * 50f;
+            bullet.SetInfo(curDirection.normalized, "FX_Shoot_08_hit"); //* Bullet.cs에 방향 벡터 보냄
+                                                                        //총알 발사.
+            bulletRigid.velocity = curDirection.normalized * 80f;
             //총쏠때 이펙트
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_08_muzzle");
             effect.gameObject.transform.position = muzzlePos.position;
+            effect.transform.rotation = targetAngle;
+
 
             //몬스터 몸 흔들리는 연출//
             if (shake_co == null)
