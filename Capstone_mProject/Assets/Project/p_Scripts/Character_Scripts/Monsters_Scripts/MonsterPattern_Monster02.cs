@@ -365,6 +365,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
+                GetHit();
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
@@ -398,7 +399,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         yield return new WaitForSeconds(0.2f);
 
-        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10);
+        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10, true);
 
         if (playerGetDamage)
         {
@@ -646,6 +647,19 @@ public class MonsterPattern_Monster02 : MonsterPattern
     }
     // * ---------------------------------------------------------------------------------------------------------//
     // * 피격 모션
+    private void GetHit()
+    {
+        //? 피격 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
+        //TODO: 나중에 플레이어 방향쪽으로 변경.
+        float x = UnityEngine.Random.Range(-1.5f, 1.5f);
+        float y = UnityEngine.Random.Range(-1.5f, 1.5f);
+        float z = UnityEngine.Random.Range(-1.5f, 1.5f);
+        Vector3 randomPos = new Vector3(x, y, z);
+
+        effect.transform.position = transform.position + randomPos;
+        GetDamage_electricity(effect.transform.position);
+    }
 
     IEnumerator GetHit_KnockBack_co()
     {

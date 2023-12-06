@@ -863,8 +863,11 @@ public class MonsterPattern_Monster01 : MonsterPattern
         float y = UnityEngine.Random.Range(-1.0f, 1.0f);
         float z = UnityEngine.Random.Range(-1.0f, 1.0f);
         Vector3 randomPos = new Vector3(x, y, z);
+
         effect.transform.position = attackEffectPos.position + randomPos;
+        GetDamage_electricity(effect.transform.position);
     }
+
 
     IEnumerator GetHit_KnockBack_co()
     {
