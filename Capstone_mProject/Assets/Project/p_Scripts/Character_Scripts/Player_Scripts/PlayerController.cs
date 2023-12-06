@@ -584,7 +584,8 @@ public class PlayerController : MonoBehaviour
 
                 P_Com.animator.Rebind();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
-                interObject.SetActive(false);
+                if (!GameManager.Instance.dialogueManager.DoQuest)
+                    interObject.SetActive(false);
                 //StopToFalse(true);
             }
         }
