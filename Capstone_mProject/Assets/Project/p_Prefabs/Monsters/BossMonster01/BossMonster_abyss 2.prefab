@@ -444,7 +444,7 @@ MonoBehaviour:
     - {fileID: 3491791512210390148}
     - {fileID: 3491791512931935893}
     HPBarPos: {fileID: 0}
-    MaxHP: 50000
+    MaxHP: 20000
     HP: 0
     movingMonster: 1
     overlapRadius: 20
@@ -501,6 +501,7 @@ MonoBehaviour:
   muzzlePos:
   - {fileID: 3491791512682886026}
   - {fileID: 3491791511741928083}
+  navMeshSurface: []
 --- !u!195 &3491791511073958410
 NavMeshAgent:
   m_ObjectHideFlags: 0
