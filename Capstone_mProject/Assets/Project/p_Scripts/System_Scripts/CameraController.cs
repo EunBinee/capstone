@@ -138,9 +138,7 @@ public class CameraController : MonoBehaviour
         CameraActions();
 
     }
-    private void FixedUpdate()
-    {
-    }
+
 
     void OnPreCull() => GL.Clear(true, true, Color.black);
 

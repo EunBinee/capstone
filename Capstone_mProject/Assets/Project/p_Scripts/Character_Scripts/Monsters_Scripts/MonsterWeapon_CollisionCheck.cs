@@ -15,7 +15,7 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
         monster = transform.GetComponentInParent<Monster>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (onEnable)
         {
@@ -24,7 +24,6 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
                 monster.OnHit();
             }
         }
-
     }
 
 }

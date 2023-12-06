@@ -194,6 +194,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         Vector3 randomPos = Vector3.zero;
 
         monsterRoaming = false;
+
+        bool dontMove = false;
         navMeshAgent.isStopped = true;
         navMeshAgent.velocity = Vector3.zero;
         navMeshAgent.updatePosition = false;
@@ -212,19 +214,39 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 {
                     float distance = 0;
                     bool checkObstacle = false;
+                    float time = 0;
                     while (true)
                     {
+                        dontMove = false;
+                        time += Time.deltaTime;
                         randomPos = GetRandom_RoamingPos();
-                        mRoaming_randomPos = randomPos;
-                        distance = Vector3.Distance(transform.position, randomPos);
-                        checkObstacle = CheckObstacleCollider(randomPos);
-                        if (distance > 3f && checkObstacle)
+                        NavMeshHit hit;
+                        if (NavMesh.SamplePosition(randomPos, out hit, 200f, NavMesh.AllAreas))
+                        {
+                            if (hit.position != randomPos)
+                                randomPos = hit.position;
+                            mRoaming_randomPos = randomPos;
+                            distance = Vector3.Distance(transform.position, randomPos);
+                            checkObstacle = CheckObstacleCollider(randomPos);
+                            if (distance > 3f && checkObstacle)
+                                break;
+                        }
+
+                        if (time > 5)
+                        {
+                            dontMove = true;
                             break;
+                        }
                     }
-                    SetMove_AI(true);
-                    navMeshAgent.SetDestination(randomPos);
-                    SetAnimation(MonsterAnimation.Move);
-                    monsterRoaming = true;
+
+                    if (!dontMove)
+                    {
+                        SetMove_AI(true);
+                        navMeshAgent.SetDestination(randomPos);
+                        SetAnimation(MonsterAnimation.Move);
+                        monsterRoaming = true;
+                    }
+
                 }
             }
             else if (monsterRoaming)
