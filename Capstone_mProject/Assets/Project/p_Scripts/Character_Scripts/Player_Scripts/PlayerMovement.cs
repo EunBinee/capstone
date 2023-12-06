@@ -447,18 +447,20 @@ public class PlayerMovement : MonoBehaviour
     private void PlayerMovements()
     {
         //플레이어의 움직임을 수행하는 함수.
-        if (P_States.isStop)
-        {
-            P_Com.rigidbody.velocity = Vector3.zero;
-            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-            return;
-        }
-        if (P_States.isStartComboAttack     //* 공격 시 or
-                || P_States.isSkill     //* 스킬 사용 시 or/**/
+
+        if ((P_States.isStartComboAttack && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+                && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
+                /*|| P_States.isSkill     //* (지금은 스킬 안씀)스킬 사용 시 or*/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
             P_Com.rigidbody.velocity = Vector3.zero;    //* 꼼짝마
+            return;
+        }
+        if (P_States.isStop)
+        {
+            P_Com.rigidbody.velocity = Vector3.zero;
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
             return;
         }
 
@@ -721,7 +723,7 @@ public class PlayerMovement : MonoBehaviour
             //Time.timeScale = 0.1f;
             Debug.Log("P_Value.index : " + P_Value.index);
 
-            /*//* 공격 시 앞으로 찔끔찔끔 가도록
+            /**///* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
             if (P_Value.nowEnemy != null && !P_States.isForwardBlocked && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
             {
@@ -750,7 +752,7 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 Vector3 pos = transform.position + dir * 7f;
-                //transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             else if (P_States.isForwardBlocked || !P_States.canGoForwardInAttack) //앞에 막혀있다면 
             {
@@ -758,18 +760,13 @@ public class PlayerMovement : MonoBehaviour
             }
             else    //앞이 막혀있지 않고 적이 없다면
             {
-                // dir = this.gameObject.transform.forward.normalized;
-                // Vector3 pos = transform.position + dir * 3f;
-                // transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
-            }*/
+                dir = this.gameObject.transform.forward.normalized;
+                Vector3 pos = transform.position + dir * 3f;
+                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+            }
 
             //* 이펙트
-            if (P_States.isStartComboAttack)
-            {
-                P_Controller.playAttackEffect(P_Value.curAnimName);
-                Debug.Log("P_Value.curAnimName : " + P_Value.curAnimName);
-
-            }
+            P_Controller.playAttackEffect(P_Value.curAnimName);
 
             //* 공격 애니메이션 재생
             P_Com.animator.Play(P_Value.curAnimName);
@@ -800,11 +797,11 @@ public class PlayerMovement : MonoBehaviour
                 P_Value.time += Time.deltaTime; //* 시간 누적
                 //* 애니메이션 60퍼센트 진행까지 대기
                 yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.6f);
-                P_States.isStartComboAttack = false;
+                //P_States.isStartComboAttack = false;
 
                 if (Input.GetMouseButton(0) && curIndex == P_Value.index/**/)   //* 마우스 입력 받음
                 {
-                    P_States.isStartComboAttack = true; //* 공격 시작
+                    //P_States.isStartComboAttack = true; //* 공격 시작
                     if (P_Value.index >= 5) //* 5타 이상이면
                     {
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
@@ -812,7 +809,7 @@ public class PlayerMovement : MonoBehaviour
                         P_Value.time = 0;   //* 시간 초기화
                         P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
                         P_States.hadAttack = false; //* 공격 여부 비활성화
-                        P_States.isStartComboAttack = false;    //* 공격 끝
+                        //P_States.isStartComboAttack = false;    //* 공격 끝
                     }
                     else
                     {
