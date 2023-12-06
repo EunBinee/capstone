@@ -94,14 +94,14 @@ public class QuestManager : MonoBehaviour
     //퀘스트 클리어 함수
     protected void Quest_Clear()
     {
-        Debug.Log("퀘스트 클리어");
+
         GameManager.instance.dialogueManager.DoQuest = false;
     }
 
     //퀘스트 업데이트 함수 
     public void UpdateQuest(int id)
     {
-        Debug.Log("업뎃퀘");
+
         GameManager.instance.dialogueManager.DoQuest = true;
         quest_.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;//currentQuestValue_;
 
@@ -128,7 +128,7 @@ public class QuestManager : MonoBehaviour
 
         for (int i = 0; i < quest_.questGoal.Count;)
         {
-            text_goal = quest_.questGoal[i] + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
+            text_goal = quest_.questGoal[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>") + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
             if (++i != quest_.questGoal.Count)
             {
 
@@ -138,7 +138,7 @@ public class QuestManager : MonoBehaviour
 
         for (int i = 0; i < quest_.questTitle.Count;)
         {
-            text_title = quest_.questTitle[i];
+            text_title = quest_.questTitle[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>"); ;
             if (++i != quest_.questTitle.Count)
             {
                 text_title += "\n";
@@ -146,13 +146,13 @@ public class QuestManager : MonoBehaviour
         }
         for (int i = 0; i < quest_.questContent.Count;)
         {
-            text_content = quest_.questContent[i];
+            text_content = quest_.questContent[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>"); ;
             if (++i != quest_.questContent.Count)
             {
                 text_content += "\n";
             }
         }
-        Debug.Log("sdad");
+
         GameManager.GetInstance().dialogueManager.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
 
     }

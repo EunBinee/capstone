@@ -245,9 +245,6 @@ public class MonsterPattern : MonoBehaviour
         if (curMonsterState != MonsterState.Death)
             curMonsterState = monsterState;
 
-#if UNITY_EDITOR
-        Debug.Log("상태 변경 " + monsterState);
-#endif
     }
 
     public virtual void Monster_Pattern()

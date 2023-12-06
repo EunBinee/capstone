@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public Image loadingImg;
     public static bool gameIsPaused = false;
 
     public enum UI
@@ -149,6 +152,19 @@ public class UIManager : MonoBehaviour
         }
 
         return prefab;
+    }
+    public void GoBossField()
+    {
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        //Pause(false);
+        StartCoroutine(LoadSceneAfterDelay());
+    }
+    IEnumerator LoadSceneAfterDelay()
+    {
+        // 0.5초 대기
+        yield return new WaitForSeconds(1.5f);
+        // BossFieldScene으로 씬 이동
+        SceneManager.LoadScene("BossFieldScene");
     }
 }
 

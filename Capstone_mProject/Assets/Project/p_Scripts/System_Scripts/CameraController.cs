@@ -48,6 +48,10 @@ public class CameraController : MonoBehaviour
     Coroutine resetCameraZ_co = null;
 
 
+    private void Awake()
+    {
+        //CamReset();
+    }
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();

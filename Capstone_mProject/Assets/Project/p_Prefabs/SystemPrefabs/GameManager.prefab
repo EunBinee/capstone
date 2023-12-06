@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4214715246266739416
+--- !u!1 &1825904213059831847
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,16 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4214715246266739414}
-  - component: {fileID: 4214715246266739415}
-  - component: {fileID: 4214715246266739412}
-  - component: {fileID: 4214715246266739413}
+  - component: {fileID: 1825904213059831849}
+  - component: {fileID: 1825904213059831848}
+  - component: {fileID: 1825904213059831851}
+  - component: {fileID: 1825904213059831850}
+  - component: {fileID: 1825904213059831844}
+  - component: {fileID: 1825904213059831845}
+  - component: {fileID: 1825904213059831842}
+  - component: {fileID: 1825904213059831843}
+  - component: {fileID: 1825904213059831840}
+  - component: {fileID: 1825904213059831853}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -19,13 +25,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4214715246266739414
+--- !u!4 &1825904213059831849
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214715246266739416}
+  m_GameObject: {fileID: 1825904213059831847}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -34,13 +40,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4214715246266739415
+--- !u!114 &1825904213059831848
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214715246266739416}
+  m_GameObject: {fileID: 1825904213059831847}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7afd9a4c16734aa4c9d58f7263b465d7, type: 3}
@@ -49,40 +55,162 @@ MonoBehaviour:
   gameData:
     player: {fileID: 0}
     playerTargetPos: {fileID: 0}
+    playerCamera: {fileID: 0}
+    playerCameraPivot: {fileID: 0}
+    cameraObj: {fileID: 0}
+    smallDamage: 100
+    midDamage: 300
+    bigDamage: 600
+    criticalAdditionalMultiples: 2
   objectPooling:
     PoolCount: 50
     loofEffectPools: []
     projectilesPoolCount: 50
   hPBarManager: {fileID: 0}
+  damageManager: {fileID: 0}
   dialogueInfo: {fileID: 0}
   dialogueManager: {fileID: 0}
   gameInfo: {fileID: 0}
+  questManager: {fileID: 0}
+  timeLineController: {fileID: 0}
+  loadScene: {fileID: 0}
   m_canvas: {fileID: 0}
   cameraShake: {fileID: 0}
---- !u!114 &4214715246266739412
+  cameraController: {fileID: 0}
+  monsterUnderAttackList: []
+  cur_monsters: []
+  monsters: []
+  bossBattle: 0
+--- !u!114 &1825904213059831851
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214715246266739416}
+  m_GameObject: {fileID: 1825904213059831847}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aaddc9d4db0ee9b499735c2ceefb22f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
---- !u!114 &4214715246266739413
+--- !u!114 &1825904213059831850
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4214715246266739416}
+  m_GameObject: {fileID: 1825904213059831847}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f91edf50fa432a41bfb44a3a167ba34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   HPBar_name: Monster_Info
+  bossHPBar_name: 
   HPBar_Parent: {fileID: 0}
+--- !u!114 &1825904213059831844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ce35f4a135ce5a449c5a8a91d004bc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quest_:
+    questId: 0
+    questContent: []
+    questTitle: []
+    questGoal: []
+    currentQuestValue: 0
+    questClearValue: 0
+  currentQuestValue_: 0
+--- !u!114 &1825904213059831845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb36838821185394a83f0efa225bd9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectText: {fileID: 0}
+  stopChat: 0
+--- !u!114 &1825904213059831842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0307d4935c2c7fa46bbeb326fee279a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go_DialogueBar: {fileID: 0}
+  Text_Dialogue: {fileID: 0}
+  Text_Name: {fileID: 0}
+  ObjectTextBox_Button01: {fileID: 0}
+  Text_Btn01: {fileID: 0}
+  ObjectTextBox_Button02: {fileID: 0}
+  Text_Btn02: {fileID: 0}
+  endChat_inController: 0
+  Quest_Button01: {fileID: 0}
+  Go_QuestDetail: {fileID: 0}
+  Text_QuestGoal: {fileID: 0}
+  Text_QuestDetailGoal: {fileID: 0}
+  Text_QuestDetailTitle: {fileID: 0}
+  Text_QuestDetailContent: {fileID: 0}
+  DoQuest: 0
+  IsQuestDetail: 0
+  isDialogue: 0
+--- !u!114 &1825904213059831843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06a4db5b8fde1f42a2b13c640483ee7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endingNum: 1
+  eventNum: 1
+  questNum: 0
+  dialogueNum: 0
+--- !u!114 &1825904213059831840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7acbc1c9e45ad84dac8f0f78f0679b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1825904213059831853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1825904213059831847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0f0955b3099e604e967e183c994971d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage_name: Damage_UI
+  damage_Parent: {fileID: 0}
