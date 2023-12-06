@@ -304,7 +304,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator Phase02_Production()
     {
         float time = 0;
-        Debug.LogError("페이즈 2_01");
         yield return new WaitUntil(() => startSkill == false);
 
         yield return new WaitForSeconds(0.5f);
@@ -1409,7 +1408,30 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
         effect.gameObject.transform.position = curHitPos;
         effect.gameObject.transform.rotation = curHitQuaternion;
+
+        StartCoroutine(electricity_Damage(2f, curHitPos));
     }
+    IEnumerator electricity_Damage(float duration, Vector3 curHitPos)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float x = UnityEngine.Random.Range(-1f, 1f);
+            float y = UnityEngine.Random.Range(-1f, 1f);
+            float z = UnityEngine.Random.Range(-1f, 1f);
+            Vector3 randomPos = new Vector3(x, y, z);
+            randomPos = curHitPos + randomPos;
+            GetDamage_electricity(randomPos);
+
+            float randomTime = UnityEngine.Random.Range(0, 0.5f);
+            yield return new WaitForSeconds(randomTime);
+            time += randomTime;
+        }
+    }
+
+
 
     //*----------------------------------------------------------------------------------------------------------//
     //* --

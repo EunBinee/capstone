@@ -120,7 +120,6 @@ public class Monster : MonoBehaviour
                     {
                         //* HP에 따른! 페이즈 수정.!
                         //bossMonsterPattern.Base_Phase_HP();
-
                         monsterPattern.SetGetDemageMonster(attackPos, atteckRot);
                         bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.GetHit);
                     }
