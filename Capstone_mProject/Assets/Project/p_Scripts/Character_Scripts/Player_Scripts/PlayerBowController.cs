@@ -12,12 +12,8 @@ public class PlayerBowController : MonoBehaviour
 
     void Start()
     {
-        Transform currentTransform = transform;
-        while (currentTransform.parent != null)
-        {
-            currentTransform = currentTransform.parent;
-        }
-        _controller = currentTransform.GetComponent<PlayerController>();
+        _controller = GameManager.instance.gameData.player.GetComponent<PlayerController>();
+
         animator = GetComponent<Animator>();
     }
 

@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         }
         P_Value.index = 1;
         P_States.hadAttack = false;
+        //skillMotion('E');
     }
     // Update is called once per frame
     void Update()
@@ -75,11 +76,9 @@ public class PlayerMovement : MonoBehaviour
         {
             if (P_States.isAim)    //* 조준 모드라면
             {
+                //조준 풀기
                 P_Com.animator.SetTrigger("shoot");
-                if (!P_States.isSkill)
-                {
-                    skillMotion('E');
-                }
+                skillMotion('E');
             }
         }
     }
@@ -135,7 +134,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             //* skills input
-            /*if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 //Debug.Log("P_States.isSkill : " + P_States.isSkill);
                 if (P_States.isSkill)
@@ -147,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
                     skillMotion('E');
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            /*if (Input.GetKeyDown(KeyCode.Q))
             {
                 if (P_States.isSkill)
                 {
@@ -425,7 +424,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         if (P_States.isStartComboAttack     //* 공격 시 or
-                || P_States.isSkill     //* 스킬 사용 시 or/**/
+                /*|| P_States.isSkill     //* 스킬 사용 시 or*/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
@@ -454,7 +453,7 @@ public class PlayerMovement : MonoBehaviour
             Invoke("dodgeOut", 0.07f);    //대시 유지 시간
 
         }
-        else if (P_States.isSprinting || P_States.isRunning)
+        else if (P_States.isSprinting || P_States.isRunning || P_States.isAim)
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
