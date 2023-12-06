@@ -20,7 +20,8 @@ public class Wreckage : MonoBehaviour
     {
         //떨어뜨림.
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Wreckage_Warning01");
-        effect.transform.position = wreckageRandomPos;
+
+        effect.transform.position = new Vector3(wreckageRandomPos.x, 0.1f, wreckageRandomPos.y);
 
         yield return new WaitForSeconds(3f);
         float time = 0;
@@ -73,9 +74,7 @@ public class Wreckage : MonoBehaviour
     {
         //* 큐브 이펙트 생성 : randomPos에
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Voxels_Recorlor__FacesDark___GlowRainbow_WiresWhite");
-        randomPos.y -= 1f;
         effect.gameObject.transform.position = randomPos;
-
 
         yield return new WaitForSeconds(3f);
         //그리고 없애기

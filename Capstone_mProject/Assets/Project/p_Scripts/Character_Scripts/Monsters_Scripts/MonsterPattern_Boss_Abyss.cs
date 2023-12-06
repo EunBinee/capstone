@@ -1229,7 +1229,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
         wreckage_obj.SetActive(false);
-        NavMeshSurface_ReBuild();
+        //NavMeshSurface_ReBuild();
 
         yield return null;
     }

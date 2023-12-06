@@ -21,7 +21,7 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
         {
             if (other.CompareTag("Player"))
             {
-                monster.OnHit();
+                monster.OnHit(5);
             }
         }
     }
