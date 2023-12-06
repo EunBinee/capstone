@@ -49,6 +49,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     Coroutine skill02_MoveMonster_Co = null;
     Coroutine changePhase02_Co = null;
 
+    public List<NavMeshSurface> navMeshSurface;
+
     public override void Init()
     {
         m_monster = GetComponent<Monster>();
@@ -87,7 +89,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         GameManager.instance.cameraController.AttentionMonster();
 
-        playerController.NavMeshSurface_ReBuild();
+        //NavMeshSurface_ReBuild();
 
         if (m_monster.HPBar_CheckNull() == false)
         {
@@ -424,7 +426,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     // * 몬스터 상태 =>> 로밍(시네머신 등장 신.)
     public override void Roam_Monster()
     {
-        if (!isRoaming)
+        if (!isRoaming && !GameManager.instance.isLoading)
         {
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
@@ -603,7 +605,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 0);
         yield return new WaitForSeconds(1f);
-
+        GameManager.Instance.cameraShake.ShakeCamera(5f, 3, 3);
         // 점프전 잠깐 밑으로 내려감.
         while (time < 0.1)
         {
@@ -612,7 +614,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
         //? 연기이펙트-----------------------------------------------------------------------//
-        GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
+
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
         Vector3 effectPos = originPos;
         effectPos.y += 2.5f;
@@ -895,19 +897,23 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         if (NavMesh.SamplePosition(monsterNewPos, out hit, 20f, NavMesh.AllAreas))
         {
+            if (monsterNewPos != hit.position)
+            {
+                monsterNewPos = hit.position;
+            }
             SetMove_AI(true);
             navMeshAgent.SetDestination(monsterNewPos);
             SetAnimation(MonsterAnimation.Move);
 
             while (true)
             {
-                if (Vector3.Distance(monsterNewPos, transform.position) <= 0.5f)
+                if (Vector3.Distance(monsterNewPos, transform.position) <= 2f)
                 {
                     SetMove_AI(false);
 
                     //TODO: 몬스터 방향 플레이어 쪽으로 돌리기
                     time = 0;
-                    while (time < 3)
+                    while (time < 2)
                     {
                         time += Time.deltaTime;
                         Vector3 direction = playerTrans.position - transform.position;
@@ -1223,7 +1229,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
         wreckage_obj.SetActive(false);
-        playerController.NavMeshSurface_ReBuild();
+        NavMeshSurface_ReBuild();
 
         yield return null;
     }
@@ -1516,7 +1522,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             float x = targetPos.x + radius * Mathf.Cos(Mathf.Deg2Rad * angle);
             float z = targetPos.z + radius * Mathf.Sin(Mathf.Deg2Rad * angle);
 
-            Vector3 pos = new Vector3(x, targetPos.y, z);
+            Vector3 pos = new Vector3(x, 0, z);
             posList.Add(pos);
 
         }
@@ -1537,5 +1543,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Gizmos.DrawWireSphere(transform.position, skillRadius + 5);
     }
 
+    //*---------------------------------------------------------------------------------//
+    public void NavMeshSurface_ReBuild()
+    {
+        if (navMeshSurface != null)
+        {
+            for (int i = 0; i < navMeshSurface.Count; ++i)
+                navMeshSurface[i].BuildNavMesh();
+        }
+    }
 
 }

@@ -5,6 +5,7 @@ using Cinemachine;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -106,6 +107,8 @@ public class PlayerController : MonoBehaviour
         //onAimCamera.enabled = false;
         //mainCam.enabled = true;
 
+        //* 씬이동 처리
+
     }
     // Update is called once per frame
     void Update()
@@ -147,7 +150,6 @@ public class PlayerController : MonoBehaviour
 
     private void InitPlayer()
     {
-
         if (P_Com.playerTargetPos == null)
             P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         InitCapsuleCollider();
@@ -159,9 +161,13 @@ public class PlayerController : MonoBehaviour
 
     public void NavMeshSurface_ReBuild()
     {
-        for (int i = 0; i < navMeshSurface.Count; ++i)
-            navMeshSurface[i].BuildNavMesh();
 
+
+        if (navMeshSurface != null)
+        {
+            for (int i = 0; i < navMeshSurface.Count; ++i)
+                navMeshSurface[i].BuildNavMesh();
+        }
     }
 
     void InitCapsuleCollider()

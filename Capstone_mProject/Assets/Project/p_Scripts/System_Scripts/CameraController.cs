@@ -228,8 +228,6 @@ public class CameraController : MonoBehaviour
         cameraRot = Vector3.zero;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
-
-
     }
 
 
@@ -334,7 +332,7 @@ public class CameraController : MonoBehaviour
 
                 if (camPivotPos.y != 1.2f)
                 {
-                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
+                    value = Mathf.Lerp(camPivotPos.y, 1.5f, time_Z / duration);
                     camPivotPos.y = value;
                     playerCameraPivot.transform.localPosition = camPivotPos;
                 }
@@ -378,8 +376,8 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            normal_Z = -7f;
-            attention_Z = -10f;
+            normal_Z = -6f;
+            attention_Z = -9f;
             longAttention_Z = -13f;
         }
     }

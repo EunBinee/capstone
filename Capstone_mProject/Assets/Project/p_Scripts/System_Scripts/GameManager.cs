@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     public List<Monster> monsters;
 
     public bool bossBattle = false;
-
+    public bool isLoading = false;
     //* --------------------------------------------//
     void Awake()
     {
