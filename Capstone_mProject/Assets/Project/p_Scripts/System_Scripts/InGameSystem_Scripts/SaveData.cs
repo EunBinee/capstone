@@ -16,14 +16,14 @@ public class SaveData
 
 
 
-    public SaveData()
-    {
-        eventNum = GameManager.Instance.gameInfo.eventNum;
-        endingNum = GameManager.Instance.gameInfo.EndingNum;
-        questNum = GameManager.Instance.gameInfo.QuestNum;
-        doQuest = GameManager.Instance.dialogueManager.DoQuest;
-        dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
-        currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;
-    }
+    // public SaveData()
+    // {
+    //     eventNum = GameManager.Instance.gameInfo.eventNum;
+    //     endingNum = GameManager.Instance.gameInfo.EndingNum;
+    //     questNum = GameManager.Instance.gameInfo.QuestNum;
+    //     doQuest = GameManager.Instance.dialogueManager.DoQuest;
+    //     dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
+    //     currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;
+    // }
 
 }

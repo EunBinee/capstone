@@ -93,6 +93,12 @@ public class Popup_Setting : UIBase
         {
             //TODO:저장 기능
             SaveData dialogue = new SaveData();
+            dialogue.eventNum = GameManager.Instance.gameInfo.eventNum;
+            dialogue.endingNum = GameManager.Instance.gameInfo.EndingNum;
+            dialogue.questNum = GameManager.Instance.gameInfo.QuestNum;
+            dialogue.doQuest = GameManager.Instance.dialogueManager.DoQuest;
+            dialogue.dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
+            dialogue.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;
             SaveSystem.Save(dialogue, "GameData");
 
         });
