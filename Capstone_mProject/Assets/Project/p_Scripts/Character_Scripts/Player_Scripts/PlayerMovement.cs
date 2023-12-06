@@ -120,7 +120,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isDodgeing && !P_States.isStop
+            if (Input.GetKeyUp(KeyCode.L))
+            {
+                StartCoroutine(PlayerHeal_co());
+            }
+            if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isDodgeing && !P_States.isGettingHit && !P_States.isStop
                 && !EventSystem.current.IsPointerOverGameObject())
             {
                 if (P_States.isAim)    //* 조준 모드라면
@@ -177,6 +181,29 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
         }
     }
+
+    IEnumerator PlayerHeal_co()
+    {
+        //Debug.Log("Player Heal");
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
+        P_Value.HP = P_Value.MaxHP;
+
+        bool stopHeal = false;
+
+        effect.finishAction = () =>
+        {
+            stopHeal = true;
+        };
+
+        while (!stopHeal)
+        {
+            //1. 플레이어 위치 계속
+            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+
+            yield return null;
+        }
+    }
+
 
     public void skillMotion(char a)
     {
@@ -617,6 +644,7 @@ public class PlayerMovement : MonoBehaviour
             P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
             //P_Controller.ChangePlayerState(PlayerState.ComboAttack);
             //AnimState(PlayerState.ComboAttack, index);
+            Debug.Log($"P_Value.index   {P_Value.index}");
 
             switch (P_Value.index)
             {
