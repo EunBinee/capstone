@@ -365,6 +365,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
+                GetHit();
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
@@ -398,7 +399,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         yield return new WaitForSeconds(0.2f);
 
-        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10);
+        bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10, true);
 
         if (playerGetDamage)
         {
@@ -538,8 +539,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
     {
         //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
         Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
-
         playerHide = HidePlayer(muzzlePos.position, curDirection.normalized);
+
         if (!playerHide)
         {
             //* 어택 에니메이션
@@ -554,23 +555,26 @@ public class MonsterPattern_Monster02 : MonsterPattern
             bullet.OnHitPlayerEffect = () =>
             {
                 //플레이어가 총에 맞았을 경우, 이펙트
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
+                //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
 
-                effect.gameObject.transform.position = targetPos;
-                Vector3 curDirection = targetPos - bulletObj.transform.position;
-                effect.gameObject.transform.position += curDirection * 0.35f;
+                //effect.gameObject.transform.position = targetPos;
+                //Vector3 curDirection = targetPos - bulletObj.transform.position;
+                //effect.gameObject.transform.position += curDirection * 0.35f;
             };
 
             //총알 방향//
+
             Quaternion targetAngle = Quaternion.LookRotation(curDirection);
             bulletObj.transform.rotation = targetAngle;
 
-            bullet.SetInfo(curDirection.normalized); //* Bullet.cs에 방향 벡터 보냄
-                                                     //총알 발사.
-            bulletRigid.velocity = curDirection.normalized * 50f;
+            bullet.SetInfo(curDirection.normalized, "FX_Shoot_08_hit"); //* Bullet.cs에 방향 벡터 보냄
+                                                                        //총알 발사.
+            bulletRigid.velocity = curDirection.normalized * 80f;
             //총쏠때 이펙트
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02");
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_08_muzzle");
             effect.gameObject.transform.position = muzzlePos.position;
+            effect.transform.rotation = targetAngle;
+
 
             //몬스터 몸 흔들리는 연출//
             if (shake_co == null)
@@ -643,6 +647,40 @@ public class MonsterPattern_Monster02 : MonsterPattern
     }
     // * ---------------------------------------------------------------------------------------------------------//
     // * 피격 모션
+    private void GetHit()
+    {
+        //? 피격 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
+        //TODO: 나중에 플레이어 방향쪽으로 변경.
+        float x = UnityEngine.Random.Range(-1.5f, 1.5f);
+        float y = UnityEngine.Random.Range(-1.5f, 1.5f);
+        float z = UnityEngine.Random.Range(-1.5f, 1.5f);
+        Vector3 randomPos = new Vector3(x, y, z);
+
+        effect.transform.position = transform.position + randomPos;
+
+        StartCoroutine(electricity_Damage(0.8f));
+    }
+
+    IEnumerator electricity_Damage(float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float x = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float y = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float z = UnityEngine.Random.Range(-1.5f, 1.5f);
+            Vector3 randomPos = new Vector3(x, y, z);
+            randomPos = transform.position + randomPos;
+            GetDamage_electricity(randomPos);
+
+            float randomTime = UnityEngine.Random.Range(0, 0.5f);
+            yield return new WaitForSeconds(randomTime);
+            time += randomTime;
+        }
+    }
 
     IEnumerator GetHit_KnockBack_co()
     {

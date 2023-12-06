@@ -171,7 +171,6 @@ public class GameManager : MonoBehaviour
         if (isImage)
         {
             Image obj_img = image.GetComponent<Image>();
-            Debug.LogError("PadeOut시작");
             while (true)
             {
                 obj_img.color = new Color(obj_img.color.r, obj_img.color.g, obj_img.color.b, obj_img.color.a - (speed * Time.deltaTime));

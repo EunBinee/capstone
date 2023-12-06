@@ -398,6 +398,13 @@ public class MonsterPattern : MonoBehaviour
             return false;
         }
     }
+    //* ----------------------------------------------------------------------------------------//
+    protected void GetDamage_electricity(Vector3 randomPos)
+    {
+        //* 전기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("electric");
+        effect.transform.position = randomPos;
+    }
     // * ---------------------------------------------------------------------------------------//
     //! 발사체 쏘는 공격시, 플레이어 앞에 물체가 있는지 확인
     public virtual bool HidePlayer(Vector3 curOriginPos, Vector3 targetDir)
