@@ -224,6 +224,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
+                    isGettingHit = true;
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
