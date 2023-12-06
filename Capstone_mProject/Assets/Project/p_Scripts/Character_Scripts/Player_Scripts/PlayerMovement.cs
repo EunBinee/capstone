@@ -324,7 +324,8 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log("이전 프레임에도 누름!");
             return;
         }
-        else if (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("dodge") && P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0)
+        else if (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("dodge")
+        && P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0 && !P_States.isStartComboAttack)
         {
             P_States.isDodgeing = true;
         }
