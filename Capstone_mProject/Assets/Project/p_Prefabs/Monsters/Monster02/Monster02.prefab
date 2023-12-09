@@ -746,8 +746,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 1.8478792, z: 4}
-  m_Center: {x: 0, y: 0.9063767, z: 0}
+  m_Size: {x: 5.4691577, y: 1.6336056, z: 5.533345}
+  m_Center: {x: 0, y: 0.833278, z: 0}
 --- !u!54 &2972022217398982058
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1353,8 +1353,8 @@ GameObject:
   - component: {fileID: 5605718856552419273}
   - component: {fileID: 8232536110578625341}
   - component: {fileID: 5605718856552419276}
-  - component: {fileID: 5605718856552419275}
   - component: {fileID: 5605718856552419274}
+  - component: {fileID: 1074076572}
   m_Layer: 6
   m_Name: Robot
   m_TagString: Monster
@@ -1435,20 +1435,6 @@ MonoBehaviour:
   shortRangeAttackDistance: 3
   stopAttackDistance: 25
   findPlayerDistance: 4
---- !u!136 &5605718856552419275
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7690879580553694616}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 1.5
-  m_Height: 4.724219
-  m_Direction: 1
-  m_Center: {x: 0, y: 2.9742544, z: 0}
 --- !u!54 &5605718856552419274
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1465,6 +1451,19 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!65 &1074076572
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7690879580553694616}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 4.5, y: 5.5, z: 4.5}
+  m_Center: {x: 0, y: 2.7, z: 0}
 --- !u!1 &7990880086036554160
 GameObject:
   m_ObjectHideFlags: 0

@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour
         P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
 
+
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
 
@@ -109,6 +110,10 @@ public class PlayerController : MonoBehaviour
 
         //* 씬이동 처리
 
+    }
+    void Start()
+    {
+        InitComponent();
     }
     // Update is called once per frame
     void Update()
@@ -157,6 +162,12 @@ public class PlayerController : MonoBehaviour
         NavMeshSurface_ReBuild();
 
         //_playerSkills.Init();
+    }
+    private void InitComponent()
+    {
+        P_Camera.playerCamera = GameManager.instance.gameData.playerCamera;
+        P_Camera.playerCameraPivot = GameManager.instance.gameData.playerCameraPivot;
+        P_Camera.cameraObj = GameManager.instance.gameData.cameraObj;
     }
 
     public void NavMeshSurface_ReBuild()

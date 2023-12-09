@@ -67,6 +67,19 @@ public class CameraController : MonoBehaviour
     {
         if (controlCam)
         {
+            if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
+            {
+                if (isBeingAttention)// 주목 기능
+                {
+                    //다른 몬스터로 다시 주목
+                    if (GameManager.instance.monsterUnderAttackList.Count > 1)
+                    {
+                        ChangeAttentionMonster();
+                    }
+                }
+            }
+
+            /*
             //TODO: 주목 Input =>나중에 InputManager로 옮기기
             if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
             {
@@ -98,6 +111,7 @@ public class CameraController : MonoBehaviour
                     UndoAttention();
                 }
             }
+            */
         }
     }
     //* 처음 주목
@@ -119,6 +133,28 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void ChangeAttentionMonster()
+    {
+        //*주목 대상 바꾸기
+        GameManager.instance.SortingMonsterList();
+
+        if (GameManager.instance.monsterUnderAttackList.Count >= 2)//1마리 이상이면?
+        {
+            if (curTargetMonster == GameManager.instance.monsterUnderAttackList[0])
+            {
+                curTargetMonster = GameManager.instance.monsterUnderAttackList[1];
+            }
+            else
+            {
+                curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+            }
+        }
+        else if (GameManager.instance.monsterUnderAttackList.Count == 1)
+        {
+            curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+        }
+
+    }
 
     //*주목 풀기
     public void UndoAttention()

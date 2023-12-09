@@ -720,8 +720,6 @@ public class PlayerMovement : MonoBehaviour
                     P_Value.curAnimName = "";
                     break;
             }
-            //Time.timeScale = 0.1f;
-            Debug.Log("P_Value.index : " + P_Value.index);
 
             /**///* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;

@@ -72,7 +72,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
 
-        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
+        Collider capsuleCollider = GetComponent<Collider>();
         capsuleCollider.enabled = true;
 
         playerHide = true;
