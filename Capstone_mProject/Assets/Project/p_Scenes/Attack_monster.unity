@@ -1207,6 +1207,7 @@ MonoBehaviour:
   isBeingAttention: 0
   controlCam: 1
   curTargetMonster: {fileID: 0}
+  targetTrans: {fileID: 0}
   normal_Z: -5
   attention_Z: -6.5
   longAttention_Z: -7.5
@@ -1792,6 +1793,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Monster01
       objectReference: {fileID: 0}
+    - target: {fileID: 4076283092800834888, guid: 53bd9009e6de14146af997c681ca8483, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7294179483896941995, guid: 53bd9009e6de14146af997c681ca8483, type: 3}
       propertyPath: playerTargetPos
       value: 
@@ -1932,7 +1937,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4094171225939372512, guid: bb77a7cc96b678d4fa5768570eebeb64, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.848
+      value: 0.63
       objectReference: {fileID: 0}
     - target: {fileID: 4094171225939372512, guid: bb77a7cc96b678d4fa5768570eebeb64, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2018,6 +2023,10 @@ PrefabInstance:
     - target: {fileID: 871304421103975633, guid: cf2c978bcd18bab4a9263b8fe284cc5b, type: 3}
       propertyPath: m_Name
       value: Monster02
+      objectReference: {fileID: 0}
+    - target: {fileID: 871304421103975633, guid: cf2c978bcd18bab4a9263b8fe284cc5b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1048367314301522874, guid: cf2c978bcd18bab4a9263b8fe284cc5b, type: 3}
       propertyPath: m_RootOrder
@@ -2341,7 +2350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360589, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}

@@ -619,9 +619,10 @@ public class MonsterPattern : MonoBehaviour
             Vector3 hitPoint = shortHit.point;
             return hitPoint;
         }
-        Debug.Log("꽝!");
         return Vector3.zero;
     }
+
+
 
 
 }

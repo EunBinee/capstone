@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 public class PlayerMovement : MonoBehaviour
@@ -376,13 +377,39 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        else if (P_States.isStrafing)
+        else if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
             {
-                rotationDirection = P_Camera.cameraObj.transform.forward;
-                rotationDirection.y = 0;
+                //!@ 여기에 약점과 플레이어의 거리체크후,거리가 가까우면 가까운약점 쪽으로 로테이션 
+                //멀어지면 다시 카메라로 로테이션
+                Monster targetMonster = GameManager.instance.cameraController.curTargetMonster;
+                if (targetMonster.monsterData.useWeakness)
+                {
+                    int curW_index = targetMonster.GetIndex_NearestWeakness(this.transform);
+                    float distance = Vector3.Distance(targetMonster.monsterData.weakness[curW_index].transform.position, this.transform.position);
+
+                    if (distance < 2f)
+                    {
+                        //가까워지면 Player 몸을 약점 쪽으로 돌려주기
+                        Vector3 weaknessPos = targetMonster.monsterData.weakness[curW_index].transform.position;
+                        Vector3 targetPos = new Vector3(weaknessPos.x, targetMonster.gameObject.transform.position.y, weaknessPos.z);
+
+                        rotationDirection = targetPos - this.transform.position;
+                        rotationDirection.y = 0;
+                    }
+                    else
+                    {
+                        rotationDirection = P_Camera.cameraObj.transform.forward;
+                        rotationDirection.y = 0;
+                    }
+                }
+                else
+                {
+                    rotationDirection = P_Camera.cameraObj.transform.forward;
+                    rotationDirection.y = 0;
+                }
                 rotationDirection.Normalize();
                 Quaternion tr = Quaternion.LookRotation(rotationDirection);
                 Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
@@ -729,17 +756,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (nowEnemy_Monster.monsterData.useWeakness)
                 {
-                    float distance = 10000;
-                    int curW_index = 0;
-                    for (int i = 0; i < nowEnemy_Monster.monsterData.weakness.Count; ++i)
-                    {
-                        float m_distance = Vector3.Distance(nowEnemy_Monster.monsterData.weakness[i].position, this.transform.position);
-                        if (m_distance < distance)
-                        {
-                            distance = m_distance;
-                            curW_index = i;
-                        }
-                    }
+                    int curW_index = nowEnemy_Monster.GetIndex_NearestWeakness(this.transform);
 
                     Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.weakness[curW_index].position.x, 0, nowEnemy_Monster.monsterData.weakness[curW_index].position.z);
                     dir = (monster_ - this.transform.position).normalized;

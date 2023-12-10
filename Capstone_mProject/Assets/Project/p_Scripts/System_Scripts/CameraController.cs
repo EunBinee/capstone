@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     public bool isBeingAttention = false;
     public bool controlCam = true;
     public Monster curTargetMonster = null;
-
+    public Transform targetTrans;
     public float normal_Z = -5f;
     public float attention_Z = -6.5f;
     public float longAttention_Z = -7.5f;
@@ -53,11 +53,11 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         //CamReset();
+        cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
     }
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
-        cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
         CamReset();
         stopRotation = false;
     }
@@ -243,7 +243,11 @@ public class CameraController : MonoBehaviour
         Vector3 cameraRot;
         Quaternion targetCameraRot = Quaternion.identity;
         // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
+        Vector3 targetPos;
+
+        targetPos = curTargetMonster.gameObject.transform.position;
+
+        Vector3 directionToTarget = targetPos - playerCameraPivot.transform.position;
         cameraRot = Vector3.zero;
         cameraRot.y = directionToTarget.x;
 

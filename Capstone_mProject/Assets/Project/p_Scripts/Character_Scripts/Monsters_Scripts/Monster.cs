@@ -232,4 +232,27 @@ public class Monster : MonoBehaviour
 
         damageUI.Reset(this, randomPos, damage);
     }
+    //*---------------------------------------------------------------------------------------//
+    public int GetIndex_NearestWeakness(Transform target)
+    {
+        //! 약점이 존재하는 경우, 플레이어와 가장 가까운 약점의 Index를 알려줌
+        if (monsterData.useWeakness)
+        {
+            float distance = 10000;
+            int curW_index = 0;
+            for (int i = 0; i < monsterData.weakness.Count; ++i)
+            {
+                float m_distance = Vector3.Distance(monsterData.weakness[i].position, target.gameObject.transform.position);
+                if (m_distance < distance)
+                {
+                    distance = m_distance;
+                    curW_index = i;
+                }
+            }
+            return curW_index;
+        }
+
+        return -1;
+
+    }
 }
