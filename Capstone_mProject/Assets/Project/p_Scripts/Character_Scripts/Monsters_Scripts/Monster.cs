@@ -36,9 +36,9 @@ public class Monster : MonoBehaviour
     private void Update()
     {
         //임시 테스트 코드---===================//
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.U))
         {
-            //monsterPattern.StopMonster();
+            Death();
         }
 
         //---====================================//
@@ -138,7 +138,7 @@ public class Monster : MonoBehaviour
         resetHP = false;
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-
+            bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Death);
         }
         else
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);

@@ -14,6 +14,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
     PlayerController playerController;
+
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;
     public List<Wreckage> wreckages;
@@ -198,6 +199,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
                 break;
             case BossMonsterMotion.Death:
+                StartCoroutine(DeathBossMonster());
+
                 m_monster.RetrunHPBar();
 
                 GameManager.instance.bossBattle = false;
@@ -363,18 +366,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 현재는 그냥 인스펙터에서 redImage를 가져오지만 여기처럼 나중에 resource폴더에서 가져올 수 있도록.
 
             Debug.Log("보스 redImage 넣어주세여 null입니다.00");
-
-            //GameObject redImagePrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "redImage");
-            //redImage = UnityEngine.Object.Instantiate(redImagePrefab);
-            //redImage.transform.SetParent(GameManager.instance.m_canvas.gameObject.transform);
-
-            //RectTransform rectTransform = redImagePrefab.GetComponent<RectTransform>();
-            //rectTransform.anchoredPosition = new Vector2(0, 0);
         }
         redImage.SetActive(true);
         GameManager.instance.PadeIn_Alpha(redImage, true, 90);
         BossText.SetActive(true);
-        // GameManager.instance.PadeIn_Alpha(redImage, true, 255, false);
         //* 카메라 흔들림        
         GameManager.Instance.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
 
@@ -433,9 +428,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             //isRoaming = false;
             //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
-            // StartCoroutine(SetWreckage());
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            // ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -461,9 +455,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 default:
                     break;
             }
-
         }
-
     }
 
     //! 일단은 페이즈 1이랑 2랑 실행시키는 건 똑같으니깐 페이즈가 달라도 일단은? 이 코루틴 사용.
@@ -556,9 +548,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             default:
                 break;
         }
-
-
-
     }
 
     //*----------------------------------------------------------------------------------------------------------//
@@ -866,7 +855,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             EndSkill(BossMonsterMotion.Skill02);
         }
     }
-
 
     //* 보스 뒤로 이동
     IEnumerator MoveMonster_Skill02()
@@ -1340,8 +1328,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
         //* false 플레이어가 아래에 있다. true 플레이어가 밖에 있다.
         float distance = Vector3.Distance(this.transform.position, playerTrans.position);
-
-
         {
             Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
 
@@ -1413,6 +1399,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     //*----------------------------------------------------------------------------------------------------------//
     //* 피격 이펙트
+    #region 피격
     private void GetHit()
     {
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
@@ -1421,28 +1408,100 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         StartCoroutine(electricity_Damage(2f, curHitPos));
     }
-    IEnumerator electricity_Damage(float duration, Vector3 curHitPos)
+
+    IEnumerator electricity_Damage(float duration, Vector3 curHitPos, float range = 1, float randomMin = 0, float randomMax = 0.5f)
     {
         float time = 0;
         while (time < duration)
         {
             time += Time.deltaTime;
 
-            float x = UnityEngine.Random.Range(-1f, 1f);
-            float y = UnityEngine.Random.Range(-1f, 1f);
-            float z = UnityEngine.Random.Range(-1f, 1f);
+            float x = UnityEngine.Random.Range(-range, range);
+            float y = UnityEngine.Random.Range(-range, range);
+            float z = UnityEngine.Random.Range(-range, range);
             Vector3 randomPos = new Vector3(x, y, z);
             randomPos = curHitPos + randomPos;
             GetDamage_electricity(randomPos);
 
-            float randomTime = UnityEngine.Random.Range(0, 0.5f);
+            float randomTime = UnityEngine.Random.Range(randomMin, randomMax);
             yield return new WaitForSeconds(randomTime);
             time += randomTime;
         }
     }
+    #endregion
 
+    //*----------------------------------------------------------------------------------------------------------//
+    //* 죽음 구현
 
+    IEnumerator DeathBossMonster()
+    {
+        //*모든 스킬 멈추기
 
+        //- Idle상태로 멈추기
+        //- 점점 빨리 전기 이펙트 나오도록. * 몬스터의 여러 부위에서 (다리, 몸통 세팅)
+        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        {
+            StartCoroutine(Death_Production(m_monster.monsterData.weakness[i].position, 1));
+        }
+        Vector3 neckPos = new Vector3(bossNeck.position.x - 2, bossNeck.position.y, bossNeck.position.z);
+        StartCoroutine(Death_Production(neckPos, 3));
+
+        yield return new WaitForSeconds(8f);
+        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        {
+            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weakness[i].position, 1, 0, 0.2f));
+        }
+        StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.2f));
+        yield return new WaitForSeconds(0.1f);
+        this.gameObject.SetActive(false);
+        yield return null;
+    }
+
+    IEnumerator Death_Production(Vector3 point, float range = 1)
+    {
+        //2초동안은 1초만큼 뜨문뜨문 생기도록
+        //3초 동안은 0.2~0.5만큼 빠르게 생기도록
+        float duration = 2;
+        StartCoroutine(electricity_Damage(duration, point, range, 0.3f, 0.7f));
+        StartCoroutine(Explode_Damage(duration, point, range, 3f, 5f));
+
+        yield return new WaitForSeconds(duration);
+
+        duration = 5;
+        StartCoroutine(electricity_Damage(duration, point, range, 0.1f, 0.3f));
+        StartCoroutine(Explode_Damage(duration, point, range, 1f, 5f));
+
+        yield return null;
+    }
+
+    IEnumerator Explode_Damage(float duration, Vector3 curHitPos, float range = 1, float randomMin = 0, float randomMax = 0.5f)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float randomTime = UnityEngine.Random.Range(randomMin, randomMax);
+            yield return new WaitForSeconds(randomTime);
+
+            time += randomTime;
+
+            float x = UnityEngine.Random.Range(-range, range);
+            float y = UnityEngine.Random.Range(-range, range);
+            float z = UnityEngine.Random.Range(-range, range);
+            Vector3 randomPos = new Vector3(x, y, z);
+            randomPos = curHitPos + randomPos;
+
+            GameManager.Instance.cameraShake.ShakeCamera(1f, 2f, 2f);
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterDeath");
+            effect.transform.position = randomPos;
+        }
+    }
+
+    public override void StopAtackCoroutine()
+    {
+        //Abyss 보스 몬스터의 경우 => 스킬 2번 4번만 멈추면 될 듯
+    }
     //*----------------------------------------------------------------------------------------------------------//
     //* --
 
