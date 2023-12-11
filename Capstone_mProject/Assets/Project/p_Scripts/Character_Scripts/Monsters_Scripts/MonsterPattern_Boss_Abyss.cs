@@ -735,13 +735,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         {
             StopCoroutine(skill02_MoveMonster_Co);
         }
-        Debug.Log("코루틴 시작");
+
         skill02_MoveMonster_Co = StartCoroutine(MoveMonster_Skill02());
 
         yield return new WaitForSeconds(2f);
         float time = 0;
         bool getRandomPos = false;
         Vector3 newRandomPos = Vector3.zero;
+        Vector3 curMonsterPoint;
 
         float getrandomTime = 0;
         while (time < 15)
@@ -755,7 +756,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 getrandomTime += Time.deltaTime;
                 getRandomPos = true;
-                newRandomPos = GetRandomPos(3f, playerTrans.position);
+                curMonsterPoint = GetGroundPos(playerTrans);
+                newRandomPos = GetRandomPos(3f, curMonsterPoint);
                 foreach (Vector3 randomPos in randomPos_skill02)
                 {
                     if (Vector3.Distance(newRandomPos, randomPos) <= 4f)
@@ -814,7 +816,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             SetAnimation(MonsterAnimation.Idle);
         }
 
-        List<Vector3> roundPos = GetRoundPos(transform.position);
+        curMonsterPoint = GetGroundPos(transform);
+        List<Vector3> roundPos = GetRoundPos(curMonsterPoint);
         foreach (Vector3 pos in roundPos)
         {
             StartCoroutine(SetBomb(pos, true));
@@ -967,7 +970,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             };
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
 
         while (time < 5)
         {
@@ -1029,9 +1032,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         for (int i = 0; i < wreckages.Count; i++)
         {
             Vector3 randomPos = Vector3.zero;
+            Vector3 curMonsterPoint = GetGroundPos(this.transform);
             while (true)
             {
-                Vector3 curMonsterPoint = GetGroundPos(this.transform);
                 randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
                 if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
                     Vector3.Distance(transform.position, randomPos) >= 10f)
