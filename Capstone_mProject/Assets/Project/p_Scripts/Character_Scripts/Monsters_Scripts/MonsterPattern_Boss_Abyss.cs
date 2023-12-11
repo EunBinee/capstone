@@ -15,8 +15,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //! 보스 몬스터 나락.
     PlayerController playerController;
     [Header("스킬 02 잔해물 범위")]
-    public Transform ground_Center;
-    public int rangeXZ;
+    public int rangeXZ = 50;
     public List<Wreckage> wreckages;
     public Transform prefabPos;
 
@@ -434,8 +433,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             //isRoaming = false;
             //* 테스트 후 아래 주석 풀기
-            // ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
+            // StartCoroutine(SetWreckage());
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -1031,8 +1031,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Vector3 randomPos = Vector3.zero;
             while (true)
             {
-                randomPos = GetRandomPos(rangeXZ, ground_Center.position, originPosition.y, true);
-
+                Vector3 curMonsterPoint = GetGroundPos(this.transform);
+                randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
                 if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
                     Vector3.Distance(transform.position, randomPos) >= 10f)
                 {
@@ -1535,8 +1535,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         //몬스터 감지 범위 Draw
         //크기는  monsterData.overlapRadius
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(ground_Center.position, rangeXZ);
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, skillRadius);

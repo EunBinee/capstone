@@ -588,12 +588,13 @@ public class MonsterPattern : MonoBehaviour
     //현재 객체의 아래로 레이를 쏴서 아래에 있는 객체의 접점 point를 가지고와줌
     public Vector3 GetGroundPos(Transform raySelf)
     {
-        //바로 아래가 ground가 아니더라도 바로 아래에 있는 객체 가져옴.
+        //바로 아래가 ground가 아니더라도 바로 아래에 있는 객체의 Point 좌표를 가지고 옴.
+
         float range = 50f;
         RaycastHit[] hits;
         RaycastHit shortHit;
-        Debug.DrawRay(raySelf.position + (raySelf.up * 1), -raySelf.up * 100, Color.red);
-        hits = Physics.RaycastAll(raySelf.position + (raySelf.up * 1), -raySelf.up, range);
+        Debug.DrawRay(raySelf.position + (raySelf.up * 0.5f), -raySelf.up * 100, Color.red);
+        hits = Physics.RaycastAll(raySelf.position + (raySelf.up * 0.5f), -raySelf.up, range);
 
         float shortDist = 1000f;
 
@@ -603,7 +604,7 @@ public class MonsterPattern : MonoBehaviour
             foreach (RaycastHit hit in hits)
             {
                 //자기 자신 제외.
-                if (hit.collider.name != raySelf.gameObject.name)
+                if (hit.collider.transform.name != raySelf.gameObject.name)
                 {
                     //자기 자신은 패스
                     float distance = hit.distance;
