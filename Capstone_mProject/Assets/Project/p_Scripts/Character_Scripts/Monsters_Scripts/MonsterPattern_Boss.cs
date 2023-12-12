@@ -10,7 +10,8 @@ public class MonsterPattern_Boss : MonsterPattern
     {
         Phase1,
         Phase2,
-        Phase3
+        Phase3,
+        Death
     }
 
     public enum BossMonsterAttackAnimation
@@ -82,7 +83,7 @@ public class MonsterPattern_Boss : MonsterPattern
         }
     }
 
-    public virtual void ChangeBossPhase(BossMonsterPhase bossMonsterPhase)
+    public virtual void ChangeBossPhase(BossMonsterPhase bossMonsterPhase, bool production = true)
     {
         curBossPhase = bossMonsterPhase;
 
@@ -104,7 +105,7 @@ public class MonsterPattern_Boss : MonsterPattern
         Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2f);
     }
 
-    public virtual void Base_Phase_HP()
+    public virtual void Base_Phase_HP(bool production = true)
     {
         //HP로 나누는 페이즈
 

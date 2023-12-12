@@ -165,10 +165,11 @@ public class UIManager : MonoBehaviour
     public void GoBossField(bool changeP = false)
     {
         GameManager.instance.isLoading = true;
-        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        PadeInBlack();
         //Pause(false);
         StartCoroutine(LoadSceneAfterDelay(changeP));
     }
+
     IEnumerator LoadSceneAfterDelay(bool changeP = false)
     {
         // 0.5초 대기
@@ -181,10 +182,29 @@ public class UIManager : MonoBehaviour
         // BossFieldScene으로 씬 이동
         SceneManager.LoadScene("BossFieldScene");
         yield return new WaitForSeconds(1.5f);
-        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, false, 0, 0.65f, true);
+        PadeOutBlack();
         yield return new WaitForSeconds(0.5f);
         GameManager.instance.isLoading = false;
     }
+
+    public void PadeInBlack(float delay = 0)
+    {
+        if (delay != 0)
+        {
+            StartCoroutine(PadeInBlack_Co(delay));
+        }
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+    }
+    IEnumerator PadeInBlack_Co(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+    }
+    public void PadeOutBlack()
+    {
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, false, 0, 0.65f, true);
+    }
+
 }
 
 

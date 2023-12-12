@@ -780,6 +780,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
             {
                 if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
                 {
+                    if (hit.position != curPlayerPos)
+                        curPlayerPos = hit.position;
                     //원거리 공격 애니메이션션
                     noAttack = true;
                     SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
@@ -915,6 +917,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //* 몬스터가 갈 수 있는 위치일 경우에만 넉백~!
         if (NavMesh.SamplePosition(KnockBackPos, out hit, 20f, NavMesh.AllAreas))
         {
+            if (hit.position != KnockBackPos)
+                KnockBackPos = hit.position;
             while (time < 0.5f)
             {
                 transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);

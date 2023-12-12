@@ -494,6 +494,10 @@ PrefabInstance:
       propertyPath: navMeshSurface.Array.data[0]
       value: 
       objectReference: {fileID: 328270418}
+    - target: {fileID: 2755003020157360587, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_BaseOffset
+      value: -0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360589, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_Name
       value: BossMonster_abyss
@@ -12175,7 +12179,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.23333333
   m_BuildHeightMesh: 0
   m_NavMeshData: {fileID: 23800000, guid: bb23ab46a0bbc4c4883f7880725d6ee4, type: 2}
 --- !u!1001 &701596984
