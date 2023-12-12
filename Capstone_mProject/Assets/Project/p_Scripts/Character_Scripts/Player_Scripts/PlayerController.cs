@@ -600,7 +600,7 @@ public class PlayerController : MonoBehaviour
                 //StopToFalse(true);
             }
         }
-        if (other.gameObject.tag == "LoadScene") //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.tag == "LoadScene" && !GameManager.Instance.dialogueManager.DoQuest) //플레이어가 들어가면 대화창 활성화
         {
             //Debug.Log("엔피시 대화 에리어");
             GameObject interObject = other.gameObject;
