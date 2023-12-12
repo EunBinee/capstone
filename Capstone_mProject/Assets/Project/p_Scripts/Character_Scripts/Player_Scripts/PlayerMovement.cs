@@ -284,6 +284,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //P_States.isWalking = false;
             P_States.isRunning = false;
+            P_Com.rigidbody.velocity = Vector3.zero;
         }
     }
 
@@ -521,15 +522,15 @@ public class PlayerMovement : MonoBehaviour
             else if (P_States.isRunning) //뛸때
                 P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
 
-            /*Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
-            P_Com.rigidbody.velocity = p_velocity;*/
-
             Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            P_Com.rigidbody.velocity = p_velocity;
+
+            /*Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity += P_Value.gravity * Time.deltaTime * Vector3.up; // 중력은 시간에 따라 적용되어야 합니다.
 
             //P_Com.rigidbody.AddForce(p_velocity, ForceMode.VelocityChange);
-            P_Com.rigidbody.MovePosition(P_Com.rigidbody.position + p_velocity * Time.deltaTime);
+            P_Com.rigidbody.MovePosition(P_Com.rigidbody.position + p_velocity * Time.deltaTime);*/
             //return;
         }
         /*else if (P_States.isAim)
