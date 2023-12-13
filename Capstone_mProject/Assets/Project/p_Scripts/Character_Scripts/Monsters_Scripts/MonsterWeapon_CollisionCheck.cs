@@ -15,16 +15,15 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
         monster = transform.GetComponentInParent<Monster>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (onEnable)
         {
             if (other.CompareTag("Player"))
             {
-                monster.OnHit();
+                monster.OnHit(5);
             }
         }
-
     }
 
 }

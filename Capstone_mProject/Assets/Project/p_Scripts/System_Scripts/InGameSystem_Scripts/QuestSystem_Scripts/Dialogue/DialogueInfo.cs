@@ -19,6 +19,8 @@ public class DialogueInfo : MonoBehaviour
     //public int id;
     public void StartInteraction(GameObject _gameObject)
     {
+
+
         //Item interaction_Item = gameObject.GetComponent<Item>();
 
         Item interaction_Item = _gameObject.GetComponent<Item>();

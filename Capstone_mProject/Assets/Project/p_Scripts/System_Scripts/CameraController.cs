@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -24,11 +25,14 @@ public class CameraController : MonoBehaviour
     public float left_right_LookAngle;
     public float up_down_LookAngle;
 
-    [Header("주목 기능")]
-    public bool banAttention = false;
-    public bool isBeingAttention = false;
-    public Monster curTargetMonster = null;
+    public bool stopRotation = false;
 
+    [Header("주목 기능")]
+    public bool banAttention = false; // 주목 금지
+    public bool isBeingAttention = false;
+    public bool controlCam = true;
+    public Monster curTargetMonster = null;
+    public Transform targetTrans;
     public float normal_Z = -5f;
     public float attention_Z = -6.5f;
     public float longAttention_Z = -7.5f;
@@ -46,55 +50,34 @@ public class CameraController : MonoBehaviour
     Coroutine resetCameraZ_co = null;
 
 
+    private void Awake()
+    {
+        //CamReset();
+        cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+    }
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
-        cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        CamReset();
+        Check_Z();
+        stopRotation = false;
     }
+
 
     private void Update()
     {
-        // if (playerController._currentState.isAim)
-        // {
-        //     if (isBeingAttention)
-        //     {
-        //         isBeingAttention = false;
-        //     }
-        //     banAttention = true;
-        // }
-        //TODO: 주목 Input =>나중에 InputManager로 옮기기
-        if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
+        if (controlCam)
         {
-            //주목 기능
-
-            if (!isBeingAttention)
+            if (Input.GetKeyDown(KeyCode.Tab) && !banAttention)
             {
-                AttentionMonster();
-            }
-            else
-            {
-                //다른 몬스터로 다시 주목
-                if (GameManager.instance.monsterUnderAttackList.Count > 1)
+                if (isBeingAttention)// 주목 기능
                 {
-                    GameManager.instance.SortingMonsterList();
-                    if (curTargetMonster == GameManager.instance.monsterUnderAttackList[0])
+                    //다른 몬스터로 다시 주목
+                    if (GameManager.instance.monsterUnderAttackList.Count > 1)
                     {
-                        curTargetMonster = GameManager.instance.monsterUnderAttackList[1];
-                    }
-                    else
-                    {
-                        curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+                        ChangeAttentionMonster();
                     }
                 }
-
-            }
-
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            if (isBeingAttention)
-            {
-                UndoAttention();
             }
         }
     }
@@ -117,6 +100,28 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void ChangeAttentionMonster()
+    {
+        //*주목 대상 바꾸기
+        GameManager.instance.SortingMonsterList();
+
+        if (GameManager.instance.monsterUnderAttackList.Count >= 2)//1마리 이상이면?
+        {
+            if (curTargetMonster == GameManager.instance.monsterUnderAttackList[0])
+            {
+                curTargetMonster = GameManager.instance.monsterUnderAttackList[1];
+            }
+            else
+            {
+                curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+            }
+        }
+        else if (GameManager.instance.monsterUnderAttackList.Count == 1)
+        {
+            curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
+        }
+
+    }
 
     //*주목 풀기
     public void UndoAttention()
@@ -136,13 +141,9 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-
         CameraActions();
+    }
 
-    }
-    private void FixedUpdate()
-    {
-    }
 
     void OnPreCull() => GL.Clear(true, true, Color.black);
 
@@ -157,7 +158,8 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            CameraRotate();  //마우스 방향에 따른 카메라 방향
+            if (!stopRotation)
+                CameraRotate();  //마우스 방향에 따른 카메라 방향
         }
     }
 
@@ -165,9 +167,20 @@ public class CameraController : MonoBehaviour
     {
         //플레이어를 따라다니는 카메라
         //ref는 call by reference를 하겠다는 것.
-        //Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
-        Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position,
-            (playerController._currentState.isAim) ? aimSmootly : 0.125f);
+        // Vector3 cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.1f);
+
+        // Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position,(playerController._currentState.isAim) ? aimSmootly : 0.125f);
+        Vector3 cameraPos;
+        if (playerController._currentState.isAim)
+        {
+            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, aimSmootly);
+        }
+        else
+        {
+            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, 1.5f);
+            // cameraPos = Vector3.SmoothDamp(playerCamera.transform.position, playerController.gameObject.transform.position, ref cameraFllowVelocity, 0.2f);
+        }
+
         playerCamera.transform.position = cameraPos;
     }
 
@@ -206,7 +219,11 @@ public class CameraController : MonoBehaviour
         Vector3 cameraRot;
         Quaternion targetCameraRot = Quaternion.identity;
         // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 directionToTarget = curTargetMonster.gameObject.transform.position - playerCameraPivot.transform.position;
+        Vector3 targetPos;
+
+        targetPos = curTargetMonster.gameObject.transform.position;
+
+        Vector3 directionToTarget = targetPos - playerCameraPivot.transform.position;
         cameraRot = Vector3.zero;
         cameraRot.y = directionToTarget.x;
 
@@ -220,15 +237,13 @@ public class CameraController : MonoBehaviour
             playerCamera.transform.rotation = targetCameraRot;
         }
         else if (targetCameraRot != Quaternion.identity)
-            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 3f * Time.deltaTime); /* x speed */
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime); /* x speed */
 
         //playerCamera.transform.position = target.position - transform.forward * dis;
         //위아래
         cameraRot = Vector3.zero;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
-
-
     }
 
 
@@ -247,6 +262,7 @@ public class CameraController : MonoBehaviour
 
     IEnumerator ResetCameraZ_co(float duration)
     {
+        Check_Z();
         Vector3 camPos = cameraTrans.localPosition;
         Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
         float time = 0;
@@ -283,13 +299,12 @@ public class CameraController : MonoBehaviour
         Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
 
         float normalDistance = 10;
-        float longAttention_Distance = 4;
+        float longAttention_Distance = 6;
         if (GameManager.instance.bossBattle)
         {
             normalDistance = 20;
             longAttention_Distance = 12;
         }
-
 
         if (distance > normalDistance)
         {
@@ -332,9 +347,9 @@ public class CameraController : MonoBehaviour
                 camPos.z = value;
                 cameraTrans.localPosition = camPos;
 
-                if (camPivotPos.y != 1.2f)
+                if (camPivotPos.y != 1.5f)
                 {
-                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
+                    value = Mathf.Lerp(camPivotPos.y, 1.5f, time_Z / duration);
                     camPivotPos.y = value;
                     playerCameraPivot.transform.localPosition = camPivotPos;
                 }
@@ -358,9 +373,9 @@ public class CameraController : MonoBehaviour
                 camPos.z = value;
                 cameraTrans.localPosition = camPos;
 
-                if (camPivotPos.y != 1.2f)
+                if (camPivotPos.y != 1.3f)
                 {
-                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
+                    value = Mathf.Lerp(camPivotPos.y, 1.3f, time_Z / duration);
                     camPivotPos.y = value;
                     playerCameraPivot.transform.localPosition = camPivotPos;
                 }
@@ -372,14 +387,14 @@ public class CameraController : MonoBehaviour
     {
         if (!GameManager.instance.bossBattle)
         {
-            normal_Z = -5f;
-            attention_Z = -6.5f;
-            longAttention_Z = -7.5f;
+            normal_Z = -6f;
+            attention_Z = -7.5f;
+            longAttention_Z = -9.5f;
         }
         else
         {
-            normal_Z = -7f;
-            attention_Z = -10f;
+            normal_Z = -6f;
+            attention_Z = -9f;
             longAttention_Z = -13f;
         }
     }
@@ -396,6 +411,27 @@ public class CameraController : MonoBehaviour
     {
         // Quaternion.Angle 함수를 사용하여 각도 차이 계산
         return Quaternion.Angle(a, b);
+    }
+
+    void CamReset()
+    {
+        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, normal_Z);
+    }
+
+    //* 보스전 끝난 후 주목 풀기.
+    public void BossCameraReset(float stopTime)
+    {
+        StartCoroutine(BossCameraReset_Co(stopTime));
+    }
+    IEnumerator BossCameraReset_Co(float stopTime)
+    {
+        yield return new WaitForSeconds(stopTime);
+        GameManager.instance.bossBattle = false;
+        Check_Z();
+        ResetCameraZ();
+        controlCam = false;
+        UndoAttention();
+
     }
 
 }

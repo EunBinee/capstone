@@ -5,6 +5,7 @@ using Cinemachine;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -30,16 +31,16 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    public PlayerSkills _playerSkills = new PlayerSkills();
+    //public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    private PlayerSkills P_Skills => _playerSkills;
+    //private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
-    private PlayerMovement P_Movement;
+    public PlayerMovement P_Movement;
 
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
@@ -82,12 +83,15 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
+
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
         AimmingCamCon = AimmingCam.GetComponent<CameraController>();
         P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
+
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
@@ -96,9 +100,20 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        AimOnCameraReturn();
+        //AimOnCameraReturn();
+        //P_Camera.cameraObj = mainCam;
+        AimmingCam.enabled = false;
+        P_Camera.cameraObj.enabled = true;
         //playerFollowCamera.enabled = true;
         //onAimCamera.enabled = false;
+        //mainCam.enabled = true;
+
+        //* 씬이동 처리
+
+    }
+    void Start()
+    {
+        InitComponent();
     }
     // Update is called once per frame
     void Update()
@@ -113,14 +128,14 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            P_Movement.skill_E.gameObject.SetActive(false);
+            //P_Movement.skill_E.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            P_Movement.skill_E.gameObject.SetActive(true);
+            //P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -146,14 +161,24 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        _playerSkills.Init();
+        //_playerSkills.Init();
+    }
+    private void InitComponent()
+    {
+        P_Camera.playerCamera = GameManager.instance.gameData.playerCamera;
+        P_Camera.playerCameraPivot = GameManager.instance.gameData.playerCameraPivot;
+        P_Camera.cameraObj = GameManager.instance.gameData.cameraObj;
     }
 
     public void NavMeshSurface_ReBuild()
     {
-        for (int i = 0; i < navMeshSurface.Count; ++i)
-            navMeshSurface[i].BuildNavMesh();
 
+
+        if (navMeshSurface != null)
+        {
+            for (int i = 0; i < navMeshSurface.Count; ++i)
+                navMeshSurface[i].BuildNavMesh();
+        }
     }
 
     void InitCapsuleCollider()
@@ -166,17 +191,14 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
-        Debug.Log(GameManager.Instance.dialogueManager.isDialogue);
         if (GameManager.Instance.dialogueManager.isDialogue)
         {
 
             P_States.isStop = true;
-            Debug.Log("트루");
         }
         else
         {
             P_States.isStop = false;
-            Debug.Log("폴스");
         }
         //stop = GameManager.Instance.dialogueManager.isDialogue;
         //P_States.isStop = stop;
@@ -220,6 +242,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
+                    isGettingHit = true;
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -280,7 +303,7 @@ public class PlayerController : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Skills.GetArrowFromPool();
+        //arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
         //arrow.SetActive(true);
     }
@@ -569,13 +592,22 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-                //GameManager.GetInstance().StartInteraction(interObject);
-
-
 
                 P_Com.animator.Rebind();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
+                if (!GameManager.Instance.dialogueManager.DoQuest)
+                    interObject.SetActive(false);
                 //StopToFalse(true);
+            }
+        }
+        if (other.gameObject.tag == "LoadScene") //플레이어가 들어가면 대화창 활성화
+        {
+            //Debug.Log("엔피시 대화 에리어");
+            GameObject interObject = other.gameObject;
+
+            if (interObject != null)
+            {
+                UIManager.Instance.GoBossField();
             }
         }
     }

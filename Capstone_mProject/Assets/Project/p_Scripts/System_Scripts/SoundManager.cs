@@ -110,17 +110,20 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void Play_BGM(BGM bgm)
+    public void Play_BGM(BGM bgm, bool useLoop = false)
     {
-        bgmPlayer.clip = playerSoundClips[(int)bgm];
+        playerSoundPlayer.loop = useLoop;
+        bgmPlayer.clip = bgmClip[(int)bgm];
         bgmPlayer.Play();
     }
 
-    public void Play_PlayerSound(PlayerSound p_Sound)
+    public void Play_PlayerSound(PlayerSound p_Sound, bool useLoop = false)
     {
         //플레이어 캐릭터 사운드
+        playerSoundPlayer.loop = useLoop;
         playerSoundPlayer.clip = playerSoundClips[(int)p_Sound];
         playerSoundPlayer.Play();
+
     }
 
     public void Play_MonsterSound(AudioClip monsterSoundClip)

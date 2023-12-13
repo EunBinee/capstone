@@ -92,6 +92,8 @@ public class PlayerAttackCheck : MonoBehaviour
                         Vector3 collisionPoint = other.ClosestPoint(transform.position);
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
                         playerHitMonster(collisionPoint, otherQuaternion);
+                        //사운드
+                        SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
                     }
                     else if (monster != null && P_States.hadAttack)
                     {

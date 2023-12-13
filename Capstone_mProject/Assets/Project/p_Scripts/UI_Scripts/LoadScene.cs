@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LoadScene : MonoBehaviour
 {
@@ -23,12 +20,14 @@ public class LoadScene : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
         UIManager.gameIsPaused = false;
-        Debug.Log("임무 수행");
+        //Debug.Log("임무 수행");
+        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
+
     }
 
     public void LoadDataScene()
     {
-        Debug.Log("불러오기");
+        //Debug.Log("불러오기");
         //SceneManager.LoadScene("mid_SampleScene_01");
 
         loadData = SaveSystem.Load("GameData");
@@ -49,4 +48,5 @@ public class LoadScene : MonoBehaviour
         GameManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
         GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
     }
+
 }

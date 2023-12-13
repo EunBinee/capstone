@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public Image loadingImg;
     public static bool gameIsPaused = false;
 
     public enum UI
@@ -54,6 +57,15 @@ public class UIManager : MonoBehaviour
             {
                 GetUIPrefab(UI.SettingMenu);
                 Pause();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            if (!GameManager.instance.bossBattle)
+            {
+
+                GoBossField(true);
             }
         }
 
@@ -150,6 +162,52 @@ public class UIManager : MonoBehaviour
 
         return prefab;
     }
+    public void GoBossField(bool changeP = false)
+    {
+        GameManager.instance.isLoading = true;
+        PadeInBlack();
+        //Pause(false);
+        StartCoroutine(LoadSceneAfterDelay(changeP));
+    }
+
+    IEnumerator LoadSceneAfterDelay(bool changeP = false)
+    {
+        // 0.5초 대기
+        yield return new WaitForSeconds(1.5f);
+        if (changeP)
+        {
+            GameManager.instance.gameData.player.transform.position = new Vector3(-25, 0, 35);
+            GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
+        }
+        // BossFieldScene으로 씬 이동
+        GameManager.instance.loadSceneManager.ChangeScene("BossFieldScene");
+        //        SceneManager.LoadScene("BossFieldScene");
+        yield return new WaitForSeconds(1.5f);
+        PadeOutBlack();
+        yield return new WaitForSeconds(0.5f);
+        GameManager.instance.isLoading = false;
+    }
+
+    public void PadeInBlack(float delay = 0)
+    {
+        if (delay != 0)
+        {
+            StartCoroutine(PadeInBlack_Co(delay));
+        }
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+    }
+    IEnumerator PadeInBlack_Co(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        yield return new WaitForSeconds(2);
+        GameManager.instance.loadSceneManager.ChangeScene("StartScene");
+    }
+    public void PadeOutBlack()
+    {
+        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, false, 0, 0.65f, true);
+    }
+
 }
 
 

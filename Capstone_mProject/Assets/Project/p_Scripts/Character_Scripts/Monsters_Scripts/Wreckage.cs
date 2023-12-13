@@ -6,6 +6,9 @@ public class Wreckage : MonoBehaviour
 {
     public bool finishDrop = false;
 
+    public bool disappear_WithEffect = false;
+    Vector3 randomPos;
+
     public void ResetPos()
     {
         //잔해물 자기 자리로
@@ -17,13 +20,14 @@ public class Wreckage : MonoBehaviour
     {
         //떨어뜨림.
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Wreckage_Warning01");
+
         effect.transform.position = wreckageRandomPos;
 
         yield return new WaitForSeconds(3f);
         float time = 0;
         float speed = 50;
 
-        Vector3 targetPos = wreckageRandomPos;
+        randomPos = wreckageRandomPos;
 
         while (time < 5f)
         {
@@ -48,9 +52,6 @@ public class Wreckage : MonoBehaviour
             yield return null;
         }
 
-        //쿵하는 이펙트
-        //몇초후 
-
         yield return null;
     }
 
@@ -61,10 +62,26 @@ public class Wreckage : MonoBehaviour
         transform.localPosition = wreckagePos;
 
         StartCoroutine(Drop_Wreckage(wreckageRandomPos));
-
     }
 
+    public void DisappearWreckage()
+    {
+        //이펙트 나타나고 사라지도록.
+        StartCoroutine(Disappear_Wreckage());
+    }
 
+    IEnumerator Disappear_Wreckage()
+    {
+        //* 큐브 이펙트 생성 : randomPos에
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Voxels_Recorlor__FacesDark___GlowRainbow_WiresWhite");
+        effect.gameObject.transform.position = randomPos;
+
+        yield return new WaitForSeconds(3f);
+        //그리고 없애기
+        ResetPos();
+        this.gameObject.SetActive(false);
+
+    }
 }
 
 

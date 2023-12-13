@@ -36,9 +36,9 @@ public class Monster : MonoBehaviour
     private void Update()
     {
         //임시 테스트 코드---===================//
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.U))
         {
-            //monsterPattern.StopMonster();
+            Death();
         }
 
         //---====================================//
@@ -103,20 +103,23 @@ public class Monster : MonoBehaviour
 
                 monsterData.HP -= damage;
                 m_hPBar.UpdateHP();
-                //--------------------------------------------------------------------------------//
+                //*-------------------------------------------------------------------------------//
 
+
+                //*-------------------------------------------------------------------------------//
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
                 {
                     //죽음
-
                     Death();
                 }
                 else
                 {
                     //아직 살아있음.
-                    if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
+                    if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)//* 만약 보스라면?
                     {
+                        //* HP에 따른! 페이즈 수정.!
+                        //bossMonsterPattern.Base_Phase_HP();
                         monsterPattern.SetGetDemageMonster(attackPos, atteckRot);
                         bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.GetHit);
                     }
@@ -124,11 +127,6 @@ public class Monster : MonoBehaviour
                         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
                 }
 
-                if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
-                {
-                    //! 만약 보스라면?
-                    //! HP에 따른! 페이즈 수정.!
-                }
             }
         }
     }
@@ -140,15 +138,17 @@ public class Monster : MonoBehaviour
         resetHP = false;
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-
+            bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Death);
         }
         else
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-
-        GameManager.Instance.questManager.currentQuestValue_++;
-        Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+        if (GameManager.Instance.questManager != null)
+        {
+            GameManager.Instance.questManager.currentQuestValue_++;
+            Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+        }
     }
 
     public MonsterPattern.MonsterState GetMonsterState()
@@ -224,7 +224,6 @@ public class Monster : MonoBehaviour
         }
         else
             randomRange = 0.5f;
-        Debug.Log("damage UI");
         DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
 
         float x = UnityEngine.Random.Range(-randomRange, randomRange);
@@ -234,5 +233,28 @@ public class Monster : MonoBehaviour
         randomPos = monsterData.effectTrans.position + randomPos;
 
         damageUI.Reset(this, randomPos, damage);
+    }
+    //*---------------------------------------------------------------------------------------//
+    public int GetIndex_NearestWeakness(Transform target)
+    {
+        //! 약점이 존재하는 경우, 플레이어와 가장 가까운 약점의 Index를 알려줌
+        if (monsterData.useWeakness)
+        {
+            float distance = 10000;
+            int curW_index = 0;
+            for (int i = 0; i < monsterData.weakness.Count; ++i)
+            {
+                float m_distance = Vector3.Distance(monsterData.weakness[i].position, target.gameObject.transform.position);
+                if (m_distance < distance)
+                {
+                    distance = m_distance;
+                    curW_index = i;
+                }
+            }
+            return curW_index;
+        }
+
+        return -1;
+
     }
 }

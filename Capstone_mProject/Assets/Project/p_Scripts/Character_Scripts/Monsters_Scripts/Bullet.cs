@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -175,7 +174,7 @@ public class Bullet : MonoBehaviour
     {
         if (isFallDown)
         {
-            monster.OnHit_FallDown(3, 60, OnHitPlayerEffect);
+            monster.OnHit_FallDown(9, 60, OnHitPlayerEffect);
         }
         else
             monster.OnHit(3, OnHitPlayerEffect);

@@ -194,6 +194,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         Vector3 randomPos = Vector3.zero;
 
         monsterRoaming = false;
+
+        bool dontMove = false;
         navMeshAgent.isStopped = true;
         navMeshAgent.velocity = Vector3.zero;
         navMeshAgent.updatePosition = false;
@@ -212,19 +214,39 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 {
                     float distance = 0;
                     bool checkObstacle = false;
+                    float time = 0;
                     while (true)
                     {
+                        dontMove = false;
+                        time += Time.deltaTime;
                         randomPos = GetRandom_RoamingPos();
-                        mRoaming_randomPos = randomPos;
-                        distance = Vector3.Distance(transform.position, randomPos);
-                        checkObstacle = CheckObstacleCollider(randomPos);
-                        if (distance > 3f && checkObstacle)
+                        NavMeshHit hit;
+                        if (NavMesh.SamplePosition(randomPos, out hit, 200f, NavMesh.AllAreas))
+                        {
+                            if (hit.position != randomPos)
+                                randomPos = hit.position;
+                            mRoaming_randomPos = randomPos;
+                            distance = Vector3.Distance(transform.position, randomPos);
+                            checkObstacle = CheckObstacleCollider(randomPos);
+                            if (distance > 3f && checkObstacle)
+                                break;
+                        }
+
+                        if (time > 5)
+                        {
+                            dontMove = true;
                             break;
+                        }
                     }
-                    SetMove_AI(true);
-                    navMeshAgent.SetDestination(randomPos);
-                    SetAnimation(MonsterAnimation.Move);
-                    monsterRoaming = true;
+
+                    if (!dontMove)
+                    {
+                        SetMove_AI(true);
+                        navMeshAgent.SetDestination(randomPos);
+                        SetAnimation(MonsterAnimation.Move);
+                        monsterRoaming = true;
+                    }
+
                 }
             }
             else if (monsterRoaming)
@@ -758,6 +780,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
             {
                 if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
                 {
+                    if (hit.position != curPlayerPos)
+                        curPlayerPos = hit.position;
                     //원거리 공격 애니메이션션
                     noAttack = true;
                     SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
@@ -841,7 +865,29 @@ public class MonsterPattern_Monster01 : MonsterPattern
         float y = UnityEngine.Random.Range(-1.0f, 1.0f);
         float z = UnityEngine.Random.Range(-1.0f, 1.0f);
         Vector3 randomPos = new Vector3(x, y, z);
+
         effect.transform.position = attackEffectPos.position + randomPos;
+        StartCoroutine(electricity_Damage(0.8f));
+    }
+
+    IEnumerator electricity_Damage(float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float x = UnityEngine.Random.Range(-1f, 1f);
+            float y = UnityEngine.Random.Range(-1f, 1f);
+            float z = UnityEngine.Random.Range(-1f, 1f);
+            Vector3 randomPos = new Vector3(x, y, z);
+            randomPos = transform.position + randomPos;
+            GetDamage_electricity(randomPos);
+
+            float randomTime = UnityEngine.Random.Range(0, 0.5f);
+            yield return new WaitForSeconds(randomTime);
+            time += randomTime;
+        }
     }
 
     IEnumerator GetHit_KnockBack_co()
@@ -871,6 +917,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //* 몬스터가 갈 수 있는 위치일 경우에만 넉백~!
         if (NavMesh.SamplePosition(KnockBackPos, out hit, 20f, NavMesh.AllAreas))
         {
+            if (hit.position != KnockBackPos)
+                KnockBackPos = hit.position;
             while (time < 0.5f)
             {
                 transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
@@ -981,18 +1029,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
     }
 
-    ////로밍 범위 체크
-    //private void CheckRoam_Range()
-    //{
-    //    //사각형 왼쪽 가장 위
-    //    roam_vertex01 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
-    //    //사각형 왼쪽 가장 아래
-    //    roam_vertex02 = new Vector3(transform.position.x + ((roaming_RangeX / 2) * -1), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
-    //    //사각형 오른쪽 가장 아래
-    //    roam_vertex03 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + ((roaming_RangeZ / 2) * -1));
-    //    //사각형 오른쪽 가장 위
-    //    roam_vertex04 = new Vector3(transform.position.x + (roaming_RangeX / 2), transform.position.y, transform.position.z + (roaming_RangeZ / 2));
-    //}
+
 
     public override void StopMonster()
     {
