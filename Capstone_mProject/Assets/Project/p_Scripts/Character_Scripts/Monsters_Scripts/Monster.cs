@@ -22,7 +22,8 @@ public class Monster : MonoBehaviour
         Hit_Close,
         Hit_Long,
         Alarm,
-        Death
+        Death,
+        Phase
     }
 
     private void Awake()
@@ -145,8 +146,9 @@ public class Monster : MonoBehaviour
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-        if (GameManager.Instance.questManager != null)
+        if (GameManager.Instance.dialogueManager.DoQuest)//GameManager.Instance.questManager != null
         {
+            Debug.Log("Ddd");
             GameManager.Instance.questManager.currentQuestValue_++;
             Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
         }
@@ -161,6 +163,10 @@ public class Monster : MonoBehaviour
     public void SoundPlay(monsterSound m_sound, bool useLoop = false)
     {
         SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound], useLoop);
+    }
+    public void SoundPlayStop(monsterSound m_sound)
+    {
+        SoundManager.Instance.Stop_MonsterSound(monsterSoundClips[(int)m_sound]);
     }
     //*------------------------------------------------------------------------------------------//
     //* HP바 //

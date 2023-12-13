@@ -381,7 +381,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (redImage == null)
             {
                 //TODO: 현재는 그냥 인스펙터에서 redImage를 가져오지만 여기처럼 나중에 resource폴더에서 가져올 수 있도록.
-
                 Debug.Log("보스 redImage 넣어주세여 null입니다.00");
             }
             redImage.SetActive(true);
@@ -402,8 +401,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             effect.transform.position = originPos;
             //- 대화 시스템 ON
 
-
+            //! 사운드
+            m_monster.SoundPlay(Monster.monsterSound.Phase, true);
             yield return new WaitForSeconds(10f);
+
+            //! 사운드 멈춤
+            m_monster.SoundPlayStop(Monster.monsterSound.Phase);
+
             GameManager.Instance.cameraShake.ShakeCamera(1f, 3f, 3f);
             //* 연기 이펙트
             effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
@@ -1619,9 +1623,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             randomPos = curHitPos + randomPos;
 
             GameManager.Instance.cameraShake.ShakeCamera(1f, 2f, 2f);
+
+
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterDeath");
             effect.transform.position = randomPos;
+            //! 사운드
+            m_monster.SoundPlay(Monster.monsterSound.Death, false);
         }
+
     }
 
     public override void StopAtackCoroutine()

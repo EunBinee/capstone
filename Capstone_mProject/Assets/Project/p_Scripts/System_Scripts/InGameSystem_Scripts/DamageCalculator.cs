@@ -32,9 +32,9 @@ public class DamageCalculator
         // int result = EvaluatePostfix(postfixExpression);
         // Debug.Log("데미지 계산 결과: " + result);
         string postfixExpression = InfixToPostfix(damageExpression);
-        Debug.Log("후위표기법: " + postfixExpression); // 디버그용
+        //Debug.Log("후위표기법: " + postfixExpression); // 디버그용
         result = EvaluatePostfix(postfixExpression);
-        Debug.Log("데미지 계산 결과: " + result);
+        //Debug.Log("데미지 계산 결과: " + result);
     }
 
     //중위표기법을 후위표기법으로 변환하는 함수. 
