@@ -23,6 +23,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
     public GameObject redImage;
     public GameObject BossText;
+    public Vector3 centerPoint;
 
     List<Vector3> randomPos_skill02;
     [Space]
@@ -98,6 +99,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 m_monster.ResetHP();
             m_monster.GetHPBar();
         }
+
+        centerPoint = GetGroundPos(transform);
 
         CheckBossHP();
         noAttack = false;
@@ -450,6 +453,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //isRoaming = false;
             //* 테스트 후 아래 주석 풀기
             ChangeBossPhase(BossMonsterPhase.Phase1);
+            // StartCoroutine(SetWreckage());
             ChangeMonsterState(MonsterState.Tracing);
         }
     }
@@ -1132,17 +1136,19 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         List<Vector3> randomPosList = new List<Vector3>();
         NavMeshHit hit;
-
+        Vector3 PosY = GetGroundPos(transform);
+        Vector3 curMonsterPoint = centerPoint; //new Vector3(centerPoint.x, PosY.y, centerPoint.z);
+        Debug.Log($"centerPoint {centerPoint}");
         for (int i = 0; i < wreckages.Count; i++)
         {
             Vector3 randomPos = Vector3.zero;
-            Vector3 curMonsterPoint = GetGroundPos(transform);
+
             bool stop = false;
             float time = 0;
             while (true)
             {
                 time += Time.deltaTime;
-                if (time > 2)
+                if (time < 2)
                 {
                     randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
                     if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
@@ -1180,18 +1186,21 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 else
                 {
                     stop = true;
+                    break;
                 }
             }
             if (!stop)
+            {
                 randomPosList.Add(randomPos);
+            }
             else
                 break;
         }
+        yield return new WaitForSeconds(1f);
 
         //떨어뜨리기 전 경고 이펙트 && 떨어뜨리기
         for (int i = 0; i < randomPosList.Count; ++i)
         {
-            Debug.Log("w");
             wreckages[i].gameObject.SetActive(true);
             wreckages[i].StartDropWreckage(randomPosList[i]);
         }

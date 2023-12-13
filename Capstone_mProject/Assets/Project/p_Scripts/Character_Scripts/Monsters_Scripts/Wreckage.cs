@@ -13,7 +13,7 @@ public class Wreckage : MonoBehaviour
     {
         //잔해물 자기 자리로
         finishDrop = false;
-        transform.position = new Vector3(transform.position.x, 50, transform.localPosition.z);
+        transform.position = new Vector3(transform.position.x, 150, transform.localPosition.z);
     }
 
     IEnumerator Drop_Wreckage(Vector3 wreckageRandomPos)
@@ -29,7 +29,7 @@ public class Wreckage : MonoBehaviour
 
         randomPos = wreckageRandomPos;
 
-        while (time < 5f)
+        while (time < 50f)
         {
             time += Time.deltaTime;
             speed = Mathf.Lerp(50, 70, Time.time);
@@ -56,7 +56,7 @@ public class Wreckage : MonoBehaviour
 
     public void StartDropWreckage(Vector3 wreckageRandomPos)
     {
-        float randomY = UnityEngine.Random.Range(60f, 100f);
+        float randomY = UnityEngine.Random.Range(150f, 200f);
         Vector3 wreckagePos = new Vector3(wreckageRandomPos.x, randomY, wreckageRandomPos.z);
         transform.localPosition = wreckagePos;
 
