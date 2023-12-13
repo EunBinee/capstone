@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,17 +20,30 @@ public class SkillButton : MonoBehaviour
 
     // Cooldown 이미지
     public Image imgCool;
+    public Image imgCool_dark;
+
+    private double num;
+    // Cooldown 숫자
+    private double deltaCoolNum;
+    public TMP_Text coolNum;
 
     void Start()
     {
+        //imgCool_dark = imgCool.GetComponentInChildren<Image>();
+        coolNum = imgCool.GetComponentInChildren<TMP_Text>();
+        player = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         // SO Skill 에 등록한 스킬 아이콘 연결
         imgIcon.sprite = skill.icon;
 
         // Cool 이미지 초기 설정
         imgCool.fillAmount = 0;
-
+        num = m_cool;
         skill.isFirsttime = true;
+        coolNum.gameObject.SetActive(false);
+        imgCool_dark.gameObject.SetActive(false);
     }
+
+
 
     public void OnClicked()
     {
@@ -40,7 +56,7 @@ public class SkillButton : MonoBehaviour
         if (skill.isTwice && skill.isFirsttime)  //* 조준스킬
         {
             //player.AimOnCamera();
-            m_cool = skill.cool/6;
+            m_cool = skill.cool / 6;
             skill.isFirsttime = false;
         }
         else
@@ -63,15 +79,37 @@ public class SkillButton : MonoBehaviour
         float t = 0;
 
         imgCool.fillAmount = 1;
+        imgCool_dark.fillAmount = 1;
 
         // 10초에 걸쳐 1 -> 0 으로 변경하는 값을
         // imgCool.fillAmout 에 넣어주는 코드
         while (imgCool.fillAmount > 0)
         {
+            coolNum.gameObject.SetActive(true);
+            imgCool_dark.gameObject.SetActive(true);
+
             imgCool.fillAmount = Mathf.Lerp(1, 0, t);
             t += (Time.deltaTime * tick);
 
+            deltaCoolNum += Time.deltaTime;
+            num = m_cool - deltaCoolNum;
+            num = Math.Truncate(num * 10) / 10;   // 소수점 한자리 이하 버림
+            if (num % 1f != 0)
+            {
+                coolNum.text = num.ToString();
+            }
+            else
+            {
+                coolNum.text = num.ToString() + ".0";
+            }
+
             yield return null;
+        }
+        if (imgCool_dark != null && imgCool.fillAmount == 0)
+        {
+            imgCool_dark.gameObject.SetActive(false);
+            coolNum.gameObject.SetActive(false);
+            deltaCoolNum = 0;
         }
     }
 }

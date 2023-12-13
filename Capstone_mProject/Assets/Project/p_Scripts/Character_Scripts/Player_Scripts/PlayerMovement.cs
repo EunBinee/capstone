@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     private string E_Start_Name = "Bow_Attack_Charging";
     private string E_Name = "Bow_Attack_launch_02";
     public SkillButton skill_Q;
+    public SkillButton skill_V;
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -121,9 +122,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
-            if (Input.GetKeyUp(KeyCode.L))
+            if (Input.GetKeyUp(KeyCode.V))
             {
-                StartCoroutine(PlayerHeal_co());
+                skillMotion('V');
             }
             if (Input.GetMouseButtonDown(0) && P_States.isGround && !P_States.isDodgeing && !P_States.isGettingHit && !P_States.isStop
                 && !EventSystem.current.IsPointerOverGameObject())
@@ -208,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void skillMotion(char a)
     {
-        if (skill_E == null)
+        if (skill_E == null && skill_Q == null && skill_V == null)
         {
             return;
         }
@@ -221,6 +222,7 @@ public class PlayerMovement : MonoBehaviour
             case 'E':
                 if (skill_E.imgCool.fillAmount == 0)
                 {
+                    P_States.isSkill = true;
                     //* 이펙트
                     Effect effect = null;
                     if (skill_E.skill.isFirsttime)  //* 장전
@@ -241,9 +243,20 @@ public class PlayerMovement : MonoBehaviour
             case 'Q':
                 if (skill_Q.imgCool.fillAmount == 0)
                 {
+                    P_States.isSkill = true;
                     Debug.Log("스킬Q");
                 }
                 skill_Q.OnClicked();
+                break;
+
+            case 'V':   //* heal
+                if (skill_V.imgCool.fillAmount == 0)
+                {
+                    P_States.isSkill = true;
+                    //ebug.Log("스킬V");
+                    StartCoroutine(PlayerHeal_co());
+                }
+                skill_V.OnClicked();
                 break;
 
             default:
