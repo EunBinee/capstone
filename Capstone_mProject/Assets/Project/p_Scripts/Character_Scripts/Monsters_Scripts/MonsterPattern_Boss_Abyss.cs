@@ -1205,6 +1205,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //떨어뜨리기 전 경고 이펙트 && 떨어뜨리기
         for (int i = 0; i < randomPosList.Count; ++i)
         {
+            wreckages[i].m_monster = this.m_monster;
             wreckages[i].gameObject.SetActive(true);
             wreckages[i].StartDropWreckage(randomPosList[i]);
         }
