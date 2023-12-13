@@ -38,6 +38,10 @@ public class Bullet : MonoBehaviour
 
     string hitEffectName = "";
 
+    //! 사운드 클립 넘겨주기
+
+
+
     private void Start()
     {
     }
@@ -201,6 +205,9 @@ public class Bullet : MonoBehaviour
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect(hitEffectName);
                     effect.gameObject.transform.position = pos;
                     effect.gameObject.transform.rotation = rot;
+
+                    //! 사운드
+                    //! 몬스터쪽에서 오디오 클립 받아와서 사용.
                 }
 
             }

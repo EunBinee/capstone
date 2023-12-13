@@ -615,7 +615,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return null;
         }
         //? 연기이펙트-----------------------------------------------------------------------//
-
+        //! 사운드
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
         Vector3 effectPos = originPos;
         effectPos.y += 2.5f;
@@ -669,7 +669,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
-
+        //! 사운드
         if (getDamage)
             CheckPlayerDamage(8f, transform.position, 20, true);
         //? 연기이펙트-----------------------------------------------------------------------//
@@ -971,7 +971,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         yield return new WaitForSeconds(2f);
-
+        //! 사운드
         while (time < 5)
         {
             time += Time.deltaTime;
@@ -1284,6 +1284,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectController.ChangeSize();
         effect.gameObject.transform.position = muzzlePos.position + (muzzlePos.forward * 0.2f);
         effect.gameObject.transform.rotation = muzzlePos.rotation;
+
+        //! 사운드
 
         yield return null;
     }

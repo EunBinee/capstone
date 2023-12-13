@@ -117,14 +117,16 @@ public class PlayerAttackCheck : MonoBehaviour
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
         //TODO: 나중에 연산식 사용.
-        int damageValue = 0;
+        int damageValue = 350;
+
 
         if (P_Value.hits % 5 != 0)
         {
+            damageCalculator.damageExpression = "A+B";
             damageCalculator.CalculateAndPrint();
             damageValue = damageCalculator.result;
         }
-        else if (P_Value.hits % 5 == 0)
+        else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
         {
             damageCalculator.damageExpression = "A+C";
             damageCalculator.CalculateAndPrint();

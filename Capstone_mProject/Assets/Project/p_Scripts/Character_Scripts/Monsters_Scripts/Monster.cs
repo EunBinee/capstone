@@ -19,8 +19,9 @@ public class Monster : MonoBehaviour
 
     public enum monsterSound
     {
-        Hit,
-        GetDamage,
+        Hit_Close,
+        Hit_Long,
+        Alarm,
         Death
     }
 
@@ -155,9 +156,9 @@ public class Monster : MonoBehaviour
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //
-    private void SoundPlay(monsterSound m_sound)
+    public void SoundPlay(monsterSound m_sound, bool useLoop = false)
     {
-        SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound]);
+        SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound], useLoop);
     }
     //*------------------------------------------------------------------------------------------//
     //* HP바 //
