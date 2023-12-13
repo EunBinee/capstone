@@ -755,7 +755,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //! 사운드
         m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
         if (getDamage)
-            CheckPlayerDamage(8f, transform.position, 20, true);
+            CheckPlayerDamage(6.5f, transform.position, 20, true);
 
         //? 연기이펙트-----------------------------------------------------------------------//
         GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
@@ -1083,7 +1083,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
 
             //TODO: 범위 지정
-            bool playerTrue = CheckPlayerDamage(4f, randomPos, 20, true);
+            bool playerTrue = CheckPlayerDamage(3f, randomPos, 20, true);
 
             if (playerTrue)
                 break;
