@@ -21,7 +21,7 @@ public class Wreckage : MonoBehaviour
         //떨어뜨림.
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Wreckage_Warning01");
 
-        effect.transform.position = new Vector3(wreckageRandomPos.x, 0.1f, wreckageRandomPos.y);
+        effect.transform.position = wreckageRandomPos;
 
         yield return new WaitForSeconds(3f);
         float time = 0;

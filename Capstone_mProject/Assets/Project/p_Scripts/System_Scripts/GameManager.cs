@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public ObjectPooling objectPooling;
     public HPBarManager hPBarManager;
     public DamageManager damageManager;
+    public LoadSceneManager loadSceneManager;
     //대화
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;
@@ -33,8 +34,6 @@ public class GameManager : MonoBehaviour
     public QuestManager questManager;
     //탐라
     public TimeLineController timeLineController;
-    //씬 로드
-    public LoadScene loadScene;
 
     //*---------------------------------------------//
     public Canvas m_canvas;
@@ -67,6 +66,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
+        loadSceneManager.Init();
 
         hPBarManager = GetComponent<HPBarManager>();
         damageManager = GetComponent<DamageManager>();
@@ -89,7 +89,6 @@ public class GameManager : MonoBehaviour
             monsters.Add(cur_monsters[i]);
         }
         timeLineController = GetComponent<TimeLineController>();
-        loadScene = new LoadScene();
     }
 
     static public GameManager GetInstance()

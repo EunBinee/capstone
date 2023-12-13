@@ -36,9 +36,9 @@ public class Monster : MonoBehaviour
     private void Update()
     {
         //임시 테스트 코드---===================//
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.U))
         {
-            //monsterPattern.StopMonster();
+            Death();
         }
 
         //---====================================//
@@ -138,15 +138,17 @@ public class Monster : MonoBehaviour
         resetHP = false;
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-
+            bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Death);
         }
         else
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-
-        GameManager.Instance.questManager.currentQuestValue_++;
-        Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+        if (GameManager.Instance.questManager != null)
+        {
+            GameManager.Instance.questManager.currentQuestValue_++;
+            Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+        }
     }
 
     public MonsterPattern.MonsterState GetMonsterState()
