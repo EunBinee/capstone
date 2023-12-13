@@ -190,18 +190,25 @@ public class UIManager : MonoBehaviour
 
     public void PadeInBlack(float delay = 0)
     {
+        Debug.Log("hh");
         if (delay != 0)
         {
             StartCoroutine(PadeInBlack_Co(delay));
         }
-        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        else
+        {
+            if (loadingImg.gameObject.activeSelf == false)
+                loadingImg.gameObject.SetActive(true);
+            GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        }
+
     }
     IEnumerator PadeInBlack_Co(float delay)
     {
         yield return new WaitForSeconds(delay);
+        if (loadingImg.gameObject.activeSelf == false)
+            loadingImg.gameObject.SetActive(true);
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
-        yield return new WaitForSeconds(2);
-        GameManager.instance.loadSceneManager.ChangeScene("StartScene");
     }
     public void PadeOutBlack()
     {
