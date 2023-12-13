@@ -337,14 +337,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //- 랜덤 Pos
             NavMeshHit hit;
             Vector3 newRandomPos = Vector3.zero;
-            Vector3 playerPos = playerTrans.position;
+            Vector3 playerPos = GetGroundPos(playerTrans);
             bool getRandomPos = false;
 
             while (!getRandomPos)
             {
                 time += Time.deltaTime;
                 getRandomPos = true;
-                newRandomPos = GetRandomPos(40f, playerPos);
+
+                newRandomPos = GetRandomPos(35f, playerPos);
 
                 if (NavMesh.SamplePosition(newRandomPos, out hit, 20f, NavMesh.AllAreas))
                 {
@@ -370,6 +371,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 yield return null;
             }
             isJump = true;
+
             StartCoroutine(JumpDown(newRandomPos));
             yield return new WaitUntil(() => isJump == false);
 
@@ -725,6 +727,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator JumpDown(Vector3 curPlayerPos, bool getDamage = true)
     {
+        Debug.Log($"curPlayerPos   {curPlayerPos}");
         float speed;
         float time = 0;
         transform.position = new Vector3(curPlayerPos.x, transform.position.y, curPlayerPos.z);
@@ -741,11 +744,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             yield return null;
         }
+        Debug.Log($"curMonster 2  {transform.position}");
 
         transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
+
         //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
         if (getDamage)
             CheckPlayerDamage(8f, transform.position, 20, true);
+
         //? 연기이펙트-----------------------------------------------------------------------//
         GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
@@ -892,9 +899,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         curMonsterPoint = GetGroundPos(transform);
         List<Vector3> roundPos = GetRoundPos(curMonsterPoint);
+        useExplosionSound = false;
         foreach (Vector3 pos in roundPos)
         {
-            StartCoroutine(SetBomb(pos, true));
+            StartCoroutine(SetBomb(pos, true, true));
         }
         //*-------------------------------------------------------------
         //만약 플레이어가 현재 몬스터 아래에 있으면.. 공격할때 앞으로 이동하는 거 멈추기
@@ -1021,7 +1029,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-    IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false)
+    bool useExplosionSound = false;
+    IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false, bool soundCancle = false)
     {
         float time = 0;
         Effect effect;
@@ -1033,24 +1042,32 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 randomPos_skill02.Remove(randomPos);
             };
+            yield return new WaitForSeconds(2f);
         }
         else
         {
             effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_02");
             effect.transform.position = randomPos;
-
+            yield return new WaitForSeconds(0.5f);
             effect = GameManager.Instance.objectPooling.ShowEffect("MeteorStrike");
             effect.transform.position = randomPos;
             effect.finishAction = () =>
             {
                 randomPos_skill02.Remove(randomPos);
             };
-        }
 
-        yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1f);
+        }
 
 
         //! 사운드
+        if (!soundCancle)
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+        else if (soundCancle && !useExplosionSound)
+        {
+            useExplosionSound = true;
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+        }
 
         while (time < 5)
         {
@@ -1375,6 +1392,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.gameObject.transform.rotation = muzzlePos.rotation;
 
         //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
 
         yield return null;
     }

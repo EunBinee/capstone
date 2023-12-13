@@ -176,7 +176,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         if (changeP)
         {
-            GameManager.instance.gameData.player.transform.position = new Vector3(-12, 0.5f, 30);
+            GameManager.instance.gameData.player.transform.position = new Vector3(10, 0.5f, 40);
             GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
         }
         // BossFieldScene으로 씬 이동
@@ -190,18 +190,25 @@ public class UIManager : MonoBehaviour
 
     public void PadeInBlack(float delay = 0)
     {
+        Debug.Log("hh");
         if (delay != 0)
         {
             StartCoroutine(PadeInBlack_Co(delay));
         }
-        GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        else
+        {
+            if (loadingImg.gameObject.activeSelf == false)
+                loadingImg.gameObject.SetActive(true);
+            GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        }
+
     }
     IEnumerator PadeInBlack_Co(float delay)
     {
         yield return new WaitForSeconds(delay);
+        if (loadingImg.gameObject.activeSelf == false)
+            loadingImg.gameObject.SetActive(true);
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
-        //yield return new WaitForSeconds(2);
-        //GameManager.instance.loadSceneManager.ChangeScene("StartScene");
     }
     public void PadeOutBlack()
     {
