@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public HPBarManager hPBarManager;
     public DamageManager damageManager;
     public LoadSceneManager loadSceneManager;
+    public DamageCalculator damageCalculator;
     //대화
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;

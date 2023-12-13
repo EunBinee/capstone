@@ -390,12 +390,16 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
+        //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
 
         yield return new WaitForSeconds(1.2f);
 
         Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
+        //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
 
         yield return new WaitForSeconds(0.2f);
 
@@ -575,6 +579,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             effect.gameObject.transform.position = muzzlePos.position;
             effect.transform.rotation = targetAngle;
 
+            //! 사운드 
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
 
             //몬스터 몸 흔들리는 연출//
             if (shake_co == null)
@@ -728,6 +734,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             m_monster.gameObject.SetActive(false);
         };
+        //! 사운드 => 터지는 소리
+        m_monster.SoundPlay(Monster.monsterSound.Death, false);
+
         //yield return new WaitForSeconds(5f);
 
         //m_monster.gameObject.SetActive(false);

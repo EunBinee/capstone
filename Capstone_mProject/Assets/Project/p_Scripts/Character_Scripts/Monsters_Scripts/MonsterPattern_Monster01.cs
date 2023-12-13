@@ -522,6 +522,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         EnabledWeaponsCollider(true);
 
+        //!!!!!---사운드
+        m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+
         yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
 
 
@@ -766,7 +769,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 noAttack = false;
 
-
+                //!!!!! 사운드 loof 멈추기
 
                 //TODO :  이펙트 사라지게!(공격 이펙트 아님)
             };
@@ -790,6 +793,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     navMeshAgent.SetDestination(curPlayerPos); //특정 위치로 이동.
                     SetMove_AI(true);
 
+                    //! 사운드
+                    m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
                     while (true)
                     {
                         //공격
@@ -824,6 +829,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
             }
             else
             {
+                //!!!!! 사운드 loof 멈추기
                 //플레이어와 거리가 멀어서 집으로 돌아감
                 isGoingBack = true;
                 break;
@@ -971,7 +977,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         capsuleCollider.enabled = false;
 
         yield return new WaitForSeconds(0.5f);
-
+        //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Death, false);
         m_monster.RetrunHPBar();
         SetAnimation(MonsterAnimation.Death);
 
