@@ -734,6 +734,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
         {
             m_monster.gameObject.SetActive(false);
         };
+        //! 사운드 => 터지는 소리
+        m_monster.SoundPlay(Monster.monsterSound.Death, false);
+
         //yield return new WaitForSeconds(5f);
 
         //m_monster.gameObject.SetActive(false);

@@ -22,7 +22,7 @@ public class PlayerAttackCheck : MonoBehaviour
     Transform nowArrow;
 
     //계산식
-    public DamageCalculator damageCalculator;
+
 
     bool attackEnemy = false;
 
@@ -41,7 +41,6 @@ public class PlayerAttackCheck : MonoBehaviour
             isArrow = true;
         }
         //currentTransform.GetComponent<PlayerController>();
-        damageCalculator = new DamageCalculator();
     }
     void FixedUpdate()
     {
@@ -122,15 +121,15 @@ public class PlayerAttackCheck : MonoBehaviour
 
         if (P_Value.hits % 5 != 0)
         {
-            damageCalculator.damageExpression = "A+B";
-            damageCalculator.CalculateAndPrint();
-            damageValue = damageCalculator.result;
+            GameManager.instance.damageCalculator.damageExpression = "A+B";
+            GameManager.instance.damageCalculator.CalculateAndPrint();
+            damageValue = GameManager.instance.damageCalculator.result;
         }
         else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
         {
-            damageCalculator.damageExpression = "A+C";
-            damageCalculator.CalculateAndPrint();
-            damageValue = damageCalculator.result;
+            GameManager.instance.damageCalculator.damageExpression = "A+C";
+            GameManager.instance.damageCalculator.CalculateAndPrint();
+            damageValue = GameManager.instance.damageCalculator.result;
         }
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
 

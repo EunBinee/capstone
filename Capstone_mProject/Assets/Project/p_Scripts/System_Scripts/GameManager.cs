@@ -25,6 +25,7 @@ public class GameManager : MonoBehaviour
     public ObjectPooling objectPooling;
     public HPBarManager hPBarManager;
     public DamageManager damageManager;
+    public DamageCalculator damageCalculator;
     //대화
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;

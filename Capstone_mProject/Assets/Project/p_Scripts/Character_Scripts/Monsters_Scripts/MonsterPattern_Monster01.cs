@@ -792,7 +792,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     SetMove_AI(true);
 
                     //! 사운드
-
+                    m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
                     while (true)
                     {
                         //공격
@@ -973,7 +973,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         capsuleCollider.enabled = false;
 
         yield return new WaitForSeconds(0.5f);
-
+        //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Death, false);
         m_monster.RetrunHPBar();
         SetAnimation(MonsterAnimation.Death);
 

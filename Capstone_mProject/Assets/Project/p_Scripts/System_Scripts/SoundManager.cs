@@ -23,7 +23,8 @@ public class SoundManager : MonoBehaviour
     public enum BGM
     {
         Title,
-        Ingame
+        Ingame,
+        BossIngame
     }
 
     [Header("PlayerSound")]

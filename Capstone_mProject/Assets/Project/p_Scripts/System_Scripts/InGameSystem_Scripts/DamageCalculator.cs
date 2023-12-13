@@ -4,7 +4,8 @@ using UnityEngine;
 using System;
 using System.Text;
 
-public class DamageCalculator : MonoBehaviour
+[Serializable]
+public class DamageCalculator
 {
 
     [Tooltip("데미지 표현식 (중위표기법 사용)")]
@@ -17,6 +18,12 @@ public class DamageCalculator : MonoBehaviour
 
     //결과값
     public int result = 0;
+
+    public void Init()
+    {
+
+    }
+
     //contextMenu 인스펙터창에서 실행 가능 
     [ContextMenu("계산 및 출력")]
     public void CalculateAndPrint()
