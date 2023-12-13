@@ -6,7 +6,6 @@ public class LoadScene : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("j");
         Cursor.visible = true;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         Time.timeScale = 0f;
