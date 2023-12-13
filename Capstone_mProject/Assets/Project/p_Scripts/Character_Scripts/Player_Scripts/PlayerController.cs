@@ -607,7 +607,7 @@ public class PlayerController : MonoBehaviour
 
             if (interObject != null)
             {
-                UIManager.Instance.GoBossField();
+                UIManager.Instance.GoBossField(true);
             }
         }
     }
