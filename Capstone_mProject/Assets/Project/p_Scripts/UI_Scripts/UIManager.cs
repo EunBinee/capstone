@@ -167,7 +167,9 @@ public class UIManager : MonoBehaviour
         GameManager.instance.isLoading = true;
         PadeInBlack();
         //Pause(false);
+
         StartCoroutine(LoadSceneAfterDelay(changeP));
+
     }
 
     IEnumerator LoadSceneAfterDelay(bool changeP = false)
@@ -182,7 +184,9 @@ public class UIManager : MonoBehaviour
         // BossFieldScene으로 씬 이동
         GameManager.instance.loadSceneManager.ChangeScene("BossFieldScene");
         //        SceneManager.LoadScene("BossFieldScene");
+        SoundManager.Instance.Stop_BGM(SoundManager.BGM.Ingame);
         yield return new WaitForSeconds(1.5f);
+        SoundManager.Instance.Play_BGM(SoundManager.BGM.BossIngame, true);
         PadeOutBlack();
         yield return new WaitForSeconds(0.5f);
         GameManager.instance.isLoading = false;

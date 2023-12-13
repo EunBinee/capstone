@@ -117,6 +117,11 @@ public class SoundManager : MonoBehaviour
         bgmPlayer.clip = bgmClip[(int)bgm];
         bgmPlayer.Play();
     }
+    public void Stop_BGM(BGM bgm)
+    {
+        bgmPlayer.clip = bgmClip[(int)bgm];
+        bgmPlayer.Stop();
+    }
 
     public void Play_PlayerSound(PlayerSound p_Sound, bool useLoop = false)
     {
@@ -141,6 +146,20 @@ public class SoundManager : MonoBehaviour
             mosterSoundPlayer[monsterSound_ChannelIndex].clip = monsterSoundClip;
             mosterSoundPlayer[monsterSound_ChannelIndex].Play();
             break;
+        }
+    }
+    public void Stop_MonsterSound(AudioClip monsterSoundClip)
+    {
+        for (int index = 0; index < mosterSoundPlayer.Length; index++)
+        {
+            int loopIndex = (index + monsterSound_ChannelIndex) % mosterSoundPlayer.Length;
+
+            if (mosterSoundPlayer[loopIndex].isPlaying)
+            {
+                monsterSound_ChannelIndex = loopIndex;
+                mosterSoundPlayer[monsterSound_ChannelIndex].Stop();
+                break;
+            }
         }
     }
 
