@@ -100,6 +100,7 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
+        P_Movement.skill_V.gameObject.SetActive(true);
         //AimOnCameraReturn();
         //P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
@@ -129,6 +130,7 @@ public class PlayerController : MonoBehaviour
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
             //P_Movement.skill_E.gameObject.SetActive(false);
+            P_Movement.skill_V.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
@@ -136,6 +138,7 @@ public class PlayerController : MonoBehaviour
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
             //P_Movement.skill_E.gameObject.SetActive(true);
+            P_Movement.skill_V.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
