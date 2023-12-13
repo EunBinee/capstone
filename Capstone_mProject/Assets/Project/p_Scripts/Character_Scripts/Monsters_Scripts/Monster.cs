@@ -23,7 +23,8 @@ public class Monster : MonoBehaviour
         Hit_Long,
         Alarm,
         Death,
-        Phase
+        Phase,
+        Hit_Long2
     }
 
     private void Awake()
