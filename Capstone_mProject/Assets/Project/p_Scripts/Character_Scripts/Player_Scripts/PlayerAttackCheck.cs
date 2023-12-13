@@ -21,6 +21,9 @@ public class PlayerAttackCheck : MonoBehaviour
     Quaternion arrrot = Quaternion.identity;
     Transform nowArrow;
 
+    //계산식
+    public DamageCalculator damageCalculator;
+
     bool attackEnemy = false;
 
     void Start()
@@ -38,6 +41,7 @@ public class PlayerAttackCheck : MonoBehaviour
             isArrow = true;
         }
         //currentTransform.GetComponent<PlayerController>();
+        damageCalculator = new DamageCalculator();
     }
     void FixedUpdate()
     {
@@ -113,7 +117,20 @@ public class PlayerAttackCheck : MonoBehaviour
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
         //TODO: 나중에 연산식 사용.
-        monster.GetDamage(700, collisionPoint, otherQuaternion);
+        int damageValue = 0;
+
+        if (P_Value.hits % 5 != 0)
+        {
+            damageCalculator.CalculateAndPrint();
+            damageValue = damageCalculator.result;
+        }
+        else if (P_Value.hits % 5 == 0)
+        {
+            damageCalculator.damageExpression = "A+C";
+            damageCalculator.CalculateAndPrint();
+            damageValue = damageCalculator.result;
+        }
+        monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
 
         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
         P_Value.curHitTime = Time.time; //* 현재 시간 저장
