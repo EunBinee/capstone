@@ -1585,6 +1585,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 죽음 구현
     IEnumerator DeathBossMonster()
     {
+        useExplosionSound = false;
         //*모든 스킬 멈추기
         StopAtackCoroutine();
         //- 정지
@@ -1604,17 +1605,18 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //- 사라질때는 전기만.
         yield return new WaitForSeconds(8f);
+        useExplosionSound = true;
         for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
         {
-            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weakness[i].position, 1, 0, 0.1f));
+            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weakness[i].position, 1, 0, 0.1f, true));
         }
-        StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f));
-        StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f));
+        StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));
+        StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));
         yield return new WaitForSeconds(0.3f);
 
         GameManager.instance.cameraController.BossCameraReset(0.4f);
         UIManager.Instance.PadeInBlack(1f);
-
+        useExplosionSound = false;
         this.gameObject.SetActive(false);
 
     }
@@ -1637,7 +1639,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
-    IEnumerator Explode_Damage(float duration, Vector3 curHitPos, float range = 1, float randomMin = 0, float randomMax = 0.5f)
+    IEnumerator Explode_Damage(float duration, Vector3 curHitPos, float range = 1, float randomMin = 0, float randomMax = 0.5f, bool useOneSound = false)
     {
         float time = 0;
         while (time < duration)
@@ -1661,7 +1663,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterDeath");
             effect.transform.position = randomPos;
             //! 사운드
-            m_monster.SoundPlay(Monster.monsterSound.Death, false);
+
+
+            if (!useOneSound)
+                m_monster.SoundPlay(Monster.monsterSound.Death, false);
+            else if (useOneSound && !useExplosionSound)
+            {
+                useExplosionSound = true;
+                m_monster.SoundPlay(Monster.monsterSound.Death, false);
+            }
         }
 
     }
