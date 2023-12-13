@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Wreckage : MonoBehaviour
 {
+    public Monster m_monster;
     public bool finishDrop = false;
 
     public bool disappear_WithEffect = false;
@@ -52,10 +53,12 @@ public class Wreckage : MonoBehaviour
         }
 
         //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
     }
 
     public void StartDropWreckage(Vector3 wreckageRandomPos)
     {
+
         float randomY = UnityEngine.Random.Range(150f, 200f);
         Vector3 wreckagePos = new Vector3(wreckageRandomPos.x, randomY, wreckageRandomPos.z);
         transform.localPosition = wreckagePos;
