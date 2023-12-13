@@ -117,11 +117,29 @@ public class SoundManager : MonoBehaviour
         bgmPlayer.clip = bgmClip[(int)bgm];
         bgmPlayer.Play();
     }
+
+    public void Play_BGM_Delay(BGM bgm, float delay, bool useLoop = false)
+    {
+        StartCoroutine(delay_Play_co(bgm, delay, useLoop));
+
+    }
+
+    IEnumerator delay_Play_co(BGM bgm, float delay, bool useLoop = false)
+    {
+        yield return new WaitForSeconds(delay);
+
+        playerSoundPlayer.loop = useLoop;
+        bgmPlayer.clip = bgmClip[(int)bgm];
+        bgmPlayer.Play();
+    }
+
+
     public void Stop_BGM(BGM bgm)
     {
         bgmPlayer.clip = bgmClip[(int)bgm];
         bgmPlayer.Stop();
     }
+
 
     public void Play_PlayerSound(PlayerSound p_Sound, bool useLoop = false)
     {
@@ -132,7 +150,24 @@ public class SoundManager : MonoBehaviour
 
     }
 
-    public void Play_MonsterSound(AudioClip monsterSoundClip, bool useLoof = false)
+    public void Play_PlayerSound(PlayerSound p_Sound, float delay, bool useLoop = false)
+    {
+        StartCoroutine(delay_PlayerSound_co(p_Sound, delay, useLoop));
+
+    }
+
+    IEnumerator delay_PlayerSound_co(PlayerSound p_Sound, float delay, bool useLoop = false)
+    {
+        yield return new WaitForSeconds(delay);
+
+        //플레이어 캐릭터 사운드
+        playerSoundPlayer.loop = useLoop;
+        playerSoundPlayer.clip = playerSoundClips[(int)p_Sound];
+        playerSoundPlayer.Play();
+    }
+
+
+    public void Play_MonsterSound(AudioClip monsterSoundClip, bool useLoop = false)
     {
         for (int index = 0; index < mosterSoundPlayer.Length; index++)
         {
@@ -142,12 +177,39 @@ public class SoundManager : MonoBehaviour
                 continue;
 
             monsterSound_ChannelIndex = loopIndex;
-            mosterSoundPlayer[monsterSound_ChannelIndex].loop = useLoof;
+            mosterSoundPlayer[monsterSound_ChannelIndex].loop = useLoop;
             mosterSoundPlayer[monsterSound_ChannelIndex].clip = monsterSoundClip;
             mosterSoundPlayer[monsterSound_ChannelIndex].Play();
             break;
         }
     }
+
+
+    public void Play_MonsterSound(AudioClip monsterSoundClip, float delay, bool useLoop = false)
+    {
+        StartCoroutine(delay_PlayerSound_co(monsterSoundClip, delay, useLoop));
+
+    }
+
+    IEnumerator delay_PlayerSound_co(AudioClip monsterSoundClip, float delay, bool useLoop = false)
+    {
+        yield return new WaitForSeconds(delay);
+
+        for (int index = 0; index < mosterSoundPlayer.Length; index++)
+        {
+            int loopIndex = (index + monsterSound_ChannelIndex) % mosterSoundPlayer.Length;
+
+            if (mosterSoundPlayer[loopIndex].isPlaying)
+                continue;
+
+            monsterSound_ChannelIndex = loopIndex;
+            mosterSoundPlayer[monsterSound_ChannelIndex].loop = useLoop;
+            mosterSoundPlayer[monsterSound_ChannelIndex].clip = monsterSoundClip;
+            mosterSoundPlayer[monsterSound_ChannelIndex].Play();
+            break;
+        }
+    }
+
     public void Stop_MonsterSound(AudioClip monsterSoundClip)
     {
         for (int index = 0; index < mosterSoundPlayer.Length; index++)
