@@ -507,8 +507,8 @@ public class PlayerController : MonoBehaviour
         //죽다.
         P_Value.HP = 0;
         AnimState(PlayerState.Death);
-        Time.timeScale = 0f;
         Debug.Log("플레이어 사망");
+        UIManager.Instance.PadeInBlack(1);
     }
 
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
