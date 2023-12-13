@@ -743,7 +743,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
-
+        //! 사운드
         if (getDamage)
             CheckPlayerDamage(8f, transform.position, 20, true);
         //? 연기이펙트-----------------------------------------------------------------------//
@@ -1048,6 +1048,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         yield return new WaitForSeconds(1f);
+
+
+        //! 사운드
 
         while (time < 5)
         {
@@ -1370,6 +1373,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectController.ChangeSize();
         effect.gameObject.transform.position = muzzlePos.position + (muzzlePos.forward * 0.2f);
         effect.gameObject.transform.rotation = muzzlePos.rotation;
+
+        //! 사운드
 
         yield return null;
     }

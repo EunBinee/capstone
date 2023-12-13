@@ -48,11 +48,10 @@ public class Wreckage : MonoBehaviour
                 finishDrop = true;
                 break;
             }
-
             yield return null;
         }
 
-        yield return null;
+        //! 사운드
     }
 
     public void StartDropWreckage(Vector3 wreckageRandomPos)

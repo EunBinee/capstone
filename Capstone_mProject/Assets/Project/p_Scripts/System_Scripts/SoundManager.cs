@@ -23,7 +23,8 @@ public class SoundManager : MonoBehaviour
     public enum BGM
     {
         Title,
-        Ingame
+        Ingame,
+        BossIngame
     }
 
     [Header("PlayerSound")]
@@ -126,7 +127,7 @@ public class SoundManager : MonoBehaviour
 
     }
 
-    public void Play_MonsterSound(AudioClip monsterSoundClip)
+    public void Play_MonsterSound(AudioClip monsterSoundClip, bool useLoof = false)
     {
         for (int index = 0; index < mosterSoundPlayer.Length; index++)
         {
@@ -136,6 +137,7 @@ public class SoundManager : MonoBehaviour
                 continue;
 
             monsterSound_ChannelIndex = loopIndex;
+            mosterSoundPlayer[monsterSound_ChannelIndex].loop = useLoof;
             mosterSoundPlayer[monsterSound_ChannelIndex].clip = monsterSoundClip;
             mosterSoundPlayer[monsterSound_ChannelIndex].Play();
             break;
