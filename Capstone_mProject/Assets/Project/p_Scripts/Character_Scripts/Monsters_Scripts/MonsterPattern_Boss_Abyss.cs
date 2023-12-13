@@ -1050,6 +1050,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 randomPos_skill02.Remove(randomPos);
             };
+            //! 사운드
+            if (!soundCancle)
+                m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            else if (soundCancle && !useExplosionSound)
+            {
+                useExplosionSound = true;
+                m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            }
             yield return new WaitForSeconds(2f);
         }
         else
@@ -1063,19 +1071,19 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 randomPos_skill02.Remove(randomPos);
             };
-
+            //! 사운드
+            if (!soundCancle)
+                m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+            else if (soundCancle && !useExplosionSound)
+            {
+                useExplosionSound = true;
+                m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+            }
             yield return new WaitForSeconds(1f);
         }
 
 
-        //! 사운드
-        if (!soundCancle)
-            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-        else if (soundCancle && !useExplosionSound)
-        {
-            useExplosionSound = true;
-            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-        }
+
 
         while (time < 5)
         {
