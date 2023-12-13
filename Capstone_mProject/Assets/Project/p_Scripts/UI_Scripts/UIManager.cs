@@ -190,7 +190,6 @@ public class UIManager : MonoBehaviour
 
     public void PadeInBlack(float delay = 0)
     {
-        Debug.Log("hh");
         if (delay != 0)
         {
             StartCoroutine(PadeInBlack_Co(delay));

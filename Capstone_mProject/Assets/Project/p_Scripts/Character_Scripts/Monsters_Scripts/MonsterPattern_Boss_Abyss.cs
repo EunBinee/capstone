@@ -1132,49 +1132,66 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         List<Vector3> randomPosList = new List<Vector3>();
         NavMeshHit hit;
+
         for (int i = 0; i < wreckages.Count; i++)
         {
             Vector3 randomPos = Vector3.zero;
             Vector3 curMonsterPoint = GetGroundPos(transform);
+            bool stop = false;
+            float time = 0;
             while (true)
             {
-                randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
-                if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
-                    Vector3.Distance(transform.position, randomPos) >= 10f)
+                time += Time.deltaTime;
+                if (time > 2)
                 {
-                    // - 플레이어랑은 3 정도의 거리를 유지하고, 
-                    // - 보스와는 20정도의 거리를 유지하고
-                    if (NavMesh.SamplePosition(randomPos, out hit, 50f, NavMesh.AllAreas))
+                    randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
+                    if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
+                        Vector3.Distance(transform.position, randomPos) >= 10f)
                     {
-                        if (hit.position != randomPos)
-                            randomPos = hit.position;
-                        // - 네비에이전트가 움직일 수 있는 곳인지 체크
-                        if (randomPosList.Contains(randomPos) == false)
+                        // - 플레이어랑은 3 정도의 거리를 유지하고, 
+                        // - 보스와는 20정도의 거리를 유지하고
+                        if (NavMesh.SamplePosition(randomPos, out hit, 35f, NavMesh.AllAreas))
                         {
-                            //randomPos에도 없으면.. 생성
-                            int j = 0;
-                            bool canBreak = true;
-                            while (j < randomPosList.Count)
+                            if (hit.position != randomPos)
+                                randomPos = hit.position;
+                            // - 네비에이전트가 움직일 수 있는 곳인지 체크
+                            if (randomPosList.Contains(randomPos) == false)
                             {
-                                if (Vector3.Distance(randomPosList[j], randomPos) < 15f)
+                                //randomPos에도 없으면.. 생성
+                                int j = 0;
+                                bool canBreak = true;
+                                while (j < randomPosList.Count)
                                 {
-                                    canBreak = false;
+                                    if (Vector3.Distance(randomPosList[j], randomPos) < 8f)
+                                    {
+                                        canBreak = false;
+                                        break;
+                                    }
+                                    ++j;
+                                }
+                                if (canBreak)
+                                {
                                     break;
                                 }
-                                ++j;
                             }
-                            if (canBreak)
-                                break;
                         }
                     }
                 }
+                else
+                {
+                    stop = true;
+                }
             }
-            randomPosList.Add(randomPos);
+            if (!stop)
+                randomPosList.Add(randomPos);
+            else
+                break;
         }
 
         //떨어뜨리기 전 경고 이펙트 && 떨어뜨리기
         for (int i = 0; i < randomPosList.Count; ++i)
         {
+            Debug.Log("w");
             wreckages[i].gameObject.SetActive(true);
             wreckages[i].StartDropWreckage(randomPosList[i]);
         }
@@ -1759,6 +1776,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         //몬스터 감지 범위 Draw
         //크기는  monsterData.overlapRadius
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, rangeXZ);
 
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, skillRadius);
