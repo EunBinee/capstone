@@ -81,6 +81,8 @@ public class PlayerController : MonoBehaviour
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
+    private Vector3 originVpos;
+
     void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -101,6 +103,7 @@ public class PlayerController : MonoBehaviour
         bow.SetActive(false);
         sword.SetActive(true);
         P_Movement.skill_V.gameObject.SetActive(true);
+        originVpos = P_Movement.skill_V.gameObject.transform.position;
         //AimOnCameraReturn();
         //P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
@@ -125,20 +128,20 @@ public class PlayerController : MonoBehaviour
     {
         if (UIManager.gameIsPaused == true)
         {
+            P_Movement.skill_V.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
             //P_Movement.skill_E.gameObject.SetActive(false);
-            P_Movement.skill_V.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
+            P_Movement.skill_V.gameObject.transform.position = originVpos;
             //P_Movement.skill_E.gameObject.SetActive(true);
-            P_Movement.skill_V.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크

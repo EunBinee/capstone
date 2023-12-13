@@ -21,7 +21,7 @@ public class SkillButton : MonoBehaviour
     // Cooldown 이미지
     public Image imgCool;
     public Image imgCool_dark;
-
+    [SerializeField]
     private double num;
     // Cooldown 숫자
     private double deltaCoolNum;
