@@ -1,21 +1,29 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LoadScene : MonoBehaviour
 {
     private SaveData loadData;
+    string gameManagerPrefabName = "GameManager";
+    string soundManagerPrefabName = "SoundManager";
+    string playerName = "Player";
+    string playerCameraName = "PlayerCamera";
 
     void Start()
     {
-        Debug.Log("j");
+
         Cursor.visible = true;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         Time.timeScale = 0f;
         UIManager.gameIsPaused = true;
+
+        CheckData();
     }
 
     public void LoadMainScene()
     {
-        //SceneManager.LoadScene("mid_SampleScene_01");
+
+
         gameObject.SetActive(false);
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
@@ -29,8 +37,6 @@ public class LoadScene : MonoBehaviour
     public void LoadDataScene()
     {
         //Debug.Log("불러오기");
-        //SceneManager.LoadScene("mid_SampleScene_01");
-
         loadData = SaveSystem.Load("GameData");
         DialogueLoad();
         gameObject.SetActive(false);
@@ -50,4 +56,59 @@ public class LoadScene : MonoBehaviour
         GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
     }
 
+    public void CheckData()
+    {
+        GameManager gameManager = GameObject.FindObjectOfType<GameManager>();
+
+        if (gameManager == null)
+        {
+            //아무것도 없는 상태
+            //* GameManager 생성
+            gameManager = Resources.Load<GameManager>("SystemPrefabs/BasicPrefabs/" + gameManagerPrefabName);
+            gameManager = UnityEngine.Object.Instantiate(gameManager);
+
+            //* SoundManager 생성
+            SoundManager soundManager = Resources.Load<SoundManager>("SystemPrefabs/BasicPrefabs/" + soundManagerPrefabName);
+            soundManager = UnityEngine.Object.Instantiate(soundManager);
+
+            //* - Player 생성
+            PlayerController player = Resources.Load<PlayerController>("SystemPrefabs/BasicPrefabs/" + playerName);
+            player = UnityEngine.Object.Instantiate(player);
+
+            //* - PlayerCamera 생성
+            GameObject playerCamera = Resources.Load<GameObject>("SystemPrefabs/BasicPrefabs/" + playerCameraName);
+            playerCamera = UnityEngine.Object.Instantiate(playerCamera);
+            CameraController cameraController = playerCamera.GetComponent<PlayerCamera>().cameraController;
+
+            //* GameManager 세팅
+            //*
+            gameManager.gameData.player = player.gameObject;
+            gameManager.gameData.playerTargetPos = player._playerComponents.playerTargetPos;
+
+            gameManager.gameData.playerCamera = cameraController.playerCamera;
+            gameManager.gameData.playerCameraPivot = cameraController.playerCameraPivot;
+            gameManager.gameData.cameraObj = cameraController.cameraObj;
+
+            //* 카메라 세팅
+            cameraController.playerController = player;
+
+            //* 플레이어 세팅
+            player._playerFollowCamera.playerCamera = cameraController.playerCamera;
+            player._playerFollowCamera.playerCameraPivot = cameraController.playerCameraPivot;
+            player._playerFollowCamera.cameraObj = cameraController.cameraObj;
+
+
+        }
+
+
+
+
+
+
+
+
+    }
 }
+
+
+

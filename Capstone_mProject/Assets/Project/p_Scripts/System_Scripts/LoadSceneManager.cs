@@ -20,9 +20,9 @@ public class LoadSceneManager
     public void ReloadSetting()
     {
         //새로 불러왔을때 세팅.
-
-
-
-
     }
+
+
+
+
 }
