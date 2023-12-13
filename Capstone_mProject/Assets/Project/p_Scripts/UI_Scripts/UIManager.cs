@@ -200,8 +200,8 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
-        yield return new WaitForSeconds(2);
-        GameManager.instance.loadSceneManager.ChangeScene("StartScene");
+        //yield return new WaitForSeconds(2);
+        //GameManager.instance.loadSceneManager.ChangeScene("StartScene");
     }
     public void PadeOutBlack()
     {
