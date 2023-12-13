@@ -119,7 +119,6 @@ public class QuestManager : MonoBehaviour
     //퀘스트 목표 업데이트 함수 
     public void TextUpdate()
     {
-
         for (int i = 0; i < quest_.questGoal.Count;)
         {
             text_goal = quest_.questGoal[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>") + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
@@ -146,9 +145,7 @@ public class QuestManager : MonoBehaviour
                 text_content += "\n";
             }
         }
-
         GameManager.GetInstance().dialogueManager.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
-
     }
 
 

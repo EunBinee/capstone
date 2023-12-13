@@ -180,7 +180,8 @@ public class UIManager : MonoBehaviour
             GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
         }
         // BossFieldScene으로 씬 이동
-        SceneManager.LoadScene("BossFieldScene");
+        GameManager.instance.loadSceneManager.ChangeScene("BossFieldScene");
+        //        SceneManager.LoadScene("BossFieldScene");
         yield return new WaitForSeconds(1.5f);
         PadeOutBlack();
         yield return new WaitForSeconds(0.5f);
@@ -199,6 +200,8 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, true, 255, 0.65f, true);
+        yield return new WaitForSeconds(2);
+        GameManager.instance.loadSceneManager.ChangeScene("StartScene");
     }
     public void PadeOutBlack()
     {

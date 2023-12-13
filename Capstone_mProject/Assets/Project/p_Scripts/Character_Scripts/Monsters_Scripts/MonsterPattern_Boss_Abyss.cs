@@ -535,8 +535,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
 
             //----------------------------------//
-
-
             pickAgain = false;
             //스킬 시작
             switch (skill)
@@ -1049,7 +1047,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             };
         }
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         while (time < 5)
         {
