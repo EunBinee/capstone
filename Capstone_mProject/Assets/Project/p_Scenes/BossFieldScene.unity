@@ -9837,6 +9837,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterData.MaxHP
+      value: 30000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: BossText
+      value: 
+      objectReference: {fileID: 1567569802}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: redImage
+      value: 
+      objectReference: {fileID: 1567569803}
     - target: {fileID: 2755003020157360589, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_Name
       value: BossMonster_abyss
@@ -12342,6 +12354,16 @@ PrefabInstance:
 --- !u!224 &1567569801 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 522388123981437768, guid: e17ec3fb9f0a0e048a4d274f2890a29d, type: 3}
+  m_PrefabInstance: {fileID: 1567569800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1567569802 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 522388124570344689, guid: e17ec3fb9f0a0e048a4d274f2890a29d, type: 3}
+  m_PrefabInstance: {fileID: 1567569800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1567569803 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6447155262883996720, guid: e17ec3fb9f0a0e048a4d274f2890a29d, type: 3}
   m_PrefabInstance: {fileID: 1567569800}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1576172936

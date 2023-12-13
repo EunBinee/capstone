@@ -744,6 +744,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
         //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
         if (getDamage)
             CheckPlayerDamage(8f, transform.position, 20, true);
         //? 연기이펙트-----------------------------------------------------------------------//
@@ -892,9 +893,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         curMonsterPoint = GetGroundPos(transform);
         List<Vector3> roundPos = GetRoundPos(curMonsterPoint);
+        useExplosionSound = false;
         foreach (Vector3 pos in roundPos)
         {
-            StartCoroutine(SetBomb(pos, true));
+            StartCoroutine(SetBomb(pos, true, true));
         }
         //*-------------------------------------------------------------
         //만약 플레이어가 현재 몬스터 아래에 있으면.. 공격할때 앞으로 이동하는 거 멈추기
@@ -1021,7 +1023,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-    IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false)
+    bool useExplosionSound = false;
+    IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false, bool soundCancle = false)
     {
         float time = 0;
         Effect effect;
@@ -1047,10 +1050,17 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             };
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
 
         //! 사운드
+        if (!soundCancle)
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+        else if (soundCancle && !useExplosionSound)
+        {
+            useExplosionSound = true;
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+        }
 
         while (time < 5)
         {
@@ -1375,6 +1385,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.gameObject.transform.rotation = muzzlePos.rotation;
 
         //! 사운드
+        m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
 
         yield return null;
     }
