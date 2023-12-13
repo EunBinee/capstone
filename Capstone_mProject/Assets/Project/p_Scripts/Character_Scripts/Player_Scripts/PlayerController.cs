@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
         bow.SetActive(false);
         sword.SetActive(true);
         //AimOnCameraReturn();
-        P_Camera.cameraObj = mainCam;
+        //P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
         P_Camera.cameraObj.enabled = true;
         //playerFollowCamera.enabled = true;
