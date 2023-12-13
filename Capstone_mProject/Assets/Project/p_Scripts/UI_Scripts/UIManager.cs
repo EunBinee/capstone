@@ -178,7 +178,7 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         if (changeP)
         {
-            GameManager.instance.gameData.player.transform.position = new Vector3(10, 0.5f, 40);
+            GameManager.instance.gameData.player.transform.position = new Vector3(11.5f, 0.4f, -23);
             GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
         }
         // BossFieldScene으로 씬 이동
