@@ -125,7 +125,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Value.HP = 10;
             }
-            if (Input.GetKeyUp(KeyCode.V))
+            if (Input.GetKeyUp(KeyCode.E))
             {
                 skillMotion('V');
             }

@@ -60,7 +60,7 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.F1))
         {
             if (!GameManager.instance.bossBattle)
             {
