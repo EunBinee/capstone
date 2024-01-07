@@ -139,6 +139,8 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
+                    Debug.Log("[attack test]플레이어 공격 활성화(클릭 입력)");
+                    Time.timeScale = 0.3f;
                     //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                     P_States.isStartComboAttack = true;
                     StartCoroutine(Attacking());
@@ -681,6 +683,7 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Attacking() //클릭해서 들어오면
     {
+        Debug.Log("[attack test]플레이어 공격 코루틴 입장");
         P_Com.animator.SetInteger("comboCount", 0);
 
         string comboName01 = "Attack_Combo_1";
@@ -701,6 +704,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 case 1:
                     //검
+                    Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검1");
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -714,6 +718,7 @@ public class PlayerMovement : MonoBehaviour
                     break;
                 case 2:
                     //검
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검2");
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -727,6 +732,7 @@ public class PlayerMovement : MonoBehaviour
                     break;
                 case 3:
                     //오른쪽 다리
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
                     playerColliderList.Add(attackColliders[2]);
                     playerAttackCheckList.Add(playerAttackChecks[2]);
 
@@ -740,6 +746,7 @@ public class PlayerMovement : MonoBehaviour
                     break;
                 case 4:
                     //양발 다
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 양발 다4");
                     playerColliderList.Add(attackColliders[1]);
                     playerAttackCheckList.Add(playerAttackChecks[1]);
                     playerColliderList.Add(attackColliders[2]);
@@ -755,6 +762,7 @@ public class PlayerMovement : MonoBehaviour
                     break;
                 case 5:
                     //검
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검5");
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -815,6 +823,7 @@ public class PlayerMovement : MonoBehaviour
             //플레이어 공격 콜라이더 비활성화
             if (playerAttackCheckList.Count != 0)
             {
+                Debug.Log("[attack test]플레이어 공격 콜라이더 비활성화");
                 for (int i = 0; i < playerColliderList.Count; ++i)
                 {
                     playerColliderList[i].enabled = false;

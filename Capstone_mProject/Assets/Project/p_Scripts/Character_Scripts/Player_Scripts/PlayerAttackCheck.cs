@@ -77,6 +77,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("[attack test]콜라이더 충돌");
         if (isEnable)
         {
             if (other.gameObject.tag == "Monster")
@@ -88,6 +89,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
                     if (monster != null && !P_States.hadAttack)
                     {
+                        Debug.Log("[attack test]몬스터 피격");
                         P_States.hadAttack = true;
                         // 충돌한 객체의 Transform을 얻기
                         Transform collidedTransform = other.transform;
@@ -101,14 +103,19 @@ public class PlayerAttackCheck : MonoBehaviour
                     else if (monster != null && P_States.hadAttack)
                     {
                         //이미 한번 때린 상태
+                        Debug.Log("[attack test]몬스터 이미 한번 때린 상태");
                     }
                     else
                         Debug.LogError("몬스터 : null");
                 }
+                else
+                {
+                    Debug.Log("[attack test]몬스터 상태 : " + monster.monsterPattern.GetCurMonsterState());
+                }
             }
             else
             {
-
+                Debug.Log("[attack test]몬스터 아님 : "+ other.gameObject.tag);
             }
         }
 
