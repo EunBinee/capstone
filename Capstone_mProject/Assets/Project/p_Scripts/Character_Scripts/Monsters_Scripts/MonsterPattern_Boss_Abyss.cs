@@ -35,6 +35,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public Transform[] muzzlesL;
     public Transform[] muzzlesR;
     public Transform[] muzzlePos;
+    [Space]
+    [Header("스킬 04")]
+    public GameObject targetMarker_Prefabs;
+    public GameObject electricalAttackEffect;
+
 
     bool isJump = false;
     bool isDodge = false;
@@ -1571,6 +1576,42 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator BossAbyss_Skill04()
     {
+        Skill_Indicator skill_Indicator = targetMarker_Prefabs.GetComponent<Skill_Indicator>();
+
+        //1. 파지직거리는 이펙트..
+        //초마다 많아짐
+
+
+
+        //2. 3초뒤 insidetrue면 전기 통하도록
+        bool insideTrapezoid = skill_Indicator.IsPlayerInsideTrapezoid(playerTrans.position);
+
+        Debug.Log(insideTrapezoid);
+
+        yield return null;
+    }
+
+    IEnumerator electricityProduction(float duration)
+    {
+        float durationTime = duration / 3;
+        int count = 0;
+        float time = 0;
+        while (count < 3)
+        {
+            if (time < durationTime)
+            {
+                time += Time.deltaTime;
+
+
+
+
+            }
+            else
+            {
+                count++;
+            }
+        }
+
 
         yield return null;
     }
