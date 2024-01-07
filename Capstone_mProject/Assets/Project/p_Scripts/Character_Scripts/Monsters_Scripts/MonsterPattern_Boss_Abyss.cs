@@ -455,10 +455,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
 
             //isRoaming = false;
-            //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            // StartCoroutine(SetWreckage());
-            ChangeMonsterState(MonsterState.Tracing);
+            // StartCoroutine(SetWreckage()); // 잔해물
+
+
+            //* 테스트후 아래 주석 풀기
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            //ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -1555,6 +1557,22 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         else
             canFire = checkPlayer;
+    }
+
+    #endregion
+
+    // *---------------------------------------------------------------------------------------------------------//
+    //* 스킬 04  전기
+    #region 스킬 04
+    public void Skill04()
+    {
+        StartCoroutine(BossAbyss_Skill04());
+    }
+
+    IEnumerator BossAbyss_Skill04()
+    {
+
+        yield return null;
     }
 
     #endregion
