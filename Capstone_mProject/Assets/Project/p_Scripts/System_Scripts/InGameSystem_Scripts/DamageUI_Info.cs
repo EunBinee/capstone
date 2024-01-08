@@ -12,31 +12,35 @@ public class DamageUI_Info : MonoBehaviour
     public Monster m_Monster;
     public TMP_Text txt_monsterDamage;
     public Vector3 m_DamagePos;
-
+    //폰트
+    public List<TMP_FontAsset> damageFont;
     public bool isReset = false;
     Coroutine size_co = null;
     public void Reset(Monster _monster, Vector3 pos, double damage)
     {
         if (damage > GameManager.instance.gameData.bigDamage) //임시 수치. 나중에 기획자가 변경할 수 있도록 수정.
         {
-            Color l_Color = GameManager.Instance.HexToColor("#FF8C80");
-            txt_monsterDamage.color = l_Color;
+            //Color l_Color = GameManager.Instance.HexToColor("#FF8C80");
+            //txt_monsterDamage.color = l_Color;
+            txt_monsterDamage.font = damageFont[2];
             txt_monsterDamage.fontSize = 800;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
         else if (damage > GameManager.instance.gameData.midDamage)
         {
-            Color m_Color = GameManager.Instance.HexToColor("#FFEC80");
-            txt_monsterDamage.color = m_Color;
+            //Color m_Color = GameManager.Instance.HexToColor("#FFEC80");
+            //txt_monsterDamage.color = m_Color;
+            txt_monsterDamage.font = damageFont[1];
             txt_monsterDamage.fontSize = 600;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
         else
         {
-            Color s_Color = GameManager.Instance.HexToColor("#BAFF80");
-            txt_monsterDamage.color = s_Color;
+            //Color s_Color = GameManager.Instance.HexToColor("#BAFF80");
+            //txt_monsterDamage.color = s_Color;
+            txt_monsterDamage.font = damageFont[0];
             txt_monsterDamage.fontSize = 400;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
