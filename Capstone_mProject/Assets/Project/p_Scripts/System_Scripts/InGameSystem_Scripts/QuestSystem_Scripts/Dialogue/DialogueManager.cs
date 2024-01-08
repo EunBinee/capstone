@@ -4,9 +4,10 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
 using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 using UnityEditor;
+using System.Runtime.CompilerServices;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class DialogueManager : MonoBehaviour
     public GameObject ObjectTextBox_Button02; //선택지 2번 UI
     public TMP_Text Text_Btn02; //선택지 2번 text
     public bool endChat_inController = false;  //dialogueController 타이핑 애니메이션
+    public GameObject dialogueArrow; //대사 끝났을 경우 화살표ui
+
 
     public GameObject Quest_Button01;
     public GameObject Go_QuestDetail;
@@ -31,6 +34,8 @@ public class DialogueManager : MonoBehaviour
     public bool DoQuest;
     public bool IsQuestDetail;
     public bool isDialogue;
+    //화살표애니메이션
+    bool isArrowAnimating = false;
 
     void Start()
     {
@@ -63,7 +68,22 @@ public class DialogueManager : MonoBehaviour
             break;
         }
     }
+    //화살표 애니메이션 
+    private IEnumerator AnimateArrow()
+    {
+        isArrowAnimating = true;
 
+        while (isArrowAnimating)
+        {
+            // 예시로 알파값을 조절하여 페이드 효과 구현
+            float alpha = Mathf.PingPong(Time.time, 0.5f);
+            Color arrowColor = dialogueArrow.GetComponent<Image>().color;
+            arrowColor.a = alpha;
+            dialogueArrow.GetComponent<Image>().color = arrowColor;
+
+            yield return null;
+        }
+    }
     IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
     {
         isDialogue = true;
@@ -105,7 +125,6 @@ public class DialogueManager : MonoBehaviour
         endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.
 
 
-
         while (!AllFinish && !DoQuest)
         {
             //* 게임 멈춤 = 참
@@ -130,6 +149,7 @@ public class DialogueManager : MonoBehaviour
                     Text_Dialogue.text = "";
                     Text_Name.text = "";
                     endChat_inController = false;
+                    dialogueArrow.SetActive(false);
 
                     Text_Name.text = dialogue.lines[curPart][curLine].Name;
                     line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
@@ -147,6 +167,7 @@ public class DialogueManager : MonoBehaviour
                     Text_Dialogue.text = "";
                     Text_Name.text = "";
                     endChat_inController = false;
+                    dialogueArrow.SetActive(false);
 
                     Text_Name.text = dialogue.lines[curPart][curLine].Name;
 
@@ -159,7 +180,15 @@ public class DialogueManager : MonoBehaviour
                 }
             }
             yield return new WaitUntil(() => endChat_inController == true);
-            //yield return StartCoroutine(DialogueManager.WaitForRealTime(0.1f));
+            //yield return StartCoroutine(DialogueManager.WaitForRealTime(0.01f));
+
+            //대사가 끝나면 밑에 화살표ui 띄우기
+            if (!dialogueArrow.activeSelf)
+            {
+                dialogueArrow.SetActive(true);
+                StartCoroutine(AnimateArrow());
+            }
+
             //마지막 context의 마지막 문장이 끝난 경우 확인하기
             if (curContext == curlineContextLen)
             {
@@ -173,6 +202,7 @@ public class DialogueManager : MonoBehaviour
                     //만약 대사가 끝났고 선택지가 있는 경우
                     if (!choiceSettingF)
                     {
+                        dialogueArrow.SetActive(false);
                         //Debug.Log("선택지 있음");
                         //선택지 버튼 활성화
                         ObjectTextBox_Button01.SetActive(true);
@@ -293,6 +323,7 @@ public class DialogueManager : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
                     {
+                        dialogueArrow.SetActive(false);
                         AllFinish = true;
                     }
                 }
@@ -307,6 +338,7 @@ public class DialogueManager : MonoBehaviour
 
                     //Debug.Log("대사 이어지는 중..");
                 }
+
             }
 
 
