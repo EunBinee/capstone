@@ -413,6 +413,28 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
         }
     }
+    //* 후방체크
+    public void CheckedBackward()
+    {
+        bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
+        _castRadius, P_Value.moveDirection + Vector3.down * -0.25f,
+        out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
+
+        //Debug.Log("cast : " + cast);
+        // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
+        P_Value.hitDistance = hit.distance;
+        P_States.isBackwardBlocked = false;
+        if (cast)
+        {
+            P_States.isBackwardBlocked = true;
+            //Debug.Log("if (cast)");
+            float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
+            P_States.isBackwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
+            //if (P_States.isForwardBlocked)
+            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
+        }
+    }
 
     //*바닥 체크
     public void CheckedGround()
@@ -525,6 +547,10 @@ public class PlayerController : MonoBehaviour
             playerGetHitEffect();
         }
 
+        if (P_States.isBackwardBlocked)     //* 뒤가 막혀있다면
+        {
+            knockbackDistance = 0;
+        }
         knockback_Dir = knockback_Dir.normalized;
         Vector3 KnockBackPos = transform.position + knockback_Dir * knockbackDistance; // 넉백 시 이동할 위치
         KnockBackPos.y = 0;

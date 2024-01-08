@@ -96,6 +96,7 @@ public class CurrentState
 
     [Space]
     public bool isForwardBlocked;   //앞에 장애물이 있는지 여부
+    public bool isBackwardBlocked;   //앞에 장애물이 있는지 여부
     public bool isGround;           //Player가 지면에 닿아있는 상태인지.
     public bool isOnSteepSlop;      //가파른 경사 있음!
 
