@@ -39,6 +39,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     [Header("스킬 04")]
     public GameObject targetMarker_Prefabs;
     public GameObject electricalAttackEffect;
+    public List<GameObject> targetMarkerList = new List<GameObject>();
 
 
     bool isJump = false;
@@ -462,7 +463,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //isRoaming = false;
             // StartCoroutine(SetWreckage()); // 잔해물
 
-
+            Skill04();
             //* 테스트후 아래 주석 풀기
             //ChangeBossPhase(BossMonsterPhase.Phase1);
             //ChangeMonsterState(MonsterState.Tracing);
@@ -1576,40 +1577,158 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator BossAbyss_Skill04()
     {
-        Skill_Indicator skill_Indicator = targetMarker_Prefabs.GetComponent<Skill_Indicator>();
+        int count = 0;
 
-        //1. 파지직거리는 이펙트..
-        //초마다 많아짐
+        //while (count < 3)
+        // {
+        //*3턴
+        int randomElectric = UnityEngine.Random.Range(3, 6); //1 ~ 4
+        Debug.Log($"randomElectric  {randomElectric}");
+        for (int i = 0; i < randomElectric; i++)
+        {
+            //
+            StartCoroutine(SkillActivation());
+        }
+        //     count++;
 
-
-
-        //2. 3초뒤 insidetrue면 전기 통하도록
-        bool insideTrapezoid = skill_Indicator.IsPlayerInsideTrapezoid(playerTrans.position);
-
-        Debug.Log(insideTrapezoid);
-
+        //}
         yield return null;
     }
 
-    IEnumerator electricityProduction(float duration)
+    IEnumerator SkillActivation()
+    {
+        //스킬 targetMarkerList
+        GameObject skillIndicator_obj;
+        float posY = GetGroundPos(transform).y;
+        if (targetMarkerList.Count == 0)
+        {
+            skillIndicator_obj = Instantiate(targetMarker_Prefabs, transform.position, Quaternion.identity);
+            skillIndicator_obj.transform.SetParent(transform);
+        }
+        else
+        {
+            skillIndicator_obj = targetMarkerList[0];
+            targetMarkerList.RemoveAt(0);
+            skillIndicator_obj.SetActive(true);
+        }
+        skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
+        Quaternion originRotate = skillIndicator_obj.transform.rotation;
+        Skill_Indicator skill_Indicator = skillIndicator_obj.GetComponent<Skill_Indicator>();
+
+        float angle = UnityEngine.Random.Range(0, 359);
+        Debug.Log($"angle {angle}");
+        skill_Indicator.SetBounds();
+        skill_Indicator.SetAngle(angle);
+
+        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
+        skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
+
+        skill_Indicator.CheckTrigger(true);
+        StartCoroutine(electricityProduction(skill_Indicator, 10, angle));
+
+        yield return new WaitForSeconds(10f);
+        bool insideBox = skill_Indicator.insideBox;
+
+        Debug.Log($"플레이어는 안에 있다? {insideBox}");
+        skill_Indicator.CheckTrigger(false);
+        skill_Indicator.gameObject.transform.rotation = originRotate;
+        if (targetMarkerList.Count > 4)
+        {
+            Destroy(skillIndicator_obj);
+        }
+        else
+        {
+            targetMarkerList.Add(skillIndicator_obj);
+            skillIndicator_obj.SetActive(false);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    IEnumerator BossAbyss_Skill04_()
+    {
+        Skill_Indicator skill_Indicator = targetMarker_Prefabs.GetComponent<Skill_Indicator>();
+        Quaternion originRotate = skill_Indicator.gameObject.transform.rotation;
+
+        float angle = UnityEngine.Random.Range(0, 359);
+        skill_Indicator.SetBounds();
+        skill_Indicator.SetAngle(angle);
+
+        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
+        Debug.Log($"angle {angle}");
+        skill_Indicator.gameObject.transform.rotation = skill_Indicator.gameObject.transform.rotation * rotation;
+
+        skill_Indicator.CheckTrigger(true);
+        //1. 파지직거리는 이펙트..
+        //초마다 많아짐
+        StartCoroutine(electricityProduction(skill_Indicator, 10, angle));
+
+        //2. 3초뒤 insidetrue면 전기 통하도록
+        yield return new WaitForSeconds(10f);
+        bool insideBox = skill_Indicator.insideBox;
+
+        Debug.Log(insideBox);
+        skill_Indicator.CheckTrigger(false);
+        skill_Indicator.gameObject.transform.rotation = originRotate;
+        yield return null;
+    }
+
+    IEnumerator electricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
     {
         float durationTime = duration / 3;
         int count = 0;
         float time = 0;
+        Vector3 randomPos = Vector3.zero;
         while (count < 3)
         {
-            if (time < durationTime)
+            while (true)
             {
-                time += Time.deltaTime;
+                if (time < durationTime)
+                {
+                    time += Time.deltaTime;
+                    randomPos = skill_Indicator.GetRandomPos();
 
 
 
-
+                    GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
+                    yield return null;
+                }
+                else
+                {
+                    count++;
+                    time = 0;
+                    break;
+                }
             }
-            else
-            {
-                count++;
-            }
+
         }
 
 

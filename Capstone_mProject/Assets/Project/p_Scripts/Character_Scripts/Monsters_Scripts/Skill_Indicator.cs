@@ -4,29 +4,98 @@ using Unity.VisualScripting;
 using UnityEngine;
 public class Skill_Indicator : MonoBehaviour
 {
-    public Transform[] vertices;  // 사다리꼴의 4개 꼭지점 좌표 배열
+    //! 스킬 표시
+    public Transform tempPoint;
+    public BoxCollider boxCollider;
 
+    bool checkTrigger = false;
+    public bool insideBox = false;
+    Bounds originBounds;
+    float angle = 0;
+    private void Start()
+    {
+        boxCollider = GetComponent<BoxCollider>();
+    }
     private void Update()
     {
-        // bool insideTrapezoid = IsPlayerInsideTrapezoid(GameManager.instance.gameData.player.transform.position);
-        // Debug.Log(insideTrapezoid);
     }
 
-    public bool IsPlayerInsideTrapezoid(Vector3 playerPosition)
+    public void CheckTrigger(bool enabled)
     {
-        // 3D 사다리꼴 내부에 있는지 확인
-        bool inside = false;
+        checkTrigger = enabled;
+    }
 
-        for (int i = 0, j = vertices.Length - 1; i < vertices.Length; j = i++)
+    private void OnTriggerEnter(Collider other)
+    {
+        if (checkTrigger && !insideBox)
         {
-            if (((vertices[i].position.z > playerPosition.z) != (vertices[j].position.z > playerPosition.z)) &&
-                (playerPosition.x < (vertices[j].position.x - vertices[i].position.x) * (playerPosition.z - vertices[i].position.z) / (vertices[j].position.z - vertices[i].position.z) + vertices[i].position.x))
+
+            if (other.CompareTag("Player"))
             {
-                inside = !inside;
+                insideBox = true;
+            }
+
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (checkTrigger && !insideBox)
+        {
+            if (other.CompareTag("Player"))
+            {
+                insideBox = true;
             }
         }
-
-        return inside;
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (checkTrigger && insideBox)
+        {
+            if (other.CompareTag("Player"))
+            {
+                insideBox = false;
+            }
+        }
+    }
+
+    public void SetBounds()
+    {
+        if (boxCollider == null)
+        {
+            boxCollider = GetComponent<BoxCollider>();
+            if (boxCollider == null)
+            {
+                Debug.LogError("BoxCollider없음");
+                return;// 에러 처리: BoxCollider가 없으면 원점 반환
+            }
+        }
+        originBounds = boxCollider.bounds;
+    }
+    public void SetAngle(float m_angle)
+    {
+        angle = m_angle;
+    }
+
+    public Vector3 GetRandomPos()
+    {
+        // BoxCollider 내부의 랜덤 좌표를 반환하는 함수
+        if (boxCollider == null)
+        {
+            Debug.LogError("BoxCollider없음");
+            return Vector3.zero; // 에러 처리: BoxCollider가 없으면 원점 반환
+        }
+
+        // BoxCollider의 bounds 가져오기
+
+        float randomX = Random.Range(originBounds.min.x, originBounds.max.x);
+        //float randomY = Random.Range(bounds.min.y, bounds.max.y);
+        float randomY = 0.5f;
+        float randomZ = Random.Range(originBounds.min.z, originBounds.max.z);
+        return new Vector3(randomX, randomY, randomZ);
+
+    }
+
+
+
 
 }

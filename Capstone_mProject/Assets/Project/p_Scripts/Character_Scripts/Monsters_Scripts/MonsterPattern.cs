@@ -399,12 +399,23 @@ public class MonsterPattern : MonoBehaviour
         }
     }
     //* ----------------------------------------------------------------------------------------//
-    protected void GetDamage_electricity(Vector3 randomPos)
+    protected void GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
     {
+        Effect effect;
         //* 전기 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("electric");
+        if (parent != null)
+            effect = GameManager.Instance.objectPooling.ShowEffect("electric", parent);
+        else
+            effect = GameManager.Instance.objectPooling.ShowEffect("electric");
         effect.transform.position = randomPos;
+
+        if (angle != -1)
+        {
+            Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
+            effect.transform.localPosition = rotation * effect.transform.localPosition;
+        }
     }
+
     // * ---------------------------------------------------------------------------------------//
     //! 발사체 쏘는 공격시, 플레이어 앞에 물체가 있는지 확인
     public virtual bool HidePlayer(Vector3 curOriginPos, Vector3 targetDir)
