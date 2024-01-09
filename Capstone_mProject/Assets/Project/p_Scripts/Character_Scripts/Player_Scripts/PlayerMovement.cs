@@ -28,6 +28,7 @@ public class PlayerMovement : MonoBehaviour
     private List<PlayerAttackCheck> playerAttackChecks;
 
     float yRotation;
+    float ElecTime = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -123,7 +124,10 @@ public class PlayerMovement : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.P))
             {
-                P_Value.HP = 10;
+                //P_Value.HP = 10;
+                P_States.isElectricShock = true;
+
+                Debug.Log("Electric on");
             }
             if (Input.GetKeyUp(KeyCode.E))
             {
@@ -516,10 +520,13 @@ public class PlayerMovement : MonoBehaviour
 
         P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
+        Vector3 p_velocity;
+
+
         if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
-            Vector3 p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
+            p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
         }
         else if (P_States.isDodgeing)
@@ -531,26 +538,31 @@ public class PlayerMovement : MonoBehaviour
             Invoke("dodgeOut", 0.2f);    //대시 유지 시간
 
         }
+        else if (P_States.isElectricShock)   //*감전
+        {
+            P_Value.finalSpeed = P_COption.walkingSpeed;
+            ElecTime += Time.deltaTime;
+            if (ElecTime >= 5f) //* 5초 후
+            {
+                P_States.isElectricShock = false;
+                Debug.Log("Electric off");
+            }
+        }
         else if (P_States.isSprinting || P_States.isRunning)
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
             if (P_States.isSprinting)    //전력질주
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.sprintSpeed;
+                P_Value.finalSpeed = P_COption.sprintSpeed;
             else if (P_States.isRunning) //뛸때
-                P_Value.moveDirection = P_Value.moveDirection * P_COption.runningSpeed;
+                P_Value.finalSpeed = P_COption.runningSpeed;
+            P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
-            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
-
-            /*Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity += P_Value.gravity * Time.deltaTime * Vector3.up; // 중력은 시간에 따라 적용되어야 합니다.
-
-            //P_Com.rigidbody.AddForce(p_velocity, ForceMode.VelocityChange);
-            P_Com.rigidbody.MovePosition(P_Com.rigidbody.position + p_velocity * Time.deltaTime);*/
-            //return;
         }
+
         /*else if (P_States.isAim)
         {
             //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
@@ -563,7 +575,11 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
         }*/
+
+
+
     }
+
 
     //애니메이터 블랜더 트리의 파라미터 변경
     private void AnimationParameters()
@@ -818,7 +834,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.Play(P_Value.curAnimName);
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
-            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.6f);
 
             //플레이어 공격 콜라이더 비활성화
             if (playerAttackCheckList.Count != 0)
@@ -854,16 +870,16 @@ public class PlayerMovement : MonoBehaviour
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
                         P_Value.index = 1;  //* 인덱스 초기화
                         P_Value.time = 0;   //* 시간 초기화
-                        P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
-                        P_States.hadAttack = false; //* 공격 여부 비활성화
                         //P_States.isStartComboAttack = false;    //* 공격 끝
                     }
                     else
                     {
                         P_Value.index = P_Value.index + 1;    //* 인덱스 추가
-                        P_Value.isCombo = true; //* 이전 공격 여부 활성화
-                        P_States.hadAttack = false; //* 공격 여부 비활성화
+                        //P_Value.isCombo = true; //* 이전 공격 여부 활성화
+                        //P_States.hadAttack = false; //* 공격 여부 비활성화
                     }
+                    P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
+                    P_States.hadAttack = false; //* 공격 여부 비활성화
                     break;  // ...1
                 }
             }   // ...1 (while (P_Value.time <= comboClickTime))

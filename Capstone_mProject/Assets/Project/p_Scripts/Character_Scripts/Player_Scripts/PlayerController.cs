@@ -67,6 +67,7 @@ public class PlayerController : MonoBehaviour
     public GameObject hitUI;
     public Slider HPgauge;
     float nowHitTime;
+    public List<GameObject> hitMonsters;
 
     //private Vector3 originCamPos;
     //private Quaternion originCamQua;
