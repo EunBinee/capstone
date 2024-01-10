@@ -58,8 +58,8 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
-        CamReset();
         Check_Z();
+        CamReset();
         stopRotation = false;
     }
 
@@ -79,6 +79,11 @@ public class CameraController : MonoBehaviour
                     }
                 }
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            CameraRecovery();
         }
     }
     //* 처음 주목
@@ -416,6 +421,7 @@ public class CameraController : MonoBehaviour
     void CamReset()
     {
         cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, normal_Z);
+        cameraObj.gameObject.transform.localRotation = Quaternion.identity;
     }
 
     //* 보스전 끝난 후 주목 풀기.
@@ -433,5 +439,15 @@ public class CameraController : MonoBehaviour
         UndoAttention();
 
     }
+
+    //*------------------------------------------------------------------------------------------//
+
+    public void CameraRecovery()
+    {
+        //시네머신 이후 카메라 복구
+        Check_Z();
+        CamReset(); //rotation, position 변경
+    }
+
 
 }
