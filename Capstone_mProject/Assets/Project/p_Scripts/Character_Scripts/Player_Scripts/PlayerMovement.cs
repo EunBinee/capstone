@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
-                    Debug.Log("[attack test]플레이어 공격 활성화(클릭 입력)");
+                    //Debug.Log("[attack test]플레이어 공격 활성화(클릭 입력)");
                     //Time.timeScale = 0.3f;
                     //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
                     P_States.isStartComboAttack = true;
@@ -865,8 +865,11 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
-            //* 이펙트
-            P_Controller.playAttackEffect(P_Value.curAnimName);
+            if (!P_States.isGettingHit)
+            {
+                //* 이펙트
+                P_Controller.playAttackEffect(P_Value.curAnimName);
+            }
 
             //* 공격 애니메이션 재생
             P_Com.animator.Play(P_Value.curAnimName);
