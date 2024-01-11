@@ -80,7 +80,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("[attack test]콜라이더 충돌");
+        //Debug.Log("[attack test]콜라이더 충돌");
         if (isEnable)
         {
             if (other.gameObject.tag == "Monster")
@@ -97,7 +97,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     _playerController.hitMonsters.Add(other.gameObject);
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
-                    if (P_States.hadAttack == false || notSameMonster)
+                    if (P_States.hadAttack == false || (notSameMonster && P_States.hasAttackSameMonster))
                     {
                         Debug.Log("[attack test]몬스터 피격");
                         // 충돌한 객체의 Transform을 얻기
@@ -113,20 +113,37 @@ public class PlayerAttackCheck : MonoBehaviour
                     {
                         //이미 한번 때린 상태
                         //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
-                        Debug.Log("[attack test]몬스터 이미 한번 때린 상태");
-                        Debug.Log("[attack test]P_States.hadAttack : " + P_States.hadAttack);
+                        //Debug.Log("[attack test]P_States.hadAttack : " + P_States.hadAttack);
                         if (_playerController.hitMonsters.Count >= 2)
                         {
-                            for (int i = _playerController.hitMonsters.Count - 1; i < _playerController.hitMonsters.Count; i--)
+                            for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
                             {
-                                if (_playerController.hitMonsters[i] != _playerController.hitMonsters[i - 1])   //* 다음 꺼랑 비교해서 다르면
+                                GameObject curmon = _playerController.hitMonsters[i];
+                                GameObject premon = _playerController.hitMonsters[i - 1];
+
+                                if (curmon != premon && P_States.hasAttackSameMonster == false)   //* 다음 꺼랑 비교해서 다르면
                                 {
                                     notSameMonster = true;
+                                    P_States.hasAttackSameMonster = true;
+                                    Debug.Log("[attack test]몬스터 피격 hitMonsters[]");
+                                    /*// 충돌한 객체의 Transform을 얻기
+                                    Transform collidedTransform = other.transform;
+                                    // 충돌 지점의 좌표를 얻기
+                                    Vector3 collisionPoint = other.ClosestPoint(transform.position);
+                                    Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
+                                    playerHitMonster(collisionPoint, otherQuaternion);
+                                    //사운드
+                                    SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);*/
+                                    //return;
                                 }
-                                else if (_playerController.hitMonsters[i] == _playerController.hitMonsters[i - 1])
+                                else if (curmon == premon)
                                 {
-                                    _playerController.hitMonsters.RemoveAt(i - 1);
-                                    return;
+                                    Debug.Log("[attack test]curmon == premon");
+                                    notSameMonster = false;
+                                    if (_playerController.hitMonsters.Count > 0)
+                                        _playerController.hitMonsters.RemoveAt(i);
+                                    //_playerController.hitMonsters.RemoveAt(i - 1);
+                                    //return;
                                 }
                             }
                         }
@@ -135,12 +152,12 @@ public class PlayerAttackCheck : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("[attack test]몬스터 상태 : " + monster.monsterPattern.GetCurMonsterState());
+                    //Debug.Log("[attack test]몬스터 상태 : " + monster.monsterPattern.GetCurMonsterState());
                 }
             }
             else
             {
-                Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
+                //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
             }
         }
 
@@ -171,6 +188,7 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Controller.CheckHitTime();
         P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
         P_States.hadAttack = true;
+        //notSameMonster = false;
 
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화

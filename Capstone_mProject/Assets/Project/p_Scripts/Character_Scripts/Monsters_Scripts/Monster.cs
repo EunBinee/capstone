@@ -139,7 +139,9 @@ public class Monster : MonoBehaviour
         //죽다.
         monsterData.HP = 0;
         resetHP = false;
-        playerController.hitMonsters.Remove(this.gameObject);
+        if (playerController.hitMonsters.Count > 0)
+            playerController.hitMonsters.Remove(this.gameObject);
+
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
             bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Death);
