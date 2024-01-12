@@ -123,12 +123,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
+            if (Input.GetKeyUp(KeyCode.O))
+            {
+                P_Value.HP = 10;
+            }
             if (Input.GetKeyUp(KeyCode.P))
             {
-                //P_Value.HP = 10;
+                //Debug.Log("Electric on");
                 P_States.isElectricShock = true;
-
-                Debug.Log("Electric on");
             }
             if (Input.GetKeyUp(KeyCode.E))
             {
@@ -199,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //Debug.Log("Player Heal");
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
-        P_Value.HP = P_Value.MaxHP;
+        P_Value.HP += P_Value.MaxHP * 0.5f;
 
         bool stopHeal = false;
 
