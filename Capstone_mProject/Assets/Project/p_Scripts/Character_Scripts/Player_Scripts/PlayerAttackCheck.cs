@@ -21,8 +21,6 @@ public class PlayerAttackCheck : MonoBehaviour
     Quaternion arrrot = Quaternion.identity;
     Transform nowArrow;
 
-    private bool notSameMonster = false;
-
     //계산식
 
 
@@ -97,9 +95,9 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     _playerController.hitMonsters.Add(other.gameObject);
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
-                    if (P_States.hadAttack == false)// || (notSameMonster && P_States.hasAttackSameMonster))
+                    if (P_States.hadAttack == false || (P_States.notSameMonster && P_States.hasAttackSameMonster))
                     {
-                        //Debug.Log("[attack test]몬스터 피격");
+                        Debug.Log("[attack test]몬스터 피격");
                         // 충돌한 객체의 Transform을 얻기
                         Transform collidedTransform = other.transform;
                         // 충돌 지점의 좌표를 얻기
@@ -123,10 +121,10 @@ public class PlayerAttackCheck : MonoBehaviour
 
                                 if (curmon != premon && P_States.hasAttackSameMonster == false)   //* 다음 꺼랑 비교해서 다르면
                                 {
-                                    notSameMonster = true;
+                                    P_States.notSameMonster = true;
                                     //P_States.hasAttackSameMonster = true;
-                                    //Debug.Log("[attack test]P_States.hasAttackSameMonster = true;");
-                                    /*// 충돌한 객체의 Transform을 얻기*/
+                                    Debug.Log("[attack test]P_States.notSameMonster = true;");
+                                    // 충돌한 객체의 Transform을 얻기/**/
                                     Transform collidedTransform = other.transform;
                                     // 충돌 지점의 좌표를 얻기
                                     Vector3 collisionPoint = other.ClosestPoint(transform.position);
@@ -138,8 +136,8 @@ public class PlayerAttackCheck : MonoBehaviour
                                 }
                                 else if (curmon == premon)
                                 {
-                                    //Debug.Log("[attack test]curmon == premon");
-                                    notSameMonster = false;
+                                    Debug.Log("[attack test]curmon == premon");
+                                    P_States.notSameMonster = false;
                                     if (_playerController.hitMonsters.Count > 0)
                                         _playerController.hitMonsters.RemoveAt(i);
                                     //_playerController.hitMonsters.RemoveAt(i - 1);
@@ -189,7 +187,6 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
         P_States.hadAttack = true;
         P_States.hasAttackSameMonster = true;
-        notSameMonster = false;
 
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화

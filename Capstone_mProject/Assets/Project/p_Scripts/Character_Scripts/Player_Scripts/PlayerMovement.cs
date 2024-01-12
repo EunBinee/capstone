@@ -958,6 +958,7 @@ public class PlayerMovement : MonoBehaviour
                     P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
                     P_States.hadAttack = false; //* 공격 여부 비활성화
                     P_States.hasAttackSameMonster = false;
+                    P_States.notSameMonster = false;
                     break;  // ...1
                 }
             }   // ...1 (while (P_Value.time <= comboClickTime))

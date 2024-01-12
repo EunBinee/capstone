@@ -87,6 +87,7 @@ public class CurrentState
     public bool isSkill;
     public bool hadAttack = false;
     public bool hasAttackSameMonster = false;
+    public bool notSameMonster = false;
     public bool isBouncing;
     public bool isStop; //대화창 활성화될때 움직임 비활성화여부
     public bool isAim;  //조준스킬
