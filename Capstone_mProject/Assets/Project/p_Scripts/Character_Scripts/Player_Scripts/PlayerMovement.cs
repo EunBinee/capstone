@@ -341,16 +341,27 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private bool returnDodgeAnim()
+    {
+        if (P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Front")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Back")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Left")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Right"))
+        {
+            return true;
+        }
+        else return false;
+    }
     private void HandleDodge()
     {
         P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
         if (P_States.previousDodgeKeyPress && P_States.currentDodgeKeyPress && P_States.isDodgeing
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("dodge"))
+            && returnDodgeAnim())
         {
             //Debug.Log("이전 프레임에도 누름!");
             return;
         }
-        else if (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("dodge")
+        else if (!returnDodgeAnim()
         && P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0 && !P_States.isStartComboAttack)
         {
             P_States.isDodgeing = true;
@@ -551,7 +562,30 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isDodgeing)
         {
-            P_Com.animator.Play("dodge", 0);
+            if (P_States.isStrafing)    //* 주목중이라면 
+            {
+                if (P_Input.verticalMovement > 0)//* front
+                {
+                    P_Com.animator.Play("Front", 1);
+                }
+                else if (P_Input.verticalMovement < 0)//* back
+                {
+                    P_Com.animator.Play("Back", 1);
+                }
+                else if (P_Input.horizontalMovement > 0)//* right
+                {
+                    P_Com.animator.Play("Right", 1);
+                }
+                else if (P_Input.horizontalMovement < 0)//* left
+                {
+                    P_Com.animator.Play("Left", 1);
+                }
+            }
+            else    //* 주목중이 아니면
+            {
+                P_Com.animator.Play("Front", 1);
+            }
+            //P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 

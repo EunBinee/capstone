@@ -125,7 +125,7 @@ public class PlayerAttackCheck : MonoBehaviour
                                 {
                                     notSameMonster = true;
                                     //P_States.hasAttackSameMonster = true;
-                                    Debug.Log("[attack test]P_States.hasAttackSameMonster = true;");
+                                    //Debug.Log("[attack test]P_States.hasAttackSameMonster = true;");
                                     /*// 충돌한 객체의 Transform을 얻기*/
                                     Transform collidedTransform = other.transform;
                                     // 충돌 지점의 좌표를 얻기
