@@ -456,9 +456,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             //isRoaming = false;
             //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            // StartCoroutine(SetWreckage());
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            //ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//

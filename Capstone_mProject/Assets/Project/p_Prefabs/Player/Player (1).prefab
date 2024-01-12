@@ -213,6 +213,7 @@ MonoBehaviour:
   _controller: {fileID: 7195301709572235706}
   skill_E: {fileID: 0}
   skill_Q: {fileID: 0}
+  skill_V: {fileID: 0}
   comboClickTime: 0.5
   attackColliders:
   - {fileID: 1861370307325144441}
@@ -378,6 +379,37 @@ Transform:
   - {fileID: 1286908803425555719}
   m_Father: {fileID: 6003508065018167628}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &783314161580558161
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1621996063223588586}
+  m_Layer: 3
+  m_Name: HeadPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1621996063223588586
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783314161580558161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7807731989223168268}
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &792213948868714995
 GameObject:
@@ -3315,15 +3347,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 600335921669233759, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.x
-      value: -57.793484
+      value: -57.79347
       objectReference: {fileID: 0}
     - target: {fileID: 600335921669233759, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.y
-      value: -2.394288
+      value: -2.3942914
       objectReference: {fileID: 0}
     - target: {fileID: 600335921669233759, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.z
-      value: 1.2811778
+      value: 1.2811738
       objectReference: {fileID: 0}
     - target: {fileID: 630611948449728643, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_Layer
@@ -3463,11 +3495,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2002265686262208635, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.x
-      value: -48.576
+      value: -48.575985
       objectReference: {fileID: 0}
     - target: {fileID: 2002265686262208635, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.y
-      value: 9.57529
+      value: 9.575284
       objectReference: {fileID: 0}
     - target: {fileID: 2002265686262208635, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.z
@@ -3611,15 +3643,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2718187545458668336, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.x
-      value: -0.28133905
+      value: -0.28134146
       objectReference: {fileID: 0}
     - target: {fileID: 2718187545458668336, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.y
-      value: -0.49938607
+      value: -0.49939293
       objectReference: {fileID: 0}
     - target: {fileID: 2718187545458668336, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationOffset.z
-      value: 89.40473
+      value: 89.404724
       objectReference: {fileID: 0}
     - target: {fileID: 3031061732303254301, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_Layer
@@ -4444,6 +4476,11 @@ Animator:
 --- !u!4 &6856304571165628917 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2613482197501280323, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7807731989223168268 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1673133960142520506, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
   m_PrefabInstance: {fileID: 8890818802358016438}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &9069027666689469690 stripped
