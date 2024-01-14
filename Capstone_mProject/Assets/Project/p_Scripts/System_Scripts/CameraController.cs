@@ -430,13 +430,11 @@ public class CameraController : MonoBehaviour
             {
                 //앞에있음
                 camPosZ = cameraObj.gameObject.transform.localPosition.z + dist;
-                Debug.Log($"a camPosZ {camPosZ}");
             }
             else
             {
                 //뒤에 있음.
                 camPosZ = cameraObj.gameObject.transform.localPosition.z - dist;
-                Debug.Log($"b camPosZ {camPosZ}");
             }
 
             if (camPosZ >= -0.9f)
@@ -448,205 +446,9 @@ public class CameraController : MonoBehaviour
                 camPosZ = -5f;
             }
             cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, camPosZ);
-
-            // isbehind = CheckObj_behindCamera(cameraPos, hit.point);
-            // if (isbehind)
-            // {
-            //     float distance = (hit.point - cameraPos).magnitude;
-
-            //     cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, cameraObj.gameObject.transform.localPosition.z - distance);
-            // }
-            // else
-            // {
-            //     cameraObj.gameObject.transform.localPosition = cameraPos;
-            // }
-
-            //!아래 주석 사용!!
-            /*
-            float dist = (hit.point - cameraObj.gameObject.transform.localPosition).magnitude * 0.8f;
-            Vector3 temp = cameraPos.normalized * dist;
-            if (temp.z > -0.9)
-            {
-                temp.z = -0.9f;
-            }
-            else if (temp.z < -5f)
-            {
-                temp.z = -5f;
-            }
-            cameraObj.gameObject.transform.localPosition = temp;
-
-            */
-
-
-            /*
-            Vector3 cameraPos = cameraObj.gameObject.transform.localPosition;
-            Debug.Log("Ray hit: " + hit.collider.gameObject.name);
-            bool isbehind = CheckObj_behindCamera(cameraObj.gameObject.transform.position, hit.point);
-            if (isbehind)
-            {
-                float dist = (cameraPos - hit.point).magnitude * 0.5f;
-                Vector3 camPos = cameraPos.normalized * dist;
-                float camZ = camPos.z;
-                if (camZ > -0.9)
-                {
-                    camZ = -0.9f;
-                }
-                else if (camZ < -5f)
-                {
-                    camZ = -5f;
-                }
-                cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, camPos.z);
-            }
-            else
-            {
-                cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, -5);
-            }
-            */
         }
     }
 
-    public void WallInFrontOfCamera_02()
-    {
-        Vector3 curDirection = cameraObj.gameObject.transform.position - playerHeadPos.position;
-        Debug.DrawRay(playerHeadPos.position, curDirection * 20, Color.magenta);
-        Ray ray = new Ray(playerHeadPos.position, curDirection);
-        RaycastHit hit;
-        // Ray와 충돌한 경우
-        if (Physics.Raycast(ray, out hit))
-        {
-            Vector3 camPos = cameraObj.gameObject.transform.localPosition;
-            float curZ = 0;
-            Debug.Log("Ray hit: " + hit.collider.gameObject.name);
-            bool isbehind = CheckObj_behindCamera(hit.point);
-            if (!isbehind)
-            {
-                if (isZoomedIn)
-                {
-                    Vector3 checkPosition = new Vector3(0, 0, originZ_Zoom);
-                    isbehind = CheckObj_behindCamera(hit.point);
-                    if (!isbehind)
-                    {
-                        time_Z = 0;
-                        replaceZ = true;
-                        changeZ = 0;
-                        //cameraObj.gameObject.transform.localPosition = checkPosition;
-                    }
-                }
-
-                if (replaceZ)
-                {
-                    cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, originZ_Zoom);
-                    //  Debug.Log("aaa b");
-                    //  if (cameraObj.gameObject.transform.position.z != originZ_Zoom)
-                    //  {
-                    //      time_Z += Time.deltaTime;
-                    //      float value = Mathf.Lerp(camPos.z, originZ_Zoom, time_Z / duration_Z);
-                    //      if (value <= originZ_Zoom)
-                    //      {
-                    //          replaceZ = false;
-                    //          value = originZ_Zoom;
-                    //          isZoomedIn = false;
-                    //          Debug.Log("aaa D");
-                    //      }
-                    //
-                    //      Vector3 checkPosition = new Vector3(0, 0, value);
-                    //      cameraObj.gameObject.transform.localPosition = checkPosition;
-                    //  }
-                    //
-                    //  else
-                    //  {
-                    //      replaceZ = false;
-                    //  }
-                }
-            }
-            if (isbehind)
-            {
-                Debug.Log("aaa c");
-                if (replaceZ)
-                    replaceZ = false;
-
-                if (!isZoomedIn) //처음 줌인 한경우에만.
-                {
-                    originZ_Zoom = cameraObj.gameObject.transform.localPosition.z;
-                    changeZ = cameraObj.gameObject.transform.localPosition.z;
-                    isZoomedIn = true;
-                }
-
-                //물체가 카메라 앞에 있다면?
-                float distance = Vector3.Distance(hit.point, cameraObj.gameObject.transform.localPosition);
-                float checkZ = originZ_Zoom + (distance + 1.5f);
-                //z의 최대는 -.8
-                if (checkZ > -0.9f)
-                    checkZ = -0.9f;
-                if (checkZ < originZ_Zoom)
-                    checkZ = originZ_Zoom;
-
-                float abs = Mathf.Abs(changeZ) - Mathf.Abs(checkZ);
-                if (Mathf.Abs(abs) >= 0.1f)
-                {
-                    curZ = checkZ;
-                    changeZ = curZ;
-                    time_Z = 0;
-                    cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, curZ);
-                }
-
-                // if (cameraObj.gameObject.transform.position.z != curZ)
-                // {
-                //     time_Z += Time.deltaTime;
-                //
-                //     float value = Mathf.Lerp(cameraObj.gameObject.transform.position.z, curZ, time_Z / duration_Z);
-                //     Debug.Log($"aaa cameraObj.gameObject.transform.position.z {cameraObj.gameObject.transform.position.z}, curZ {curZ}");
-                //     Debug.Log($"aaa curZ {curZ}, value {value}");
-                //     cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, value);
-                // }
-            }
-        }
-    }
-
-    public void WallInFrontOfCamera_01()
-    {
-        Vector3 curDirection = cameraObj.gameObject.transform.position - playerHeadPos.position;
-        Debug.DrawRay(playerHeadPos.position, curDirection * 20, Color.magenta);
-        Ray ray = new Ray(playerHeadPos.position, curDirection);
-        RaycastHit hit;
-        // Ray와 충돌한 경우
-        if (Physics.Raycast(ray, out hit))
-        {
-            Debug.Log("Ray hit: " + hit.collider.gameObject.name);
-            bool isbehind = CheckObj_behindCamera(hit.point);
-            if (!isbehind)
-            {
-                if (isZoomedIn)
-                {
-                    Vector3 checkPosition = new Vector3(0, 0, originZ_Zoom);
-                    isbehind = CheckObj_behindCamera(hit.point);
-                    if (!isbehind)
-                    {
-                        isZoomedIn = false;
-                        cameraObj.gameObject.transform.localPosition = checkPosition;
-                    }
-                }
-            }
-            if (isbehind)
-            {
-                if (!isZoomedIn) //처음 줌인 한경우에만.
-                    originZ_Zoom = cameraObj.gameObject.transform.localPosition.z;
-
-                isZoomedIn = true;
-
-                //물체가 카메라 앞에 있다면?
-                float distance = Vector3.Distance(hit.point, cameraObj.gameObject.transform.position);
-                float curZ = originZ_Zoom + (distance + 1.5f);
-
-                //z의 최대는 -.8
-                if (curZ > -0.9f)
-                    curZ = -0.9f;
-                if (curZ < originZ_Zoom)
-                    curZ = originZ_Zoom;
-                cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, curZ);
-            }
-        }
-    }
     //! 감지된 객체가 카메라의 뒤에 있는지 앞에 있는지 확인용 함수
     public bool CheckObj_behindCamera(Vector3 objPos)
     {
