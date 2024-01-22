@@ -89,7 +89,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.Check_Z();
         GameManager.instance.cameraController.ResetCameraZ();
 
-        GameManager.instance.cameraController.AttentionMonster();
+        //GameManager.instance.cameraController.AttentionMonster();
 
         //NavMeshSurface_ReBuild();
 
@@ -682,16 +682,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         {
             //------------------------------------------------------------------------------------//
             //*점프전 주목 풀기
-            if (GameManager.instance.cameraController.isBeingAttention)
-            {
-                //주목중.
-                GameManager.instance.cameraController.UndoAttention();
-                GameManager.instance.cameraController.banAttention = true;
-            }
-            else
-            {
-                GameManager.instance.cameraController.banAttention = true;
-            }
+            GameManager.instance.cameraController.AttentionBan(true);
             //-----------------------------------------------------------------------------------//
 
             // 점프전 잠깐 밑으로 내려감.
@@ -768,9 +759,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.transform.position = effectPos;
 
         //* 점프 후 주목 가능
-        GameManager.instance.cameraController.banAttention = false;
+        GameManager.instance.cameraController.AttentionBan(false);
         //- 떨어지고 나서 주목 On
-        GameManager.instance.cameraController.AttentionMonster();
+        //GameManager.instance.cameraController.AttentionMonster();
 
         isJump = false;
         if (curMonsterState != MonsterState.Death)

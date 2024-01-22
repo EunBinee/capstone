@@ -352,10 +352,11 @@ public class PlayerController : MonoBehaviour
         if (GameManager.instance.monsterUnderAttackList.Count > 0)
         {
             MonsterData isBoss = GameManager.instance.monsterUnderAttackList[0].monsterData;
-            if (isBoss.monsterType == MonsterData.MonsterType.BossMonster)
-            {
-                GameManager.instance.cameraController.AttentionMonster();
-            }
+            //자동 주목 없애서 아래 코드 주석처리
+            //if (isBoss.monsterType == MonsterData.MonsterType.BossMonster)
+            //{
+            //    GameManager.instance.cameraController.AttentionMonster();
+            //}
         }
 
         P_Camera.cameraObj = mainCam;
