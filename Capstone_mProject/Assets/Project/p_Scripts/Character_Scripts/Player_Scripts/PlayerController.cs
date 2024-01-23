@@ -598,7 +598,6 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-
                 P_Com.animator.Rebind();
                 GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
                 if (!GameManager.Instance.dialogueManager.DoQuest)
