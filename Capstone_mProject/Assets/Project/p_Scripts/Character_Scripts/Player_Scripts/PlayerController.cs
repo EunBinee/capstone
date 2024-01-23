@@ -103,8 +103,8 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        P_Movement.skill_V.gameObject.SetActive(true);
-        originVpos = P_Movement.skill_V.gameObject.transform.position;
+        P_Movement.skill_E.gameObject.SetActive(true);
+        originVpos = P_Movement.skill_E.gameObject.transform.position;
         //AimOnCameraReturn();
         //P_Camera.cameraObj = mainCam;
         AimmingCam.enabled = false;
@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
     {
         if (UIManager.gameIsPaused == true)
         {
-            P_Movement.skill_V.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
@@ -141,7 +141,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            P_Movement.skill_V.gameObject.transform.position = originVpos;
+            P_Movement.skill_E.gameObject.transform.position = originVpos;
             //P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();

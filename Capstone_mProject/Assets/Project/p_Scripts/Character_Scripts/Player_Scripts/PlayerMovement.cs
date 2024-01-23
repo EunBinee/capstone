@@ -17,10 +17,10 @@ public class PlayerMovement : MonoBehaviour
     private CameraController P_CamController;
 
     public SkillButton skill_E;
-    private string E_Start_Name = "Bow_Attack_Charging";
-    private string E_Name = "Bow_Attack_launch_02";
+    private string R_Start_Name = "Bow_Attack_Charging";
+    private string R_Name = "Bow_Attack_launch_02";
     public SkillButton skill_Q;
-    public SkillButton skill_V;
+    public SkillButton skill_R;
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -132,9 +132,13 @@ public class PlayerMovement : MonoBehaviour
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;
             }
-            if (Input.GetKeyUp(KeyCode.E))
+            if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
-                skillMotion('V');
+                skillMotion('E');
+            }
+            if (Input.GetKeyUp(KeyCode.R))  //*Aim
+            {
+                skillMotion('R');
             }
             if (Input.GetMouseButtonDown(0)
                 && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
@@ -222,7 +226,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void skillMotion(char a)
     {
-        if (skill_E == null && skill_Q == null && skill_V == null)
+        if (skill_E == null && skill_Q == null && skill_R == null)
         {
             return;
         }
@@ -232,25 +236,25 @@ public class PlayerMovement : MonoBehaviour
 
         switch (a)
         {
-            case 'E':
-                if (skill_E.imgCool.fillAmount == 0)
+            case 'R':
+                if (skill_R.imgCool.fillAmount == 0)
                 {
                     P_States.isSkill = true;
                     //* 이펙트
                     Effect effect = null;
-                    if (skill_E.skill.isFirsttime)  //* 장전
+                    if (skill_R.skill.isFirsttime)  //* 장전
                     {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(E_Start_Name);
+                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
                     }
                     else    //* 발사
                     {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(E_Name);
+                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
                     }
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     //* 이펙트 회전
                     effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
                 }
-                skill_E.OnClicked();
+                skill_R.OnClicked();
                 break;
 
             case 'Q':
@@ -262,14 +266,14 @@ public class PlayerMovement : MonoBehaviour
                 skill_Q.OnClicked();
                 break;
 
-            case 'V':   //* heal
-                if (skill_V.imgCool.fillAmount == 0)
+            case 'E':   //* heal
+                if (skill_E.imgCool.fillAmount == 0)
                 {
                     P_States.isSkill = true;
                     //ebug.Log("스킬V");
                     StartCoroutine(PlayerHeal_co());
                 }
-                skill_V.OnClicked();
+                skill_E.OnClicked();
                 break;
 
             default:
@@ -887,7 +891,7 @@ public class PlayerMovement : MonoBehaviour
                     dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 }
 
-                Vector3 pos = transform.position + dir * 7f;
+                Vector3 pos = transform.position + dir * 3f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             else if (P_States.isForwardBlocked || !P_States.canGoForwardInAttack) //앞에 막혀있다면 
@@ -897,7 +901,7 @@ public class PlayerMovement : MonoBehaviour
             else    //앞이 막혀있지 않고 적이 없다면
             {
                 dir = this.gameObject.transform.forward.normalized;
-                Vector3 pos = transform.position + dir * 3f;
+                Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
 
