@@ -52,6 +52,7 @@ public class CameraController : MonoBehaviour
     Coroutine resetCameraZ_co = null;
 
     //"벽 체크"
+
     public float originZ_Zoom = 0f;
     public bool isZoomedIn = false;
 
@@ -266,7 +267,6 @@ public class CameraController : MonoBehaviour
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
     }
-
     private void TargetRotate()
     {
         if (curTargetMonster == null)
@@ -275,38 +275,215 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        SetCameraZ_AccDistance();
+        Vector3 cameraRot; //camera pivot의 회전 Euler (위아래)
+        Quaternion targetCameraRot = Quaternion.identity; //camera의 회전 (좌우)
+        Vector3 targetPos = curTargetMonster.gameObject.transform.position;
 
-        Vector3 cameraRot;
-        Quaternion targetCameraRot = Quaternion.identity;
-        // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 targetPos;
+        //* 카메라와 몬스터의 방향 벡터
+        Vector3 directionToTarget_camera = targetPos - playerCamera.transform.position;
+        Vector3 directionToTarget_pivot = targetPos - playerCameraPivot.transform.position;
 
-        targetPos = curTargetMonster.gameObject.transform.position;
-        Vector3 directionToTarget = targetPos - playerCamera.transform.position;
-        //Vector3 directionToTarget = targetPos - playerCameraPivot.transform.position;
-        cameraRot = Vector3.zero;
-        cameraRot.y = directionToTarget.x;
-
-        if (directionToTarget.sqrMagnitude >= 3)
-        {
-            targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
-        }
+        //* 카메라 좌우\
+        directionToTarget_camera.y *= -1f;
+        targetCameraRot = Quaternion.LookRotation(directionToTarget_camera);
         if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
         {
             //각도가 1보다 작으면.. 같은걸로 간주
             playerCamera.transform.rotation = targetCameraRot;
         }
         else if (targetCameraRot != Quaternion.identity)
-            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime); /* x speed */
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
 
-        //playerCamera.transform.position = target.position - transform.forward * dis;
-        //위아래
         cameraRot = Vector3.zero;
+        // Debug.Log($"directionToTarget_pivot.x {directionToTarget_pivot.x}       directionToTarget_pivot.y {directionToTarget_pivot.y}");
+
+
+        cameraRot.x = directionToTarget_pivot.y * -3;
+        if (cameraRot.x < 0)
+            cameraRot.x = 0;
+
+        //* Camera Pivot 위아래
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerCameraPivot.transform.localRotation = targetCameraRot;
+        SetCameraZ_Attention();
+    }
+    bool curTouchWall = false;
+    private void SetCameraZ_Attention()
+    {
+        //float distance = Vector3.Distance(playerController.gameObject.transform.position, curTargetMonster.gameObject.transform.position);
+        //time_Z
+        float originZ = WallInFrontOfCamera(-0.9f, -7);
+        Vector3 cameraPivotPos = playerCameraPivot.transform.localPosition;
+
+        if (originZ != -7)
+        {
+            //* 장애물 존재
+            if (!curTouchWall)
+            {
+                curTouchWall = true;
+                time_Z = 0;
+            }
+            if (cameraPivotPos.y != 1.4)
+            {
+                time_Z += Time.deltaTime;
+                float value = Mathf.Lerp(cameraPivotPos.y, 1.4f, time_Z / duration);
+                cameraPivotPos.y = value;
+                playerCameraPivot.transform.localPosition = cameraPivotPos;
+            }
+        }
+        else
+        {
+            //* 장애물 없음.
+            if (curTouchWall)
+            {
+                curTouchWall = false;
+                time_Z = 0;
+            }
+
+            if (cameraPivotPos.y != 1.7f)
+            {
+                time_Z += Time.deltaTime;
+                float value = Mathf.Lerp(cameraPivotPos.y, 1.7f, time_Z / duration);
+                cameraPivotPos.y = value;
+                playerCameraPivot.transform.localPosition = cameraPivotPos;
+            }
+        }
+
+        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, originZ);
+
+    }
+
+    #region 나중에 지울것
+    /*
+    //되는것
+        private void TargetRotate()
+        {
+            if (curTargetMonster == null)
+            {
+                Debug.Log("카메라. 타겟 몬스터 null이다.");
+                return;
+            }
+
+            //SetCameraZ_AccDistance();
+            Vector3 cameraRot; //camera pivot의 회전 Euler
+            Quaternion targetCameraRot = Quaternion.identity; //camera obj의 회전
+            // 타겟의 위치로 향하는 방향 벡터를 구함
+            Vector3 targetPos = curTargetMonster.gameObject.transform.position;
+
+            //* 카메라와 몬스터의 방향 벡터
+            Vector3 directionToTarget_camera = targetPos - playerCamera.transform.position;
+            Vector3 directionToTarget_pivot = targetPos - playerCameraPivot.transform.position;
+            cameraRot = Vector3.zero;
+            cameraRot.x -= directionToTarget_pivot.y;//x;
+            cameraRot.y = directionToTarget_pivot.x;//y;
+
+            Vector3 cameraEuler = Quaternion.LookRotation(directionToTarget_camera).eulerAngles;// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
+            cameraEuler = cameraRot + cameraEuler;
+            targetCameraRot = Quaternion.Euler(cameraEuler);
+
+            if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
+            {
+                //각도가 1보다 작으면.. 같은걸로 간주
+                playerCamera.transform.rotation = targetCameraRot;
+            }
+            else if (targetCameraRot != Quaternion.identity)
+                playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
+
+            //위아래
+            //targetCameraRot = Quaternion.Euler(cameraRot);
+            //playerCameraPivot.transform.localRotation = targetCameraRot;
+        }
+
+    */
+    /*
+    private void TargetRotate()
+    {
+        if (curTargetMonster == null)
+        {
+            Debug.Log("카메라. 타겟 몬스터 null이다.");
+            return;
+        }
+
+        //SetCameraZ_AccDistance();
+        Vector3 cameraRot; //camera pivot의 회전 Euler
+        Quaternion targetCameraRot = Quaternion.identity; //camera obj의 회전
+        // 타겟의 위치로 향하는 방향 벡터를 구함
+        Vector3 targetPos = curTargetMonster.gameObject.transform.position;
+
+        //* 카메라와 몬스터의 방향 벡터
+        Vector3 directionToTarget_camera = targetPos - playerCamera.transform.position;
+        Vector3 directionToTarget_pivot = targetPos - playerCameraPivot.transform.position;
+        cameraRot = Vector3.zero;
+        cameraRot.y = directionToTarget_pivot.x;
+        //cameraRot.x = directionToTarget_pivot.y;
+        if (directionToTarget_camera.sqrMagnitude >= 3)
+        {
+            targetCameraRot = Quaternion.LookRotation(directionToTarget_camera);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
+        }
+
+        if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
+        {
+            //각도가 1보다 작으면.. 같은걸로 간주
+            playerCamera.transform.rotation = targetCameraRot;
+        }
+        else if (targetCameraRot != Quaternion.identity)
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
+
+        //위아래
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
     }
+    */
 
+
+
+
+
+
+
+
+    //private void TargetRotate()
+    //{
+    //    if (curTargetMonster == null)
+    //    {
+    //        Debug.Log("카메라. 타겟 몬스터 null이다.");
+    //        return;
+    //    }
+    //
+    //    SetCameraZ_AccDistance();
+    //
+    //    Vector3 cameraRot;
+    //    Quaternion targetCameraRot = Quaternion.identity;
+    //    // 타겟의 위치로 향하는 방향 벡터를 구함
+    //    Vector3 targetPos;
+    //
+    //    targetPos = curTargetMonster.gameObject.transform.position;
+    //    //Vector3 directionToTarget = targetPos - playerCamera.transform.position;
+    //    Vector3 directionToTarget = targetPos - playerCameraPivot.transform.position;
+    //    cameraRot = Vector3.zero;
+    //    cameraRot.y = directionToTarget.x;
+    //
+    //    if (directionToTarget.sqrMagnitude >= 3)
+    //    {
+    //        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
+    //    }
+    //
+    //    if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
+    //    {
+    //        //각도가 1보다 작으면.. 같은걸로 간주
+    //        playerCamera.transform.rotation = targetCameraRot;
+    //    }
+    //    else if (targetCameraRot != Quaternion.identity)
+    //        playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime); /* x speed */
+    //
+    //    //playerCamera.transform.position = target.position - transform.forward * dis;
+    //    //위아래
+    //    cameraRot = Vector3.zero;
+    //    targetCameraRot = Quaternion.Euler(cameraRot);
+    //    playerCameraPivot.transform.localRotation = targetCameraRot;
+    //}
+
+    #endregion
 
     public void ResetCameraZ()
     {
@@ -613,13 +790,13 @@ public class CameraController : MonoBehaviour
 
     public float WallInFrontOfCamera(float max = -0.9f, float min = -5f)
     {
-        Debug.Log("HI");
+        int monsterLayerMask = 1 << LayerMask.NameToLayer("Monster"); //몬스터 제외
         Vector3 curDirection = cameraObj.gameObject.transform.position - playerHeadPos.position;
         Debug.DrawRay(playerHeadPos.position, curDirection * 20, Color.magenta);
         Ray ray = new Ray(playerHeadPos.position, curDirection);
         RaycastHit hit;
         // Ray와 충돌한 경우
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, 20, ~monsterLayerMask)) //몬스터 제외
         {
             float dist = Vector3.Distance(hit.point, cameraObj.gameObject.transform.position);//  (hit.point - cameraObj.gameObject.transform.position).magnitude;
 
