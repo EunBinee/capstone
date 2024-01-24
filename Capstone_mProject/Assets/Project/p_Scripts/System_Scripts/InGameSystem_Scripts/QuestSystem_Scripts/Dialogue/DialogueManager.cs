@@ -40,8 +40,8 @@ public class DialogueManager : MonoBehaviour
     bool isArrowAnimating = false;
 
 
-    public Transform text_tuto;
-    public TMP_Text textComponent;
+    private Transform text_tuto;
+    private TMP_Text textComponent;
     void Start()
     {
         dialogueController = GetComponent<DialogueController>();
