@@ -307,6 +307,16 @@ public class DialogueParser : MonoBehaviour
             Quest quest = new Quest();
             quest.questId = int.Parse(row[0].ToString());
             quest.questClearValue = int.Parse(row[5].ToString());
+            quest.questClearString = row[6].ToString();
+
+            if (quest.questClearString == "") //퀘목표(숫자x)가 비어있지않으먼 
+            {
+                quest.questClearString = "";
+            }
+            else
+            {
+                quest.questClearString = row[6].ToString(); ;
+            }
 
             quest.questGoal = new List<string>();
             quest.questTitle = new List<string>();

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 using UnityEditor;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class DialogueManager : MonoBehaviour
     public TMP_Text Text_QuestDetailGoal; //퀘스트 목표 text
     public TMP_Text Text_QuestDetailTitle; //퀘스트 제목 text
     public TMP_Text Text_QuestDetailContent; //퀘스트 세부내용 text
+    public GameObject Text_Alarm; //튜토리얼, 알람등을 알려주는 text 
 
     public bool DoQuest;
     public bool IsQuestDetail;
@@ -37,6 +39,9 @@ public class DialogueManager : MonoBehaviour
     //화살표애니메이션
     bool isArrowAnimating = false;
 
+
+    private Transform text_tuto;
+    private TMP_Text textComponent;
     void Start()
     {
         dialogueController = GetComponent<DialogueController>();
@@ -44,6 +49,9 @@ public class DialogueManager : MonoBehaviour
         DoQuest = false;
         IsQuestDetail = false;
         isDialogue = false;
+
+        text_tuto = Text_Alarm.transform.GetChild(0);
+        textComponent = text_tuto.GetComponent<TMP_Text>();
     }
 
 
@@ -429,15 +437,32 @@ public class DialogueManager : MonoBehaviour
     {
         Quest_Button01.SetActive(false);
     }
-
+    //튜토리얼 ui 활성화
+    public void TutorialUI(string text)
+    {
+        if (textComponent.text != text)
+        {
+            textComponent.text = text;
+        }
+        GameManager.Instance.PadeIn_Alpha(Text_Alarm, true, 255, 0.7f, true);
+        GameManager.Instance.PadeIn_Alpha(textComponent.gameObject, true, 255, 0.7f, false);
+    }
+    //튜토리얼 ui 비활성화
+    public void TutorialUIFalse(string text)
+    {
+        //Text_QuestGoal.enabled = false;
+        GameManager.Instance.PadeIn_Alpha(Text_Alarm, false, 0, 1f, true);
+        GameManager.Instance.PadeIn_Alpha(textComponent.gameObject, false, 0, 1f, false);
+        //Text_Alarm.gameObject.SetActive(false);
+    }
 
     //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
-
     public void player_InteractingTrue()
     {
         UIManager.Instance.Pause(false);
         GameManager.Instance.Stop_AllMonster();
     }
+
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
     public void player_InteractingFalse()
     {
