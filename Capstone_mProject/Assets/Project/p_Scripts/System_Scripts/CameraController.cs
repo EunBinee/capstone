@@ -42,26 +42,20 @@ public class CameraController : MonoBehaviour
     public float aimSmootly = 0.55f;
     public Transform campos;
 
-    bool isNormal_Z = false;
-    bool isAttention_Z = false;
-    bool isLongAttention_Z = false;
+    //"벽 체크"
+    [Header("벽체크 후, 앞으로 가는 속도")]
+    public float frontOfTheWall_Speed = 20;
 
+    //* 주목시 Z값
     float time_Z = 0;
     float duration = 1f;
-    float distancePlayer = 0f;
     Coroutine resetCameraZ_co = null;
-
-    //"벽 체크"
-
-    public float originZ_Zoom = 0f;
-    public bool isZoomedIn = false;
 
     private void Awake()
     {
-        //CamReset();
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
-
     }
+
     private void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
@@ -70,7 +64,6 @@ public class CameraController : MonoBehaviour
         CamReset();
         stopRotation = false;
     }
-
 
     private void Update()
     {
@@ -95,7 +88,6 @@ public class CameraController : MonoBehaviour
                         UndoAttention();
                     }
                 }
-
                 if (Input.GetKeyDown(KeyCode.Tab)) //* 다른 몬스터로 주목 옮김
                 {
                     if (isBeingAttention) // 주목되있는 상태라면?
@@ -164,7 +156,6 @@ public class CameraController : MonoBehaviour
     //*주목 대상 바꾸기
     public void ChangeAttentionMonster()
     {
-
         GameManager.instance.SortingMonsterList();
 
         if (GameManager.instance.monsterUnderAttackList.Count >= 2)//1마리 이상이면?
@@ -182,9 +173,7 @@ public class CameraController : MonoBehaviour
         {
             curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
         }
-
     }
-
     //*주목 풀기
     public void UndoAttention()
     {
@@ -219,7 +208,8 @@ public class CameraController : MonoBehaviour
             if (!stopRotation)
                 CameraRotate();  //마우스 방향에 따른 카메라 방향
             float camPosZ = WallInFrontOfCamera(-0.9f, -5f);
-            cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, camPosZ);
+            Vector3 targetPos = new Vector3(0, 0, camPosZ);
+            cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, targetPos, frontOfTheWall_Speed * Time.deltaTime);
 
             if (playerCameraPivot.transform.localPosition.y != 1.2f)
             {
@@ -232,7 +222,6 @@ public class CameraController : MonoBehaviour
     {
         //플레이어를 따라다니는 카메라
         //ref는 call by reference를 하겠다는 것.
-
         Vector3 cameraPos;
         if (playerController._currentState.isAim)
         {
@@ -240,9 +229,8 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, 1.5f);
+            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, 17f * Time.deltaTime);
         }
-
         playerCamera.transform.position = cameraPos;
     }
 
@@ -267,6 +255,7 @@ public class CameraController : MonoBehaviour
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
     }
+
     private void TargetRotate()
     {
         if (curTargetMonster == null)
@@ -295,8 +284,6 @@ public class CameraController : MonoBehaviour
             playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
 
         cameraRot = Vector3.zero;
-        // Debug.Log($"directionToTarget_pivot.x {directionToTarget_pivot.x}       directionToTarget_pivot.y {directionToTarget_pivot.y}");
-
 
         cameraRot.x = directionToTarget_pivot.y * -3;
         if (cameraRot.x < 0)
@@ -307,12 +294,12 @@ public class CameraController : MonoBehaviour
         playerCameraPivot.transform.localRotation = targetCameraRot;
         SetCameraZ_Attention();
     }
+
     bool curTouchWall = false;
+    //* 주목 할때 Z값
     private void SetCameraZ_Attention()
     {
-        //float distance = Vector3.Distance(playerController.gameObject.transform.position, curTargetMonster.gameObject.transform.position);
-        //time_Z
-        float originZ = WallInFrontOfCamera(-0.9f, -7);
+        float originZ = WallInFrontOfCamera(-0.5f, -7);
         Vector3 cameraPivotPos = playerCameraPivot.transform.localPosition;
 
         if (originZ != -7)
@@ -339,7 +326,6 @@ public class CameraController : MonoBehaviour
                 curTouchWall = false;
                 time_Z = 0;
             }
-
             if (cameraPivotPos.y != 1.7f)
             {
                 time_Z += Time.deltaTime;
@@ -348,142 +334,10 @@ public class CameraController : MonoBehaviour
                 playerCameraPivot.transform.localPosition = cameraPivotPos;
             }
         }
-
-        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, originZ);
-
+        // 일정한 속도로 이동하기 위한 보간
+        Vector3 targetPos = new Vector3(0, 0, originZ);
+        cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, targetPos, frontOfTheWall_Speed * Time.deltaTime);
     }
-
-    #region 나중에 지울것
-    /*
-    //되는것
-        private void TargetRotate()
-        {
-            if (curTargetMonster == null)
-            {
-                Debug.Log("카메라. 타겟 몬스터 null이다.");
-                return;
-            }
-
-            //SetCameraZ_AccDistance();
-            Vector3 cameraRot; //camera pivot의 회전 Euler
-            Quaternion targetCameraRot = Quaternion.identity; //camera obj의 회전
-            // 타겟의 위치로 향하는 방향 벡터를 구함
-            Vector3 targetPos = curTargetMonster.gameObject.transform.position;
-
-            //* 카메라와 몬스터의 방향 벡터
-            Vector3 directionToTarget_camera = targetPos - playerCamera.transform.position;
-            Vector3 directionToTarget_pivot = targetPos - playerCameraPivot.transform.position;
-            cameraRot = Vector3.zero;
-            cameraRot.x -= directionToTarget_pivot.y;//x;
-            cameraRot.y = directionToTarget_pivot.x;//y;
-
-            Vector3 cameraEuler = Quaternion.LookRotation(directionToTarget_camera).eulerAngles;// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
-            cameraEuler = cameraRot + cameraEuler;
-            targetCameraRot = Quaternion.Euler(cameraEuler);
-
-            if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
-            {
-                //각도가 1보다 작으면.. 같은걸로 간주
-                playerCamera.transform.rotation = targetCameraRot;
-            }
-            else if (targetCameraRot != Quaternion.identity)
-                playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
-
-            //위아래
-            //targetCameraRot = Quaternion.Euler(cameraRot);
-            //playerCameraPivot.transform.localRotation = targetCameraRot;
-        }
-
-    */
-    /*
-    private void TargetRotate()
-    {
-        if (curTargetMonster == null)
-        {
-            Debug.Log("카메라. 타겟 몬스터 null이다.");
-            return;
-        }
-
-        //SetCameraZ_AccDistance();
-        Vector3 cameraRot; //camera pivot의 회전 Euler
-        Quaternion targetCameraRot = Quaternion.identity; //camera obj의 회전
-        // 타겟의 위치로 향하는 방향 벡터를 구함
-        Vector3 targetPos = curTargetMonster.gameObject.transform.position;
-
-        //* 카메라와 몬스터의 방향 벡터
-        Vector3 directionToTarget_camera = targetPos - playerCamera.transform.position;
-        Vector3 directionToTarget_pivot = targetPos - playerCameraPivot.transform.position;
-        cameraRot = Vector3.zero;
-        cameraRot.y = directionToTarget_pivot.x;
-        //cameraRot.x = directionToTarget_pivot.y;
-        if (directionToTarget_camera.sqrMagnitude >= 3)
-        {
-            targetCameraRot = Quaternion.LookRotation(directionToTarget_camera);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
-        }
-
-        if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
-        {
-            //각도가 1보다 작으면.. 같은걸로 간주
-            playerCamera.transform.rotation = targetCameraRot;
-        }
-        else if (targetCameraRot != Quaternion.identity)
-            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime);
-
-        //위아래
-        targetCameraRot = Quaternion.Euler(cameraRot);
-        playerCameraPivot.transform.localRotation = targetCameraRot;
-    }
-    */
-
-
-
-
-
-
-
-
-    //private void TargetRotate()
-    //{
-    //    if (curTargetMonster == null)
-    //    {
-    //        Debug.Log("카메라. 타겟 몬스터 null이다.");
-    //        return;
-    //    }
-    //
-    //    SetCameraZ_AccDistance();
-    //
-    //    Vector3 cameraRot;
-    //    Quaternion targetCameraRot = Quaternion.identity;
-    //    // 타겟의 위치로 향하는 방향 벡터를 구함
-    //    Vector3 targetPos;
-    //
-    //    targetPos = curTargetMonster.gameObject.transform.position;
-    //    //Vector3 directionToTarget = targetPos - playerCamera.transform.position;
-    //    Vector3 directionToTarget = targetPos - playerCameraPivot.transform.position;
-    //    cameraRot = Vector3.zero;
-    //    cameraRot.y = directionToTarget.x;
-    //
-    //    if (directionToTarget.sqrMagnitude >= 3)
-    //    {
-    //        targetCameraRot = Quaternion.LookRotation(directionToTarget);// 방향 벡터를 바라보도록 하는 Quaternion을 생성    
-    //    }
-    //
-    //    if (QuaternionAngleDifference(targetCameraRot, playerCamera.transform.rotation) < 1f)
-    //    {
-    //        //각도가 1보다 작으면.. 같은걸로 간주
-    //        playerCamera.transform.rotation = targetCameraRot;
-    //    }
-    //    else if (targetCameraRot != Quaternion.identity)
-    //        playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetCameraRot, 4f * Time.deltaTime); /* x speed */
-    //
-    //    //playerCamera.transform.position = target.position - transform.forward * dis;
-    //    //위아래
-    //    cameraRot = Vector3.zero;
-    //    targetCameraRot = Quaternion.Euler(cameraRot);
-    //    playerCameraPivot.transform.localRotation = targetCameraRot;
-    //}
-
-    #endregion
 
     public void ResetCameraZ()
     {
@@ -507,12 +361,8 @@ public class CameraController : MonoBehaviour
         while (time < duration)
         {
             time += Time.deltaTime;
-            //camPos.z = -5f;
-            float value = Mathf.Lerp(camPos.z, normal_Z, time / duration);
-            camPos.z = value;
-            cameraTrans.localPosition = camPos;
 
-            value = Mathf.Lerp(camPivotPos.y, 1.7f, time / duration);
+            float value = Mathf.Lerp(camPivotPos.y, 1.7f, time / duration);
             camPivotPos.y = value;
             playerCameraPivot.transform.localPosition = camPivotPos;
 
@@ -528,246 +378,6 @@ public class CameraController : MonoBehaviour
         playerCameraPivot.transform.localPosition = camPivotPos;
     }
 
-    private void SetCameraZ_AccDistance()
-    {
-        //플레이어와 몬스터의 거리에 따른 z값 변경
-
-        //벽통과 제어관련 변수
-        bool wallNearby = false;
-        float originZ = 0;
-
-        float distance = Vector3.Distance(playerController.gameObject.transform.position, curTargetMonster.gameObject.transform.position);
-
-        Vector3 camPos = cameraTrans.localPosition;
-        Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
-
-        float normalDistance = 10;
-        float longAttention_Distance = 6;
-        if (GameManager.instance.bossBattle)
-        {
-            normalDistance = 20;
-            longAttention_Distance = 12;
-        }
-
-        if (distance > normalDistance)
-        {
-            //z 를 normal_Z(-5)로 변경
-            if (camPos.z != normal_Z)
-            {
-                if (isNormal_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = true;
-                    isAttention_Z = false;
-                    isLongAttention_Z = false;
-                }
-
-
-                //벽 통과 제어
-                originZ = WallInFrontOfCamera(5f, normal_Z);
-                if (originZ != normal_Z)
-                {
-                    Debug.Log("장애물 존재");
-                    wallNearby = true;
-                }
-                else if (originZ == normal_Z)
-                {
-                    time_Z += Time.deltaTime;
-                    float value = Mathf.Lerp(camPos.z, normal_Z, time_Z / duration);
-                    camPos.z = value;
-                    cameraTrans.localPosition = camPos;
-
-                    value = Mathf.Lerp(camPivotPos.y, 1.7f, time_Z / duration);
-                    camPivotPos.y = value;
-                    playerCameraPivot.transform.localPosition = camPivotPos;
-                }
-
-            }
-        }
-        else if (distance < longAttention_Distance)
-        {
-            //z를 longAttention_Z(-9)으로 변경
-            if (camPos.z != longAttention_Z)
-            {
-                if (isLongAttention_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = false;
-                    isAttention_Z = false;
-                    isLongAttention_Z = true;
-                }
-
-
-                //벽 통과 제어
-                originZ = WallInFrontOfCamera(5f, longAttention_Z);
-                if (originZ != longAttention_Z)
-                {
-                    Debug.Log("장애물 존재");
-                    wallNearby = true;
-                }
-                else if (originZ == longAttention_Z)
-                {
-                    time_Z += Time.deltaTime;
-
-                    float value = Mathf.Lerp(camPos.z, longAttention_Z, time_Z / duration);
-                    camPos.z = value;
-                    cameraTrans.localPosition = camPos;
-
-                    if (camPivotPos.y != 1.5f)
-                    {
-                        value = Mathf.Lerp(camPivotPos.y, 1.5f, time_Z / duration);
-                        camPivotPos.y = value;
-                        playerCameraPivot.transform.localPosition = camPivotPos;
-                    }
-                }
-            }
-        }
-        else
-        {
-            //z를 -6으로 변경
-            if (camPos.z != attention_Z)
-            {
-                if (isAttention_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = false;
-                    isAttention_Z = true;
-                    isLongAttention_Z = false;
-                }
-
-
-                //벽 통과 제어
-                originZ = WallInFrontOfCamera(5f, attention_Z);
-                if (originZ != attention_Z)
-                {
-                    Debug.Log("장애물 존재");
-                    wallNearby = true;
-                }
-                else if (originZ == attention_Z)
-                {
-                    time_Z += Time.deltaTime;
-                    float value = Mathf.Lerp(camPos.z, attention_Z, time_Z / duration);
-                    camPos.z = value;
-                    cameraTrans.localPosition = camPos;
-
-                    if (camPivotPos.y != 1.2f)
-                    {
-                        value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
-                        camPivotPos.y = value;
-                        playerCameraPivot.transform.localPosition = camPivotPos;
-                    }
-                }
-            }
-        }
-
-        if (wallNearby)
-        {
-            //근처에 벽이 있다면??
-            cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, originZ);
-
-            if (camPivotPos.y != 1.2f)
-            {
-                playerCameraPivot.transform.localPosition = new Vector3(0, 1.2f, originZ);
-            }
-        }
-
-
-    }
-    /*
-
-    private void SetCameraZ_AccDistance()
-    {
-        //플레이어와 몬스터의 거리에 따른 z값 변경
-        float distance = Vector3.Distance(playerController.gameObject.transform.position, curTargetMonster.gameObject.transform.position);
-
-        Vector3 camPos = cameraTrans.localPosition;
-        Vector3 camPivotPos = playerCameraPivot.transform.localPosition;
-
-        float normalDistance = 10;
-        float longAttention_Distance = 6;
-        if (GameManager.instance.bossBattle)
-        {
-            normalDistance = 20;
-            longAttention_Distance = 12;
-        }
-
-        if (distance > normalDistance)
-        {
-            //z 를 normal_Z(-5)로 변경
-            if (camPos.z != normal_Z)
-            {
-                if (isNormal_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = true;
-                    isAttention_Z = false;
-                    isLongAttention_Z = false;
-                }
-                time_Z += Time.deltaTime;
-
-                float value = Mathf.Lerp(camPos.z, normal_Z, time_Z / duration);
-                camPos.z = value;
-                cameraTrans.localPosition = camPos;
-
-                value = Mathf.Lerp(camPivotPos.y, 1.7f, time_Z / duration);
-                camPivotPos.y = value;
-                playerCameraPivot.transform.localPosition = camPivotPos;
-            }
-        }
-        else if (distance < longAttention_Distance)
-        {
-            //z를 longAttention_Z(-9)으로 변경
-            if (camPos.z != longAttention_Z)
-            {
-                if (isLongAttention_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = false;
-                    isAttention_Z = false;
-                    isLongAttention_Z = true;
-                }
-                time_Z += Time.deltaTime;
-
-                float value = Mathf.Lerp(camPos.z, longAttention_Z, time_Z / duration);
-                camPos.z = value;
-                cameraTrans.localPosition = camPos;
-
-                if (camPivotPos.y != 1.5f)
-                {
-                    value = Mathf.Lerp(camPivotPos.y, 1.5f, time_Z / duration);
-                    camPivotPos.y = value;
-                    playerCameraPivot.transform.localPosition = camPivotPos;
-                }
-            }
-        }
-        else
-        {
-            //z를 -6으로 변경
-            if (camPos.z != attention_Z)
-            {
-                if (isAttention_Z == false)
-                {
-                    time_Z = 0;
-                    isNormal_Z = false;
-                    isAttention_Z = true;
-                    isLongAttention_Z = false;
-                }
-                time_Z += Time.deltaTime;
-
-                float value = Mathf.Lerp(camPos.z, attention_Z, time_Z / duration);
-                camPos.z = value;
-                cameraTrans.localPosition = camPos;
-
-                if (camPivotPos.y != 1.2f)
-                {
-                    value = Mathf.Lerp(camPivotPos.y, 1.2f, time_Z / duration);
-                    camPivotPos.y = value;
-                    playerCameraPivot.transform.localPosition = camPivotPos;
-                }
-            }
-        }
-    }
-    */
     public void Check_Z()
     {
         if (!GameManager.instance.bossBattle)
@@ -783,10 +393,6 @@ public class CameraController : MonoBehaviour
             longAttention_Z = -13f;
         }
     }
-
-    float changeZ = 0f;      //바뀔 Z
-    float duration_Z = 0.3f; //보간으로 Z를 바꿀때 시간
-    bool replaceZ = false; //원래의 Z로 돌아감(줌인에서 다시 Z로)
 
     public float WallInFrontOfCamera(float max = -0.9f, float min = -5f)
     {
@@ -822,7 +428,6 @@ public class CameraController : MonoBehaviour
                 camPosZ = min;
             }
             return camPosZ;
-            //cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, camPosZ);
         }
         return min;
     }
@@ -847,8 +452,6 @@ public class CameraController : MonoBehaviour
             return false;
         }
     }
-
-
 
     //*----------------------------------------------------------------------------------------//
     void FixCamZ()
