@@ -104,7 +104,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         CheckBossHP();
         noAttack = false;
-        GameManager.instance.cameraController.controlCam = false;
     }
 
     public override void UpdateRotation()

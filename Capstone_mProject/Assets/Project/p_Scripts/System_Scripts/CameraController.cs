@@ -37,7 +37,6 @@ public class CameraController : MonoBehaviour
     [Header("주목 기능")]
     public bool banAttention = false; // 주목 금지
     public bool isBeingAttention = false;
-    public bool controlCam = true;
     public Monster curTargetMonster = null;
     public Transform targetTrans;
 
@@ -60,6 +59,9 @@ public class CameraController : MonoBehaviour
 
 
     [Header("화살 스킬 관련 카메라")]
+    public bool use_aimCamera = true;
+
+
     public float aimSmootly = 0.55f;
     public Transform campos;
 
@@ -85,7 +87,7 @@ public class CameraController : MonoBehaviour
 
     public void CameraInput()
     {
-        if (controlCam)
+        if (!use_aimCamera)
         {
             if (GameManager.instance.monsterUnderAttackList.Count > 0 && !banAttention) // - 현재 플레이어와 싸우고 있는 몬스터가 있고.
             {
@@ -112,16 +114,22 @@ public class CameraController : MonoBehaviour
                         }
                     }
                 }
+
+                if (Input.GetKeyDown(KeyCode.F4))
+                {
+                    use_aimCamera = true;
+                }
+            }
+
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                use_aimCamera = false;
+                CameraRecovery();
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            CameraRecovery();
-        }
-
         float scroll = -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
-
         if (scroll != 0)
         {
             ScrollZoomInOut(scroll);
@@ -232,7 +240,14 @@ public class CameraController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraActions();
+        if (!use_aimCamera)
+        {
+            CameraActions();
+        }
+        else if (use_aimCamera)
+        {
+            AimCameraActions();
+        }
     }
 
     //카메라 움직임
@@ -257,6 +272,23 @@ public class CameraController : MonoBehaviour
                 playerCameraPivot.transform.localPosition = new Vector3(0, minY, 0);
             }
         }
+    }
+
+    private void AimCameraActions()
+    {
+        AimCameraSetZ();
+        CameraFollowPlayer();
+        //if (!stopRotation)
+        //    CameraRotate();  //마우스 방향에 따른 카메라 방향
+    }
+    private void AimCameraSetZ()
+    {
+        Vector3 cameraSetVec = new Vector3(0.2f, 0.2f, -1.5f);
+        cameraObj.transform.localPosition = cameraSetVec;
+    }
+    private void AimCameraRotate()
+    {
+
     }
 
     private void CameraFollowPlayer()
@@ -285,12 +317,12 @@ public class CameraController : MonoBehaviour
 
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
 
-        //가로 세로
+        //가로 세로 => 카메라 최상위 부모
         cameraRot = Vector3.zero;
         cameraRot.y = left_right_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCamera.transform.rotation = targetCameraRot;
-        //위아래
+        //위아래 => cameraPivot
         cameraRot = Vector3.zero;
         cameraRot.x = up_down_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
@@ -540,7 +572,6 @@ public class CameraController : MonoBehaviour
         GameManager.instance.bossBattle = false;
         Check_Z();
         ResetCameraZ();
-        controlCam = false;
         UndoAttention();
 
     }
