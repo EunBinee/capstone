@@ -16,11 +16,11 @@ public class PlayerMovement : MonoBehaviour
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private CameraController P_CamController;
 
-    public SkillButton skill_E;
+    public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     public SkillButton skill_Q;
-    public SkillButton skill_R;
+    public SkillButton skill_R; //* AIM
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -132,14 +132,6 @@ public class PlayerMovement : MonoBehaviour
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;
             }
-            if (Input.GetKeyUp(KeyCode.E))  //*Heal
-            {
-                skillMotion('E');
-            }
-            if (Input.GetKeyUp(KeyCode.R))  //*Aim
-            {
-                skillMotion('R');
-            }
             if (Input.GetMouseButtonDown(0)
                 && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
                 && !EventSystem.current.IsPointerOverGameObject())
@@ -159,7 +151,11 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             //* skills input
-            /*if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyUp(KeyCode.E))  //*Heal
+            {
+                skillMotion('E');
+            }
+            if (Input.GetKeyDown(KeyCode.R))  //*Aim
             {
                 //Debug.Log("P_States.isSkill : " + P_States.isSkill);
                 if (P_States.isSkill)
@@ -168,10 +164,10 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else
                 {
-                    skillMotion('E');
+                    skillMotion('R');
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            /*if (Input.GetKeyDown(KeyCode.Q))
             {
                 if (P_States.isSkill)
                 {

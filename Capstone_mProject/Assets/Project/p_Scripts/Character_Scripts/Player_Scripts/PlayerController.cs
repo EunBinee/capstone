@@ -31,14 +31,14 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    //public PlayerSkills _playerSkills = new PlayerSkills();
+    public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    //private PlayerSkills P_Skills => _playerSkills;
+    private PlayerSkills P_Skills => _playerSkills;
     private CameraController P_CamController;
     public PlayerMovement P_Movement;
 
@@ -118,6 +118,7 @@ public class PlayerController : MonoBehaviour
     }
     void Start()
     {
+        _playerSkills.Init();
         InitComponent();
     }
     // Update is called once per frame
@@ -134,7 +135,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            //P_Movement.skill_E.gameObject.SetActive(false);
+            P_Movement.skill_R.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
@@ -142,7 +143,7 @@ public class PlayerController : MonoBehaviour
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originVpos;
-            //P_Movement.skill_E.gameObject.SetActive(true);
+            P_Movement.skill_R.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
             //전방 지면 체크
@@ -168,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        //_playerSkills.Init();
     }
     private void InitComponent()
     {
@@ -282,7 +282,7 @@ public class PlayerController : MonoBehaviour
         {
             P_States.isAim = true;
             P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-            AimOnCamera();  //* 카메라
+            //AimOnCamera();  //* 카메라
             bow.SetActive(true);    //* 무기 교체
             sword.SetActive(false);
             crosshairImage.gameObject.SetActive(true);  //* 조준점
@@ -294,7 +294,7 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.SetTrigger("shoot");
             P_States.isAim = false;
             skill.isFirsttime = true;
-            AimOnCameraReturn();
+            //AimOnCameraReturn();
             bow.SetActive(false);
             sword.SetActive(true);
             crosshairImage.gameObject.SetActive(false);
@@ -310,9 +310,9 @@ public class PlayerController : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        //arrow = P_Skills.GetArrowFromPool();
+        arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        //arrow.SetActive(true);
+        arrow.SetActive(true);
     }
 
     //* camera controll
