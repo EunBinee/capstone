@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
@@ -14,9 +15,10 @@ public class CameraController : MonoBehaviour
     public Camera cameraObj;             //카메라.
     public Transform cameraTrans;
 
-    [Header("회전 스피트")]
+    [Header("스피트")]
     public float left_right_LookSpeed = 500; //왼 오 돌리는 스피드
     public float up_down_LookSpeed = 500;    //위아래로 돌리는 스피드
+
     [Header("위아래 고정 비율  >> 0이면 위아래로 카메라 안움직임")]
     public float minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정
     public float maxPivot = 35;               //35로 위 고정
@@ -26,8 +28,11 @@ public class CameraController : MonoBehaviour
     public Vector3 cameraFllowVelocity = Vector3.zero;
     public float left_right_LookAngle;
     public float up_down_LookAngle;
-
     public bool stopRotation = false;
+
+    [Header("스크롤")]
+    public float scrollSpeed = 20;// 스크롤 속도
+    public float default_FieldOfView = 35f; //기본 zoom
 
     [Header("주목 기능")]
     public bool banAttention = false; // 주목 금지
@@ -35,21 +40,28 @@ public class CameraController : MonoBehaviour
     public bool controlCam = true;
     public Monster curTargetMonster = null;
     public Transform targetTrans;
-    public float normal_Z = -5f;
-    public float attention_Z = -6.5f;
-    public float longAttention_Z = -7.5f;
 
-    public float aimSmootly = 0.55f;
-    public Transform campos;
+    //주목 후 카메라 리셋
+    Coroutine resetCameraZ_co = null;
 
     //"벽 체크"
     [Header("벽체크 후, 앞으로 가는 속도")]
     public float frontOfTheWall_Speed = 20;
-
-    //* 주목시 Z값
+    //* 주목X Z값
+    float minZ = -0.9f; //벽 앞이라 Z값을 땡겼을때
+    float maxZ = -5f;
+    float minY = 1.2f; //Pivot의 Y값 고정
+    //* 주목O Z값
+    float minZ_Attention = -0.9f; //벽 앞이라 Z값을 땡겼을때
+    float maxZ_Attention = -7f;
+    float minY_Attention = 1.4f; //벽 앞이라 Z값을 땡겼을때 Pivot의 Y값
+    float maxY_Attention = 1.7f;
     float time_Z = 0;
-    float duration = 1f;
-    Coroutine resetCameraZ_co = null;
+
+
+    [Header("화살 스킬 관련 카메라")]
+    public float aimSmootly = 0.55f;
+    public Transform campos;
 
     private void Awake()
     {
@@ -60,6 +72,7 @@ public class CameraController : MonoBehaviour
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         playerHeadPos = GameManager.instance.gameData.playerHeadPos;
+        cameraObj.fieldOfView = default_FieldOfView;
         Check_Z();
         CamReset();
         stopRotation = false;
@@ -106,6 +119,29 @@ public class CameraController : MonoBehaviour
         {
             CameraRecovery();
         }
+
+        float scroll = -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
+
+        if (scroll != 0)
+        {
+            ScrollZoomInOut(scroll);
+        }
+    }
+
+    public void ScrollZoomInOut(float scroll)
+    {
+        if (cameraObj.fieldOfView <= 20f && scroll < 0)
+        {
+            cameraObj.fieldOfView = 20f;
+        }
+        else if (cameraObj.fieldOfView >= 50f && scroll > 0)
+        {
+            cameraObj.fieldOfView = 50f;
+        }
+        else
+        {
+            cameraObj.fieldOfView += scroll;
+        }
     }
 
     //* 주목 금지
@@ -141,8 +177,11 @@ public class CameraController : MonoBehaviour
         {
             if (resetCameraZ_co != null)
                 StopCoroutine(resetCameraZ_co);
+
+            cameraObj.fieldOfView = default_FieldOfView;
             Vector3 camPos = cameraTrans.localPosition;
-            camPos.z = attention_Z;
+            float curZ = WallInFrontOfCamera(minZ_Attention, maxZ_Attention);
+            camPos.z = curZ;
             cameraTrans.localPosition = camPos;
             playerController._currentState.isStrafing = true;
             //처음 주목한 경우
@@ -174,10 +213,12 @@ public class CameraController : MonoBehaviour
             curTargetMonster = GameManager.instance.monsterUnderAttackList[0];
         }
     }
+
     //*주목 풀기
     public void UndoAttention()
     {
         ResetCameraZ();
+        cameraObj.fieldOfView = default_FieldOfView;
         playerController._currentState.isStrafing = false;
 
         Vector3 playerCam = playerCamera.transform.rotation.eulerAngles;
@@ -207,13 +248,13 @@ public class CameraController : MonoBehaviour
         {
             if (!stopRotation)
                 CameraRotate();  //마우스 방향에 따른 카메라 방향
-            float camPosZ = WallInFrontOfCamera(-0.9f, -5f);
+            float camPosZ = WallInFrontOfCamera(minZ, maxZ);
             Vector3 targetPos = new Vector3(0, 0, camPosZ);
             cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, targetPos, frontOfTheWall_Speed * Time.deltaTime);
 
-            if (playerCameraPivot.transform.localPosition.y != 1.2f)
+            if (playerCameraPivot.transform.localPosition.y != minY)
             {
-                playerCameraPivot.transform.localPosition = new Vector3(0, 1.2f, 0);
+                playerCameraPivot.transform.localPosition = new Vector3(0, minY, 0);
             }
         }
     }
@@ -299,10 +340,11 @@ public class CameraController : MonoBehaviour
     //* 주목 할때 Z값
     private void SetCameraZ_Attention()
     {
-        float originZ = WallInFrontOfCamera(-0.5f, -7);
+        float originZ = WallInFrontOfCamera(minZ_Attention, maxZ_Attention);
         Vector3 cameraPivotPos = playerCameraPivot.transform.localPosition;
+        float duration = 1f;
 
-        if (originZ != -7)
+        if (originZ != maxZ_Attention)
         {
             //* 장애물 존재
             if (!curTouchWall)
@@ -310,10 +352,10 @@ public class CameraController : MonoBehaviour
                 curTouchWall = true;
                 time_Z = 0;
             }
-            if (cameraPivotPos.y != 1.4)
+            if (cameraPivotPos.y != minY_Attention)
             {
                 time_Z += Time.deltaTime;
-                float value = Mathf.Lerp(cameraPivotPos.y, 1.4f, time_Z / duration);
+                float value = Mathf.Lerp(cameraPivotPos.y, minY_Attention, time_Z / duration);
                 cameraPivotPos.y = value;
                 playerCameraPivot.transform.localPosition = cameraPivotPos;
             }
@@ -326,10 +368,10 @@ public class CameraController : MonoBehaviour
                 curTouchWall = false;
                 time_Z = 0;
             }
-            if (cameraPivotPos.y != 1.7f)
+            if (cameraPivotPos.y != maxY_Attention)
             {
                 time_Z += Time.deltaTime;
-                float value = Mathf.Lerp(cameraPivotPos.y, 1.7f, time_Z / duration);
+                float value = Mathf.Lerp(cameraPivotPos.y, maxY_Attention, time_Z / duration);
                 cameraPivotPos.y = value;
                 playerCameraPivot.transform.localPosition = cameraPivotPos;
             }
@@ -370,7 +412,9 @@ public class CameraController : MonoBehaviour
         }
 
         camPos = cameraTrans.localPosition;
-        camPos.z = normal_Z;
+
+        float curZ = WallInFrontOfCamera(minZ, maxZ);
+        camPos.z = curZ;
         cameraTrans.localPosition = camPos;
 
         camPivotPos = playerCameraPivot.transform.localPosition;
@@ -382,15 +426,20 @@ public class CameraController : MonoBehaviour
     {
         if (!GameManager.instance.bossBattle)
         {
-            normal_Z = -6f;
-            attention_Z = -7.5f;
-            longAttention_Z = -9.5f;
+            //! 보스전때 Z값 바꿀때 여기서 바꾸기 
         }
         else
         {
-            normal_Z = -5f;
-            attention_Z = -9f;
-            longAttention_Z = -13f;
+            //* 주목X Z값
+            minZ = -0.9f; //벽 앞이라 Z값을 땡겼을때
+            maxZ = -5f;
+            minY = 1.2f; //Pivot의 Y값 고정
+            //* 주목O Z값
+            minZ_Attention = -0.9f; //벽 앞이라 Z값을 땡겼을때
+            maxZ_Attention = -7f;
+            minY_Attention = 1.4f; //벽 앞이라 Z값을 땡겼을때 Pivot의 Y값
+            maxY_Attention = 1.7f;
+            time_Z = 0;
         }
     }
 
@@ -407,6 +456,7 @@ public class CameraController : MonoBehaviour
             float dist = Vector3.Distance(hit.point, cameraObj.gameObject.transform.position);//  (hit.point - cameraObj.gameObject.transform.position).magnitude;
 
             bool isbehind = CheckObj_behindCamera(hit.point);
+
             float camPosZ = 0;
             if (isbehind)
             {
@@ -442,13 +492,13 @@ public class CameraController : MonoBehaviour
         if (dotProduct > 0)
         {
             // 충돌 지점이 현재 객체의 앞쪽에 있음
-            Debug.Log("충돌 지점이 앞에 있습니다.");
+            //Debug.Log("충돌 지점이 앞에 있습니다.");
             return true;
         }
         else
         {
             // 충돌 지점이 현재 객체의 뒷쪽에 있음
-            Debug.Log("충돌 지점이 뒤에 있습니다.");
+            //Debug.Log("충돌 지점이 뒤에 있습니다.");
             return false;
         }
     }
@@ -470,7 +520,8 @@ public class CameraController : MonoBehaviour
 
     void CamReset()
     {
-        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, normal_Z);
+        float resetZ = WallInFrontOfCamera(minZ, maxZ);
+        cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, resetZ);
         cameraObj.gameObject.transform.localRotation = Quaternion.identity;
     }
 
@@ -500,7 +551,5 @@ public class CameraController : MonoBehaviour
         CamReset(); //rotation, position 변경
     }
 
-
     void OnPreCull() => GL.Clear(true, true, Color.black);
-
 }
