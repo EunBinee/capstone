@@ -20,28 +20,28 @@ public class DamageUI_Info : MonoBehaviour
     {
         if (damage > GameManager.instance.gameData.bigDamage) //임시 수치. 나중에 기획자가 변경할 수 있도록 수정.
         {
-            //Color l_Color = GameManager.Instance.HexToColor("#FF8C80");
-            //txt_monsterDamage.color = l_Color;
-            txt_monsterDamage.font = damageFont[2];
-            txt_monsterDamage.fontSize = 800;
+            Color l_Color = GameManager.Instance.HexToColor("#FF8C80");
+            txt_monsterDamage.color = l_Color;
+            //txt_monsterDamage.font = damageFont[2];
+            txt_monsterDamage.fontSize = 500;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
         else if (damage > GameManager.instance.gameData.midDamage)
         {
-            //Color m_Color = GameManager.Instance.HexToColor("#FFEC80");
-            //txt_monsterDamage.color = m_Color;
-            txt_monsterDamage.font = damageFont[1];
-            txt_monsterDamage.fontSize = 600;
+            Color m_Color = GameManager.Instance.HexToColor("#FFEC80");
+            txt_monsterDamage.color = m_Color;
+            //txt_monsterDamage.font = damageFont[1];
+            txt_monsterDamage.fontSize = 300;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
         else
         {
-            //Color s_Color = GameManager.Instance.HexToColor("#BAFF80");
-            //txt_monsterDamage.color = s_Color;
-            txt_monsterDamage.font = damageFont[0];
-            txt_monsterDamage.fontSize = 400;
+            Color s_Color = GameManager.Instance.HexToColor("#FFFFFF");
+            txt_monsterDamage.color = s_Color;
+            //txt_monsterDamage.font = damageFont[0];
+            txt_monsterDamage.fontSize = 100;
             int t_damage = (int)damage;
             txt_monsterDamage.text = t_damage.ToString();
         }
