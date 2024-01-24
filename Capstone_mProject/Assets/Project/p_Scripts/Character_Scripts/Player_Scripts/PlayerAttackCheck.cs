@@ -103,7 +103,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
                     if (P_States.hadAttack == false || P_States.notSameMonster)
                     {
-                        Debug.Log("[attack test]몬스터 피격");
+                        // Debug.Log("[attack test]몬스터 피격");
                         // 충돌한 객체의 Transform을 얻기
                         Transform collidedTransform = other.transform;
                         // 충돌 지점의 좌표를 얻기
@@ -170,7 +170,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     public void checkMon()
     {
-        Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
+        //Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
         // for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
         // {
         //     GameObject curmon = _playerController.hitMonsters[i];

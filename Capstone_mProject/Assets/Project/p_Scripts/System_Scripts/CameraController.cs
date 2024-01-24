@@ -445,7 +445,7 @@ public class CameraController : MonoBehaviour
 
     public float WallInFrontOfCamera(float max = -0.9f, float min = -5f)
     {
-        if (playerController._currentState.isDodgeing)
+        if (playerController._currentState.isStartComboAttack || playerController._currentState.isDodgeing)
             return cameraObj.gameObject.transform.localPosition.z;
 
         int monsterLayerMask = 1 << LayerMask.NameToLayer("Monster"); //몬스터 제외
