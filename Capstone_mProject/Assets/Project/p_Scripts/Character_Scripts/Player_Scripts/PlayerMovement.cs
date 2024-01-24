@@ -228,7 +228,7 @@ public class PlayerMovement : MonoBehaviour
         }
         //Vector3 skillDir;
         //Vector3 skillPos;
-        P_States.isSkill = true;
+        //P_States.isSkill = true;
 
         switch (a)
         {
