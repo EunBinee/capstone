@@ -80,10 +80,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                if (!P_States.isSkill)
-                {
-                    skillMotion('E');
-                }
+                skillMotion('R');
             }
         }
     }
@@ -98,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
 
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
             P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
-            UpdateRotate();
+            //UpdateRotate();
             if (Input.GetKey(KeyCode.W))
             {
                 P_Input.verticalMovement = 1;
@@ -130,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.P))
             {
                 //Debug.Log("Electric on");
-                P_States.isElectricShock = true;
+                P_States.isElectricShock = true;    //* 감전
             }
             if (Input.GetMouseButtonDown(0)
                 && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
@@ -139,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
                 if (P_States.isAim)    //* 조준 모드라면
                 {
                     P_Com.animator.SetTrigger("shoot");
-                    skillMotion('E');
+                    skillMotion('R');
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
@@ -548,7 +545,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_States.isElectricShock = false;
                 ElecTime = 0f;
-                Debug.Log("Electric off");
+                //Debug.Log("Electric off");
             }
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
@@ -609,7 +606,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = p_velocity;
         }
 
-        /*else if (P_States.isAim)
+        else if (P_States.isAim)
         {
             //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
             P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
@@ -617,10 +614,10 @@ public class PlayerMovement : MonoBehaviour
 
             P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
-            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
-        }*/
+        }/**/
 
 
 
@@ -871,7 +868,7 @@ public class PlayerMovement : MonoBehaviour
 
             /**///* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
+            if (P_Value.nowEnemy != null && /*!P_States.isForwardBlocked*/P_Controller.forwardHit == null && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -890,11 +887,11 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 pos = transform.position + dir * 3f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else if (P_States.isForwardBlocked || !P_States.canGoForwardInAttack) //앞에 막혀있다면 
+            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack) //앞에 막혀있거나 앞으로 가지 못한다면
             {
                 //dir = this.gameObject.transform.forward.normalized;
             }
-            else    //앞이 막혀있지 않고 적이 없다면
+            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null)   //앞이 막혀있지 않고 적이 없다면
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;

@@ -68,6 +68,7 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
     public List<GameObject> hitMonsters;
+    public List<Collider> forwardHit;
 
     //private Vector3 originCamPos;
     //private Quaternion originCamQua;
@@ -407,12 +408,17 @@ public class PlayerController : MonoBehaviour
         if (cast)
         {
             P_States.isForwardBlocked = true;
+            forwardHit.Add(hit.collider);    //* 전방체크 해서 걸린 거 리스트에 추가 
             //Debug.Log("if (cast)");
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
             //if (P_States.isForwardBlocked)
             //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
             //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
+        }
+        else
+        {
+            forwardHit.Clear(); //* P_Controller.forwardHit == null
         }
     }
     //* 후방체크
