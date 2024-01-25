@@ -186,7 +186,6 @@ public class DialogueParser : MonoBehaviour
                                 if (isNumeric) //만약 숫자 변환이 가능하다면 
                                 {
                                     line.nextDialogueNum = nextDialogueNum;
-                                    //Debug.Log(nextDialogueNum);
                                 }
                                 if (!isNumeric && row[3].ToString() == "")
                                 {
@@ -245,7 +244,6 @@ public class DialogueParser : MonoBehaviour
                                         line.changeQuestID = true;
                                         line.questIDToBeChange = changeQuestID;
                                     }
-                                    //Debug.Log(changeQuestID);
 
                                 }
 
@@ -339,7 +337,6 @@ public class DialogueParser : MonoBehaviour
                 }
             } while (row[0].ToString() == "");
             quests.Add(quest);
-            //Debug.Log(quest.questClearValue);
         }
         return quests.ToArray();
     }

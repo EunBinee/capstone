@@ -166,8 +166,6 @@ public class DialogueManager : MonoBehaviour
                     curContext++;
                     ClickChoiceBtn = false;
 
-                    //Debug.Log("d");
-
                 }
                 else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return))
                 {
@@ -182,9 +180,6 @@ public class DialogueManager : MonoBehaviour
                     line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
                     dialogueController.Chat_Obect(line);
                     curContext++;
-
-                    //Debug.Log("d1");
-
                 }
             }
             yield return new WaitUntil(() => endChat_inController == true);
@@ -322,8 +317,6 @@ public class DialogueManager : MonoBehaviour
                             //GameManager.Instance.gameInfo.DialogueNum = 1;
                             questIDToBeChange = dialogue.lines[curPart][curLine].questIDToBeChange;
                             //DoQuest = true;
-                            //Debug.Log(questIDToBeChange);
-
                         }
                         //Debug.Log("퀘스트 변경 o");
 
@@ -461,6 +454,7 @@ public class DialogueManager : MonoBehaviour
     {
         UIManager.Instance.Pause(false);
         GameManager.Instance.Stop_AllMonster();
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
     }
 
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 

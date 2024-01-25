@@ -88,7 +88,7 @@ public class DialogueInfo : MonoBehaviour
             id = int.Parse(id_String);
 
 
-            Debug.Log(id.ToString());
+            //Debug.Log(id.ToString());
             //interaction_Item.dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
 
             if (interaction_Item.isNpc)
