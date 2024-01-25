@@ -6,23 +6,23 @@ public class PlayerBowController : MonoBehaviour
 {
     public PlayerController _controller;
     private PlayerController P_Controller => _controller;
-    private CurrentState P_States => P_Controller._currentState;
 
     public Animator animator;
 
     void Start()
     {
-        Transform currentTransform = transform;
-        while (currentTransform.parent != null)
-        {
-            currentTransform = currentTransform.parent;
-        }
-        _controller = currentTransform.GetComponent<PlayerController>();
+        // Transform currentTransform = transform;
+        // while (currentTransform.parent != null)
+        // {
+        //     currentTransform = currentTransform.parent;
+        // }
+        // _controller = currentTransform.GetComponent<PlayerController>();
+        _controller = GameManager.instance.gameData.player.GetComponent<PlayerController>();
         animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        animator.SetBool("isAim", P_States.isAim);
+        animator.SetBool("isAim", P_Controller.returnIsAim());
     }
 }

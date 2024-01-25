@@ -14,13 +14,12 @@ public class PlayerMovement : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
-    private CameraController P_CamController;
 
-    public SkillButton skill_E;
+    public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     public SkillButton skill_Q;
-    public SkillButton skill_R;
+    public SkillButton skill_R; //* AIM
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -35,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<PlayerController>();
-        P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
         playerAttackChecks = new List<PlayerAttackCheck>();
         for (int i = 0; i < attackColliders.Length; i++)
         {
@@ -80,10 +78,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                if (!P_States.isSkill)
-                {
-                    skillMotion('E');
-                }
+                skillMotion('R');
             }
         }
     }
@@ -98,7 +93,6 @@ public class PlayerMovement : MonoBehaviour
 
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
             P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
-            UpdateRotate();
             if (Input.GetKey(KeyCode.W))
             {
                 P_Input.verticalMovement = 1;
@@ -130,15 +124,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.P))
             {
                 //Debug.Log("Electric on");
-                P_States.isElectricShock = true;
-            }
-            if (Input.GetKeyUp(KeyCode.E))  //*Heal
-            {
-                skillMotion('E');
-            }
-            if (Input.GetKeyUp(KeyCode.R))  //*Aim
-            {
-                skillMotion('R');
+                P_States.isElectricShock = true;    //* 감전
             }
             if (Input.GetMouseButtonDown(0)
                 && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
@@ -147,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
                 if (P_States.isAim)    //* 조준 모드라면
                 {
                     P_Com.animator.SetTrigger("shoot");
-                    skillMotion('E');
+                    skillMotion('R');
                 }
                 else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
                 {
@@ -159,19 +145,22 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
             //* skills input
-            /*if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
-                //Debug.Log("P_States.isSkill : " + P_States.isSkill);
+                skillMotion('E');
+            }
+            if (Input.GetKeyDown(KeyCode.R))  //*Aim
+            {
                 if (P_States.isSkill)
                 {
                     return;
                 }
                 else
                 {
-                    skillMotion('E');
+                    skillMotion('R');
                 }
             }
-            if (Input.GetKeyDown(KeyCode.Q))
+            /*if (Input.GetKeyDown(KeyCode.Q))
             {
                 if (P_States.isSkill)
                 {
@@ -185,19 +174,6 @@ public class PlayerMovement : MonoBehaviour
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
                 P_States.isNotMoving = true;
             else P_States.isNotMoving = false;
-        }
-    }
-    void UpdateRotate()
-    {
-        if (P_States.isAim)
-        {
-            yRotation += P_Input.mouseX * 2f;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
-            // xRotation -= mouseY;    // 마우스 Y축 입력에 따라 수직 회전 값을 조정
-
-            // xRotation = Mathf.Clamp(xRotation, -25f, 25f);  // 수직 회전 값을 -90도에서 90도 사이로 제한
-
-            // P_Camera.cameraObj.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); // 카메라의 회전을 조절
-            transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
         }
     }
 
@@ -223,16 +199,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     public void skillMotion(char a)
     {
         if (skill_E == null && skill_Q == null && skill_R == null)
         {
             return;
         }
-        //Vector3 skillDir;
-        //Vector3 skillPos;
-        P_States.isSkill = true;
 
         switch (a)
         {
@@ -410,16 +382,17 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim)
+        /*if (P_States.isAim)
         {
-            Vector3 rotationDirection = P_Controller.AimmingCam.transform.forward;
+            Vector3 rotationDirection = P_Controller.transform.forward;
             rotationDirection.y = 0;
             rotationDirection.Normalize();
             Quaternion tr = Quaternion.LookRotation(rotationDirection);
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        else if (P_States.isStrafing) //* 주목할때만 쓰임
+        else*/
+        if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -566,7 +539,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_States.isElectricShock = false;
                 ElecTime = 0f;
-                Debug.Log("Electric off");
+                //Debug.Log("Electric off");
             }
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
@@ -635,7 +608,7 @@ public class PlayerMovement : MonoBehaviour
 
             P_Value.moveDirection.Normalize(); //정규화시켜준다.
 
-            Vector3 p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
         }*/
@@ -889,7 +862,7 @@ public class PlayerMovement : MonoBehaviour
 
             /**///* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null && !P_States.isForwardBlocked && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
+            if (P_Value.nowEnemy != null && /*!P_States.isForwardBlocked*/P_Controller.forwardHit == null && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -908,11 +881,11 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 pos = transform.position + dir * 3f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else if (P_States.isForwardBlocked || !P_States.canGoForwardInAttack) //앞에 막혀있다면 
+            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack) //앞에 막혀있거나 앞으로 가지 못한다면
             {
                 //dir = this.gameObject.transform.forward.normalized;
             }
-            else    //앞이 막혀있지 않고 적이 없다면
+            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null)   //앞이 막혀있지 않고 적이 없다면
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
