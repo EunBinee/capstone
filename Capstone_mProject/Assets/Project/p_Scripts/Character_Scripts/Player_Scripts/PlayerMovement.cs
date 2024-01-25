@@ -14,7 +14,6 @@ public class PlayerMovement : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
-    private CameraController P_CamController;
 
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
@@ -35,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<PlayerController>();
-        P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
         playerAttackChecks = new List<PlayerAttackCheck>();
         for (int i = 0; i < attackColliders.Length; i++)
         {
@@ -95,7 +93,6 @@ public class PlayerMovement : MonoBehaviour
 
             P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
             P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
-            //UpdateRotate();
             if (Input.GetKey(KeyCode.W))
             {
                 P_Input.verticalMovement = 1;
@@ -154,7 +151,6 @@ public class PlayerMovement : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.R))  //*Aim
             {
-                //Debug.Log("P_States.isSkill : " + P_States.isSkill);
                 if (P_States.isSkill)
                 {
                     return;
@@ -180,19 +176,6 @@ public class PlayerMovement : MonoBehaviour
             else P_States.isNotMoving = false;
         }
     }
-    void UpdateRotate()
-    {
-        if (P_States.isAim)
-        {
-            yRotation += P_Input.mouseX * 2f;    // 마우스 X축 입력에 따라 수평 회전 값을 조정
-            // xRotation -= mouseY;    // 마우스 Y축 입력에 따라 수직 회전 값을 조정
-
-            // xRotation = Mathf.Clamp(xRotation, -25f, 25f);  // 수직 회전 값을 -90도에서 90도 사이로 제한
-
-            // P_Camera.cameraObj.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0); // 카메라의 회전을 조절
-            transform.rotation = Quaternion.Euler(0, yRotation, 0);             // 플레이어 캐릭터의 회전을 조절
-        }
-    }
 
     IEnumerator PlayerHeal_co()
     {
@@ -216,16 +199,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     public void skillMotion(char a)
     {
         if (skill_E == null && skill_Q == null && skill_R == null)
         {
             return;
         }
-        //Vector3 skillDir;
-        //Vector3 skillPos;
-        //P_States.isSkill = true;
 
         switch (a)
         {
@@ -403,16 +382,17 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim)
+        /*if (P_States.isAim)
         {
-            Vector3 rotationDirection = P_Controller.AimmingCam.transform.forward;
+            Vector3 rotationDirection = P_Controller.transform.forward;
             rotationDirection.y = 0;
             rotationDirection.Normalize();
             Quaternion tr = Quaternion.LookRotation(rotationDirection);
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        else if (P_States.isStrafing) //* 주목할때만 쓰임
+        else*/
+        if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -606,7 +586,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = p_velocity;
         }
 
-        else if (P_States.isAim)
+        /*else if (P_States.isAim)
         {
             //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
             P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
@@ -617,7 +597,7 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * P_Value.gravity;
             P_Com.rigidbody.velocity = p_velocity;
-        }/**/
+        }*/
 
 
 

@@ -64,8 +64,8 @@ public class PlayerAttackCheck : MonoBehaviour
                 //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
                 if (dir == Vector3.zero)    //* 방향 지정
                 {
-                    //dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
-                    dir = P_Controller.AimmingCam.transform.forward;
+                    dir = player.transform.forward;
+                    //dir = P_Controller.AimmingCam.transform.forward;
                 }
                 //transform.position += dir * 0.1f;
                 rigid.velocity = dir.normalized * 40f; ; //* 발사
@@ -230,6 +230,7 @@ public class PlayerAttackCheck : MonoBehaviour
             damageValue = GameManager.instance.damageCalculator.result;
         }
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
+        _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
 
         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
         P_Value.curHitTime = Time.time; //* 현재 시간 저장
