@@ -506,7 +506,6 @@ public class PlayerMovement : MonoBehaviour
 
         if ((P_States.isStartComboAttack && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
-                /*|| P_States.isSkill     //* (지금은 스킬 안씀)스킬 사용 시 or*/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
@@ -547,6 +546,13 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
         }
+        else if (P_States.isAim)
+        {
+            P_Value.moveDirection = P_Value.moveDirection * P_COption.walkingSpeed;
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * P_Value.gravity;
+            P_Com.rigidbody.velocity = p_velocity;
+        }/**/
         else if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
@@ -599,21 +605,6 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
         }
-
-        /*else if (P_States.isAim)
-        {
-            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-
-            P_Value.moveDirection.Normalize(); //정규화시켜준다.
-
-            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * P_Value.gravity;
-            P_Com.rigidbody.velocity = p_velocity;
-        }*/
-
-
 
     }
 
@@ -860,9 +851,10 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
 
-            /**///* 공격 시 앞으로 찔끔찔끔 가도록
+            //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null && /*!P_States.isForwardBlocked*/P_Controller.forwardHit == null && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
+            //앞이 막혀있지 않고 적이 있다면
+            if (P_Value.nowEnemy != null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -878,18 +870,20 @@ public class PlayerMovement : MonoBehaviour
                     dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 }
 
-                Vector3 pos = transform.position + dir * 3f;
+                Vector3 pos = transform.position + dir * 4f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack) //앞에 막혀있거나 앞으로 가지 못한다면
-            {
-                //dir = this.gameObject.transform.forward.normalized;
-            }
-            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null)   //앞이 막혀있지 않고 적이 없다면
+            //앞이 막혀있지 않고 적이 없다면
+            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null && P_States.canGoForwardInAttack)
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+            }
+            //앞에 막혀있거나 앞으로 가지 못한다면
+            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack)
+            {
+                //dir = this.gameObject.transform.forward.normalized;
             }
 
             if (!P_States.isGettingHit)

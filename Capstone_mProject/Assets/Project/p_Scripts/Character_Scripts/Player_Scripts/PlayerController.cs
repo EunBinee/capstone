@@ -76,7 +76,8 @@ public class PlayerController : MonoBehaviour
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
-    private Vector3 originVpos;
+    private Vector3 originEpos;
+    private Vector3 originRpos;
 
     void Awake()
     {
@@ -96,7 +97,9 @@ public class PlayerController : MonoBehaviour
         bow.SetActive(false);
         sword.SetActive(true);
         P_Movement.skill_E.gameObject.SetActive(true);
-        originVpos = P_Movement.skill_E.gameObject.transform.position;
+        P_Movement.skill_R.gameObject.SetActive(true);
+        originEpos = P_Movement.skill_E.gameObject.transform.position;
+        originRpos = P_Movement.skill_R.gameObject.transform.position;
 
         //* 씬이동 처리
 
@@ -116,23 +119,21 @@ public class PlayerController : MonoBehaviour
         if (UIManager.gameIsPaused == true)
         {
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            P_Movement.skill_R.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            P_Movement.skill_E.gameObject.transform.position = originVpos;
-            P_Movement.skill_R.gameObject.SetActive(true);
+            P_Movement.skill_E.gameObject.transform.position = originEpos;
+            P_Movement.skill_R.gameObject.transform.position = originRpos;
             _fixedDeltaTime = Time.fixedDeltaTime;
             Update_Physics();
-            //전방 지면 체크
-            //Debug.Log("전방 지면 체크");
             CheckedForward();
             CheckedGround();
             CheckHitTime();
@@ -245,7 +246,7 @@ public class PlayerController : MonoBehaviour
     public void CheckAnim()
     {
         if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("Get_Damage")
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.99f)
         {
             P_Com.animator.Rebind();
         }
@@ -269,14 +270,16 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.SetBool("isAim", true);  //* 애니메이션
             bow.SetActive(true);    //* 무기 교체
             sword.SetActive(false);
+            GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
             crosshairImage.gameObject.SetActive(true);  //* 조준점
             PoolingArrow(); //* 화살 풀링
         }
         else if (skill.isTwice && P_States.isAim)
         {
+            P_States.isAim = false;
             P_Com.animator.SetBool("isAim", false);
             P_Com.animator.SetTrigger("shoot");
-            P_States.isAim = false;
+            GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
             skill.isFirsttime = true;
             bow.SetActive(false);
             sword.SetActive(true);
@@ -330,7 +333,7 @@ public class PlayerController : MonoBehaviour
         out var hit, Mathf.Infinity, 0);*/
 
         bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
-        _castRadius, P_Value.moveDirection + Vector3.down * 0.25f,
+        _castRadius, P_Value.moveDirection,// + Vector3.down * 0.25f,
         out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
 
         //Debug.Log("cast : " + cast);
