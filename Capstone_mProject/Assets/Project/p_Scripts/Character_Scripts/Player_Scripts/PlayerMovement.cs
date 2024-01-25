@@ -426,36 +426,49 @@ public class PlayerMovement : MonoBehaviour
             {
                 //!@ 여기에 약점과 플레이어의 거리체크후,거리가 가까우면 가까운약점 쪽으로 로테이션 
                 //멀어지면 다시 카메라로 로테이션
-                Monster targetMonster = GameManager.instance.cameraController.curTargetMonster;
-                if (targetMonster.monsterData.useWeakness)
+                if (GameManager.instance.cameraController.curTargetMonster != null)
                 {
-                    int curW_index = targetMonster.GetIndex_NearestWeakness(this.transform);
-                    float distance = Vector3.Distance(targetMonster.monsterData.weakness[curW_index].transform.position, this.transform.position);
-
-                    if (distance < 2f)
+                    Monster targetMonster = GameManager.instance.cameraController.curTargetMonster;
+                    if (targetMonster.monsterData.useWeakness)
                     {
-                        //가까워지면 Player 몸을 약점 쪽으로 돌려주기
-                        Vector3 weaknessPos = targetMonster.monsterData.weakness[curW_index].transform.position;
-                        Vector3 targetPos = new Vector3(weaknessPos.x, targetMonster.gameObject.transform.position.y, weaknessPos.z);
+                        int curW_index = targetMonster.GetIndex_NearestWeakness(this.transform);
+                        float distance = Vector3.Distance(targetMonster.monsterData.weakness[curW_index].transform.position, this.transform.position);
 
-                        rotationDirection = targetPos - this.transform.position;
-                        rotationDirection.y = 0;
+                        if (distance < 2f)
+                        {
+                            //가까워지면 Player 몸을 약점 쪽으로 돌려주기
+                            Vector3 weaknessPos = targetMonster.monsterData.weakness[curW_index].transform.position;
+                            Vector3 targetPos = new Vector3(weaknessPos.x, targetMonster.gameObject.transform.position.y, weaknessPos.z);
+
+                            rotationDirection = targetPos - this.transform.position;
+                            rotationDirection.y = 0;
+                        }
+                        else
+                        {
+                            rotationDirection = P_Camera.cameraObj.transform.forward;
+                            rotationDirection.y = 0;
+                        }
                     }
                     else
                     {
                         rotationDirection = P_Camera.cameraObj.transform.forward;
                         rotationDirection.y = 0;
                     }
+                    rotationDirection.Normalize();
+                    Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                    Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+                    transform.rotation = targetRotation;
                 }
                 else
                 {
                     rotationDirection = P_Camera.cameraObj.transform.forward;
                     rotationDirection.y = 0;
+
+                    rotationDirection.Normalize();
+                    Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                    Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+                    transform.rotation = targetRotation;
                 }
-                rotationDirection.Normalize();
-                Quaternion tr = Quaternion.LookRotation(rotationDirection);
-                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
-                transform.rotation = targetRotation;
             }
         }
         else
@@ -512,6 +525,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = targetRot;
         }
     }
+
 
     private void PlayerMovements()
     {
@@ -792,8 +806,8 @@ public class PlayerMovement : MonoBehaviour
         while (true)
         {
             P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
-            //P_Controller.ChangePlayerState(PlayerState.ComboAttack);
-            //AnimState(PlayerState.ComboAttack, index);
+                                        //P_Controller.ChangePlayerState(PlayerState.ComboAttack);
+                                        //AnimState(PlayerState.ComboAttack, index);
             switch (P_Value.index)
             {
                 case 1:
@@ -939,7 +953,7 @@ public class PlayerMovement : MonoBehaviour
             while (P_Value.time <= comboClickTime)  //* 콤보 클릭 시간 전까지
             {
                 P_Value.time += Time.deltaTime; //* 시간 누적
-                //* 애니메이션 70퍼센트 진행까지 대기
+                                                //* 애니메이션 70퍼센트 진행까지 대기
                 yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
                 //P_States.isStartComboAttack = false;
 
@@ -951,13 +965,13 @@ public class PlayerMovement : MonoBehaviour
                         yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
                         P_Value.index = 1;  //* 인덱스 초기화
                         P_Value.time = 0;   //* 시간 초기화
-                        //P_States.isStartComboAttack = false;    //* 공격 끝
+                                            //P_States.isStartComboAttack = false;    //* 공격 끝
                     }
                     else
                     {
                         P_Value.index = P_Value.index + 1;    //* 인덱스 추가
-                        //P_Value.isCombo = true; //* 이전 공격 여부 활성화
-                        //P_States.hadAttack = false; //* 공격 여부 비활성화
+                                                              //P_Value.isCombo = true; //* 이전 공격 여부 활성화
+                                                              //P_States.hadAttack = false; //* 공격 여부 비활성화
                     }
                     P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
                     P_States.hadAttack = false; //* 공격 여부 비활성화
