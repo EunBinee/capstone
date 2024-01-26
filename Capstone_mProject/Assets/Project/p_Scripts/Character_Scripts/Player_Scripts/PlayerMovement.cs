@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
                 P_States.isElectricShock = true;    //* 감전
             }
             if (Input.GetMouseButtonDown(0)
-                && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
+                && P_States.isGround && !P_States.isDodgeing && !P_States.isGettingHit/**/ && !P_States.isStop && !P_States.isElectricShock
                 && !EventSystem.current.IsPointerOverGameObject())
             {
                 if (P_States.isAim)    //* 조준 모드라면
@@ -853,7 +853,7 @@ public class PlayerMovement : MonoBehaviour
 
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            //앞이 막혀있지 않고 적이 있다면
+            //앞이 막혀있지 않고 적이 있다면 //* 전진
             if (P_Value.nowEnemy != null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
@@ -873,14 +873,14 @@ public class PlayerMovement : MonoBehaviour
                 Vector3 pos = transform.position + dir * 4f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            //앞이 막혀있지 않고 적이 없다면
-            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null && P_States.canGoForwardInAttack)
+            //앞이 막혀있지 않고 적이 없다면 //* 전진
+            else if (P_Value.nowEnemy == null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            //앞에 막혀있거나 앞으로 가지 못한다면
+            //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
             else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack)
             {
                 //dir = this.gameObject.transform.forward.normalized;
