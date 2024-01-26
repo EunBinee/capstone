@@ -9,21 +9,22 @@ public class MonsterWeapon_CollisionCheck : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Monster monster;
 
+    public bool yetAttack = false;
+
     void Start()
     {
         playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
         monster = transform.GetComponentInParent<Monster>();
     }
 
-    private void OnTriggerExit(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (onEnable)
+        if (onEnable
         {
-            if (other.CompareTag("Player"))
+            if ((other.CompareTag("Player") && !yetAttack) && monster.monsterPattern.canAttack)
             {
                 monster.OnHit(5);
             }
         }
     }
-
 }

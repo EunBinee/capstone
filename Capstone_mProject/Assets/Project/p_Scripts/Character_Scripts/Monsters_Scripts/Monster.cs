@@ -75,16 +75,21 @@ public class Monster : MonoBehaviour
     {
         if (!playerController._currentState.isGettingHit)
         {
+            if (!playerController._currentState.isGettingHit)
+                playerController._currentState.isGettingHit = true;
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
             playerController.GetHit(this, damage);
         }
+
     }
 
     public virtual void OnHit_FallDown(float damage = 0, float distance = 10f, Action action = null)
     {
         if (!playerController._currentState.isGettingHit)
         {
+            if (!playerController._currentState.isGettingHit)
+                playerController._currentState.isGettingHit = true;
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
             playerController.GetHit_FallDown(this, damage, distance);

@@ -26,11 +26,13 @@ public class MonsterPattern : MonoBehaviour
 
     public bool playerHide = false;
     public bool noAttack = false;   //플레이어에게 공격 안받음.
+    public bool canAttack = false;
 
     public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 
     protected Vector3 curHitPos;
     protected Quaternion curHitQuaternion;
+
 
     public enum MonsterState
     {
@@ -242,6 +244,7 @@ public class MonsterPattern : MonoBehaviour
 
     protected void ChangeMonsterState(MonsterState monsterState)
     {
+
         if (curMonsterState != MonsterState.Death)
             curMonsterState = monsterState;
 
@@ -398,6 +401,7 @@ public class MonsterPattern : MonoBehaviour
             return false;
         }
     }
+
     //* ----------------------------------------------------------------------------------------//
     protected void GetDamage_electricity(Vector3 randomPos)
     {

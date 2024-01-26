@@ -485,7 +485,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit(Monster enemy, float damage, float knockbackDistance = 1.5f)
     {
-        P_States.isGettingHit = true;
+        if (!P_States.isGettingHit)
+            P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
