@@ -55,8 +55,9 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             //nowArrow.position = P_Controller.shootPoint.position;   //* 위치 방향 저장
             //nowArrow.rotation = player.transform.rotation;
-            this.transform.position = P_Controller.shootPoint.position;
-            this.transform.rotation = player.transform.rotation;
+            //todo: 아래 코드 고치기(지우니까 화살이 안보임)
+            //! this.transform.position = P_Controller.shootPoint.position;
+            //! this.transform.rotation = player.transform.rotation;
             if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
             {
                 //* 키네매틱 끄기

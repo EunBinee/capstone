@@ -225,8 +225,9 @@ public class PlayerMovement : MonoBehaviour
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     //* 이펙트 회전
                     effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-                }
+
                 skill_R.OnClicked();
+                }
                 break;
 
             case 'Q':
@@ -242,7 +243,6 @@ public class PlayerMovement : MonoBehaviour
                 if (skill_E.imgCool.fillAmount == 0)
                 {
                     P_States.isSkill = true;
-                    //ebug.Log("스킬V");
                     StartCoroutine(PlayerHeal_co());
                 }
                 skill_E.OnClicked();
@@ -382,16 +382,6 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        /*if (P_States.isAim)
-        {
-            Vector3 rotationDirection = P_Controller.transform.forward;
-            rotationDirection.y = 0;
-            rotationDirection.Normalize();
-            Quaternion tr = Quaternion.LookRotation(rotationDirection);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
-            transform.rotation = targetRotation;
-        }
-        else*/
         if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
@@ -493,8 +483,8 @@ public class PlayerMovement : MonoBehaviour
             }
             Quaternion turnRot = Quaternion.LookRotation(targetDirect);
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
-            if (P_States.isAim)
-                targetRot.y = this.transform.forward.y * 90;
+            //f (P_States.isAim)
+            //    targetRot.y = this.transform.forward.y * 90;
             transform.rotation = targetRot;
         }
     }
@@ -546,13 +536,6 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
         }
-        else if (P_States.isAim)
-        {
-            P_Value.moveDirection = P_Value.moveDirection * P_COption.walkingSpeed;
-            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * P_Value.gravity;
-            P_Com.rigidbody.velocity = p_velocity;
-        }/**/
         else if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
@@ -595,7 +578,10 @@ public class PlayerMovement : MonoBehaviour
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
-            if (P_States.isSprinting)    //전력질주
+
+            if (P_States.isAim)    //조준
+                P_Value.finalSpeed = P_COption.walkingSpeed;
+            else if (P_States.isSprinting)    //전력질주
                 P_Value.finalSpeed = P_COption.sprintSpeed;
             else if (P_States.isRunning) //뛸때
                 P_Value.finalSpeed = P_COption.runningSpeed;
