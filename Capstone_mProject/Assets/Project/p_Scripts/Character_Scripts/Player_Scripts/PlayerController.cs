@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
-    private Vector3 originVpos;
+    public Vector3 originVpos;
 
     void Awake()
     {
@@ -95,18 +95,34 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        P_Movement.skill_E.gameObject.SetActive(true);
-        originVpos = P_Movement.skill_E.gameObject.transform.position;
+        //P_Movement.skill_E.gameObject.SetActive(true);
+        //originVpos = P_Movement.skill_E.gameObject.transform.position;
 
         //* 씬이동 처리
 
     }
     void Start()
     {
+        SetUIVariable();
         _playerSkills.Init();
         InitComponent();
     }
-    // Update is called once per frame
+    public void SetUIVariable()
+    {
+        //* 필수 UI 가지고 오기
+        if (CanvasManager.instance.playerUI == null)
+        {
+            CanvasManager.instance.playerUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
+            if (CanvasManager.instance.playerUI == null)
+                return;
+        }
+        PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+        hitNum = playerUI_info.hitNum;
+        hitUI = playerUI_info.hitUI;
+        HPgauge = playerUI_info.HPgauge;
+        crosshairImage = playerUI_info.crosshairImage;
+
+    }
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();

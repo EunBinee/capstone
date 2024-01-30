@@ -18,8 +18,16 @@ public class CanvasManager : MonoBehaviour
             return instance;
         }
     }
-    //*
-    public string dialogueName;
+    [Header("player UI")]
+    [Space]
+    public string playerUIName;
+    public GameObject playerUI;
+
+    //* player UI
+    [Header("Dialogue UI")]
+    [Space]
+    //* dialogue UI
+    public string dialogueUIName;
     public GameObject dialogueUI;
 
     void Awake()
@@ -37,9 +45,12 @@ public class CanvasManager : MonoBehaviour
 
     public void Init()
     {
+        //* 플레이어 UI
+        if (playerUI == null)
+            playerUI = GetCanvasUI(playerUIName);
         //* 다이어로그 UI
         if (dialogueUI == null)
-            dialogueUI = GetCanvasUI(dialogueName);
+            dialogueUI = GetCanvasUI(dialogueUIName);
     }
 
     public GameObject GetCanvasUI(string name)

@@ -25,7 +25,7 @@ public class DialogueController : MonoBehaviour
     {
         if (CanvasManager.instance.dialogueUI == null)
         {
-            CanvasManager.instance.dialogueUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueName);
+            CanvasManager.instance.dialogueUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
             if (CanvasManager.instance.dialogueUI == null)
                 return;
         }
