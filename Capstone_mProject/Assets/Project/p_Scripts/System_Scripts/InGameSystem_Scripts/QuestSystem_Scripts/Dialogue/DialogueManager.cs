@@ -12,6 +12,7 @@ using System.Text;
 
 public class DialogueManager : MonoBehaviour
 {
+    //! 전체 대화 관리
     DialogueController dialogueController; //대화 텍스트 출력 애니메이션 구현 스크립트
     GameInfo gameInfo; //게임의 전반적인 정보 
     public GameObject go_DialogueBar; //대화창 UI
@@ -39,12 +40,13 @@ public class DialogueManager : MonoBehaviour
     //화살표애니메이션
     bool isArrowAnimating = false;
 
-
     private Transform text_tuto;
     private TMP_Text textComponent;
+
     void Start()
     {
         dialogueController = GetComponent<DialogueController>();
+        SetUIVariable();
         gameInfo = GetComponent<GameInfo>();
         DoQuest = false;
         IsQuestDetail = false;
@@ -54,7 +56,31 @@ public class DialogueManager : MonoBehaviour
         textComponent = text_tuto.GetComponent<TMP_Text>();
     }
 
+    public void SetUIVariable()
+    {
+        if (CanvasManager.instance.dialogueUI == null)
+        {
+            CanvasManager.instance.dialogueUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueName);
+            if (CanvasManager.instance.dialogueUI == null)
+                return;
+        }
+        DialogueUI_info dialogueUI_Info = CanvasManager.instance.dialogueUI.GetComponent<DialogueUI_info>();
+        go_DialogueBar = dialogueUI_Info.go_DialogueBar;
+        Text_Dialogue = dialogueUI_Info.Text_Dialogue;
+        Text_Name = dialogueUI_Info.Text_Name;
+        ObjectTextBox_Button01 = dialogueUI_Info.ObjectTextBox_Button01;
+        Text_Btn01 = dialogueUI_Info.Text_Btn01;
+        ObjectTextBox_Button02 = dialogueUI_Info.ObjectTextBox_Button02;
+        Text_Btn02 = dialogueUI_Info.Text_Btn02;
+        dialogueArrow = dialogueUI_Info.dialogueArrow;
 
+        Quest_Button01 = dialogueUI_Info.Quest_Button01;
+        Go_QuestDetail = dialogueUI_Info.Go_QuestDetail;
+        Text_QuestGoal = dialogueUI_Info.Text_QuestGoal;
+        Text_QuestDetailGoal = dialogueUI_Info.Text_QuestDetailGoal;
+        Text_QuestDetailTitle = dialogueUI_Info.Text_QuestDetailTitle;
+        Text_QuestDetailContent = dialogueUI_Info.Text_QuestDetailContent;
+    }
 
     public void Action_NPC(int id, Item interaction_Item)
     {
@@ -109,7 +135,7 @@ public class DialogueManager : MonoBehaviour
         int curContext = 0; //lines[curPart][curLine].context[curContext] 
 
         bool isFinish = false; //대사가 끝남. ALLFinish랑은 다름
-        //그다음 대사는 없어서 대사는 끝났지만, 대사를 본 후,아직 엔터를 치지 않아서 아직 완전히 꺼지지는 않은 상태
+                               //그다음 대사는 없어서 대사는 끝났지만, 대사를 본 후,아직 엔터를 치지 않아서 아직 완전히 꺼지지는 않은 상태
 
         bool isChoice = false; // 선택지를 가지고 있는지
         bool choiceSettingF = false; //선택지 가지고 있으면 선택지 버튼들의 텍스트 변환등 세팅을 끝냈는지
@@ -137,7 +163,7 @@ public class DialogueManager : MonoBehaviour
         {
             //* 게임 멈춤 = 참
             player_InteractingTrue(); //플레이어 캐릭터가 상호작용 못하도록 제한.
-            //UIManager.gameIsPaused = true;
+                                      //UIManager.gameIsPaused = true;
 
             GameManager.GetInstance().dialogueManager.QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
@@ -367,7 +393,7 @@ public class DialogueManager : MonoBehaviour
             //QuestManager.GetInstance().UpdateQuest(gameInfo.QuestNum);
         }
         go_DialogueBar.SetActive(false); //대화 UI 비활성화
-        //GameManager.Instance.dialogueInfo.player_InteractingFalse();
+                                         //GameManager.Instance.dialogueInfo.player_InteractingFalse();
 
         //yield return new WaitForSecondsRealtime(0.3f);
         player_InteractingFalse();

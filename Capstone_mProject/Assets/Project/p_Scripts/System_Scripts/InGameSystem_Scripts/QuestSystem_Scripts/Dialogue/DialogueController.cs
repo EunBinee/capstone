@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class DialogueController : MonoBehaviour
 {
-    [SerializeField] TMP_Text objectText;
+    //! 타이핑 효과
 
+    [SerializeField] TMP_Text objectText;
 
     bool startChat = false;
     public bool stopChat = false;
@@ -17,6 +18,19 @@ public class DialogueController : MonoBehaviour
     void Start()
     {
         dialogueManager = GetComponent<DialogueManager>();
+        SetUIVariable();
+    }
+
+    public void SetUIVariable()
+    {
+        if (CanvasManager.instance.dialogueUI == null)
+        {
+            CanvasManager.instance.dialogueUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueName);
+            if (CanvasManager.instance.dialogueUI == null)
+                return;
+        }
+        DialogueUI_info dialogueUI_Info = CanvasManager.instance.dialogueUI.GetComponent<DialogueUI_info>();
+        objectText = dialogueUI_Info.objectText;
     }
 
     // Update is called once per frame
@@ -30,22 +44,8 @@ public class DialogueController : MonoBehaviour
                 stopChat = true;
             }
         }
-        // if (startChat && !stopChat)
-        // {
-        //     if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
-        //     {
-        //         // Enter 키를 누르거나 마우스 클릭이 발생하면 딜레이를 주고 StopChat 메서드 호출
-        //         StartCoroutine(DelayedStopChat(0.02f));
-        //     }
-        // }
     }
-    // IEnumerator DelayedStopChat(float delay)
-    // {
-    //     yield return new WaitForSeconds(delay);
 
-    //     // 애니메이션 중지 및 글씨 나오도록 하는 로직을 여기에 추가
-    //     stopChat = true;
-    // }
 
 
 
