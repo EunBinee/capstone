@@ -8,12 +8,15 @@ using UnityEngine.Animations;
 
 public class MonsterPattern_Monster01 : MonsterPattern
 {
+    CapsuleCollider capsuleCollider;
     [Header("몬스터 무기 : 인덱스 0번 L쪽 무기, 인덱스 1번 R쪽 무기")]
     public Collider[] weapons;
     private List<MonsterWeapon_CollisionCheck> weaponsChecks;
 
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
     public float findPlayerDistance = 6f;
+    //타겟팅 풀리고 자기 자리로 돌아가는 거리 (플레이어와 몬스터의 거리)
+    float goingBackDistance = 25f;
 
     [Space]
     public Transform attackEffectPos;
@@ -29,6 +32,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
     Coroutine long_Range_Attack_co = null;
 
     Action GetHit_duringLongRangeAttack = null;
+
+
+
 
     public override void Init()
     {
@@ -57,7 +63,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         boxCollider.enabled = false;
-        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = true;
 
         weaponsChecks = new List<MonsterWeapon_CollisionCheck>();
@@ -424,7 +430,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
             case MonsterState.Tracing:
                 distance = Vector3.Distance(transform.position, playerTrans.position);
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
-                if (distance >= 12f)
+                if (distance >= goingBackDistance)
                 {
                     isGoingBack = true;
                     ChangeMonsterState(MonsterState.GoingBack);
@@ -474,8 +480,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 //원거리 공격
                 if (short_Range_Attack_co != null)
                     StopCoroutine(long_Range_Attack_co);
-                //long_Range_Attack_co = StartCoroutine(Long_Range_Attack02_Monster01());
-                long_Range_Attack_co = StartCoroutine(Long_Range_Attack03_Monster01());
+                long_Range_Attack_co = StartCoroutine(Long_Range_Attack_Monster01());
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백
@@ -505,6 +510,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAnimation(MonsterAnimation.Idle);
 
         int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
+        EnabledWeaponsCollider(true);
         SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
 
         yield return new WaitForSeconds(0.5f);
@@ -520,13 +526,13 @@ public class MonsterPattern_Monster01 : MonsterPattern
         effect.transform.localEulerAngles = effectRotation;
         effect.transform.position = attackEffectPos.position;
 
-        EnabledWeaponsCollider(true);
+
 
         //!!!!!---사운드
         m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
 
         yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
-
+        EnabledWeaponsCollider(false);
 
         float distance = Vector3.Distance(transform.position, playerTrans.position);
         if (distance < 1.3f)
@@ -536,199 +542,20 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
         else
         {
-            EnabledWeaponsCollider(false);
-
             ChangeMonsterState(MonsterState.Tracing);
             short_Range_Attack_co = null;
         }
     }
 
-    // * 원거리 공격 01
+    //*원거리 공격 01
     IEnumerator Long_Range_Attack_Monster01()
-    {
-        float defaultSpeed = navMeshAgent.speed;
-        SetMove_AI(false);
-
-        navMeshAgent.speed = 8f;
-
-        SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-        SetMove_AI(true);
-
-        EnabledWeaponsCollider(true);
-
-        float distance = 0;
-        float time = 0;
-        bool goingBack = false;
-
-        while (time <= 10f)
-        {
-            navMeshAgent.SetDestination(playerTrans.position);
-            distance = Vector3.Distance(transform.position, playerTrans.position);
-
-            if (distance <= 1f)
-                break;
-            if (distance > 15)
-            {
-                goingBack = true;
-                break;
-            }
-            yield return null;
-            time += Time.deltaTime;
-        }
-
-        EnabledWeaponsCollider(false);
-
-        navMeshAgent.speed = defaultSpeed;
-
-        SetMove_AI(false);
-        SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-
-        if (goingBack)
-        {
-            isGoingBack = true;
-            ChangeMonsterState(MonsterState.GoingBack);
-        }
-        else
-        {
-            ChangeMonsterState(MonsterState.Tracing);
-        }
-    }
-
-    //* 원거리 공격 02
-    IEnumerator Long_Range_Attack02_Monster01()
-    {
-        float defaultSpeed = navMeshAgent.speed;
-        SetMove_AI(false);
-
-        navMeshAgent.speed = 15f;
-
-        SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-        SetMove_AI(true);
-
-        EnabledWeaponsCollider(true);
-
-        float distance = 0;
-        float time = 0;
-        bool goingBack = false;
-
-        bool isAttack = true;
-        noAttack = true;
-
-        yield return new WaitForSeconds(0.5f);
-        Effect effect = null;
-
-        // TODO : 나중에 원거리 이펙트 정해진 후, LongAttackEffectName != "" 이 부분 전부 없애기
-        if (LongAttackEffectName != "")
-        {
-            effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
-            if (effect != null)
-            {
-                effect.transform.localEulerAngles = new Vector3(0, 0, 0);
-                effect.transform.position = attackEffectPos.position;
-            }
-        }
-
-
-        while (true)
-        {
-            if (time <= 5 && isAttack)
-            {
-                navMeshAgent.SetDestination(playerTargetPos.position);
-                distance = Vector3.Distance(transform.position, playerTargetPos.position);
-                if (LongAttackEffectName != "" && effect != null)
-                {
-                    effect.transform.position = attackEffectPos.position;
-                }
-                if (distance <= 2f)
-                    break;
-                if (distance > 15)
-                {
-                    goingBack = true;
-                    break;
-                }
-                yield return null;
-                time += Time.deltaTime;
-            }
-
-            else if (time > 5 && isAttack)
-            {
-                // 공격 정지
-                time = 0;
-                isAttack = false;
-                noAttack = false;
-
-                SetMove_AI(false);
-                SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-                if (LongAttackEffectName != "" && effect != null)
-                {
-                    effect.StopEffect();
-                }
-            }
-
-            //* 공격 쉬는 시간.------------------------------------------------------------------//
-            if (time <= 3 && !isAttack)
-            {
-                time += Time.deltaTime;
-                yield return null;
-            }
-            else if (time > 3 && !isAttack)
-            {
-                //공격 다시 시작
-                time = 0;
-                isAttack = true;
-                noAttack = true;
-
-                SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                SetMove_AI(true);
-                //* 이펙트
-
-                yield return new WaitForSeconds(0.5f);
-                if (LongAttackEffectName != "")
-                {
-                    effect = GameManager.Instance.objectPooling.ShowEffect(LongAttackEffectName, attackEffectPos);
-                    if (effect != null)
-                    {
-                        effect.transform.localEulerAngles = new Vector3(0, 0, 0);
-                        effect.transform.position = attackEffectPos.position;
-                    }
-                }
-            }
-        }
-
-        if (LongAttackEffectName != "" && effect.gameObject.activeSelf && effect != null)
-            effect.StopEffect();
-
-        EnabledWeaponsCollider(false);
-
-        navMeshAgent.speed = defaultSpeed;
-        noAttack = false;
-
-        SetMove_AI(false);
-        SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
-
-        if (goingBack)
-        {
-            isGoingBack = true;
-            ChangeMonsterState(MonsterState.GoingBack);
-        }
-        else
-        {
-            ChangeMonsterState(MonsterState.Tracing);
-        }
-
-        long_Range_Attack_co = null;
-        yield return null;
-    }
-
-    //TODO: 원거리 공격 03
-    IEnumerator Long_Range_Attack03_Monster01()
     {
         float defaultSpeed = navMeshAgent.speed;
         float defaultAcceleration = navMeshAgent.acceleration;
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
-        navMeshAgent.speed = 120f; //*엄청 빠른 속도!
-        navMeshAgent.acceleration = 90f;
+        navMeshAgent.speed = 100f; //*엄청 빠른 속도!
+        navMeshAgent.acceleration = 80f;
 
         PlayerController playerController = GameManager.instance.gameData.player.GetComponent<PlayerController>();
         Vector3 curPlayerPos = playerTrans.position;
@@ -768,6 +595,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 navMeshAgent.acceleration = defaultAcceleration;
 
                 noAttack = false;
+                capsuleCollider.enabled = true;
 
                 //!!!!! 사운드 loof 멈추기
 
@@ -779,7 +607,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
             float m_distance = Vector3.Distance(curPlayerPos, transform.position);
             //*플레이어와 몬스터의 거리가 n이하일 경우에만 공격, 멀어졌다면 공격 중지..
-            if (m_distance <= 25f)
+            if (m_distance <= goingBackDistance)
             {
                 if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
                 {
@@ -788,10 +616,11 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     //원거리 공격 애니메이션션
                     noAttack = true;
                     SetAttackAnimation(MonsterAttackAnimation.Long_Range_Attack);
-                    EnabledWeaponsCollider(true);
+                    //EnabledWeaponsCollider(true);
 
                     navMeshAgent.SetDestination(curPlayerPos); //특정 위치로 이동.
                     SetMove_AI(true);
+                    capsuleCollider.enabled = false;
 
                     //! 사운드
                     m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
@@ -800,6 +629,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                         //공격
                         navMeshAgent.SetDestination(curPlayerPos);
                         distance = Vector3.Distance(transform.position, curPlayerPos);
+                        Vector3 newVector = new Vector3(0, transform.position.y + 2, 0);
+                        bool attackMonster = CheckPlayerDamage(2, transform.position + newVector, 10, true);
 
                         if (playerController._currentState.isGettingHit && playerController.Get_CurHitEnemy() == m_monster)
                         {
@@ -836,13 +667,14 @@ public class MonsterPattern_Monster01 : MonsterPattern
             }
         }
 
-        EnabledWeaponsCollider(false);
+        //EnabledWeaponsCollider(false);
 
 
         navMeshAgent.speed = defaultSpeed;
         navMeshAgent.acceleration = defaultAcceleration;
 
         noAttack = false;
+        capsuleCollider.enabled = true;
 
         SetMove_AI(false);
         SetAttackAnimation(MonsterAttackAnimation.ResetAttackAnim);
@@ -859,7 +691,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         yield return null;
     }
-
 
     // * 피격 모션01 :플레이어의 반대 방향으로 넉백
     private void GetHit()
@@ -973,7 +804,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         boxCollider.enabled = true;
-        CapsuleCollider capsuleCollider = GetComponent<CapsuleCollider>();
         capsuleCollider.enabled = false;
 
         yield return new WaitForSeconds(0.5f);
@@ -1011,8 +841,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         for (int i = 0; i < weapons.Length; i++)
         {
-            weapons[i].enabled = enable;
+            weaponsChecks[i].yetAttack = enable;
             weaponsChecks[i].onEnable = enable;
+            weapons[i].enabled = enable;
         }
     }
     // * ---------------------------------------------------------------------------------------//
@@ -1035,8 +866,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(mRoaming_randomPos, 1);
     }
-
-
 
     public override void StopMonster()
     {
@@ -1089,6 +918,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
 
     }
+
     public override void StartMonster()
     {
         forcedReturnHome = false;

@@ -130,6 +130,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position = originVpos;
             P_Movement.skill_R.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
+
             Update_Physics();
             //전방 지면 체크
             //Debug.Log("전방 지면 체크");
@@ -423,7 +424,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit(Monster enemy, float damage, float knockbackDistance = 1.5f)
     {
-        P_States.isGettingHit = true;
+        if (!P_States.isGettingHit)
+            P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
