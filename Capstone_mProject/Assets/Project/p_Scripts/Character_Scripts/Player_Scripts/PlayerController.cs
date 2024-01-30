@@ -144,6 +144,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position = originVpos;
             //P_Movement.skill_E.gameObject.SetActive(true);
             _fixedDeltaTime = Time.fixedDeltaTime;
+
             Update_Physics();
             //전방 지면 체크
             //Debug.Log("전방 지면 체크");

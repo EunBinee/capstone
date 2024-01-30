@@ -26,7 +26,7 @@ public class MonsterPattern : MonoBehaviour
 
     public bool playerHide = false;
     public bool noAttack = false;   //플레이어에게 공격 안받음.
-    public bool canAttack = false;
+    public bool canAttack = false;  //몬스터의 공격이 들어가는 순간.//
 
     public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 

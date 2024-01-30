@@ -510,7 +510,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAnimation(MonsterAnimation.Idle);
 
         int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
-
+        EnabledWeaponsCollider(true);
         SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
 
         yield return new WaitForSeconds(0.5f);
@@ -526,7 +526,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         effect.transform.localEulerAngles = effectRotation;
         effect.transform.position = attackEffectPos.position;
 
-        EnabledWeaponsCollider(true);
+
 
         //!!!!!---사운드
         m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
@@ -841,11 +841,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         for (int i = 0; i < weapons.Length; i++)
         {
-            if (enable /)
-                weaponsChecks[i].yetAttack = false;
-            else if (!enable)
-                weaponsChecks[i].yetAttack = true;
-
+            weaponsChecks[i].yetAttack = enable;
             weaponsChecks[i].onEnable = enable;
             weapons[i].enabled = enable;
         }
