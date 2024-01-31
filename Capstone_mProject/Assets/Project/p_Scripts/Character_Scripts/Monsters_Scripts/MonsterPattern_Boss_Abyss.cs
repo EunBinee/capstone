@@ -85,13 +85,23 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         curBossPhase = BossMonsterPhase.Phase2;
         randomPos_skill02 = new List<Vector3>();
         SetPlayerAttackList(true);
-        GameManager.instance.bossBattle = true;
-        GameManager.instance.cameraController.Check_Z();
-        GameManager.instance.cameraController.ResetCameraZ();
-
-        //GameManager.instance.cameraController.AttentionMonster();
-
-        //NavMeshSurface_ReBuild();
+        if (GameManager.instance.cameraController != null)
+        {
+            GameManager.instance.bossBattle = true;
+            GameManager.instance.cameraController.Check_Z();
+            GameManager.instance.cameraController.ResetCameraZ();
+        }
+        else if (GameManager.instance.cameraController == null)
+        {
+            Debug.Log("===");
+            GameManager.instance.startActionCam += (cameraObj) =>
+            {
+                Debug.Log("실행 !");
+                GameManager.instance.bossBattle = true;
+                cameraObj.Check_Z();
+                cameraObj.ResetCameraZ();
+            };
+        }
 
         if (m_monster.HPBar_CheckNull() == false)
         {

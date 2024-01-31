@@ -40,8 +40,8 @@ public class DialogueManager : MonoBehaviour
     //화살표애니메이션
     bool isArrowAnimating = false;
 
-    private Transform text_tuto;
-    private TMP_Text textComponent;
+    // private Transform text_tuto;
+    //  private TMP_Text textComponent;
 
     void Start()
     {
@@ -52,8 +52,8 @@ public class DialogueManager : MonoBehaviour
         IsQuestDetail = false;
         isDialogue = false;
 
-        text_tuto = Text_Alarm.transform.GetChild(0);
-        textComponent = text_tuto.GetComponent<TMP_Text>();
+        //text_tuto = Text_Alarm.transform.GetChild(0);
+        //textComponent = text_tuto.GetComponent<TMP_Text>();
     }
 
     public void SetUIVariable()
@@ -457,6 +457,7 @@ public class DialogueManager : MonoBehaviour
         Quest_Button01.SetActive(false);
     }
     //튜토리얼 ui 활성화
+    /*
     public void TutorialUI(string text)
     {
         if (textComponent.text != text)
@@ -474,6 +475,7 @@ public class DialogueManager : MonoBehaviour
         GameManager.Instance.PadeIn_Alpha(textComponent.gameObject, false, 0, 1f, false);
         //Text_Alarm.gameObject.SetActive(false);
     }
+    */
 
     //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
     public void player_InteractingTrue()

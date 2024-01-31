@@ -158,19 +158,18 @@ public class QuestManager : MonoBehaviour
         if (GameManager.Instance.gameInfo.QuestNum != 0 && DatabaseManager.GetInstance().Quest_Dictionary.ContainsKey(quest_.questId))
         {
             quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
-            TextAlarm();
+            //TextAlarm();
             NextTextAlarm();
         }
-        else
-        {
-            GameManager.GetInstance().dialogueManager.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
-            isTutorial = false;
-        }
-
-
+        // else
+        // {
+        //     GameManager.GetInstance().dialogueManager.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
+        //     isTutorial = false;
+        // }
 
     }
     //튜토 알람 텍스트 
+    /*
     public void TextAlarm()
     {
         for (int i = 0; i < quest_.questGoal.Count;)
@@ -183,12 +182,9 @@ public class QuestManager : MonoBehaviour
         }
         GameManager.GetInstance().dialogueManager.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
 
-
-
-
         //GameManager.Instance.gameInfo.QuestNum = quest_.questId;
     }
-
+    */
     public void NextTextAlarm()
     {
         string[] data = quest_.questClearString.ToString().Split(new char[] { '\'' });

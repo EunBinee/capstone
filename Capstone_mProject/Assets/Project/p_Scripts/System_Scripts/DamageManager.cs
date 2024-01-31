@@ -18,9 +18,9 @@ public class DamageManager : MonoBehaviour
 
     private int damagePoolsCount = 30;
 
-    private Camera m_Camera;
+    public Camera m_Camera;
 
-    void Awake()
+    void Start()
     {
         InitDamageUI();
     }
@@ -36,7 +36,7 @@ public class DamageManager : MonoBehaviour
                 Debug.LogError("데미지 프리펩 없음.");
         }
 
-        m_Camera = Camera.main;
+        m_Camera = GameManager.instance.gameData.cameraObj;
     }
 
     void Update()

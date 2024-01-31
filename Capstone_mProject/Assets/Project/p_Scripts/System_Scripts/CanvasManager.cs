@@ -18,17 +18,26 @@ public class CanvasManager : MonoBehaviour
             return instance;
         }
     }
-    [Header("player UI")]
+
+    [Header("메인 스타트 화면")]
+    public string mainStartSceneName;
+    public GameObject mainStartScene;
+
     [Space]
+    [Header("player UI")]
     public string playerUIName;
     public GameObject playerUI;
 
     //* player UI
-    [Header("Dialogue UI")]
     [Space]
+    [Header("Dialogue UI")]
     //* dialogue UI
     public string dialogueUIName;
     public GameObject dialogueUI;
+    [Space]
+    [Header("LoadingImg")]
+    public string loadingImgName;
+    public GameObject loadingImg;
 
     void Awake()
     {
@@ -45,12 +54,22 @@ public class CanvasManager : MonoBehaviour
 
     public void Init()
     {
+        //* 메인씬
+        if (mainStartScene == null)
+            mainStartScene = GetCanvasUI(mainStartSceneName);
         //* 플레이어 UI
         if (playerUI == null)
             playerUI = GetCanvasUI(playerUIName);
         //* 다이어로그 UI
         if (dialogueUI == null)
             dialogueUI = GetCanvasUI(dialogueUIName);
+
+        //* 로딩 이미지
+        if (loadingImg == null)
+        {
+            loadingImg = GetCanvasUI(loadingImgName);
+        }
+
     }
 
     public GameObject GetCanvasUI(string name)

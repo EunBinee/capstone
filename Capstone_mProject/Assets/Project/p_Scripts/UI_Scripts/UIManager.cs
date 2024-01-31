@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -48,7 +49,18 @@ public class UIManager : MonoBehaviour
         else
             Destroy(this.gameObject);
     }
+    void Start()
+    {
+        if (CanvasManager.instance.loadingImg == null)
+        {
+            CanvasManager.instance.loadingImg = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.loadingImgName);
+            if (CanvasManager.instance.loadingImg == null)
+                Debug.LogError("CanvasManager.instance.loadingImg 없음");
+        }
+        else
+            loadingImg = CanvasManager.instance.loadingImg.GetComponent<Image>();
 
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -64,7 +76,6 @@ public class UIManager : MonoBehaviour
         {
             if (!GameManager.instance.bossBattle)
             {
-
                 GoBossField(true);
             }
         }
@@ -169,7 +180,6 @@ public class UIManager : MonoBehaviour
         //Pause(false);
 
         StartCoroutine(LoadSceneAfterDelay(changeP));
-
     }
 
     IEnumerator LoadSceneAfterDelay(bool changeP = false)
@@ -182,7 +192,7 @@ public class UIManager : MonoBehaviour
             GameManager.instance.gameData.player.transform.rotation = Quaternion.identity;
         }
         // BossFieldScene으로 씬 이동
-        GameManager.instance.loadSceneManager.ChangeScene("BossFieldScene");
+        GameManager.instance.loadScene.ChangeScene("BossFieldScene 1");
         //        SceneManager.LoadScene("BossFieldScene");
         SoundManager.Instance.Stop_BGM(SoundManager.BGM.Ingame);
         yield return new WaitForSeconds(1.5f);

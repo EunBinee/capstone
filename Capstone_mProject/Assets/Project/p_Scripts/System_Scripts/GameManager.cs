@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,13 +25,13 @@ public class GameManager : MonoBehaviour
     public ObjectPooling objectPooling;
     public HPBarManager hPBarManager;
     public DamageManager damageManager;
-    public LoadSceneManager loadSceneManager;
     public DamageCalculator damageCalculator;
+
     //대화
     public DialogueInfo dialogueInfo;
     public DialogueManager dialogueManager;
     public GameInfo gameInfo;
-    //public Item item;
+    public LoadScene loadScene;
     public QuestManager questManager;
     //탐라
     public TimeLineController timeLineController;
@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour
     public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
     public CameraShake cameraShake;
+    //! 씬이동 후, GameManager에서 CameraController는 null
+    //! Awake 나 start에서 GameManager의 CameraController를 쓰고 싶을 때 아래 Action 사용. 
+    public Action<CameraController> startActionCam = null; //
     public CameraController cameraController;
     //* 현재 몬스터 --------------------------------//
 
@@ -67,7 +70,7 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
-        loadSceneManager.Init();
+        loadScene.Init();
 
         hPBarManager = GetComponent<HPBarManager>();
         damageManager = GetComponent<DamageManager>();
