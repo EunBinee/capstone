@@ -50,20 +50,9 @@ public class SkillButton : MonoBehaviour
         // Cool 이미지의 fillAmount 가 0 보다 크다는 것은
         // 아직 쿨타임이 끝나지 않았다는 뜻
         if (imgCool.fillAmount > 0) return;
-        //else skill.isFirsttime = true;
 
+        m_cool = skill.cool;
 
-        if (skill.isTwice && skill.isFirsttime)  //* 조준스킬
-        {
-            //player.AimOnCamera();
-            m_cool = skill.cool / 6;
-            skill.isFirsttime = false;
-        }
-        else
-        {
-            //player.AimOnCameraReturn();
-            m_cool = skill.cool;
-        }
         // Player 객체의 ActivateSkill 호출     
         player.ActivateSkill(skill);
         // 스킬 Cool 처리

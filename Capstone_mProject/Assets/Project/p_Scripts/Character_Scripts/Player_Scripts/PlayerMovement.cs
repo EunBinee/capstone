@@ -78,7 +78,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                skillMotion('R');
+                arrowSkillOff();
             }
         }
     }
@@ -117,6 +117,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
+
+            //* [미카 디버프 단축키]==================================================
             if (Input.GetKeyUp(KeyCode.O))
             {
                 P_Value.HP = 10;
@@ -126,39 +128,45 @@ public class PlayerMovement : MonoBehaviour
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;    //* 감전
             }
-            if (Input.GetMouseButtonDown(0)
-                && P_States.isGround && !P_States.isDodgeing && !P_States.isGettingHit/**/ && !P_States.isStop && !P_States.isElectricShock
-                && !EventSystem.current.IsPointerOverGameObject())
+            //* =====================================================================
+
+            if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때
+            {   //* 마우스 클릭
+                if (P_States.isGround && !P_States.isDodgeing && !P_States.isStop && !P_States.isElectricShock
+                    && !EventSystem.current.IsPointerOverGameObject())
+                {
+                    if (!P_States.isStartComboAttack)
+                    {
+                        P_States.isStartComboAttack = true;
+                        StartCoroutine(Attacking());
+                    }
+                }
+            }
+            if (Input.GetMouseButtonDown(0) && P_States.isBowMode)    //* 누르고 있는 중에
             {
-                if (P_States.isAim)    //* 조준 모드라면
+
+                if (!P_States.isAim)
                 {
-                    P_Com.animator.SetTrigger("shoot");
-                    skillMotion('R');
+                    arrowSkillOn();
                 }
-                else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
+            }
+            else if (Input.GetMouseButtonUp(0) && P_States.isBowMode)   //* 눌렀다가 뗄 때
+            {
+                arrowSkillOff();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
+            {
+                if (P_States.isOnAim)   // 조준 중일때 전환 키
                 {
-                    //Debug.Log("[attack test]플레이어 공격 활성화(클릭 입력)");
-                    //Time.timeScale = 0.3f;
-                    //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
-                    P_States.isStartComboAttack = true;
-                    StartCoroutine(Attacking());
+                    arrowSkillOff();    // 조준 헤제
                 }
+                skillMotion('R');
             }
             //* skills input
             if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
                 skillMotion('E');
-            }
-            if (Input.GetKeyDown(KeyCode.R))  //*Aim
-            {
-                if (P_States.isSkill)
-                {
-                    return;
-                }
-                else
-                {
-                    skillMotion('R');
-                }
             }
             /*if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -199,34 +207,58 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void arrowSkillOn()
+    {
+        //* 장전
+        P_States.isOnAim = true;
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
+        //skill_R.OnClicked();
+        P_Controller.onArrow();
+    }
+    public void arrowSkillOff()
+    {
+        //* 발사 
+        P_States.isOnAim = false;
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
+        //skill_R.OnClicked();
+        P_Controller.offArrow();
+    }
+
     public void skillMotion(char a)
     {
-        if (skill_E == null && skill_Q == null && skill_R == null)
+        if (skill_E == null && skill_Q == null)
         {
             return;
         }
 
         switch (a)
         {
-            case 'R':
+            case 'R':   //* weapon change
                 if (skill_R.imgCool.fillAmount == 0)
                 {
-                    P_States.isSkill = true;
-                    //* 이펙트
-                    Effect effect = null;
-                    if (skill_R.skill.isFirsttime)  //* 장전
-                    {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-                    }
-                    else    //* 발사
-                    {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                    }
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    //* 이펙트 회전
-                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-
-                skill_R.OnClicked();
+                    if (P_States.isBowMode) //* 활 모드 -> 칼 모드
+                    {
+                        P_States.isBowMode = false;
+                        P_Controller.bow.SetActive(false);
+                        P_Controller.sword.SetActive(true);
+                    }
+                    else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
+                    {
+                        P_States.isBowMode = true;
+                        P_Controller.bow.SetActive(true);
+                        P_Controller.sword.SetActive(false);
+                    }
+                    skill_R.OnClicked();
                 }
                 break;
 
@@ -520,7 +552,7 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.isElectricShock)   //*감전
         {
             P_Value.finalSpeed = P_COption.walkingSpeed;
-            P_States.isJumping = false;
+            P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
@@ -530,6 +562,17 @@ public class PlayerMovement : MonoBehaviour
                 ElecTime = 0f;
                 //Debug.Log("Electric off");
             }
+            P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
+
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            P_Com.rigidbody.velocity = p_velocity;
+        }
+        else if (P_States.isAim)    //조준
+        {
+            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_States.isJumping = false; P_Input.jumpMovement = 0;
+            P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
@@ -579,9 +622,7 @@ public class PlayerMovement : MonoBehaviour
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
 
-            if (P_States.isAim)    //조준
-                P_Value.finalSpeed = P_COption.walkingSpeed;
-            else if (P_States.isSprinting)    //전력질주
+            if (P_States.isSprinting)    //전력질주
                 P_Value.finalSpeed = P_COption.sprintSpeed;
             else if (P_States.isRunning) //뛸때
                 P_Value.finalSpeed = P_COption.runningSpeed;

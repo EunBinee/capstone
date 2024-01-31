@@ -264,29 +264,7 @@ public class PlayerController : MonoBehaviour
     // damage 정보 만큼 피해를 입힙니다.
     public void ActivateSkill(SOSkill skill)
     {
-        if (skill.isTwice && !P_States.isAim)
-        {
-            P_States.isAim = true;
-            P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-            bow.SetActive(true);    //* 무기 교체
-            sword.SetActive(false);
-            GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-            crosshairImage.gameObject.SetActive(true);  //* 조준점
-            PoolingArrow(); //* 화살 풀링
-        }
-        else if (skill.isTwice && P_States.isAim)
-        {
-            P_States.isAim = false;
-            P_Com.animator.SetBool("isAim", false);
-            P_Com.animator.SetTrigger("shoot");
-            GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
-            skill.isFirsttime = true;
-            bow.SetActive(false);
-            sword.SetActive(true);
-            crosshairImage.gameObject.SetActive(false);
-            P_States.isSkill = false;
-        }
-        else if (!skill.isTwice)
+        if (!skill.isTwice)
         {
             P_Com.animator.Play(skill.animationName);
             P_States.isSkill = false;
@@ -299,6 +277,34 @@ public class PlayerController : MonoBehaviour
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
+    }
+    public void onArrow()
+    {
+        if (P_States.isBowMode)
+        {
+            if (!P_States.isAim)
+            {
+                P_States.isAim = true;
+                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
+                GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
+                crosshairImage.gameObject.SetActive(true);  //* 조준점
+                PoolingArrow(); //* 화살 풀링
+            }
+        }
+    }
+    public void offArrow()
+    {
+        if (P_States.isBowMode)
+        {
+            if (P_States.isAim)
+            {
+                P_States.isAim = false;
+                P_Com.animator.SetBool("isAim", false);
+                P_Com.animator.SetTrigger("shoot");
+                GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
+                crosshairImage.gameObject.SetActive(false);
+            }
+        }
     }
 
     //* 물리(중력)
@@ -344,7 +350,7 @@ public class PlayerController : MonoBehaviour
         {
             P_States.isForwardBlocked = true;
             forwardHit.Add(hit.collider);    //* 전방체크 해서 걸린 거 리스트에 추가 
-            //Debug.Log("if (cast)");
+                                             //Debug.Log("if (cast)");
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
             //if (P_States.isForwardBlocked)
@@ -448,7 +454,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
-                P_Movement.skillMotion('E');
+                P_Movement.arrowSkillOff();
             }
 
             //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.

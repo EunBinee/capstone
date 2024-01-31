@@ -32,11 +32,6 @@ public class PlayerAttackCheck : MonoBehaviour
     void Start()
     {
         player = GameManager.Instance.gameData.player;
-        // Transform currentTransform = transform;
-        // while (currentTransform.parent != null)
-        // {
-        //     currentTransform = currentTransform.parent;
-        // }
         _playerController = player.GetComponent<PlayerController>();
         rigid = GetComponent<Rigidbody>();
         if (this.gameObject.tag == "Arrow")  //* 화살인지 확인을 해
@@ -51,15 +46,10 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot)
+        if (isArrow && !goShoot && P_States.isOnAim)
         {
-            //todo: 아래 코드 고치기(지우니까 화살이 안보임)
-            //transform.position = Vector3.zero;
             transform.localPosition = Vector3.zero;
-            //transform.localRotation = Quaternion.identity;
-            //transform.rotation = Quaternion.identity;
-            //transform.localScale = Vector3.one;
-            //this.transform.rotation = player.transform.rotation;
+            transform.rotation = Quaternion.identity;
             if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
             {
                 //* 키네매틱 끄기
@@ -71,9 +61,9 @@ public class PlayerAttackCheck : MonoBehaviour
                     //dir = P_Controller.AimmingCam.transform.forward;
                 }
                 //transform.position += dir * 0.1f;
-                rigid.velocity = dir.normalized * 40f; ; //* 발사
-                goShoot = true;
+                rigid.velocity = dir.normalized * 4f; ; //* 발사
                 ArrowRay();
+                goShoot = true;
                 //attackEnemy = false;
                 //P_States.hadAttack = false;
             }
@@ -251,6 +241,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()//float curArrowDistance)
     {
+        Debug.Log("ArrowRay()");
+        goShoot = false;
         float range = 100f;
         RaycastHit[] hits;
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
