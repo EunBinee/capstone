@@ -408,7 +408,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         if (playerGetDamage)
         {
             //카메라 흔들림
-            GameManager.Instance.cameraShake.ShakeCamera(0.5f, 2, 2);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.5f, 2, 2);
             //이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
 

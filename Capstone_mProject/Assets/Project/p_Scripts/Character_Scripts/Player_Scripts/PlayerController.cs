@@ -445,7 +445,7 @@ public class PlayerController : MonoBehaviour
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
-        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 2, 1);
 
         curEnemy = enemy;
 

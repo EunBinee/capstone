@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class CameraController : MonoBehaviour
 {
     public CameraInfo cameraInfo;
+    public CameraShake cameraShake;
     public PlayerController playerController;
     public Transform playerHeadPos; //* 벽체크에쓰임
     public Transform playerBackPos; //* 조준 할때 쓰임
@@ -72,6 +73,7 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        cameraShake = GetComponent<CameraShake>();
     }
 
     private void Start()

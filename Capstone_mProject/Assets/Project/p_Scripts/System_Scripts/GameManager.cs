@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
     //*---------------------------------------------//
     public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
-    public CameraShake cameraShake;
     //! 씬이동 후, GameManager에서 CameraController는 null
     //! Awake 나 start에서 GameManager의 CameraController를 쓰고 싶을 때 아래 Action 사용. 
     public Action<CameraController> startActionCam = null; //
@@ -75,7 +74,6 @@ public class GameManager : MonoBehaviour
         hPBarManager = GetComponent<HPBarManager>();
         damageManager = GetComponent<DamageManager>();
 
-        cameraShake = GetComponent<CameraShake>();
         cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
 

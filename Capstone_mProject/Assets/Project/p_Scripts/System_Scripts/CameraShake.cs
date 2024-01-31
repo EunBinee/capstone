@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
-    [SerializeField] private Transform cam;
+    private Transform cam;
 
     bool isShaking = false;
     Vector3 originPos;
@@ -12,13 +12,12 @@ public class CameraShake : MonoBehaviour
 
     void Start()
     {
-        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        cam = GetComponent<Transform>();
+
     }
 
     public void ShakeCamera(float duration, float shakeSpeed, float shakeAmount)
     {
-        cam = GameManager.instance.cameraController.cameraObj.transform;
-
         if (isShaking)
         {
             if (shake_co != null)
