@@ -90,7 +90,10 @@ public class CurrentState
     public bool notSameMonster = false;
     public bool isBouncing;
     public bool isStop; //대화창 활성화될때 움직임 비활성화여부
+    public bool isBowMode = false;  //활 모드
     public bool isAim;  //조준스킬
+    public bool startAim;  //조준스킬
+    public bool isOnAim;  //조준스킬
     public bool canGoForwardInAttack;
     public bool isElectricShock;
 

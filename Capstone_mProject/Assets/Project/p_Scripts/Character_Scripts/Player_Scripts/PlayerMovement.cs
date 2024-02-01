@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     float ElecTime = 0;
     bool showElec = false;
 
+    Vector3 camForward;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                skillMotion('R');
+                arrowSkillOff();
             }
         }
     }
@@ -117,6 +119,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Input.horizontalMovement = 0;
             }
+
+            //* [미카 디버프 단축키]==================================================
             if (Input.GetKeyUp(KeyCode.O))
             {
                 P_Value.HP = 10;
@@ -126,39 +130,47 @@ public class PlayerMovement : MonoBehaviour
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;    //* 감전
             }
-            if (Input.GetMouseButtonDown(0)
-                && P_States.isGround && !P_States.isDodgeing /*&& !P_States.isGettingHit*/ && !P_States.isStop && !P_States.isElectricShock
-                && !EventSystem.current.IsPointerOverGameObject())
-            {
-                if (P_States.isAim)    //* 조준 모드라면
+            //* =====================================================================
+
+            if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때
+            {   //* 마우스 클릭
+                if (P_States.isGround && !P_States.isDodgeing && !P_States.isStop && !P_States.isElectricShock
+                    && !EventSystem.current.IsPointerOverGameObject())
                 {
-                    P_Com.animator.SetTrigger("shoot");
-                    skillMotion('R');
-                }
-                else if (!P_States.isStartComboAttack)   //* 콤보어텍이 시작되지 않았다면
-                {
-                    //Debug.Log("[attack test]플레이어 공격 활성화(클릭 입력)");
-                    //Time.timeScale = 0.3f;
-                    //EventSystem.current.IsPointerOverGameObject() ui 클릭하면 공격모션 비활성화, ui 아니면 되게끔. 
-                    P_States.isStartComboAttack = true;
-                    StartCoroutine(Attacking());
+                    if (!P_States.isStartComboAttack)
+                    {
+                        P_States.isStartComboAttack = true;
+                        StartCoroutine(Attacking());
+                    }
                 }
             }
+            if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
+            {
+                if (!P_States.isAim)
+                {
+                    camForward = P_Camera.cameraObj.transform.forward;
+                    P_States.startAim = true;
+                    arrowSkillOn();
+                }
+            }
+            else if (Input.GetMouseButtonUp(0) && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
+            {
+                P_States.startAim = false;
+                arrowSkillOff();
+            }
+
             //* skills input
+            if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
+            {
+                if (P_States.isOnAim)   // 조준 중일때 전환 키 누르면
+                {
+                    arrowSkillOff();    // 조준 헤제
+                }
+                skillMotion('R');
+            }
             if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
                 skillMotion('E');
-            }
-            if (Input.GetKeyDown(KeyCode.R))  //*Aim
-            {
-                if (P_States.isSkill)
-                {
-                    return;
-                }
-                else
-                {
-                    skillMotion('R');
-                }
             }
             /*if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -199,34 +211,52 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void arrowSkillOn()
+    {
+        //* 장전
+        P_States.isOnAim = true;
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
+        P_Controller.onArrow();
+    }
+    public void arrowSkillOff()
+    {
+        //* 발사 
+        P_States.isOnAim = false;
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
+        P_Controller.offArrow();
+    }
+
     public void skillMotion(char a)
     {
-        if (skill_E == null && skill_Q == null && skill_R == null)
-        {
-            return;
-        }
-
         switch (a)
         {
-            case 'R':
+            case 'R':   //* weapon change
                 if (skill_R.imgCool.fillAmount == 0)
                 {
-                    P_States.isSkill = true;
-                    //* 이펙트
-                    Effect effect = null;
-                    if (skill_R.skill.isFirsttime)  //* 장전
-                    {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-                    }
-                    else    //* 발사
-                    {
-                        effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                    }
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    //* 이펙트 회전
-                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                    if (P_States.isBowMode) //* 활 모드 -> 칼 모드
+                    {
+                        P_States.isBowMode = false;
+                        P_Controller.bow.SetActive(false);
+                        P_Controller.sword.SetActive(true);
+                    }
+                    else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
+                    {
+                        P_States.isBowMode = true;
+                        P_Controller.bow.SetActive(true);
+                        P_Controller.sword.SetActive(false);
+                    }
+                    skill_R.OnClicked();
                 }
-                skill_R.OnClicked();
                 break;
 
             case 'Q':
@@ -242,7 +272,6 @@ public class PlayerMovement : MonoBehaviour
                 if (skill_E.imgCool.fillAmount == 0)
                 {
                     P_States.isSkill = true;
-                    //ebug.Log("스킬V");
                     StartCoroutine(PlayerHeal_co());
                 }
                 skill_E.OnClicked();
@@ -382,17 +411,16 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        /*if (P_States.isAim)
+        if (P_States.isAim)
         {
-            Vector3 rotationDirection = P_Controller.transform.forward;
+            Vector3 rotationDirection = camForward;
             rotationDirection.y = 0;
             rotationDirection.Normalize();
             Quaternion tr = Quaternion.LookRotation(rotationDirection);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
-            transform.rotation = targetRotation;
+            //Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+            transform.rotation = tr;
         }
-        else*/
-        if (P_States.isStrafing) //* 주목할때만 쓰임
+        if (P_States.isStrafing) //* 주목,조준할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -441,6 +469,7 @@ public class PlayerMovement : MonoBehaviour
                     Quaternion tr = Quaternion.LookRotation(rotationDirection);
                     Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
                     transform.rotation = targetRotation;
+                    transform.rotation = tr;
                 }
             }
         }
@@ -493,8 +522,6 @@ public class PlayerMovement : MonoBehaviour
             }
             Quaternion turnRot = Quaternion.LookRotation(targetDirect);
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
-            if (P_States.isAim)
-                targetRot.y = this.transform.forward.y * 90;
             transform.rotation = targetRot;
         }
     }
@@ -506,7 +533,6 @@ public class PlayerMovement : MonoBehaviour
 
         if ((P_States.isStartComboAttack && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
-                /*|| P_States.isSkill     //* (지금은 스킬 안씀)스킬 사용 시 or*/
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
@@ -531,7 +557,7 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.isElectricShock)   //*감전
         {
             P_Value.finalSpeed = P_COption.walkingSpeed;
-            P_States.isJumping = false;
+            P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
@@ -541,6 +567,17 @@ public class PlayerMovement : MonoBehaviour
                 ElecTime = 0f;
                 //Debug.Log("Electric off");
             }
+            P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
+
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            P_Com.rigidbody.velocity = p_velocity;
+        }
+        else if (P_States.isAim)    //조준
+        {
+            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_States.isJumping = false; P_Input.jumpMovement = 0;
+            P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
@@ -589,6 +626,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
+
             if (P_States.isSprinting)    //전력질주
                 P_Value.finalSpeed = P_COption.sprintSpeed;
             else if (P_States.isRunning) //뛸때
@@ -599,21 +637,6 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
         }
-
-        /*else if (P_States.isAim)
-        {
-            //**마우스로 화면을 돌리기때문에 카메라 방향으로 캐릭터가 앞으로 전진한다.
-            P_Value.moveDirection = P_Camera.cameraObj.transform.forward * P_Input.verticalMovement;
-            P_Value.moveDirection = P_Value.moveDirection + P_Camera.cameraObj.transform.right * P_Input.horizontalMovement;
-
-            P_Value.moveDirection.Normalize(); //정규화시켜준다.
-
-            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * P_Value.gravity;
-            P_Com.rigidbody.velocity = p_velocity;
-        }*/
-
-
 
     }
 
@@ -860,9 +883,10 @@ public class PlayerMovement : MonoBehaviour
                     break;
             }
 
-            /**///* 공격 시 앞으로 찔끔찔끔 가도록
+            //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            if (P_Value.nowEnemy != null && /*!P_States.isForwardBlocked*/P_Controller.forwardHit == null && P_States.canGoForwardInAttack) //앞이 막혀있지 않고 적이 있다면
+            //앞이 막혀있지 않고 적이 있다면 //* 전진
+            if (P_Value.nowEnemy != null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -878,18 +902,20 @@ public class PlayerMovement : MonoBehaviour
                     dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 }
 
-                Vector3 pos = transform.position + dir * 3f;
+                Vector3 pos = transform.position + dir * 4f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
-            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack) //앞에 막혀있거나 앞으로 가지 못한다면
-            {
-                //dir = this.gameObject.transform.forward.normalized;
-            }
-            else if (P_Controller.forwardHit == null && P_Value.nowEnemy == null)   //앞이 막혀있지 않고 적이 없다면
+            //앞이 막혀있지 않고 적이 없다면 //* 전진
+            else if (P_Value.nowEnemy == null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+            }
+            //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
+            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack)
+            {
+                //dir = this.gameObject.transform.forward.normalized;
             }
 
             if (!P_States.isGettingHit)

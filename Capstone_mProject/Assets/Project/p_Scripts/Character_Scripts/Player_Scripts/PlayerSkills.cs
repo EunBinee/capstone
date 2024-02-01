@@ -6,7 +6,8 @@ using UnityEngine;
 [Serializable]
 public class PlayerSkills
 {
-    private GameObject playerController;
+    private GameObject player;
+    private PlayerController playerController;
     public string arrowPrefabPath = "Arrow"; // Prefabs 폴더에 Arrow 프리팹
     public int poolSize = 5;
     private GameObject[] arrowPool;
@@ -16,7 +17,8 @@ public class PlayerSkills
 
     public void Init()
     {
-        playerController = GameManager.instance.gameData.player;
+        player = GameManager.instance.gameData.player;
+        playerController = player.GetComponent<PlayerController>();
         InitializeArrowPool();
     }
 
@@ -32,7 +34,8 @@ public class PlayerSkills
                 Debug.Log("arrowPrefab = null");
             }
             arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
-            arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
+            arrowPool[i].gameObject.transform.SetParent(playerController.shootPoint);
+            //arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
             arrowPool[i].SetActive(false);
         }
     }
