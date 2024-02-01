@@ -30,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
     float ElecTime = 0;
     bool showElec = false;
 
+    Vector3 camForward;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -142,28 +144,30 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isBowMode)    //* 누르고 있는 중에
+            if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
             {
-
                 if (!P_States.isAim)
                 {
+                    camForward = P_Camera.cameraObj.transform.forward;
+                    P_States.startAim = true;
                     arrowSkillOn();
                 }
             }
-            else if (Input.GetMouseButtonUp(0) && P_States.isBowMode)   //* 눌렀다가 뗄 때
+            else if (Input.GetMouseButtonUp(0) && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
             {
+                P_States.startAim = false;
                 arrowSkillOff();
             }
 
+            //* skills input
             if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
             {
-                if (P_States.isOnAim)   // 조준 중일때 전환 키
+                if (P_States.isOnAim)   // 조준 중일때 전환 키 누르면
                 {
                     arrowSkillOff();    // 조준 헤제
                 }
                 skillMotion('R');
             }
-            //* skills input
             if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
                 skillMotion('E');
@@ -216,7 +220,6 @@ public class PlayerMovement : MonoBehaviour
         //* 이펙트 회전
         effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
-        //skill_R.OnClicked();
         P_Controller.onArrow();
     }
     public void arrowSkillOff()
@@ -228,17 +231,11 @@ public class PlayerMovement : MonoBehaviour
         //* 이펙트 회전
         effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
-        //skill_R.OnClicked();
         P_Controller.offArrow();
     }
 
     public void skillMotion(char a)
     {
-        if (skill_E == null && skill_Q == null)
-        {
-            return;
-        }
-
         switch (a)
         {
             case 'R':   //* weapon change
@@ -414,7 +411,16 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isStrafing) //* 주목할때만 쓰임
+        if (P_States.isAim)
+        {
+            Vector3 rotationDirection = camForward;
+            rotationDirection.y = 0;
+            rotationDirection.Normalize();
+            Quaternion tr = Quaternion.LookRotation(rotationDirection);
+            //Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+            transform.rotation = tr;
+        }
+        if (P_States.isStrafing) //* 주목,조준할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -463,6 +469,7 @@ public class PlayerMovement : MonoBehaviour
                     Quaternion tr = Quaternion.LookRotation(rotationDirection);
                     Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
                     transform.rotation = targetRotation;
+                    transform.rotation = tr;
                 }
             }
         }
@@ -515,8 +522,6 @@ public class PlayerMovement : MonoBehaviour
             }
             Quaternion turnRot = Quaternion.LookRotation(targetDirect);
             Quaternion targetRot = Quaternion.Slerp(transform.rotation, turnRot, P_COption.rotSpeed * Time.deltaTime);
-            //f (P_States.isAim)
-            //    targetRot.y = this.transform.forward.y * 90;
             transform.rotation = targetRot;
         }
     }
