@@ -17,8 +17,11 @@ public class CameraInfo : MonoBehaviour
         GameManager.instance.gameData.playerCamera = cameraController.playerCamera;
         GameManager.instance.gameData.playerCameraPivot = cameraController.playerCameraPivot;
         GameManager.instance.gameData.cameraObj = cameraController.cameraObj;
-        GameManager.instance.damageManager.m_Camera = cameraController.cameraObj;
         GameManager.instance.cameraController = cameraController;
+
+        UIManager.Instance.damageManager.m_Camera = cameraController.cameraObj;
+        UIManager.Instance.hPBarManager.m_Camera = cameraController.cameraObj;
+
         //플레이어
         PlayerController playerController = GameManager.instance.gameData.GetPlayerController();
         playerController._playerFollowCamera.playerCamera = cameraController.playerCamera;

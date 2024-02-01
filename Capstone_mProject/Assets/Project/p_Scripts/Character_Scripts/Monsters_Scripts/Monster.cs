@@ -157,7 +157,6 @@ public class Monster : MonoBehaviour
         //퀘스트 진행도 ++
         if (GameManager.Instance.dialogueManager.DoQuest)//GameManager.Instance.questManager != null
         {
-            Debug.Log("Ddd");
             GameManager.Instance.questManager.currentQuestValue_++;
             Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
         }
@@ -183,12 +182,12 @@ public class Monster : MonoBehaviour
     {
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-            m_hPBar = GameManager.instance.hPBarManager.Get_BossHPBar();
+            m_hPBar = UIManager.Instance.hPBarManager.Get_BossHPBar();
             m_hPBar.Reset(monsterData.MaxHP, this, true);
         }
         else
         {
-            m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
+            m_hPBar = UIManager.Instance.hPBarManager.Get_HPBar();
             m_hPBar.Reset(monsterData.MaxHP, this);
         }
     }
@@ -207,7 +206,7 @@ public class Monster : MonoBehaviour
         {
             if (m_hPBar != null)
             {
-                GameManager.Instance.hPBarManager.Return_BossHPBar();
+                UIManager.Instance.hPBarManager.Return_BossHPBar();
                 m_hPBar = null;
             }
         }
@@ -215,7 +214,7 @@ public class Monster : MonoBehaviour
         {
             if (m_hPBar != null)
             {
-                GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
+                UIManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
                 m_hPBar = null;
             }
         }
@@ -240,7 +239,7 @@ public class Monster : MonoBehaviour
         }
         else
             randomRange = 0.5f;
-        DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
+        DamageUI_Info damageUI = UIManager.Instance.damageManager.Get_DamageUI();
 
         float x = UnityEngine.Random.Range(-randomRange, randomRange);
         float y = UnityEngine.Random.Range(-randomRange, randomRange);

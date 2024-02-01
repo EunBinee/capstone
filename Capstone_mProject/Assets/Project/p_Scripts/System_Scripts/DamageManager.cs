@@ -27,6 +27,14 @@ public class DamageManager : MonoBehaviour
 
     private void InitDamageUI()
     {
+        if (CanvasManager.instance.monsterDamageUI == null)
+        {
+            CanvasManager.instance.monsterDamageUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.monsterDamageName);
+            if (CanvasManager.instance.monsterDamageUI == null)
+                Debug.LogError("오브젝트 없음");
+        }
+        damage_Parent = CanvasManager.instance.monsterDamageUI.GetComponent<Transform>();
+
         damage_Pools = new List<DamageUI_Info>();
         damageUI_InUse = new List<DamageUI_Info>();
         if (damage_Prefab == null)

@@ -38,6 +38,15 @@ public class CanvasManager : MonoBehaviour
     [Header("LoadingImg")]
     public string loadingImgName;
     public GameObject loadingImg;
+    [Space]
+    [Header("몬스터 HP 모음")]
+    public string monster_HPBarName;
+    public GameObject monster_HPBarUI;
+    [Space]
+    [Header("몬스터 데미지 UI 모음")]
+    public string monsterDamageName;
+    public GameObject monsterDamageUI;
+
 
     void Awake()
     {
@@ -68,6 +77,17 @@ public class CanvasManager : MonoBehaviour
         if (loadingImg == null)
         {
             loadingImg = GetCanvasUI(loadingImgName);
+        }
+
+        //* 몬스터 HP UI모아두는 곳
+        if (monster_HPBarUI == null)
+        {
+            monster_HPBarUI = GetCanvasUI(monster_HPBarName);
+        }
+        //* 몬스터 데미지 UI 모아두는 곳
+        if (monsterDamageUI == null)
+        {
+            monsterDamageUI = GetCanvasUI(monsterDamageName);
         }
 
     }

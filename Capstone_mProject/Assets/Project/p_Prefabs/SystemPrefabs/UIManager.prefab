@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 987184574209865713}
   - component: {fileID: 987184574209865712}
+  - component: {fileID: 6285046702297743826}
+  - component: {fileID: 7723047805010149682}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -44,7 +46,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e209f42075a947458a439ee1e17bff5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  loadingImg: {fileID: 0}
+  hPBarManager: {fileID: 0}
   uiPrefabs:
     settingUI: {fileID: 2843270130955790900, guid: 80670454f88c35147b9550acae3c88ed, type: 3}
     popupWindow: {fileID: 0}
   uiPrefabsInGame: []
+--- !u!114 &6285046702297743826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987184574209865679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f91edf50fa432a41bfb44a3a167ba34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HPBar_name: Monster_Info
+  bossHPBar_name: BossMonster_Info
+  HPBar_Parent: {fileID: 0}
+  m_Camera: {fileID: 0}
+--- !u!114 &7723047805010149682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987184574209865679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0f0955b3099e604e967e183c994971d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage_name: Damage_UI
+  damage_Parent: {fileID: 0}
+  m_Camera: {fileID: 0}

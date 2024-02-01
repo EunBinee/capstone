@@ -34,6 +34,10 @@ public class UIManager : MonoBehaviour
     public UIPrefabs uiPrefabs;
     public List<GameObject> uiPrefabsInGame;
 
+    [Header("몬스터관련 UI 관리")]
+    public HPBarManager hPBarManager;
+    public DamageManager damageManager;
+
     void Awake()
     {
         Init();
@@ -48,7 +52,11 @@ public class UIManager : MonoBehaviour
         }
         else
             Destroy(this.gameObject);
+
+        hPBarManager = GetComponent<HPBarManager>();
+        damageManager = GetComponent<DamageManager>();
     }
+
     void Start()
     {
         if (CanvasManager.instance.loadingImg == null)

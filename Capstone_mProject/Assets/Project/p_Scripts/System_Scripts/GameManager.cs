@@ -23,8 +23,6 @@ public class GameManager : MonoBehaviour
     public GameData gameData;
 
     public ObjectPooling objectPooling;
-    public HPBarManager hPBarManager;
-    public DamageManager damageManager;
     public DamageCalculator damageCalculator;
 
     //대화
@@ -44,7 +42,6 @@ public class GameManager : MonoBehaviour
     public Action<CameraController> startActionCam = null; //
     public CameraController cameraController;
     //* 현재 몬스터 --------------------------------//
-
     public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
                                                  //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
     public Monster[] cur_monsters; //위에 꺼할때 배열은 지워도 될듯염
@@ -70,9 +67,6 @@ public class GameManager : MonoBehaviour
 
         objectPooling.InitPooling();
         loadScene.Init();
-
-        hPBarManager = GetComponent<HPBarManager>();
-        damageManager = GetComponent<DamageManager>();
 
         cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
