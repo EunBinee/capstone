@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
-        if (GameManager.Instance.dialogueManager.isDialogue)
+        if (DialogueManager.instance.isDialogue)
         {
 
             P_States.isStop = true;
@@ -583,13 +583,13 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 P_Com.animator.Rebind();
-                GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
-                if (!GameManager.Instance.dialogueManager.DoQuest)
+                DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
+                if (!DialogueManager.instance.DoQuest)
                     interObject.SetActive(false);
                 //StopToFalse(true);
             }
         }
-        if (other.gameObject.tag == "LoadScene" && !GameManager.Instance.dialogueManager.DoQuest) //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest) //플레이어가 들어가면 대화창 활성화
         {
             //Debug.Log("엔피시 대화 에리어");
             GameObject interObject = other.gameObject;

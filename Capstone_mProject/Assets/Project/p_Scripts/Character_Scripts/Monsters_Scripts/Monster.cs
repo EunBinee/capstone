@@ -155,10 +155,10 @@ public class Monster : MonoBehaviour
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-        if (GameManager.Instance.dialogueManager.DoQuest)//GameManager.Instance.questManager != null
+        if (DialogueManager.instance.DoQuest)//GameManager.Instance.questManager != null
         {
-            GameManager.Instance.questManager.currentQuestValue_++;
-            Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+            DialogueManager.Instance.questManager.currentQuestValue_++;
+            Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
         }
     }
 

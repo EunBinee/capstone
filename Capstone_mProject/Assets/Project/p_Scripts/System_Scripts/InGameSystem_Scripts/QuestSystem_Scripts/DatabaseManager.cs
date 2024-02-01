@@ -6,18 +6,15 @@ using UnityEngine;
 public class DatabaseManager : MonoBehaviour
 {
     static public DatabaseManager instance;
-
+    public DialogueParser dialogueParser;
     public string csvFileName_NPC;
     public string csvFileName_Quest;
 
-    //npc�� ����� ���°����
+    //npc
     public Dictionary<int, Dialogue> NPC_diaglogues_Dictionary = new Dictionary<int, Dialogue>(); //csvFileName_NPC
     public Dictionary<int, Quest> Quest_Dictionary = new Dictionary<int, Quest>(); //csvFileName_Quest
 
-    //List<int> idList01 = new List<int>(); //Start()���� Debug�Ҷ� ���
-    //List<int> idList02 = new List<int>();
     int eventID;
-    //int id;
 
     void Awake()
     {
@@ -31,53 +28,6 @@ public class DatabaseManager : MonoBehaviour
 
         }
     }
-    //void Start()
-    //{
-    //    //������ �Ľ��� �ߵƴ���  Debug.Log��
-    //    for (int i = 0; i < idList01.Count; i++)
-    //    {
-    //        int id = idList01[i];
-    //        string name = "";
-    //        Dialogue dialogue = NPC_diaglogues_Dictionary[id];
-    //        Debug.Log(id.ToString());
-
-    //        List<List<Line>> lines = dialogue.lines;
-
-
-    //        for (int j = 0; j < lines.Count; j++)
-    //        {
-    //            for (int k = 0; k < lines[j].Count; k++)
-    //            {
-
-    //                for (int l = 0; l < lines[j][k].context.Length; l++)
-    //                {
-    //                    Debug.Log("[" + j + "] [" + k + "] Context" + l);
-    //                    if (name != lines[j][k].Name)
-    //                    {
-    //                        name = lines[j][k].Name;
-
-    //                        Debug.Log(name);
-    //                    }
-
-    //                    Debug.Log(lines[j][k].context[l]);
-
-    //                    //���� �������� ������ �ִٸ�..
-    //                    if (l == (lines[j][k].context.Length - 1))
-    //                    {
-    //                        if (lines[j][k].isChoice)
-    //                        {
-    //                            Debug.Log("������");
-    //                            Debug.Log(lines[j][k].choice.firstOption);
-    //                            Debug.Log(lines[j][k].choice.firstOptDialogNum.ToString());
-    //                            Debug.Log(lines[j][k].choice.secondOption);
-    //                            Debug.Log(lines[j][k].choice.secondOptDialogNum.ToString());
-    //                        }
-    //                    }
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 
     static public DatabaseManager GetInstance()
     {
@@ -87,12 +37,8 @@ public class DatabaseManager : MonoBehaviour
 
     public void DialogueParser(string csvFileName, bool isNPC)
     {
-
         //NPC
-        DialogueParser dialogueParser = GetComponent<DialogueParser>();
         Dialogue[] dialogues = dialogueParser.DialogueParse(csvFileName);
-
-
 
         for (int i = 0; i < dialogues.Length; i++)
         {
@@ -146,7 +92,7 @@ public class DatabaseManager : MonoBehaviour
 
     public void QuestParser(string csvFileName, int questNum)
     {
-        DialogueParser dialogueParser = GetComponent<DialogueParser>();
+        //DialogueParser dialogueParser = GetComponent<DialogueParser>();
         Quest[] quests = dialogueParser.QuestParse(csvFileName);
 
         for (int i = 0; i < quests.Length; i++)

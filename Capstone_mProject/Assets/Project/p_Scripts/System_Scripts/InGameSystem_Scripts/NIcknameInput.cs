@@ -37,7 +37,7 @@ public class NIcknameInput : MonoBehaviour
         nickname = nicknameInput.text;
         GameManager.Instance.gameInfo.Nickname = nickname;
         object_Nickname.SetActive(false);
-        GameManager.Instance.dialogueManager.player_InteractingFalse();
+        DialogueManager.instance.player_InteractingFalse();
         Debug.Log(nickname);
     }
 

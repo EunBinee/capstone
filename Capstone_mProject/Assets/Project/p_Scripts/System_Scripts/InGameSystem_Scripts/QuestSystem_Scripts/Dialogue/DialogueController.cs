@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueController : MonoBehaviour
 {
-    //! 타이핑 효과
-
+    //! 애니메이션 효과
     [SerializeField] TMP_Text objectText;
 
     bool startChat = false;
@@ -45,9 +45,6 @@ public class DialogueController : MonoBehaviour
             }
         }
     }
-
-
-
 
     //타이핑 애니메이션
     public void Chat_Obect(string sentence)
@@ -127,5 +124,26 @@ public class DialogueController : MonoBehaviour
         startChat = false;
         stopChat = false;
 
+    }
+
+    //화살표 애니메이션 
+    public void ArrowAnimation()
+    {
+        StartCoroutine(AnimateArrow());
+    }
+    private IEnumerator AnimateArrow()
+    {
+        dialogueManager.isArrowAnimating = true;
+
+        while (dialogueManager.isArrowAnimating)
+        {
+            // 예시로 알파값을 조절하여 페이드 효과 구현
+            float alpha = Mathf.PingPong(Time.time, 0.5f);
+            Color arrowColor = dialogueManager.DialogueUI_info.dialogueArrow.GetComponent<Image>().color;
+            arrowColor.a = alpha;
+            dialogueManager.DialogueUI_info.dialogueArrow.GetComponent<Image>().color = arrowColor;
+
+            yield return null;
+        }
     }
 }

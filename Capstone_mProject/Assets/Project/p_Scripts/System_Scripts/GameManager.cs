@@ -26,11 +26,8 @@ public class GameManager : MonoBehaviour
     public DamageCalculator damageCalculator;
 
     //대화
-    public DialogueInfo dialogueInfo;
-    public DialogueManager dialogueManager;
-    public GameInfo gameInfo;
+    public GameInfo gameInfo; //* 게임 정보
     public LoadScene loadScene;
-    public QuestManager questManager;
     //탐라
     public TimeLineController timeLineController;
 
@@ -70,10 +67,10 @@ public class GameManager : MonoBehaviour
 
         cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
-        questManager = GetComponent<QuestManager>();
-        dialogueManager = GetComponent<DialogueManager>(); //대사 시스템을 위한 스크립트
-        //게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
+
+        //* 게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
+
         cur_monsters = GameObject.FindObjectsOfType<Monster>();
         monsters = new List<Monster>();
         for (int i = 0; i < cur_monsters.Length; i++)
