@@ -121,6 +121,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
+            P_Movement.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
@@ -237,6 +238,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
+                    P_Movement.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;

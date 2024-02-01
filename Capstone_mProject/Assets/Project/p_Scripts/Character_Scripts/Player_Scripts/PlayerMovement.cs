@@ -144,7 +144,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
+            if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.startAim)    //* 누르고 있는 중에
             {
                 if (!P_States.isAim)
                 {
@@ -156,6 +156,10 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetMouseButtonUp(0) && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
             {
                 P_States.startAim = false;
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                //* 이펙트 회전
+                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
                 arrowSkillOff();
             }
 
@@ -226,10 +230,6 @@ public class PlayerMovement : MonoBehaviour
     {
         //* 발사 
         P_States.isOnAim = false;
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-        //* 이펙트 회전
-        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
         P_Controller.offArrow();
     }
