@@ -7,16 +7,9 @@ using UnityEngine;
 
 
 [Serializable]
-public class DialogueInfo : MonoBehaviour
+public class DialogueInfo
 {
-    //public Item interaction_Item;
 
-    void Start()
-    {
-
-
-    }
-    //public int id;
     public void StartInteraction(GameObject _gameObject)
     {
 

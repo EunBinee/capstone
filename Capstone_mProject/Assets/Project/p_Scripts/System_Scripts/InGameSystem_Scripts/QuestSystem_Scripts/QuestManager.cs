@@ -6,29 +6,10 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
-// public enum QuestType
-// {
-//     None = -1,
-//     MainQuest = 0,
-//     SubQuest,
-// }
 
 public class QuestManager : MonoBehaviour
 {
-    static public QuestManager instance;
-    void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-    }
-
-    static public QuestManager GetInstance()
-    {
-        return instance;
-    }
-    public Quest quest_ = new Quest();
+    public Quest quest_;
     private string text_goal = "";
     private string text_title = "";
     private string text_content = "";
@@ -111,7 +92,7 @@ public class QuestManager : MonoBehaviour
     public void UpdateQuest(int id)
     {
         GameManager.instance.dialogueManager.DoQuest = true;
-        quest_.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;//currentQuestValue_;
+        quest_.currentQuestValue = currentQuestValue_;
 
         if (GameManager.Instance.gameInfo.QuestNum != 0)
         {
