@@ -12,10 +12,11 @@ public class LoadScene
 
     public void Init()
     {
-        Cursor.visible = true;     //마우스 커서를 보이지 않게
-        Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0f;
         UIManager.gameIsPaused = true;
+        //GameManager.instance.m_canvas.GetComponent<CanvasManager>().mainStartScene.GetComponent<mainStartScene>().SetButton();
     }
 
     //* 씬 불러오기
@@ -32,6 +33,7 @@ public class LoadScene
 
     public void LoadMainScene() //* 메인씬 로드
     {
+        Debug.Log("jjj");
         if (mainScene == null)
             mainScene = CanvasManager.instance.mainStartScene;
 

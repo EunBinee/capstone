@@ -28,8 +28,6 @@ public class GameManager : MonoBehaviour
     //대화
     public GameInfo gameInfo; //* 게임 정보
     public LoadScene loadScene;
-    //탐라
-    public TimeLineController timeLineController;
 
     //*---------------------------------------------//
     public Canvas m_canvas;
@@ -51,7 +49,10 @@ public class GameManager : MonoBehaviour
     {
         Init();
     }
-
+    void Start()
+    {
+        startInit();
+    }
     private void Init()
     {
         if (instance == null)
@@ -65,21 +66,24 @@ public class GameManager : MonoBehaviour
         objectPooling.InitPooling();
         loadScene.Init();
 
-        cameraController = gameData.cameraObj.GetComponent<CameraController>();
+        //cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
 
         //* 게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
-
         cur_monsters = GameObject.FindObjectsOfType<Monster>();
         monsters = new List<Monster>();
         for (int i = 0; i < cur_monsters.Length; i++)
         {
             monsters.Add(cur_monsters[i]);
         }
-        timeLineController = GetComponent<TimeLineController>();
     }
 
+    public void startInit()
+    {
+        loadScene.Init();
+
+    }
     static public GameManager GetInstance()
     {
         return instance;

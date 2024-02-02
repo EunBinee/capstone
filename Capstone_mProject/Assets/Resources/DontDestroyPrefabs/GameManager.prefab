@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5007001468822264482
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6101845393745974280}
+  - component: {fileID: 2757877895132461749}
+  - component: {fileID: 2170918644158675050}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6101845393745974280
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5007001468822264482}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2757877895132461749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5007001468822264482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7afd9a4c16734aa4c9d58f7263b465d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameData:
+    player: {fileID: 0}
+    playerTargetPos: {fileID: 0}
+    playerHeadPos: {fileID: 0}
+    playerBackPos: {fileID: 0}
+    playerCamera: {fileID: 0}
+    playerCameraPivot: {fileID: 0}
+    cameraObj: {fileID: 0}
+    smallDamage: 100
+    midDamage: 300
+    bigDamage: 600
+    criticalAdditionalMultiples: 2
+  objectPooling:
+    PoolCount: 50
+    loofEffectPools: []
+    projectilesPoolCount: 50
+  damageCalculator:
+    damageExpression: A + B
+    valueA: 350
+    valueB: 125
+    valueC: 500
+    result: 0
+  gameInfo: {fileID: 0}
+  loadScene:
+    mainScene: {fileID: 0}
+  m_canvas: {fileID: 0}
+  cameraController: {fileID: 0}
+  monsterUnderAttackList: []
+  cur_monsters: []
+  monsters: []
+  bossBattle: 0
+  isLoading: 0
+--- !u!114 &2170918644158675050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5007001468822264482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06a4db5b8fde1f42a2b13c640483ee7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endingNum: 1
+  eventNum: 1
+  questNum: 0
+  dialogueNum: 0
+  nickname: 

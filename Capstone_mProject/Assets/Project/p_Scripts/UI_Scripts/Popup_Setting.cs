@@ -118,7 +118,7 @@ public class Popup_Setting : UIBase
         {
             //TODO: 불러오기 기능
             loadData = SaveSystem.Load("GameData");
-            DialogueLoad();
+            GameManager.instance.loadScene.DialogueLoad();
         });
 
         // 게임 나가기 기능
