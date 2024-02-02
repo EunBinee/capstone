@@ -152,9 +152,13 @@ public class Monster : MonoBehaviour
         //퀘스트 진행도 ++
         if (GameManager.Instance.dialogueManager.DoQuest)//GameManager.Instance.questManager != null
         {
-            Debug.Log("Ddd");
+            Debug.Log("++");
             GameManager.Instance.questManager.currentQuestValue_++;
             Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+        }
+        else if (!GameManager.Instance.dialogueManager.DoQuest)
+        {
+            Debug.Log("ㄴㄴㄴ");
         }
     }
 
