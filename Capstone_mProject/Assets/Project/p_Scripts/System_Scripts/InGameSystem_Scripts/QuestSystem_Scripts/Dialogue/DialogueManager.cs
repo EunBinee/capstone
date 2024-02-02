@@ -13,7 +13,7 @@ using System.Text;
 public class DialogueManager : MonoBehaviour
 {
     DialogueController dialogueController; //대화 텍스트 출력 애니메이션 구현 스크립트
-    GameInfo gameInfo; //게임의 전반적인 정보 
+    //GameInfo gameInfo; //게임의 전반적인 정보 
     public GameObject go_DialogueBar; //대화창 UI
     public TMP_Text Text_Dialogue; //대화 text
     public TMP_Text Text_Name; //이름 text
@@ -45,7 +45,7 @@ public class DialogueManager : MonoBehaviour
     void Start()
     {
         dialogueController = GetComponent<DialogueController>();
-        gameInfo = GetComponent<GameInfo>();
+        //gameInfo = GetComponent<GameInfo>();
         DoQuest = false;
         IsQuestDetail = false;
         isDialogue = false;
@@ -56,7 +56,7 @@ public class DialogueManager : MonoBehaviour
 
 
 
-    public void Action_NPC(int id, Item interaction_Item)
+    public void Action_NPC(int id, Npc interaction_Item)
     {
         //NPC의 대사 가지고 옴.
         //DatabaseManager.GetInstance().NPC_diaglogues_Dictionary[id]를 통해서 현재 id의 맞는 Dialogue를 가지고 온다.
@@ -92,7 +92,7 @@ public class DialogueManager : MonoBehaviour
             yield return null;
         }
     }
-    IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
+    IEnumerator StartObjectTextBox(Dialogue dialogue, Npc interaction_Item)
     {
         isDialogue = true;
         GameManager.instance.cameraController.stopRotation = true;
@@ -349,7 +349,7 @@ public class DialogueManager : MonoBehaviour
         //엔딩 변화 있는 경우
         if (changeEndingID)
         {
-            gameInfo.EndingNum = endingIDToBeChange;
+            GameManager.Instance.gameInfo.EndingNum = endingIDToBeChange;
             //int nextEventNum = dialogue.lines[curPart][curLine].evnetIDToBeChange;
             //interaction_Item.preEventNum = nextEventNum;
         }
@@ -357,13 +357,13 @@ public class DialogueManager : MonoBehaviour
         //이벤트 id변화 있는 경우
         if (changeEvnetID)
         {
-            gameInfo.EventNum = eventIDToBeChange;
+            GameManager.Instance.gameInfo.EventNum = eventIDToBeChange;
         }
 
         if (changeQuestID)
         {
             DoQuest = true;
-            gameInfo.QuestNum = questIDToBeChange;
+            GameManager.Instance.gameInfo.QuestNum = questIDToBeChange;
             //QuestManager.GetInstance().UpdateQuest(gameInfo.QuestNum);
         }
         go_DialogueBar.SetActive(false); //대화 UI 비활성화

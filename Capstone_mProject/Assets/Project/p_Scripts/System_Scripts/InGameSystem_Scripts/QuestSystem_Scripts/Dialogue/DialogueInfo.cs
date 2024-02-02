@@ -23,7 +23,7 @@ public class DialogueInfo : MonoBehaviour
 
         //Item interaction_Item = gameObject.GetComponent<Item>();
 
-        Item interaction_Item = _gameObject.GetComponent<Item>();
+        Npc interaction_Item = _gameObject.GetComponent<Npc>();
 
         if (interaction_Item != null)
         {
