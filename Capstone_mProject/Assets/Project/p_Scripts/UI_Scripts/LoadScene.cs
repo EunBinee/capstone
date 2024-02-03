@@ -31,9 +31,8 @@ public class LoadScene
         //새로 불러왔을때 세팅.
     }
 
-    public void LoadMainScene() //* 메인씬 로드
+    public void LoadMainScene(string sceneName) //* 메인씬 로드
     {
-        Debug.Log("jjj");
         if (mainScene == null)
             mainScene = CanvasManager.instance.mainStartScene;
 
@@ -42,10 +41,12 @@ public class LoadScene
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
         UIManager.gameIsPaused = false;
-        //Debug.Log("임무 수행");
-        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
 
+        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
+        ChangeScene(sceneName);
     }
+
+
 
     public void LoadDataScene() //* 불러오기
     {

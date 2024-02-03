@@ -766,10 +766,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startBtn: {fileID: 1350280148610541677}
   loadBtn: {fileID: 1350280150029165557}
-  sceneNameList: []
+  sceneNameList:
+  - BossFioeldScene 1
+  - StartScene 1
   scenePrefab: {fileID: 3522869986535375769, guid: f2f8b82852611944c8fc19b93599161f, type: 3}
   content: {fileID: 8767670278556231949}
   noticeText: {fileID: 4141016799860470358}
+  curSceneIndex: 0
+  defaultSceneName: StartScene 1
 --- !u!1 &1425603492391139378
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,7 +804,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6204982207519651720}
+  - {fileID: 8219036719406848297}
   m_Father: {fileID: 2618184310698689921}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1490,7 +1494,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
---- !u!1001 &6060752340170502119
+--- !u!1001 &8074806852204495174
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1543,7 +1547,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 144282680520415343, guid: f2f8b82852611944c8fc19b93599161f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 520
       objectReference: {fileID: 0}
     - target: {fileID: 144282680520415343, guid: f2f8b82852611944c8fc19b93599161f, type: 3}
       propertyPath: m_SizeDelta.y
@@ -1623,8 +1627,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2f8b82852611944c8fc19b93599161f, type: 3}
---- !u!224 &6204982207519651720 stripped
+--- !u!224 &8219036719406848297 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 144282680520415343, guid: f2f8b82852611944c8fc19b93599161f, type: 3}
-  m_PrefabInstance: {fileID: 6060752340170502119}
+  m_PrefabInstance: {fileID: 8074806852204495174}
   m_PrefabAsset: {fileID: 0}
