@@ -94,7 +94,12 @@ public class mainStartScene : MonoBehaviour
     public void SetButton()
     {
         Debug.Log($"{GameManager.instance.loadScene}");
-        startBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadMainScene(curSelectSceneName));
+        startBtn.onClick.AddListener(() =>
+        {
+            // CanvasManager.instance.mainStartScene.SetActive(false);
+            LoadingSceneController.LoadScene(curSelectSceneName);
+        });
+        //startBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadMainScene(curSelectSceneName));
         loadBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadDataScene());
     }
 

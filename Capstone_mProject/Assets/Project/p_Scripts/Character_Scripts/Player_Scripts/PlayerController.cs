@@ -80,8 +80,12 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
-
+        if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
+            DontDestroyOnLoad(this.gameObject);
+        else
+        {
+            Destroy(this.gameObject);
+        }
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_Movement = GetComponent<PlayerMovement>();
@@ -101,11 +105,12 @@ public class PlayerController : MonoBehaviour
         //* 씬이동 처리
 
     }
+
     void Start()
     {
         SetUIVariable();
         _playerSkills.Init();
-        InitComponent();
+        // InitComponent();
     }
     public void SetUIVariable()
     {
