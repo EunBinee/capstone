@@ -152,6 +152,10 @@ public class UIManager : MonoBehaviour
         {
             if (!uiPrefabsInGame.Contains(prefab))
             {
+                if (GameManager.Instance.m_canvas == null)
+                {
+                    GameManager.instance.m_canvas = CanvasManager.instance.gameObject.GetComponent<Canvas>();
+                }
                 prefab = Instantiate(prefab, GameManager.Instance.m_canvas.transform);
                 prefab.SetActive(true);
                 uiPrefabsInGame.Add(prefab);

@@ -80,12 +80,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
-            DontDestroyOnLoad(this.gameObject);
-        else
-        {
-            Destroy(this.gameObject);
-        }
+
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_Movement = GetComponent<PlayerMovement>();
@@ -108,6 +103,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
+            DontDestroyOnLoad(this.gameObject);
+        else
+        {
+            Destroy(this.gameObject);
+        }
         SetUIVariable();
         _playerSkills.Init();
         // InitComponent();
@@ -594,14 +595,13 @@ public class PlayerController : MonoBehaviour
                 //StopToFalse(true);
             }
         }
-        if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest) //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest)
         {
-            //Debug.Log("엔피시 대화 에리어");
-            GameObject interObject = other.gameObject;
+            LoadSceneObj_info loadSceneObj_info = other.gameObject.GetComponent<LoadSceneObj_info>();
 
-            if (interObject != null)
+            if (loadSceneObj_info != null)
             {
-                UIManager.Instance.GoBossField(true);
+                LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }
     }
