@@ -76,6 +76,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         capsuleCollider.enabled = true;
 
         playerHide = true;
+        StartMonster();
     }
 
     public override void SetAnimation(MonsterAnimation m_anim)
@@ -819,7 +820,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //모든 코루틴 정지
 
         //각자의 자리로 가기
-        forcedReturnHome = true; //플레이어 대화시 강제로 집으로 보내기
+        base.StopMonster();
 
         StopAtackCoroutine();
 

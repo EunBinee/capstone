@@ -601,6 +601,7 @@ public class PlayerController : MonoBehaviour
 
             if (loadSceneObj_info != null)
             {
+                loadSceneObj_info.PreLoadSceneSetting();
                 LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }

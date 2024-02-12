@@ -64,25 +64,29 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
-        loadScene.Init();
 
         //cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
 
         //* 게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
+        GetGameInfo();
+    }
+
+    public void GetGameInfo()
+    {
         cur_monsters = GameObject.FindObjectsOfType<Monster>();
         monsters = new List<Monster>();
         for (int i = 0; i < cur_monsters.Length; i++)
         {
             monsters.Add(cur_monsters[i]);
         }
+
     }
 
     public void startInit()
     {
         loadScene.Init();
-
     }
     static public GameManager GetInstance()
     {
@@ -212,6 +216,14 @@ public class GameManager : MonoBehaviour
                 return distance1.CompareTo(distance2);
             });
         }
+    }
+
+    public void RemoveMonster()
+    {
+        //* 씬이동할때 현재 몬스터들 지움.
+        monsterUnderAttackList.Clear();
+        cur_monsters = new Monster[0];
+        monsters.Clear();
     }
 
     public void Stop_AllMonster()

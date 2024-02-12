@@ -18,7 +18,7 @@ public class CurSceneManager : MonoBehaviour
 
     private void SceneSetting()
     {
-        //처음 불러와졌을때 세팅
+        //* 처음 불러와졌을때 세팅
         if (CanvasManager.instance.mainStartScene.activeSelf)
             CanvasManager.instance.mainStartScene.SetActive(false);
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -31,6 +31,8 @@ public class CurSceneManager : MonoBehaviour
         // GameManager.instance.cameraController.cameraInfo.ResetCamera();
 
         SetPlayerPos();
+
+        GameManager.instance.GetGameInfo();
     }
 
     private void SetPlayerPos()

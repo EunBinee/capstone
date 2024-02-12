@@ -485,10 +485,8 @@ public class MonsterPattern : MonoBehaviour
         }
         else if (GameManager.instance.cameraController == null)
         {
-            Debug.Log("===22");
             GameManager.instance.startActionCam += (cameraObj) =>
             {
-                Debug.Log("실행 222!");
                 PlayerAttackList(attackMonster, cameraObj);
             };
         }
@@ -600,11 +598,16 @@ public class MonsterPattern : MonoBehaviour
 
     public virtual void StopMonster()
     {
+        //* HP bar UI 회수
+        //플레이어 대화시 강제로 집으로 보내기
+        forcedReturnHome = true; //* true 일때 플레이어를 인지하지 못함.
+        if (m_monster.HPBar_CheckNull() == true)
+            m_monster.RetrunHPBar();
 
     }
     public virtual void StartMonster()
     {
-
+        forcedReturnHome = false;
     }
 
     //*-------------------------------------------------------------------------------------//
