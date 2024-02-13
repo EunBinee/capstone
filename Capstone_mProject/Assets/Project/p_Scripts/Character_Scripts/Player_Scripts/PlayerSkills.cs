@@ -8,7 +8,7 @@ public class PlayerSkills
 {
     private GameObject player;
     private PlayerController playerController;
-    public string arrowPrefabPath = "Arrow"; // Prefabs 폴더에 Arrow 프리팹
+    public string arrowPrefabName = "Arrow"; // Prefabs 폴더에 Arrow 프리팹
     public int poolSize = 5;
     private GameObject[] arrowPool;
     private int currentArrowIndex = 0;
@@ -28,7 +28,7 @@ public class PlayerSkills
 
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject arrowPrefab = Resources.Load<GameObject>(arrowPrefabPath);
+            GameObject arrowPrefab = Resources.Load<GameObject>("ProjectilePrefabs/" + arrowPrefabName);
             if (arrowPrefab == null)
             {
                 Debug.Log("arrowPrefab = null");

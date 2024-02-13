@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour
     // damage 정보 만큼 피해를 입힙니다.
     public void ActivateSkill(SOSkill skill)
     {
-        if (!skill.isTwice)
+        if (skill.animationName != "Skill_Heal")
         {
             P_Com.animator.Play(skill.animationName);
             P_States.isSkill = false;
