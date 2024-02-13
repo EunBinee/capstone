@@ -14,7 +14,9 @@ public class DialogueInfo
     {
 
 
-        Item interaction_Item = _gameObject.GetComponent<Item>();
+
+        Npc interaction_Item = _gameObject.GetComponent<Npc>();
+
 
         if (interaction_Item != null)
         {

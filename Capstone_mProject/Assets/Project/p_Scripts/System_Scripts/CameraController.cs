@@ -208,14 +208,7 @@ public class CameraController : MonoBehaviour
         //플레이어를 따라다니는 카메라
         //ref는 call by reference를 하겠다는 것.
         Vector3 cameraPos;
-        if (playerController._currentState.isAim)
-        {
-            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
-        }
-        else
-        {
-            cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, 17f * Time.deltaTime);
-        }
+        cameraPos = Vector3.Lerp(playerCamera.transform.position, playerController.gameObject.transform.position, 17f * Time.deltaTime);
         playerCamera.transform.position = cameraPos;
     }
 

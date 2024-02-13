@@ -28,12 +28,14 @@ public class DialogueManager : MonoBehaviour
     //*---------------------------------------------------------------------------------------------//
     //* 대화
     DialogueController dialogueController; //대화 텍스트 출력 애니메이션 구현 스크립트
+
     public DialogueUI DialogueUI_info; // 대화 UI
     public DialogueInfo dialogueInfo;
 
     //* 퀘스트
     public QuestManager questManager;
     //*---------------------------------------------------------------------------------------------//
+
     public bool endChat_inController = false;  //dialogueController 타이핑 애니메이션
 
     public GameObject Text_Alarm; //튜토리얼, 알람등을 알려주는 text 
@@ -59,7 +61,11 @@ public class DialogueManager : MonoBehaviour
     }
     void Start()
     {
+
         SetUIVariable();
+
+        dialogueController = GetComponent<DialogueController>();
+
         DoQuest = false;
         IsQuestDetail = false;
         isDialogue = false;
@@ -94,7 +100,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Text_QuestDetailContent = dialogueUI_Info.Text_QuestDetailContent;
     }
 
-    public void Action_NPC(int id, Item interaction_Item)
+    public void Action_NPC(int id, Npc interaction_Item)
     {
         //NPC의 대사 가지고 옴.
         //DatabaseManager.GetInstance().NPC_diaglogues_Dictionary[id]를 통해서 현재 id의 맞는 Dialogue를 가지고 온다.
@@ -131,7 +137,8 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    IEnumerator StartObjectTextBox(Dialogue dialogue, Item interaction_Item)
+    IEnumerator StartObjectTextBox(Dialogue dialogue, Npc interaction_Item)
+
     {
         isDialogue = true;
         GameManager.instance.cameraController.stopRotation = true;

@@ -30,11 +30,6 @@ public class PlayerAttackCheck : MonoBehaviour
     void Start()
     {
         player = GameManager.Instance.gameData.player;
-        // Transform currentTransform = transform;
-        // while (currentTransform.parent != null)
-        // {
-        //     currentTransform = currentTransform.parent;
-        // }
         _playerController = player.GetComponent<PlayerController>();
         rigid = GetComponent<Rigidbody>();
         if (this.gameObject.tag == "Arrow")  //* 화살인지 확인을 해
@@ -49,12 +44,10 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot)
+        if (isArrow && !goShoot && P_States.isOnAim)
         {
-            //nowArrow.position = P_Controller.shootPoint.position;   //* 위치 방향 저장
-            //nowArrow.rotation = player.transform.rotation;
-            this.transform.position = P_Controller.shootPoint.position;
-            this.transform.rotation = player.transform.rotation;
+            transform.localPosition = Vector3.zero;
+            transform.rotation = Quaternion.identity;
             if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
             {
                 //* 키네매틱 끄기
@@ -66,9 +59,11 @@ public class PlayerAttackCheck : MonoBehaviour
                     //dir = P_Controller.AimmingCam.transform.forward;
                 }
                 //transform.position += dir * 0.1f;
-                rigid.velocity = dir.normalized * 40f; ; //* 발사
-                goShoot = true;
+                rigid.velocity = dir.normalized * 4f; ; //* 발사
                 ArrowRay();
+                goShoot = true;
+                //attackEnemy = false;
+                //P_States.hadAttack = false;
             }
         }
     }
@@ -244,6 +239,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()//float curArrowDistance)
     {
+        Debug.Log("ArrowRay()");
+        goShoot = false;
         float range = 100f;
         RaycastHit[] hits;
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
@@ -264,7 +261,9 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.tag == "Monster")
                     {
+                        Debug.Log("arrow hit");
                         attackEnemy = true;
+                        //P_States.hadAttack = true;
                         m_Hit = hit;
                         Vector3 collisionPoint = hit.point;
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
@@ -272,7 +271,10 @@ public class PlayerAttackCheck : MonoBehaviour
                         playerHitMonster(collisionPoint, otherQuaternion);
                     }
                     else
+                    {
                         attackEnemy = false;
+                        //P_States.hadAttack = false;
+                    }
                 }
             }
         }
