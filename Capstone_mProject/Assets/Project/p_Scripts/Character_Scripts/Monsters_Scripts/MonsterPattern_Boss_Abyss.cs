@@ -85,13 +85,23 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         curBossPhase = BossMonsterPhase.Phase2;
         randomPos_skill02 = new List<Vector3>();
         SetPlayerAttackList(true);
-        GameManager.instance.bossBattle = true;
-        GameManager.instance.cameraController.Check_Z();
-        GameManager.instance.cameraController.ResetCameraZ();
-
-        //GameManager.instance.cameraController.AttentionMonster();
-
-        //NavMeshSurface_ReBuild();
+        if (GameManager.instance.cameraController != null)
+        {
+            GameManager.instance.bossBattle = true;
+            GameManager.instance.cameraController.Check_Z();
+            GameManager.instance.cameraController.ResetCameraZ();
+        }
+        else if (GameManager.instance.cameraController == null)
+        {
+            Debug.Log("===");
+            GameManager.instance.startActionCam += (cameraObj) =>
+            {
+                Debug.Log("실행 !");
+                GameManager.instance.bossBattle = true;
+                cameraObj.Check_Z();
+                cameraObj.ResetCameraZ();
+            };
+        }
 
         if (m_monster.HPBar_CheckNull() == false)
         {
@@ -391,7 +401,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.instance.PadeIn_Alpha(redImage, true, 90);
             BossText.SetActive(true);
             //* 카메라 흔들림        
-            GameManager.Instance.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
 
             //* 연기 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
@@ -412,7 +422,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //! 사운드 멈춤
             m_monster.SoundPlayStop(Monster.monsterSound.Phase);
 
-            GameManager.Instance.cameraShake.ShakeCamera(1f, 3f, 3f);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3f, 3f);
             //* 연기 이펙트
             effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
             effectPos = transform.position;
@@ -698,7 +708,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             effectPos.y += 2.5f;
             effect.transform.position = effectPos;
             //-------------------------------------------------------------------------------------//
-            GameManager.Instance.cameraShake.ShakeCamera(1f, 2, 2);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 2, 2);
             //*점프
             time = 0;
             Vector3 targetPos = transform.position + (Vector3.up * 60);
@@ -751,7 +761,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             CheckPlayerDamage(6.5f, transform.position, 20, true);
 
         //? 연기이펙트-----------------------------------------------------------------------//
-        GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
         Vector3 effectPos = transform.position;
         effectPos.y -= 1.5f;
@@ -879,7 +889,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.transform.position = transform.position;
 
 
-        GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
 
         yield return new WaitForSeconds(0.7f);
 
@@ -976,7 +986,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.transform.position = transform.position;
 
 
-        GameManager.Instance.cameraShake.ShakeCamera(1f, 3, 3);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
         yield return new WaitForSeconds(0.7f);
 
         if (NavMesh.SamplePosition(monsterNewPos, out hit, 20f, NavMesh.AllAreas))
@@ -1303,7 +1313,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (fireTime >= 0.1f)
             {
                 fireTime = 0;
-                //GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
+                //GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
                 //L
                 StartCoroutine(Fire(playerTargetPos.position, muzzlePos[0]));
                 //R
@@ -1634,7 +1644,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         duration = 5;
         StartCoroutine(electricity_Damage(duration, point, range, 0.1f, 0.3f));
         StartCoroutine(Explode_Damage(duration, point, range, 1f, 5f));
-        GameManager.Instance.cameraShake.ShakeCamera(2f, 3f, 3f);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(2f, 3f, 3f);
 
         yield return null;
     }
@@ -1657,7 +1667,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Vector3 randomPos = new Vector3(x, y, z);
             randomPos = curHitPos + randomPos;
 
-            GameManager.Instance.cameraShake.ShakeCamera(1f, 2f, 2f);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 2f, 2f);
 
 
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterDeath");

@@ -6,7 +6,8 @@ using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DialogueParser : MonoBehaviour
+[Serializable]
+public class DialogueParser
 {
     int eventNum_in = 0;
     int npcNum_in = 0;
@@ -68,11 +69,15 @@ public class DialogueParser : MonoBehaviour
                 eventNum_in = int.Parse(row[1].ToString());
                 npcNum_in = int.Parse(row[2].ToString());
                 if (row[11] == "")
-                    endingNum_in = endingNum_in;
+                {
+                    //endingNum_in = endingNum_in;
+                }
                 else
                     endingNum_in = int.Parse(row[11].ToString());
                 if (row[10] == "")
-                    questNum_in = questNum_in;
+                {
+                    //questNum_in = questNum_in; 
+                }
                 else
                     questNum_in = int.Parse(row[10].ToString());
                 //lineNum_in = int.Parse(row[4].ToString());

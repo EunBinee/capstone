@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -23,26 +23,20 @@ public class GameManager : MonoBehaviour
     public GameData gameData;
 
     public ObjectPooling objectPooling;
-    public HPBarManager hPBarManager;
-    public DamageManager damageManager;
-    public LoadSceneManager loadSceneManager;
     public DamageCalculator damageCalculator;
+
     //대화
-    public DialogueInfo dialogueInfo;
-    public DialogueManager dialogueManager;
-    public GameInfo gameInfo;
-    //public Item item;
-    public QuestManager questManager;
-    //탐라
-    public TimeLineController timeLineController;
+    public GameInfo gameInfo; //* 게임 정보
+    public LoadScene loadScene;
 
     //*---------------------------------------------//
     public Canvas m_canvas;
     //* 카메라 제어---------------------------------//
-    public CameraShake cameraShake;
+    //! 씬이동 후, GameManager에서 CameraController는 null
+    //! Awake 나 start에서 GameManager의 CameraController를 쓰고 싶을 때 아래 Action 사용. 
+    public Action<CameraController> startActionCam = null; //
     public CameraController cameraController;
     //* 현재 몬스터 --------------------------------//
-
     public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
                                                  //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
     public Monster[] cur_monsters; //위에 꺼할때 배열은 지워도 될듯염
@@ -55,7 +49,10 @@ public class GameManager : MonoBehaviour
     {
         Init();
     }
-
+    void Start()
+    {
+        startInit();
+    }
     private void Init()
     {
         if (instance == null)
@@ -67,31 +64,30 @@ public class GameManager : MonoBehaviour
             Destroy(this.gameObject);
 
         objectPooling.InitPooling();
-        loadSceneManager.Init();
 
-        hPBarManager = GetComponent<HPBarManager>();
-        damageManager = GetComponent<DamageManager>();
-
-        cameraShake = GetComponent<CameraShake>();
-        cameraController = gameData.cameraObj.GetComponent<CameraController>();
+        //cameraController = gameData.cameraObj.GetComponent<CameraController>();
         monsterUnderAttackList = new List<Monster>();
 
-        //instance = this;
-        dialogueInfo = new DialogueInfo();
-        dialogueManager = GetComponent<DialogueManager>(); //대사 시스템을 위한 스크립트
-        //게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
+        //* 게임에 대한 전반적인 정보를 가지고 있는 스크립트. ex. 현재 게임의 엔딩 번호, 이벤트 번호
         gameInfo = GetComponent<GameInfo>();
-        //item = GetComponent<Item>();
-        questManager = new QuestManager();
+        GetGameInfo();
+    }
+
+    public void GetGameInfo()
+    {
         cur_monsters = GameObject.FindObjectsOfType<Monster>();
         monsters = new List<Monster>();
         for (int i = 0; i < cur_monsters.Length; i++)
         {
             monsters.Add(cur_monsters[i]);
         }
-        timeLineController = GetComponent<TimeLineController>();
+
     }
 
+    public void startInit()
+    {
+        loadScene.Init();
+    }
     static public GameManager GetInstance()
     {
         return instance;
@@ -220,6 +216,14 @@ public class GameManager : MonoBehaviour
                 return distance1.CompareTo(distance2);
             });
         }
+    }
+
+    public void RemoveMonster()
+    {
+        //* 씬이동할때 현재 몬스터들 지움.
+        monsterUnderAttackList.Clear();
+        cur_monsters = new Monster[0];
+        monsters.Clear();
     }
 
     public void Stop_AllMonster()

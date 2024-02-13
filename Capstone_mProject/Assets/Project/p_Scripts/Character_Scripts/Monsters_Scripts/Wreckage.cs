@@ -40,7 +40,7 @@ public class Wreckage : MonoBehaviour
                 effect.StopEffect();
                 float distance = Vector3.Distance(GameManager.instance.gameData.GetPlayerTransform().position, transform.position);
                 if (distance < 18)
-                    GameManager.Instance.cameraShake.ShakeCamera(1f, 2, 2);
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 2, 2);
 
                 Effect smokeEffect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_01");
                 Vector3 effectPos = transform.position;

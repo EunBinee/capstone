@@ -37,6 +37,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller = GetComponent<PlayerController>();
         playerAttackChecks = new List<PlayerAttackCheck>();
+        SetUIVariable();
         for (int i = 0; i < attackColliders.Length; i++)
         {
             PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
@@ -46,6 +47,28 @@ public class PlayerMovement : MonoBehaviour
         P_States.hadAttack = false;
         P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임
     }
+
+    public void SetUIVariable()
+    {
+        //* 필수 UI 가지고 오기
+        if (CanvasManager.instance.playerUI == null)
+        {
+            CanvasManager.instance.playerUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
+            if (CanvasManager.instance.playerUI == null)
+                return;
+        }
+        PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+        skill_E = playerUI_info.skill_E;
+        skill_E.gameObject.SetActive(true);
+        _controller.originEpos = skill_E.gameObject.transform.position;
+
+        skill_Q = playerUI_info.skill_Q;
+
+        skill_R = playerUI_info.skill_R;
+        skill_R.gameObject.SetActive(true);
+        _controller.originRpos = skill_R.gameObject.transform.position;
+    }
+
     // Update is called once per frame
     void Update()
     {

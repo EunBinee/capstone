@@ -25,8 +25,6 @@ public class PlayerAttackCheck : MonoBehaviour
     Transform nowArrow;
 
     //계산식
-
-
     bool attackEnemy = false;
 
     void Start()

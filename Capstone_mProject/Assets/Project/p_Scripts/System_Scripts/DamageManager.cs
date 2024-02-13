@@ -18,15 +18,23 @@ public class DamageManager : MonoBehaviour
 
     private int damagePoolsCount = 30;
 
-    private Camera m_Camera;
+    public Camera m_Camera;
 
-    void Awake()
+    void Start()
     {
         InitDamageUI();
     }
 
     private void InitDamageUI()
     {
+        if (CanvasManager.instance.monsterDamageUI == null)
+        {
+            CanvasManager.instance.monsterDamageUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.monsterDamageName);
+            if (CanvasManager.instance.monsterDamageUI == null)
+                Debug.LogError("오브젝트 없음");
+        }
+        damage_Parent = CanvasManager.instance.monsterDamageUI.GetComponent<Transform>();
+
         damage_Pools = new List<DamageUI_Info>();
         damageUI_InUse = new List<DamageUI_Info>();
         if (damage_Prefab == null)
@@ -36,7 +44,7 @@ public class DamageManager : MonoBehaviour
                 Debug.LogError("데미지 프리펩 없음.");
         }
 
-        m_Camera = Camera.main;
+        m_Camera = GameManager.instance.gameData.cameraObj;
     }
 
     void Update()

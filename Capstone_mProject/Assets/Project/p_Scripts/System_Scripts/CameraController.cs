@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
+    public CameraInfo cameraInfo;
+    public CameraShake cameraShake;
     public PlayerController playerController;
     public Transform playerHeadPos; //* 벽체크에쓰임
     public Transform playerBackPos; //* 조준 할때 쓰임
@@ -42,6 +45,9 @@ public class CameraController : MonoBehaviour
     public Monster curTargetMonster = null;
     public Transform targetTrans;
 
+    [Header("주목 대기")]
+    public bool awaitAttention = false;
+    public List<Monster> awaitMonster;
     //주목 후 카메라 리셋
     Coroutine resetCameraZ_co = null;
 
@@ -59,13 +65,15 @@ public class CameraController : MonoBehaviour
     float maxY_Attention = 1.7f;
     float time_Z = 0;
 
-
     [Header("화살 스킬 관련 카메라")]
     public bool use_aimCamera = false; // 조준 사용여부
+
+
 
     private void Awake()
     {
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
+        cameraShake = GetComponent<CameraShake>();
     }
 
     private void Start()
@@ -136,8 +144,6 @@ public class CameraController : MonoBehaviour
                 OffAimCamera();
             }
         }
-
-
     }
 
     //* 스크롤 줌인 줌아웃

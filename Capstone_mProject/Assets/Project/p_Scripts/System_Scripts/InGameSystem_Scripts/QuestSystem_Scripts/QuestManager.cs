@@ -6,29 +6,10 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
-// public enum QuestType
-// {
-//     None = -1,
-//     MainQuest = 0,
-//     SubQuest,
-// }
 
 public class QuestManager : MonoBehaviour
 {
-    static public QuestManager instance;
-    void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-        }
-    }
-
-    static public QuestManager GetInstance()
-    {
-        return instance;
-    }
-    public Quest quest_ = new Quest();
+    public Quest quest_;
     private string text_goal = "";
     private string text_title = "";
     private string text_content = "";
@@ -36,12 +17,8 @@ public class QuestManager : MonoBehaviour
     public bool isTutorial = false;
 
     DialogueController dialogueController;
-    private void Init()
-    {
-        currentQuestValue_ = 0;
-        quest_.currentQuestValue = 0;
-        quest_.questClearValue = 0;
-    }
+
+
     private void Start()
     {
         if (isTutorial)
@@ -49,22 +26,29 @@ public class QuestManager : MonoBehaviour
             dialogueController = GetComponent<DialogueController>();
             GameManager.Instance.gameInfo.QuestNum = 1;
         }
-
     }
+
+    private void Init()
+    {
+        currentQuestValue_ = 0;
+        quest_.currentQuestValue = 0;
+        quest_.questClearValue = 0;
+    }
+
     private void Update()
     {
-        if (GameManager.Instance.dialogueManager.DoQuest == true)
+        if (DialogueManager.instance.DoQuest == true)
         {
             UpdateQuest(quest_.questId);
 
         }
 
-        if (GameManager.Instance.dialogueManager.IsQuestDetail)
+        if (DialogueManager.instance.IsQuestDetail)
         {
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
             {
                 QuestExit();
-                GameManager.Instance.dialogueManager.IsQuestDetail = false;
+                DialogueManager.instance.IsQuestDetail = false;
             }
         }
 
@@ -79,13 +63,13 @@ public class QuestManager : MonoBehaviour
     //퀘스트 버튼 클릭시에 퀘스트 상세내용 팝업창 띄우기
     public void QuestClick()
     {
-        GameManager.GetInstance().dialogueManager.QuestDetailTitle_UI(text_title);
-        GameManager.GetInstance().dialogueManager.QuestDetailContent_UI(text_content);
-        GameManager.GetInstance().dialogueManager.QuestDetailGoal_UI(text_goal);
+        DialogueManager.instance.QuestDetailTitle_UI(text_title);
+        DialogueManager.instance.QuestDetailContent_UI(text_content);
+        DialogueManager.instance.QuestDetailGoal_UI(text_goal);
     }
     public void QuestExit()
     {
-        GameManager.Instance.dialogueManager.QuestDeailFalse();
+        DialogueManager.instance.QuestDeailFalse();
     }
 
 
@@ -104,14 +88,14 @@ public class QuestManager : MonoBehaviour
     //퀘스트 클리어 함수
     protected void Quest_Clear()
     {
-        GameManager.instance.dialogueManager.DoQuest = false;
+        DialogueManager.instance.DoQuest = false;
     }
 
     //퀘스트 업데이트 함수 
     public void UpdateQuest(int id)
     {
-        GameManager.instance.dialogueManager.DoQuest = true;
-        quest_.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;//currentQuestValue_;
+        DialogueManager.instance.DoQuest = true;
+        quest_.currentQuestValue = currentQuestValue_;
 
         if (GameManager.Instance.gameInfo.QuestNum != 0)
         {
@@ -149,7 +133,7 @@ public class QuestManager : MonoBehaviour
                 text_content += "\n";
             }
         }
-        GameManager.GetInstance().dialogueManager.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
+        DialogueManager.instance.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
     }
 
     //튜토리얼 
@@ -158,19 +142,18 @@ public class QuestManager : MonoBehaviour
         if (GameManager.Instance.gameInfo.QuestNum != 0 && DatabaseManager.GetInstance().Quest_Dictionary.ContainsKey(quest_.questId))
         {
             quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
-            TextAlarm();
+            //TextAlarm();
             NextTextAlarm();
         }
-        else
-        {
-            GameManager.GetInstance().dialogueManager.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
-            isTutorial = false;
-        }
-
-
+        // else
+        // {
+        //     GameManager.GetInstance().dialogueManager.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
+        //     isTutorial = false;
+        // }
 
     }
     //튜토 알람 텍스트 
+    /*
     public void TextAlarm()
     {
         for (int i = 0; i < quest_.questGoal.Count;)
@@ -183,12 +166,9 @@ public class QuestManager : MonoBehaviour
         }
         GameManager.GetInstance().dialogueManager.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
 
-
-
-
         //GameManager.Instance.gameInfo.QuestNum = quest_.questId;
     }
-
+    */
     public void NextTextAlarm()
     {
         string[] data = quest_.questClearString.ToString().Split(new char[] { '\'' });

@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogueController : MonoBehaviour
 {
+    //! 애니메이션 효과
     [SerializeField] TMP_Text objectText;
-
 
     bool startChat = false;
     public bool stopChat = false;
@@ -17,6 +18,19 @@ public class DialogueController : MonoBehaviour
     void Start()
     {
         dialogueManager = GetComponent<DialogueManager>();
+        SetUIVariable();
+    }
+
+    public void SetUIVariable()
+    {
+        if (CanvasManager.instance.dialogueUI == null)
+        {
+            CanvasManager.instance.dialogueUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
+            if (CanvasManager.instance.dialogueUI == null)
+                return;
+        }
+        DialogueUI_info dialogueUI_Info = CanvasManager.instance.dialogueUI.GetComponent<DialogueUI_info>();
+        objectText = dialogueUI_Info.objectText;
     }
 
     // Update is called once per frame
@@ -30,24 +44,7 @@ public class DialogueController : MonoBehaviour
                 stopChat = true;
             }
         }
-        // if (startChat && !stopChat)
-        // {
-        //     if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
-        //     {
-        //         // Enter 키를 누르거나 마우스 클릭이 발생하면 딜레이를 주고 StopChat 메서드 호출
-        //         StartCoroutine(DelayedStopChat(0.02f));
-        //     }
-        // }
     }
-    // IEnumerator DelayedStopChat(float delay)
-    // {
-    //     yield return new WaitForSeconds(delay);
-
-    //     // 애니메이션 중지 및 글씨 나오도록 하는 로직을 여기에 추가
-    //     stopChat = true;
-    // }
-
-
 
     //타이핑 애니메이션
     public void Chat_Obect(string sentence)
@@ -127,5 +124,26 @@ public class DialogueController : MonoBehaviour
         startChat = false;
         stopChat = false;
 
+    }
+
+    //화살표 애니메이션 
+    public void ArrowAnimation()
+    {
+        StartCoroutine(AnimateArrow());
+    }
+    private IEnumerator AnimateArrow()
+    {
+        dialogueManager.isArrowAnimating = true;
+
+        while (dialogueManager.isArrowAnimating)
+        {
+            // 예시로 알파값을 조절하여 페이드 효과 구현
+            float alpha = Mathf.PingPong(Time.time, 0.5f);
+            Color arrowColor = dialogueManager.DialogueUI_info.dialogueArrow.GetComponent<Image>().color;
+            arrowColor.a = alpha;
+            dialogueManager.DialogueUI_info.dialogueArrow.GetComponent<Image>().color = arrowColor;
+
+            yield return null;
+        }
     }
 }

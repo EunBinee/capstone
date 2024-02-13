@@ -76,12 +76,13 @@ public class PlayerController : MonoBehaviour
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
-    private Vector3 originEpos;
-    private Vector3 originRpos;
+
+    public Vector3 originEpos;
+    public Vector3 originRpos;
+
 
     void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
 
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
@@ -96,20 +97,38 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        P_Movement.skill_E.gameObject.SetActive(true);
-        P_Movement.skill_R.gameObject.SetActive(true);
-        originEpos = P_Movement.skill_E.gameObject.transform.position;
-        originRpos = P_Movement.skill_R.gameObject.transform.position;
 
         //* 씬이동 처리
-
     }
+
     void Start()
     {
+        if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
+            DontDestroyOnLoad(this.gameObject);
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        SetUIVariable();
         _playerSkills.Init();
-        InitComponent();
+        // InitComponent();
     }
-    // Update is called once per frame
+    public void SetUIVariable()
+    {
+        //* 필수 UI 가지고 오기
+        if (CanvasManager.instance.playerUI == null)
+        {
+            CanvasManager.instance.playerUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
+            if (CanvasManager.instance.playerUI == null)
+                return;
+        }
+        PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+        hitNum = playerUI_info.hitNum;
+        hitUI = playerUI_info.hitUI;
+        HPgauge = playerUI_info.HPgauge;
+        crosshairImage = playerUI_info.crosshairImage;
+
+    }
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();
@@ -186,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
-        if (GameManager.Instance.dialogueManager.isDialogue)
+        if (DialogueManager.instance.isDialogue)
         {
 
             P_States.isStop = true;
@@ -440,7 +459,7 @@ public class PlayerController : MonoBehaviour
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
-        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 2, 1);
 
         curEnemy = enemy;
 
@@ -578,20 +597,20 @@ public class PlayerController : MonoBehaviour
             {
                 //오브젝트가 비어있지 않을 때..
                 P_Com.animator.Rebind();
-                GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
-                if (!GameManager.Instance.dialogueManager.DoQuest)
+                DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
+                if (!DialogueManager.instance.DoQuest)
                     interObject.SetActive(false);
                 //StopToFalse(true);
             }
         }
-        if (other.gameObject.tag == "LoadScene" && !GameManager.Instance.dialogueManager.DoQuest) //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest)
         {
-            //Debug.Log("엔피시 대화 에리어");
-            GameObject interObject = other.gameObject;
+            LoadSceneObj_info loadSceneObj_info = other.gameObject.GetComponent<LoadSceneObj_info>();
 
-            if (interObject != null)
+            if (loadSceneObj_info != null)
             {
-                UIManager.Instance.GoBossField(true);
+                loadSceneObj_info.PreLoadSceneSetting();
+                LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }
     }

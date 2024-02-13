@@ -13,6 +13,8 @@ public class PlayerComponents
     public Rigidbody rigidbody;
     public CapsuleCollider capsuleCollider;
     public Transform playerTargetPos;
+    public Transform playerHeadPos;
+    public Transform playerBackPos;
 }
 
 [Serializable]

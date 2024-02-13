@@ -4,26 +4,19 @@ using System.Collections.Generic;
 using System.Data.Common;
 using UnityEngine;
 
-
-
 [Serializable]
-public class DialogueInfo : MonoBehaviour
+public class DialogueInfo
 {
     //public Item interaction_Item;
 
-    void Start()
-    {
-
-
-    }
     //public int id;
     public void StartInteraction(GameObject _gameObject)
     {
 
 
-        //Item interaction_Item = gameObject.GetComponent<Item>();
 
         Npc interaction_Item = _gameObject.GetComponent<Npc>();
+
 
         if (interaction_Item != null)
         {
@@ -94,7 +87,7 @@ public class DialogueInfo : MonoBehaviour
             if (interaction_Item.isNpc)
             {
                 //상조작용이 가능한 NPC인 경우
-                GameManager.Instance.dialogueManager.Action_NPC(id, interaction_Item);
+                DialogueManager.instance.Action_NPC(id, interaction_Item);
                 //GameManager.GetInstance().dialogueManager.Action_NPC(id, interaction_Item);
             }
 

@@ -100,7 +100,7 @@ public class DamageUI_Info : MonoBehaviour
         }
 
         //자기 자신 반납.
-        GameManager.Instance.damageManager.Add_DamageUI(this);
+        UIManager.Instance.damageManager.Add_DamageUI(this);
         size_co = null;
     }
 

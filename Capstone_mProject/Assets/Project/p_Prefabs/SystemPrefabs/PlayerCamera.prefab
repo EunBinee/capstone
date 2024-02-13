@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7417425236459633520}
-  - component: {fileID: 8077670135663449711}
+  - component: {fileID: 7676016652008217928}
   m_Layer: 0
   m_Name: PlayerCamera
   m_TagString: Untagged
@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417425236459633521}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.04288256, y: 0.95544434, z: -0.2793908}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -33,7 +33,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8077670135663449711
+--- !u!114 &7676016652008217928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,9 +42,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 7417425236459633521}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d66901fa5ef01404c94035e1e5436432, type: 3}
+  m_Script: {fileID: 11500000, guid: 4383641e815cfb3409235e88f60f1891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraController: {fileID: 7417425237227357019}
 --- !u!1 &7417425236950265106
 GameObject:
   m_ObjectHideFlags: 0
@@ -69,7 +70,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417425236950265106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.7, z: 0}
+  m_LocalPosition: {x: 0, y: 1.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -90,6 +91,9 @@ GameObject:
   - component: {fileID: 7417425237227357014}
   - component: {fileID: 7417425237227357019}
   - component: {fileID: 2715811073955585904}
+  - component: {fileID: 919353723}
+  - component: {fileID: 919353727}
+  - component: {fileID: 538877341027482834}
   m_Layer: 8
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -104,7 +108,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7417425237227357015}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -121,8 +125,8 @@ Camera:
   m_GameObject: {fileID: 7417425237227357015}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.12645069, g: 0.27574337, b: 0.3018868, a: 0}
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.14026342, g: 0.23246706, b: 0.3773585, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -135,22 +139,22 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.5
   far clip plane: 1000
-  field of view: 60
+  field of view: 35
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 1
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
@@ -175,16 +179,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6a9ea846c82f7498793d483b3a5eac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraInfo: {fileID: 7676016652008217928}
+  cameraShake: {fileID: 0}
   playerController: {fileID: 0}
   playerHeadPos: {fileID: 0}
+  playerBackPos: {fileID: 0}
   playerCamera: {fileID: 7417425236459633521}
   playerCameraPivot: {fileID: 7417425236950265106}
   cameraObj: {fileID: 7417425237227357013}
   cameraTrans: {fileID: 0}
-  left_right_LookSpeed: 500
-  up_down_LookSpeed: 500
-  minPivot: 0
-  maxPivot: 0
+  left_right_LookSpeed: 150
+  up_down_LookSpeed: 150
+  minPivot: -10
+  maxPivot: 20
   cameraFllowVelocity: {x: 0, y: 0, z: 0}
   left_right_LookAngle: 0
   up_down_LookAngle: 0
@@ -193,12 +200,12 @@ MonoBehaviour:
   default_FieldOfView: 35
   banAttention: 0
   isBeingAttention: 0
-  controlCam: 1
   curTargetMonster: {fileID: 0}
   targetTrans: {fileID: 0}
+  awaitAttention: 0
+  awaitMonster: []
   frontOfTheWall_Speed: 20
-  aimSmootly: 0.55
-  campos: {fileID: 0}
+  use_aimCamera: 0
 --- !u!114 &2715811073955585904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,3 +266,43 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!124 &919353723
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417425237227357015}
+  m_Enabled: 1
+--- !u!95 &919353727
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417425237227357015}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &538877341027482834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7417425237227357015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaddc9d4db0ee9b499735c2ceefb22f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
