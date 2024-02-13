@@ -140,8 +140,8 @@ public class ItemSlotUI : MonoBehaviour
 
 
         // " 없을경우 -> 이동
-        else
-            RemoveItem();
+        else RemoveItem();
+
         other.SetItem(temp); //슬롯에 있는 아이템을 삭제하고 아이템등록.
     }
 

@@ -14,7 +14,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private int verticalSlot = 8; //세로 슬롯 개수 
     [SerializeField] private float slotMargin = 8f; //한 슬롯 상하좌우 여백
     [SerializeField] private float contentAreaPadding = 20f; //인벤토리 내부 영역 여백
-    [Range(0, 64)]
+    [Range(32, 128)]
     [SerializeField] private float slotSize = 64f; //슬롯 칸 사이즈 
 
     [Space]
@@ -63,9 +63,9 @@ public class InventoryUI : MonoBehaviour
             // 마우스 입력을 기반으로 위치 설정
             ped.position = Input.mousePosition;
             //OnPointerEnterExit();
-            // OnPointerDown();
-            //OnPointerDrag();
-            //OnPointerUp();
+            OnPointerDown();
+            OnPointerDrag();
+            OnPointerUp();
         }
 
     }
@@ -236,12 +236,12 @@ public class InventoryUI : MonoBehaviour
             {
                 EditorLog($"Drag Begin : Slot [{beginDragSlot.Index}]");
 
-                //위치 기억, 참조 등록
+                // //위치 기억, 참조 등록
                 beginDragIconTransform = beginDragSlot.IconRect.transform;
                 beginDragIconPoint = beginDragIconTransform.position;
                 beginDragCusorPoint = Input.mousePosition;
 
-                //맨 위에 보이기
+                // //맨 위에 보이기
                 beginDragSlotIndex = beginDragSlot.transform.GetSiblingIndex();
                 beginDragSlot.transform.SetAsLastSibling();
 
@@ -255,15 +255,15 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        else if (Input.GetMouseButtonDown(1))
-        {
-            ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
+        // else if (Input.GetMouseButtonDown(1))
+        // {
+        //     ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
 
-            if (slot != null && slot.HaveItem && slot.IsAccess)
-            {
-                TryUseItem(slot.Index);
-            }
-        }
+        //     if (slot != null && slot.HaveItem && slot.IsAccess)
+        //     {
+        //         TryUseItem(slot.Index);
+        //     }
+        // }
     }
     //아이템 드래그 하는 도중
     private void OnPointerDrag()
@@ -272,7 +272,7 @@ public class InventoryUI : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            beginDragIconTransform.position = beginDragIconPoint + (Input.mousePosition - beginDragCusorPoint);
+            //beginDragIconTransform.position = beginDragIconPoint + (Input.mousePosition - beginDragCusorPoint);
         }
     }
     //드래그 끝 = 마우스 클릭 뗄 경우
@@ -280,6 +280,7 @@ public class InventoryUI : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
+            Debug.Log(beginDragSlot);
             if (beginDragSlot != null)
             {
                 beginDragIconTransform.position = beginDragIconPoint; //위치 복원
@@ -320,6 +321,7 @@ public class InventoryUI : MonoBehaviour
 
         from.SwapOrMoveIcon(to);
         inventory.Swap(from.Index, to.Index);
+        //! swap 오류 고치기~
 
     }
 
@@ -353,7 +355,7 @@ public class InventoryUI : MonoBehaviour
     {
         EditorLog($"Remove Item : Slot [{index}]");
 
-        //slotUIList[index].RemoveItem();
+        slotUIList[index].RemoveItem();
     }
 
 #if UNITY_EDITOR
