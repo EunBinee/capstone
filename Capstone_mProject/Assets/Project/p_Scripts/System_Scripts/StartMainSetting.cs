@@ -46,11 +46,10 @@ public class StartMainSetting : MonoBehaviour
     //*--------------------------------------------------------------//
     public void ObjInit()
     {
-        uiManagerObj = GetDontDestroyObj(uiManagerName);
         gameManagerObj = GetDontDestroyObj(gameManagerName);
         soundManagerObj = GetDontDestroyObj(soundManagerName);
         dialogueObj = GetDontDestroyObj(dialogueName);
-
+        uiManagerObj = GetDontDestroyObj(uiManagerName);
         playerObj = GetDontDestroyObj(playerName);
 
         canvasObj = GetDontDestroyObj(canvasName);

@@ -77,8 +77,8 @@ public class PlayerController : MonoBehaviour
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
 
-    private Vector3 originEpos;
-    private Vector3 originRpos;
+    public Vector3 originEpos;
+    public Vector3 originRpos;
 
 
     void Awake()
@@ -98,14 +98,7 @@ public class PlayerController : MonoBehaviour
         bow.SetActive(false);
         sword.SetActive(true);
 
-        P_Movement.skill_E.gameObject.SetActive(true);
-        P_Movement.skill_R.gameObject.SetActive(true);
-        originEpos = P_Movement.skill_E.gameObject.transform.position;
-        originRpos = P_Movement.skill_R.gameObject.transform.position;
-
-
         //* 씬이동 처리
-
     }
 
     void Start()

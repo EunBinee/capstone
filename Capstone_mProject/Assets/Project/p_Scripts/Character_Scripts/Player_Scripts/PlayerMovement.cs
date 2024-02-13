@@ -60,9 +60,13 @@ public class PlayerMovement : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
         skill_E = playerUI_info.skill_E;
         skill_E.gameObject.SetActive(true);
-        _controller.originVpos = skill_E.gameObject.transform.position;
+        _controller.originEpos = skill_E.gameObject.transform.position;
+
         skill_Q = playerUI_info.skill_Q;
+
         skill_R = playerUI_info.skill_R;
+        skill_R.gameObject.SetActive(true);
+        _controller.originRpos = skill_R.gameObject.transform.position;
     }
 
     // Update is called once per frame
