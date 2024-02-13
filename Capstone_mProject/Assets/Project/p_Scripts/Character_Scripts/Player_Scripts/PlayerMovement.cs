@@ -560,6 +560,7 @@ public class PlayerMovement : MonoBehaviour
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
         {
             P_Com.rigidbody.velocity = Vector3.zero;    //* 꼼짝마
+            P_Com.animator.SetBool("p_Locomotion", true);
             return;
         }
         if (P_States.isStop)
