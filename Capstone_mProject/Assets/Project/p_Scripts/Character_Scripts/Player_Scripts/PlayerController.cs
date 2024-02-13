@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        arrow.SetActive(true);
+        arrow.SetActive(false);
     }
     public void onArrow()
     {
@@ -320,11 +320,13 @@ public class PlayerController : MonoBehaviour
         {
             if (P_States.isAim)
             {
+                arrow.SetActive(true);
                 P_States.isAim = false;
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
                 GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 crosshairImage.gameObject.SetActive(false);
+                shootPoint.gameObject.SetActive(false);
             }
         }
     }

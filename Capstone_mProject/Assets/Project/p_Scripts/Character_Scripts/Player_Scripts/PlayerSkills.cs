@@ -34,8 +34,8 @@ public class PlayerSkills
                 Debug.Log("arrowPrefab = null");
             }
             arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
-            arrowPool[i].gameObject.transform.SetParent(playerController.shootPoint);
-            //arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
+            //arrowPool[i].gameObject.transform.SetParent(playerController.shootPoint);
+            arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
             arrowPool[i].SetActive(false);
         }
     }
@@ -44,7 +44,7 @@ public class PlayerSkills
     {
         GameObject arrow = arrowPool[currentArrowIndex];
         currentArrowIndex = (currentArrowIndex + 1) % poolSize;
-        arrow.SetActive(true);
+        arrow.SetActive(false);
         return arrow;
     }
 }

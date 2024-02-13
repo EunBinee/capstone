@@ -242,6 +242,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //* 장전
         P_States.isOnAim = true;
+        P_Controller.shootPoint.gameObject.SetActive(true);
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
         //* 이펙트 회전
@@ -276,6 +277,7 @@ public class PlayerMovement : MonoBehaviour
                     {
                         P_States.isBowMode = true;
                         P_Controller.bow.SetActive(true);
+                        P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
                     }
                     skill_R.OnClicked();
