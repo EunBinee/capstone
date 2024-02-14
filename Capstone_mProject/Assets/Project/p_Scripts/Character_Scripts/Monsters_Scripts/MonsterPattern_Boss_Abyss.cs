@@ -35,12 +35,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public Transform[] muzzlesL;
     public Transform[] muzzlesR;
     public Transform[] muzzlePos;
+
     [Space]
     [Header("스킬 04")]
     public GameObject targetMarker_Prefabs;
-    public GameObject electricalAttackEffect;
     public List<GameObject> targetMarkerList = new List<GameObject>();
-
 
     bool isJump = false;
     bool isDodge = false;
@@ -469,18 +468,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
 
-
-//            Skill04();
-
+            //isRoaming = false;
+            Skill04();
             //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
-
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            //ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> Tracing
-
     public override void Tracing_Movement()
     {
         //*페이즈 마다 실행되도록.
@@ -1565,18 +1561,61 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         else
             canFire = checkPlayer;
     }
-
     #endregion
 
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 04  전기
     #region 스킬 04
+
+    int createTargetMarker = 0;
+    float angle = 0;
+
     public void Skill04()
     {
         StartCoroutine(BossAbyss_Skill04());
     }
 
+    public void SettingSkill04Pattern(int patternNum)
+    {
+        //* 패턴세팅
+        switch (patternNum)
+        {
+            case 1:
+                createTargetMarker = 3;
+                angle = 360 / createTargetMarker;
+                break;
+            case 2:
+                createTargetMarker = 4;
+                angle = 360 / createTargetMarker;
+                break;
+            case 3:
+                createTargetMarker = 5;
+                angle = 360 / createTargetMarker;
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            default:
+                break;
+
+        }
+    }
+
     IEnumerator BossAbyss_Skill04()
+    {
+        //* 5개의 패턴중 하나 랜덤으로 고름
+
+        int curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
+        SettingSkill04Pattern(curRandomSkillPattern_num);
+
+
+
+        yield return null;
+    }
+
+
+    IEnumerator BossAbyss_Skill04_01()
     {
         int count = 0;
 
@@ -1588,7 +1627,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         for (int i = 0; i < randomElectric; i++)
         {
             //
-            StartCoroutine(SkillActivation());
+            StartCoroutine(SkillActivation_01());
         }
         //     count++;
 
@@ -1596,7 +1635,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
-    IEnumerator SkillActivation()
+    IEnumerator SkillActivation_01()
     {
         //스킬 targetMarkerList
         GameObject skillIndicator_obj;
@@ -1644,34 +1683,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     IEnumerator BossAbyss_Skill04_()

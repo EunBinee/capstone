@@ -7,5 +7,5 @@ public class TargetShape : MonoBehaviour
     public Skill_Indicator skill_Indicator;
 
     //public void start
-    ee
+
 }
