@@ -44,7 +44,7 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.isOnAim)
+        if (isArrow && !goShoot && P_States.startAim)
         {
             dir = Vector3.zero;
             if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
@@ -52,7 +52,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 transform.position = P_Controller.shootPoint.position;
                 transform.rotation = P_Controller.shootPoint.rotation;
                 //* 키네매틱 끄기
-                //GetComponent<Rigidbody>().isKinematic = false;
+                GetComponent<Rigidbody>().isKinematic = false;
                 //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
                 if (dir == Vector3.zero)    //* 방향 지정
                 {
