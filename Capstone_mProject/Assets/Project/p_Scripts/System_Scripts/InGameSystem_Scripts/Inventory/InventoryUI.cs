@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
@@ -19,10 +20,14 @@ public class InventoryUI : MonoBehaviour
 
     [Space]
     [SerializeField] private bool showHighlight = true;
+    [SerializeField] private bool showTooltip = true;
 
     [Header("Connected Objects")]
     [SerializeField] private RectTransform content; //슬롯 부모 = content
     [SerializeField] private GameObject slotPrefab; //슬롯 프리팹
+    [SerializeField] private ItemTooltipUI itemTooltip; //아이템 정보 보여줄 툴팁 UI
+    //[SerializeField] private //팝업창
+
 
     //아이템 드래그앤드랍
     private GraphicRaycaster gr;
@@ -39,7 +44,7 @@ public class InventoryUI : MonoBehaviour
 
 
     private List<ItemSlotUI> slotUIList = new List<ItemSlotUI>();
-    private Inventory inventory;
+    private Inventory _inventory;
 
     //인벤토리 ui 내 아이템 필터링 옵션
     private enum FilterOption
@@ -62,7 +67,8 @@ public class InventoryUI : MonoBehaviour
         {
             // 마우스 입력을 기반으로 위치 설정
             ped.position = Input.mousePosition;
-            //OnPointerEnterExit();
+            OnPointerEnterExit();
+            if (showTooltip) ShowHideItemTooltip();
             OnPointerDown();
             OnPointerDrag();
             OnPointerUp();
@@ -81,7 +87,7 @@ public class InventoryUI : MonoBehaviour
         ped = new PointerEventData(EventSystem.current);
         rList = new List<RaycastResult>(10);
 
-
+        _inventory = GetComponent<Inventory>();
     }
 
     //슬롯 동적 생성 
@@ -168,7 +174,35 @@ public class InventoryUI : MonoBehaviour
 
         }
     }
+    //아이템 정보 툴팁 보여주고 숨기기
+    private void ShowHideItemTooltip()
+    {
+        //마우스 커서가 유효한 아이템 아이콘위에 올라가 있으면 툴팁 보이게하기
+        bool isValid = pointerOverSlot != null && pointerOverSlot.HaveItem && pointerOverSlot.IsAccess
+        && (pointerOverSlot != beginDragSlot);
 
+        if (isValid)
+        {
+            UpdateTooltipUI(pointerOverSlot);
+            itemTooltip.Show();
+        }
+        else
+        {
+            itemTooltip.Hide();
+        }
+
+    }
+    //툴팁 UI 슬롯 데이터 업데이트
+    private void UpdateTooltipUI(ItemSlotUI slot)
+    {
+        if (!slot.IsAccess || !slot.HaveItem)
+            return;
+
+        itemTooltip.SetItemInfo(_inventory.GetItemData(slot.Index));
+        itemTooltip.SetRectPosition(slot.SlotRect);
+        // Debug.Log(slot.SlotRect);
+
+    }
     //아이템 드래그앤드롭
     private T RaycastAndGetFirstComponent<T>() where T : Component
     {
@@ -191,7 +225,7 @@ public class InventoryUI : MonoBehaviour
 
         if (preSlot == null)
         {
-            if (curSlot == null)
+            if (curSlot != null)
             {
                 OnCurrentEnter();
             }
@@ -236,18 +270,17 @@ public class InventoryUI : MonoBehaviour
             {
                 EditorLog($"Drag Begin : Slot [{beginDragSlot.Index}]");
 
-                // //위치 기억, 참조 등록
+                //위치 기억, 참조 등록
                 beginDragIconTransform = beginDragSlot.IconRect.transform;
                 beginDragIconPoint = beginDragIconTransform.position;
                 beginDragCusorPoint = Input.mousePosition;
 
-                // //맨 위에 보이기
+                //맨 위에 보이기
                 beginDragSlotIndex = beginDragSlot.transform.GetSiblingIndex();
                 beginDragSlot.transform.SetAsLastSibling();
 
                 //해당 슬롯 하이라이트 이미지를 아이콘보다 뒤에 위치
-                //! 나중에 추가요 
-                //beginDragSlot.SetHighlight(false);
+                beginDragSlot.SetHighlight(false);
             }
             else
             {
@@ -255,15 +288,15 @@ public class InventoryUI : MonoBehaviour
             }
         }
 
-        // else if (Input.GetMouseButtonDown(1))
-        // {
-        //     ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
+        else if (Input.GetMouseButtonDown(1))
+        {
+            ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
 
-        //     if (slot != null && slot.HaveItem && slot.IsAccess)
-        //     {
-        //         TryUseItem(slot.Index);
-        //     }
-        // }
+            if (slot != null && slot.HaveItem && slot.IsAccess)
+            {
+                TryUseItem(slot.Index);
+            }
+        }
     }
     //아이템 드래그 하는 도중
     private void OnPointerDrag()
@@ -272,7 +305,7 @@ public class InventoryUI : MonoBehaviour
 
         if (Input.GetMouseButton(0))
         {
-            //beginDragIconTransform.position = beginDragIconPoint + (Input.mousePosition - beginDragCusorPoint);
+            beginDragIconTransform.position = beginDragIconPoint + (Input.mousePosition - beginDragCusorPoint);
         }
     }
     //드래그 끝 = 마우스 클릭 뗄 경우
@@ -280,14 +313,14 @@ public class InventoryUI : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            Debug.Log(beginDragSlot);
             if (beginDragSlot != null)
             {
                 beginDragIconTransform.position = beginDragIconPoint; //위치 복원
                 beginDragSlot.transform.SetSiblingIndex(beginDragSlotIndex); //UI 순서복원
+
                 EndDrag(); //드래그 완료처리
 
-                //beginDragSlot.SetHighlight(true);
+                beginDragSlot.SetHighlight(true);
 
                 //참조 초기화
                 beginDragSlot = null;
@@ -304,10 +337,12 @@ public class InventoryUI : MonoBehaviour
         {
             TrySwapItems(beginDragSlot, endDragSlot);
         }
+        return;
     }
     private void TryUseItem(int index)
     {
-        inventory.Use(index);
+        EditorLog($"UI - Try Use Item : Slot [{index}]");
+        _inventory.Use(index);
     }
     //두 슬롯의 아이템 교환
     private void TrySwapItems(ItemSlotUI from, ItemSlotUI to)
@@ -320,8 +355,7 @@ public class InventoryUI : MonoBehaviour
         EditorLog($"UI - Try Swap Items: Slot [{from.Index} -> {to.Index}]");
 
         from.SwapOrMoveIcon(to);
-        inventory.Swap(from.Index, to.Index);
-        //! swap 오류 고치기~
+        _inventory.Swap(from.Index, to.Index);
 
     }
 

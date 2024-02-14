@@ -202,6 +202,19 @@ public class ItemSlotUI : MonoBehaviour
             StartCoroutine(nameof(HighlightFadeOutRoutine));
         }
     }
+    //하이라이트 이미지 아이콘 상단하단표시 
+    public void SetHighlight(bool value)
+    {
+        if (value)
+        {
+            highlightRect.SetAsLastSibling(); //하이라키 순서 
+        }
+        else
+        {
+            highlightRect.SetAsFirstSibling();
+        }
+
+    }
     private IEnumerator HighlightFadeInRoutine()
     {
         StopCoroutine(nameof(HighlightFadeOutRoutine));

@@ -9,12 +9,12 @@ public class Inventory : MonoBehaviour
     public int capacity { get; private set; }
 
 
-    [SerializeField, Range(8, 64)]
+    [SerializeField, Range(8, 50)]
     private int initalCapacity = 32; //초기 아이템 한도
 
 
-    [SerializeField, Range(8, 64)]
-    private int maxCapacity = 64; // 최대 수용 한도(아이템 배열 크기)
+    [SerializeField, Range(8, 50)]
+    private int maxCapacity = 50; // 최대 수용 한도(아이템 배열 크기)
 
     [SerializeField]
     private InventoryUI inventoryUI;
@@ -29,6 +29,7 @@ public class Inventory : MonoBehaviour
     {
         items = new Item[maxCapacity];
         capacity = initalCapacity;
+        inventory.SetActive(false);
     }
 
     private void Start()
@@ -57,8 +58,7 @@ public class Inventory : MonoBehaviour
             inventory.SetActive(true);
             openInventory = true;
 
-            Cursor.visible = true;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+            UIManager.Instance.Pause();
         }
         else if (openInventory && Input.GetKeyDown(KeyCode.I))
         {
@@ -67,8 +67,7 @@ public class Inventory : MonoBehaviour
             inventory.SetActive(false);
             openInventory = false;
 
-            Cursor.visible = false;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+            UIManager.Instance.Resume();
         }
     }
 
@@ -106,7 +105,7 @@ public class Inventory : MonoBehaviour
                 inventoryUI.HideItemAmountText(index);
             }
 
-            //inventoryUI.UpdateSlotFilterState(index, item.Data);
+            inventoryUI.UpdateSlotFilterState(index, item.Data);
         }
         //빈 슬롯인 경우 -> 아이콘 제거
         else
@@ -230,6 +229,7 @@ public class Inventory : MonoBehaviour
         if (itemA != null && itemB != null && itemA.Data == itemB.Data &&
             itemA is CountableItem ciA && itemB is CountableItem ciB)
         {
+            Debug.Log("셀수");
             int maxAmount = ciB.maxAmount;
             int sum = ciA.Amount + ciB.Amount;
 
@@ -250,9 +250,11 @@ public class Inventory : MonoBehaviour
         {
             items[indexA] = itemB;
             items[indexB] = itemA;
+            Debug.Log("aa");
         }
         //두 슬롯 정보 갱신
         UpdateSlot(indexA, indexB);
+        Debug.Log("ss");
     }
 
     public int Add(ItemData itemData, int amount = 1)
@@ -348,7 +350,7 @@ public class Inventory : MonoBehaviour
                 UpdateSlot(index);
             }
         }
-
+        //Debug.Log(amount);
         return amount;
     }
     public void Use(int index)
@@ -363,6 +365,7 @@ public class Inventory : MonoBehaviour
             if (useItem)
             {
                 UpdateSlot(index);
+                Debug.Log("아이템사용");
             }
         }
     }

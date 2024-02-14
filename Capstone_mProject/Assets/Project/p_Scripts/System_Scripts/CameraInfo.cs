@@ -13,7 +13,6 @@ public class CameraInfo : MonoBehaviour
 
     private void CameraSetting()
     {
-        Debug.Log("hi");
         //GameManager
         GameManager.instance.gameData.playerCamera = cameraController.playerCamera;
         GameManager.instance.gameData.playerCameraPivot = cameraController.playerCameraPivot;
