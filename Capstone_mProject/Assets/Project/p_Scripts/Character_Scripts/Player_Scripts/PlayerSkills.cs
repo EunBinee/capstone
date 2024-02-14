@@ -33,7 +33,8 @@ public class PlayerSkills
             {
                 Debug.Log("arrowPrefab = null");
             }
-            arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
+            //arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
+            arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.shootPoint.position, playerController.shootPoint.rotation);
             //arrowPool[i].gameObject.transform.SetParent(playerController.shootPoint);
             arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
             arrowPool[i].SetActive(false);

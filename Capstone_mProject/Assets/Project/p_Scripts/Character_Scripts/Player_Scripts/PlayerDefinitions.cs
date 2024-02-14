@@ -95,7 +95,7 @@ public class CurrentState
     public bool isBowMode = false;  //활 모드
     public bool isAim;  //조준스킬
     public bool startAim;  //조준스킬
-    public bool isOnAim;  //조준스킬
+    public bool isCamOnAim;  //조준스킬
     public bool canGoForwardInAttack;
     public bool isElectricShock;
 

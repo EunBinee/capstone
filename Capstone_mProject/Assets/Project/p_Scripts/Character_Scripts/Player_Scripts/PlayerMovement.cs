@@ -255,6 +255,7 @@ public class PlayerMovement : MonoBehaviour
         //* 발사 
         //P_States.isOnAim = false;
         P_States.startAim = false;
+        P_States.isCamOnAim = false;
 
         P_Controller.offArrow();
     }
@@ -437,8 +438,9 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim) // 조준모드 들어갔을 때 한번만 실행하도록
+        if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
         {
+            P_States.isCamOnAim = true;
             Vector3 rotationDirection = camForward;
             rotationDirection.y = 0;
             rotationDirection.Normalize();

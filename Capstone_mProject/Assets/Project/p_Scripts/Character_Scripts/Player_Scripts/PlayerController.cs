@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
         arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        arrow.SetActive(false);
+        arrow.SetActive(true);
     }
     public void onArrow()
     {

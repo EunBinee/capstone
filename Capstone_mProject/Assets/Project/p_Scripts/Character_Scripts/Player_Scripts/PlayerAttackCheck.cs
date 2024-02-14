@@ -19,6 +19,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private GameObject player;
     private bool isArrow = false;
     private bool goShoot = false;
+    private bool incoArrow = false;
     Vector3 dir = Vector3.zero;
     Vector3 arrpos = Vector3.zero;
     Quaternion arrrot = Quaternion.identity;
@@ -44,31 +45,43 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.startAim)
-        {
-            dir = Vector3.zero;
-            if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
-            {
-                transform.position = P_Controller.shootPoint.position;
-                transform.rotation = P_Controller.shootPoint.rotation;
-                //* 키네매틱 끄기
-                GetComponent<Rigidbody>().isKinematic = false;
-                //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
-                if (dir == Vector3.zero)    //* 방향 지정
-                {
-                    //dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
-                    dir = GameManager.Instance.gameData.cameraObj.transform.forward;
-                }
-                //transform.position += dir * 0.1f;
-                rigid.velocity = dir.normalized * 4f; ; //* 발사
-                //this.gameObject.SetActive(true);
-                Debug.Log(transform.position);
-                ArrowRay();
-                goShoot = true;
-                //attackEnemy = false;
-                //P_States.hadAttack = false;
-            }
+        if (isArrow && !goShoot && P_States.startAim && !incoArrow)
+        {   
+            Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
+            StartCoroutine(Arrowing());
         }
+    }
+    IEnumerator Arrowing()
+    {
+        Debug.Log("[arrow test] IEnumerator Arrowing()");
+        incoArrow = true;
+        dir = Vector3.zero;
+        yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
+        //if (!P_States.isAim)   
+        {
+            Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
+            transform.position = P_Controller.shootPoint.position;
+            transform.rotation = P_Controller.shootPoint.rotation;
+            //Debug.Log("[arrow test] transform.position : " + transform.position);
+            //* 키네매틱 끄기
+            GetComponent<Rigidbody>().isKinematic = false;
+            //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
+            if (dir == Vector3.zero)    //* 방향 지정
+            {
+                //dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
+                dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                //Debug.Log("[arrow test] dir : " + dir);
+            }
+            rigid.velocity = dir.normalized * 4f; ; //* 발사
+            //this.gameObject.SetActive(true);
+            ArrowRay();
+            goShoot = true;
+            Debug.Log("[arrow test] done");
+            //attackEnemy = false;
+            //P_States.hadAttack = false;
+        }
+        yield return null;
+        incoArrow = false;
     }
 
     private void isBouncingToFalse()
