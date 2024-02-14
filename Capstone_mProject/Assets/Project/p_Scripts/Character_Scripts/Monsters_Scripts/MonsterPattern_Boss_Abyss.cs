@@ -465,8 +465,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             //isRoaming = false;
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -909,15 +909,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         useExplosionSound = false;
         foreach (Vector3 pos in roundPos)
         {
+            randomPos_skill02.Add(pos);
             StartCoroutine(SetBomb(pos, true, true));
         }
         //*-------------------------------------------------------------
         //만약 플레이어가 현재 몬스터 아래에 있으면.. 공격할때 앞으로 이동하는 거 멈추기
-        float radius = 5;
+        float radius = 7.5f;
         while (randomPos_skill02.Count != 0)
         {
             // 몬스터 아래에 있는지 확인
-            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
+            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius, playerlayerMask);
 
             if (0 < playerColliders.Length)
             {
@@ -1096,7 +1097,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
 
             //TODO: 범위 지정
-            bool playerTrue = CheckPlayerDamage(3f, randomPos, 20, true);
+            bool playerTrue = CheckPlayerDamage(2f, randomPos, 20, true);
 
             if (playerTrue)
                 break;
