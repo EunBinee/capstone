@@ -68,15 +68,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: bb832f686d6eb2c44b0ecccff5e77ffd, type: 2}
-  m_sharedMaterial: {fileID: -1032854704505651332, guid: bb832f686d6eb2c44b0ecccff5e77ffd, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7a7c38f0572bfe345a64a269b62ea9ef, type: 2}
+  m_sharedMaterial: {fileID: -1389305967821746214, guid: 7a7c38f0572bfe345a64a269b62ea9ef, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4286614527
-  m_fontColor: {r: 1, g: 0.54569274, b: 0.5019608, a: 1}
+    rgba: 4283236351
+  m_fontColor: {r: 1, g: 1, b: 0.29803923, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -93,8 +93,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 25
+  m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -188,4 +188,8 @@ MonoBehaviour:
   m_Monster: {fileID: 0}
   txt_monsterDamage: {fileID: 8036379016986966257}
   m_DamagePos: {x: 0, y: 0, z: 0}
+  damageFont:
+  - {fileID: 11400000, guid: 55a6463beb00e02459c095985eae483b, type: 2}
+  - {fileID: 11400000, guid: 85c38cf442dba924dab48feb72619f2d, type: 2}
+  - {fileID: 11400000, guid: 16e1126a5b94592428da9ec0b1ed9820, type: 2}
   isReset: 0

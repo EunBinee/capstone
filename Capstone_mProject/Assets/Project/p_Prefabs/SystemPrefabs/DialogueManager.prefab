@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6243158102669294928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6243158102669294940}
+  - component: {fileID: 6243158102669294931}
+  - component: {fileID: 6243158102669294942}
+  - component: {fileID: 6243158102669294941}
+  - component: {fileID: 2668504036570130458}
+  m_Layer: 0
+  m_Name: DialogueManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6243158102669294940
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243158102669294928}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 284.61716, y: 277.15875, z: -3.1928432}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6243158102669294931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243158102669294928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 728e41a26be705b46b72891a707104cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueParser:
+    dialogueNum_in: 0
+  csvFileName_NPC: Dialogue_02
+  csvFileName_Quest: Quest_02
+--- !u!114 &6243158102669294942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243158102669294928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0307d4935c2c7fa46bbeb326fee279a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DialogueUI_info:
+    go_DialogueBar: {fileID: 0}
+    Text_Dialogue: {fileID: 0}
+    Text_Name: {fileID: 0}
+    ObjectTextBox_Button01: {fileID: 0}
+    Text_Btn01: {fileID: 0}
+    ObjectTextBox_Button02: {fileID: 0}
+    Text_Btn02: {fileID: 0}
+    dialogueArrow: {fileID: 0}
+    Quest_Button01: {fileID: 0}
+    Go_QuestDetail: {fileID: 0}
+    Text_QuestGoal: {fileID: 0}
+    Text_QuestDetailGoal: {fileID: 0}
+    Text_QuestDetailTitle: {fileID: 0}
+    Text_QuestDetailContent: {fileID: 0}
+    Text_Alarm: {fileID: 0}
+    objectText: {fileID: 0}
+  questManager: {fileID: 0}
+  endChat_inController: 0
+  Text_Alarm: {fileID: 0}
+  DoQuest: 0
+  IsQuestDetail: 0
+  isDialogue: 0
+  isArrowAnimating: 0
+--- !u!114 &6243158102669294941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243158102669294928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb36838821185394a83f0efa225bd9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectText: {fileID: 0}
+  stopChat: 0
+--- !u!114 &2668504036570130458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243158102669294928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ce35f4a135ce5a449c5a8a91d004bc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  quest_:
+    questId: 0
+    questContent: []
+    questTitle: []
+    questGoal: []
+    currentQuestValue: 0
+    questClearValue: 0
+    questClearString: 
+  currentQuestValue_: 0
+  isTutorial: 0

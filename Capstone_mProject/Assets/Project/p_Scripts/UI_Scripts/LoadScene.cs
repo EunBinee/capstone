@@ -1,52 +1,77 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class LoadScene : MonoBehaviour
+[Serializable]
+public class LoadScene
 {
+    //! - 씬 로드 (아직 구현 X)
+    //! - 불러오기 저장하기
     private SaveData loadData;
+    public GameObject mainScene;
 
-    void Start()
+    public void Init()
     {
-        Cursor.visible = true;     //마우스 커서를 보이지 않게
-        Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         Time.timeScale = 0f;
         UIManager.gameIsPaused = true;
+        //GameManager.instance.m_canvas.GetComponent<CanvasManager>().mainStartScene.GetComponent<mainStartScene>().SetButton();
     }
 
-    public void LoadMainScene()
+    //* 씬 불러오기
+    public void ChangeScene(string sceneName)
     {
-        //SceneManager.LoadScene("mid_SampleScene_01");
-        gameObject.SetActive(false);
+        GameManager.instance.cameraController.cameraInfo.ResetCamera();
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void ReloadSetting()
+    {
+        //새로 불러왔을때 세팅.
+    }
+
+    public void LoadMainScene(string sceneName) //* 메인씬 로드
+    {
+        if (mainScene == null)
+            mainScene = CanvasManager.instance.mainStartScene;
+
+        mainScene.gameObject.SetActive(false);
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
         UIManager.gameIsPaused = false;
-        //Debug.Log("임무 수행");
-        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
 
+        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
+        ChangeScene(sceneName);
     }
 
-    public void LoadDataScene()
-    {
-        //Debug.Log("불러오기");
-        //SceneManager.LoadScene("mid_SampleScene_01");
 
+
+    public void LoadDataScene() //* 불러오기
+    {
         loadData = SaveSystem.Load("GameData");
         DialogueLoad();
-        gameObject.SetActive(false);
+
+        if (mainScene == null)
+            mainScene = CanvasManager.instance.mainStartScene;
+
+        mainScene.gameObject.SetActive(false);
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
         UIManager.gameIsPaused = false;
     }
+
     public void DialogueLoad()
     {
         GameManager.Instance.gameInfo.eventNum = loadData.eventNum;
         GameManager.Instance.gameInfo.EndingNum = loadData.endingNum;
         GameManager.Instance.gameInfo.QuestNum = loadData.questNum;
-        GameManager.Instance.dialogueManager.DoQuest = loadData.doQuest;
+        DialogueManager.instance.DoQuest = loadData.doQuest;
         GameManager.Instance.gameInfo.DialogueNum = loadData.dialogueNum;
-        GameManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
-        GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
+        DialogueManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
+        DialogueManager.Instance.questManager.UpdateQuest(loadData.questNum);
     }
 
 }

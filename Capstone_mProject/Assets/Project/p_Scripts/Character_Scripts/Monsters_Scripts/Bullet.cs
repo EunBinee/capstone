@@ -195,7 +195,7 @@ public class Bullet : MonoBehaviour
                 if (Vector3.Distance(hitPoint, playerController.gameObject.transform.position) < 4)
                 {
                     //가까운곳에 떨어졌을때. 
-                    GameManager.Instance.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
                 }
                 if (hitEffectName != "")
                 {

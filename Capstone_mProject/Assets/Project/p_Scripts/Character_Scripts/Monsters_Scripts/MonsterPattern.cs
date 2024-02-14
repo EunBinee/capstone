@@ -26,11 +26,13 @@ public class MonsterPattern : MonoBehaviour
 
     public bool playerHide = false;
     public bool noAttack = false;   //플레이어에게 공격 안받음.
+    public bool canAttack = false;  //몬스터의 공격이 들어가는 순간.//
 
     public bool forcedReturnHome = false; //플레이어 대화시 강제로 집으로 보내기
 
     protected Vector3 curHitPos;
     protected Quaternion curHitQuaternion;
+
 
     public enum MonsterState
     {
@@ -242,6 +244,7 @@ public class MonsterPattern : MonoBehaviour
 
     protected void ChangeMonsterState(MonsterState monsterState)
     {
+
         if (curMonsterState != MonsterState.Death)
             curMonsterState = monsterState;
 
@@ -398,6 +401,7 @@ public class MonsterPattern : MonoBehaviour
             return false;
         }
     }
+
     //* ----------------------------------------------------------------------------------------//
     protected void GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
     {
@@ -486,19 +490,37 @@ public class MonsterPattern : MonoBehaviour
     //*------------------------------------------------------------------------------------------//
     public void SetPlayerAttackList(bool attackMonster)
     {
+        if (GameManager.instance.cameraController != null)
+        {
+            PlayerAttackList(attackMonster, GameManager.instance.cameraController);
+        }
+        else if (GameManager.instance.cameraController == null)
+        {
+            GameManager.instance.startActionCam += (cameraObj) =>
+            {
+                PlayerAttackList(attackMonster, cameraObj);
+            };
+        }
+
+    }
+
+    private void PlayerAttackList(bool attackMonster, CameraController cameraObj)
+    {
         //* true 공격을 시작한 몬스터 => 리스트에 넣기
         //* false 공격을 마친 몬스터  => 리스트에서 빼기
+
         if (attackMonster)
         {
             if (!GameManager.instance.monsterUnderAttackList.Contains(m_monster))
             {
                 GameManager.instance.monsterUnderAttackList.Add(m_monster);
 
-                if (!GameManager.instance.cameraController.isBeingAttention)
+                if (!cameraObj.isBeingAttention)
                 {
                     //만약에 아무것도 주목이 안되어잇는상태면?
                     //주목
-                    GameManager.instance.cameraController.AttentionMonster();
+
+                    cameraObj.AttentionMonster();
                 }
             }
 
@@ -509,19 +531,19 @@ public class MonsterPattern : MonoBehaviour
             {
                 GameManager.instance.monsterUnderAttackList.Remove(m_monster);
 
-                if (GameManager.Instance.cameraController.isBeingAttention) //* 주목 되어있다면?
+                if (cameraObj.isBeingAttention) //* 주목 되어있다면?
                 {
                     if (GameManager.instance.monsterUnderAttackList.Count > 0)
                     {
                         // 만약 공격중인 몬스터가 남아있다면? 다른 몬스터로 수정
-                        GameManager.Instance.cameraController.ChangeAttentionMonster();
+                        cameraObj.ChangeAttentionMonster();
                     }
                     else
                     {
-                        if (GameManager.Instance.cameraController.curTargetMonster == this.m_monster)
+                        if (cameraObj.curTargetMonster == this.m_monster)
                         {
                             // 주목 되어있는 몬스터면 주목 풀기.
-                            GameManager.Instance.cameraController.UndoAttention();
+                            cameraObj.UndoAttention();
                         }
                     }
                 }
@@ -529,7 +551,6 @@ public class MonsterPattern : MonoBehaviour
 
         }
     }
-
     //*-----------------------------------------------------------------------------------------//
     public void SetGetDemageMonster(Vector3 pos, Quaternion qua)
     {
@@ -588,11 +609,16 @@ public class MonsterPattern : MonoBehaviour
 
     public virtual void StopMonster()
     {
+        //* HP bar UI 회수
+        //플레이어 대화시 강제로 집으로 보내기
+        forcedReturnHome = true; //* true 일때 플레이어를 인지하지 못함.
+        if (m_monster.HPBar_CheckNull() == true)
+            m_monster.RetrunHPBar();
 
     }
     public virtual void StartMonster()
     {
-
+        forcedReturnHome = false;
     }
 
     //*-------------------------------------------------------------------------------------//

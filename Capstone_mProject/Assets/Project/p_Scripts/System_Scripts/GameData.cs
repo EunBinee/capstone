@@ -8,6 +8,8 @@ public class GameData
 {
     public GameObject player;
     public Transform playerTargetPos;
+    public Transform playerHeadPos;
+    public Transform playerBackPos;
     public Transform GetPlayerTransform()
     {
         return player.transform;

@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
-[System.Serializable]
+[Serializable]
 public class Quest
 {
     public int questId; //퀘스트 아이디
@@ -12,7 +13,7 @@ public class Quest
     public List<string> questGoal; //퀘스트 목표
     public int currentQuestValue = 0; //현재 퀘스트 진행도
     public int questClearValue = 0; //퀘스트 클리어 조건
-
+    public string questClearString = "";
     //퀘스트 변경 시 보상 초기화
     public void InitMainQuestValue()
     {

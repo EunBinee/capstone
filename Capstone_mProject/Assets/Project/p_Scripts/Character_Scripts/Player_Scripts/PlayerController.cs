@@ -31,15 +31,14 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    //public PlayerSkills _playerSkills = new PlayerSkills();
+    public PlayerSkills _playerSkills = new PlayerSkills();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    //private PlayerSkills P_Skills => _playerSkills;
-    private CameraController P_CamController;
+    private PlayerSkills P_Skills => _playerSkills;
     public PlayerMovement P_Movement;
 
     private float _castRadius; //레이캐스트 반지름
@@ -67,12 +66,8 @@ public class PlayerController : MonoBehaviour
     public GameObject hitUI;
     public Slider HPgauge;
     float nowHitTime;
-
-    //private Vector3 originCamPos;
-    //private Quaternion originCamQua;
-    public Camera mainCam;
-    public Camera AimmingCam;
-    public CameraController AimmingCamCon;
+    public List<GameObject> hitMonsters;
+    public List<Collider> forwardHit;
 
     public GameObject bow;
     public GameObject sword;
@@ -81,16 +76,16 @@ public class PlayerController : MonoBehaviour
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
 
-    private Vector3 originVpos;
+
+    public Vector3 originEpos;
+    public Vector3 originRpos;
+
 
     void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
 
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
-        P_CamController = P_Camera.cameraObj.GetComponent<CameraController>();
-        AimmingCamCon = AimmingCam.GetComponent<CameraController>();
         P_Movement = GetComponent<PlayerMovement>();
         InitPlayer();
 
@@ -102,24 +97,38 @@ public class PlayerController : MonoBehaviour
 
         bow.SetActive(false);
         sword.SetActive(true);
-        P_Movement.skill_V.gameObject.SetActive(true);
-        originVpos = P_Movement.skill_V.gameObject.transform.position;
-        //AimOnCameraReturn();
-        //P_Camera.cameraObj = mainCam;
-        AimmingCam.enabled = false;
-        P_Camera.cameraObj.enabled = true;
-        //playerFollowCamera.enabled = true;
-        //onAimCamera.enabled = false;
-        //mainCam.enabled = true;
 
         //* 씬이동 처리
-
     }
+
     void Start()
     {
-        InitComponent();
+        if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
+            DontDestroyOnLoad(this.gameObject);
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        SetUIVariable();
+        _playerSkills.Init();
+        // InitComponent();
     }
-    // Update is called once per frame
+    public void SetUIVariable()
+    {
+        //* 필수 UI 가지고 오기
+        if (CanvasManager.instance.playerUI == null)
+        {
+            CanvasManager.instance.playerUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.dialogueUIName);
+            if (CanvasManager.instance.playerUI == null)
+                return;
+        }
+        PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+        hitNum = playerUI_info.hitNum;
+        hitUI = playerUI_info.hitUI;
+        HPgauge = playerUI_info.HPgauge;
+        crosshairImage = playerUI_info.crosshairImage;
+
+    }
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();
@@ -128,24 +137,24 @@ public class PlayerController : MonoBehaviour
     {
         if (UIManager.gameIsPaused == true)
         {
-            P_Movement.skill_V.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
+            P_Movement.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            //P_Movement.skill_E.gameObject.SetActive(false);
         }
         else if (UIManager.gameIsPaused == false)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            P_Movement.skill_V.gameObject.transform.position = originVpos;
-            //P_Movement.skill_E.gameObject.SetActive(true);
+            P_Movement.skill_E.gameObject.transform.position = originEpos;
+            P_Movement.skill_R.gameObject.transform.position = originRpos;
             _fixedDeltaTime = Time.fixedDeltaTime;
+
             Update_Physics();
-            //전방 지면 체크
-            //Debug.Log("전방 지면 체크");
             CheckedForward();
             CheckedGround();
             CheckHitTime();
@@ -167,7 +176,6 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        //_playerSkills.Init();
     }
     private void InitComponent()
     {
@@ -197,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
     public void StopToFalse()
     {
-        if (GameManager.Instance.dialogueManager.isDialogue)
+        if (DialogueManager.instance.isDialogue)
         {
 
             P_States.isStop = true;
@@ -249,6 +257,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
+                    P_Movement.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -259,7 +268,7 @@ public class PlayerController : MonoBehaviour
     public void CheckAnim()
     {
         if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("Get_Damage")
-            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+            && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.99f)
         {
             P_Com.animator.Rebind();
         }
@@ -277,29 +286,7 @@ public class PlayerController : MonoBehaviour
     // damage 정보 만큼 피해를 입힙니다.
     public void ActivateSkill(SOSkill skill)
     {
-        if (skill.isTwice && !P_States.isAim)
-        {
-            P_States.isAim = true;
-            P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-            AimOnCamera();  //* 카메라
-            bow.SetActive(true);    //* 무기 교체
-            sword.SetActive(false);
-            crosshairImage.gameObject.SetActive(true);  //* 조준점
-            PoolingArrow(); //* 화살 풀링
-        }
-        else if (skill.isTwice && P_States.isAim)
-        {
-            P_Com.animator.SetBool("isAim", false);
-            P_Com.animator.SetTrigger("shoot");
-            P_States.isAim = false;
-            skill.isFirsttime = true;
-            AimOnCameraReturn();
-            bow.SetActive(false);
-            sword.SetActive(true);
-            crosshairImage.gameObject.SetActive(false);
-            P_States.isSkill = false;
-        }
-        else if (!skill.isTwice)
+        if (skill.animationName != "Skill_Heal")
         {
             P_Com.animator.Play(skill.animationName);
             P_States.isSkill = false;
@@ -309,58 +296,37 @@ public class PlayerController : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        //arrow = P_Skills.GetArrowFromPool();
+        arrow = P_Skills.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
-        //arrow.SetActive(true);
+        arrow.SetActive(true);
     }
-
-    //* camera controll
-    public void AimOnCamera()
+    public void onArrow()
     {
-        //todo: 조준 스킬 시 카메라 이동(시네머신이든 그냥 이동이든)
-        //Debug.Log("AimOnCamera()");
-        P_CamController.left_right_LookAngle = 0;
-        P_CamController.up_down_LookAngle = 0;
-
-        //* 카메라 전환
-        AimmingCam.enabled = true;
-        P_Camera.cameraObj.enabled = false;
-        P_Camera.cameraObj = AimmingCam;
-
-        //* 카메라 주목 기능 밴 처리 맟 주목 해제
-        if (AimmingCamCon.isBeingAttention)
+        if (P_States.isBowMode)
         {
-            AimmingCamCon.isBeingAttention = false;
-        }
-        AimmingCamCon.banAttention = true;
-
-        //* 카메라 회전 높낮이 제한 설정
-        AimmingCamCon.minPivot = -45;
-        AimmingCamCon.maxPivot = 45;
-    }
-
-    public void AimOnCameraReturn()
-    {
-        //todo: 카메라 원래대로
-        //Debug.Log("CameraReturn()");
-        AimmingCamCon.left_right_LookAngle = 0;
-        AimmingCamCon.up_down_LookAngle = 0;
-
-        AimmingCamCon.minPivot = 0;
-        AimmingCamCon.maxPivot = 0;
-        AimmingCamCon.banAttention = false;
-        if (GameManager.instance.monsterUnderAttackList.Count > 0)
-        {
-            MonsterData isBoss = GameManager.instance.monsterUnderAttackList[0].monsterData;
-            if (isBoss.monsterType == MonsterData.MonsterType.BossMonster)
+            if (!P_States.isAim)
             {
-                GameManager.instance.cameraController.AttentionMonster();
+                P_States.isAim = true;
+                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
+                GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
+                crosshairImage.gameObject.SetActive(true);  //* 조준점
+                PoolingArrow(); //* 화살 풀링
             }
         }
-
-        P_Camera.cameraObj = mainCam;
-        AimmingCam.enabled = false;
-        P_Camera.cameraObj.enabled = true;
+    }
+    public void offArrow()
+    {
+        if (P_States.isBowMode)
+        {
+            if (P_States.isAim)
+            {
+                P_States.isAim = false;
+                P_Com.animator.SetBool("isAim", false);
+                P_Com.animator.SetTrigger("shoot");
+                GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
+                crosshairImage.gameObject.SetActive(false);
+            }
+        }
     }
 
     //* 물리(중력)
@@ -395,7 +361,7 @@ public class PlayerController : MonoBehaviour
         out var hit, Mathf.Infinity, 0);*/
 
         bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
-        _castRadius, P_Value.moveDirection + Vector3.down * 0.25f,
+        _castRadius, P_Value.moveDirection,// + Vector3.down * 0.25f,
         out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
 
         //Debug.Log("cast : " + cast);
@@ -405,9 +371,36 @@ public class PlayerController : MonoBehaviour
         if (cast)
         {
             P_States.isForwardBlocked = true;
-            //Debug.Log("if (cast)");
+            forwardHit.Add(hit.collider);    //* 전방체크 해서 걸린 거 리스트에 추가 
+                                             //Debug.Log("if (cast)");
             float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
             P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
+            //if (P_States.isForwardBlocked)
+            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
+            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
+        }
+        else
+        {
+            forwardHit.Clear(); //* P_Controller.forwardHit == null
+        }
+    }
+    //* 후방체크
+    public void CheckedBackward()
+    {
+        bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
+        _castRadius, P_Value.moveDirection + Vector3.down * -0.25f,
+        out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
+
+        //Debug.Log("cast : " + cast);
+        // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
+        P_Value.hitDistance = hit.distance;
+        P_States.isBackwardBlocked = false;
+        if (cast)
+        {
+            P_States.isBackwardBlocked = true;
+            //Debug.Log("if (cast)");
+            float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
+            P_States.isBackwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
             //if (P_States.isForwardBlocked)
             //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
             //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
@@ -461,11 +454,12 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit(Monster enemy, float damage, float knockbackDistance = 1.5f)
     {
-        P_States.isGettingHit = true;
+        if (!P_States.isGettingHit)
+            P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
         //나중에 연출 변경 바람.
 
-        GameManager.Instance.cameraShake.ShakeCamera(0.2f, 2, 1);
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 2, 1);
 
         curEnemy = enemy;
 
@@ -483,7 +477,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
-                P_Movement.skillMotion('E');
+                P_Movement.arrowSkillOff();
             }
 
             //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.
@@ -525,6 +519,10 @@ public class PlayerController : MonoBehaviour
             playerGetHitEffect();
         }
 
+        if (P_States.isBackwardBlocked)     //* 뒤가 막혀있다면
+        {
+            knockbackDistance = 0;
+        }
         knockback_Dir = knockback_Dir.normalized;
         Vector3 KnockBackPos = transform.position + knockback_Dir * knockbackDistance; // 넉백 시 이동할 위치
         KnockBackPos.y = 0;
@@ -598,22 +596,21 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
-
                 P_Com.animator.Rebind();
-                GameManager.GetInstance().dialogueInfo.StartInteraction(interObject);
-                if (!GameManager.Instance.dialogueManager.DoQuest)
+                DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
+                if (!DialogueManager.instance.DoQuest)
                     interObject.SetActive(false);
                 //StopToFalse(true);
             }
         }
-        if (other.gameObject.tag == "LoadScene" && !GameManager.Instance.dialogueManager.DoQuest) //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest)
         {
-            //Debug.Log("엔피시 대화 에리어");
-            GameObject interObject = other.gameObject;
+            LoadSceneObj_info loadSceneObj_info = other.gameObject.GetComponent<LoadSceneObj_info>();
 
-            if (interObject != null)
+            if (loadSceneObj_info != null)
             {
-                UIManager.Instance.GoBossField(true);
+                loadSceneObj_info.PreLoadSceneSetting();
+                LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }
     }

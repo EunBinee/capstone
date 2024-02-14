@@ -18,13 +18,23 @@ public class HPBarManager : MonoBehaviour
     //* 보스 몬스터 HP바
     private HPBarUI_Info curBossHPBar;
 
-    private Camera m_Camera;
+    public Camera m_Camera;
 
     private void Awake()
     {
         InitHPBar();
     }
-
+    private void Start()
+    {
+        if (CanvasManager.instance.monster_HPBarUI == null)
+        {
+            CanvasManager.instance.monster_HPBarUI = CanvasManager.instance.GetCanvasUI(CanvasManager.instance.monster_HPBarName);
+            if (CanvasManager.instance.monster_HPBarUI == null)
+                Debug.LogError("오브젝트 없음");
+        }
+        HPBar_Parent = CanvasManager.instance.monster_HPBarUI.GetComponent<Transform>();
+        m_Camera = GameManager.instance.gameData.cameraObj;
+    }
     private void InitHPBar()
     {
         HPBarInUse = new List<HPBarUI_Info>();
@@ -34,8 +44,6 @@ public class HPBarManager : MonoBehaviour
         {
             HPBar_Prefab = Resources.Load<HPBarUI_Info>("SystemPrefabs/" + HPBar_name);
         }
-
-        m_Camera = Camera.main;
     }
 
     private void Update()

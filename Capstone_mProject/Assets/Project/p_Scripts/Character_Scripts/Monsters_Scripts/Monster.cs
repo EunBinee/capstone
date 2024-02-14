@@ -75,16 +75,21 @@ public class Monster : MonoBehaviour
     {
         if (!playerController._currentState.isGettingHit)
         {
+            if (!playerController._currentState.isGettingHit)
+                playerController._currentState.isGettingHit = true;
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
             playerController.GetHit(this, damage);
         }
+
     }
 
     public virtual void OnHit_FallDown(float damage = 0, float distance = 10f, Action action = null)
     {
         if (!playerController._currentState.isGettingHit)
         {
+            if (!playerController._currentState.isGettingHit)
+                playerController._currentState.isGettingHit = true;
             //몬스터가 플레이어를 때렸을 때 처리.
             playerController.OnHitPlayerEffect = action;
             playerController.GetHit_FallDown(this, damage, distance);
@@ -139,6 +144,9 @@ public class Monster : MonoBehaviour
         //죽다.
         monsterData.HP = 0;
         resetHP = false;
+        if (playerController.hitMonsters.Count > 0)
+            playerController.hitMonsters.Remove(this.gameObject);
+
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
             bossMonsterPattern.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Death);
@@ -147,11 +155,16 @@ public class Monster : MonoBehaviour
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-        if (GameManager.Instance.dialogueManager.DoQuest)//GameManager.Instance.questManager != null
+        if (DialogueManager.instance.DoQuest)//GameManager.Instance.questManager != null
         {
-            Debug.Log("Ddd");
-            GameManager.Instance.questManager.currentQuestValue_++;
-            Debug.Log(GameManager.Instance.questManager.currentQuestValue_);
+
+            DialogueManager.Instance.questManager.currentQuestValue_++;
+            Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
+
+        }
+        else if (!DialogueManager.instance.DoQuest)
+        {
+            Debug.Log("ㄴㄴㄴ");
         }
     }
 
@@ -175,12 +188,12 @@ public class Monster : MonoBehaviour
     {
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
-            m_hPBar = GameManager.instance.hPBarManager.Get_BossHPBar();
+            m_hPBar = UIManager.Instance.hPBarManager.Get_BossHPBar();
             m_hPBar.Reset(monsterData.MaxHP, this, true);
         }
         else
         {
-            m_hPBar = GameManager.Instance.hPBarManager.Get_HPBar();
+            m_hPBar = UIManager.Instance.hPBarManager.Get_HPBar();
             m_hPBar.Reset(monsterData.MaxHP, this);
         }
     }
@@ -199,7 +212,7 @@ public class Monster : MonoBehaviour
         {
             if (m_hPBar != null)
             {
-                GameManager.Instance.hPBarManager.Return_BossHPBar();
+                UIManager.Instance.hPBarManager.Return_BossHPBar();
                 m_hPBar = null;
             }
         }
@@ -207,7 +220,7 @@ public class Monster : MonoBehaviour
         {
             if (m_hPBar != null)
             {
-                GameManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
+                UIManager.Instance.hPBarManager.Add_HPBarPool(m_hPBar);
                 m_hPBar = null;
             }
         }
@@ -232,7 +245,7 @@ public class Monster : MonoBehaviour
         }
         else
             randomRange = 0.5f;
-        DamageUI_Info damageUI = GameManager.Instance.damageManager.Get_DamageUI();
+        DamageUI_Info damageUI = UIManager.Instance.damageManager.Get_DamageUI();
 
         float x = UnityEngine.Random.Range(-randomRange, randomRange);
         float y = UnityEngine.Random.Range(-randomRange, randomRange);

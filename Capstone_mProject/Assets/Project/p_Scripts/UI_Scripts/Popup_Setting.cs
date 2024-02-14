@@ -96,9 +96,18 @@ public class Popup_Setting : UIBase
             dialogue.eventNum = GameManager.Instance.gameInfo.eventNum;
             dialogue.endingNum = GameManager.Instance.gameInfo.EndingNum;
             dialogue.questNum = GameManager.Instance.gameInfo.QuestNum;
-            dialogue.doQuest = GameManager.Instance.dialogueManager.DoQuest;
+            dialogue.doQuest = DialogueManager.instance.DoQuest;
             dialogue.dialogueNum = GameManager.Instance.gameInfo.DialogueNum;
-            dialogue.currentQuestValue = GameManager.Instance.questManager.currentQuestValue_;
+            dialogue.currentQuestValue = DialogueManager.Instance.questManager.currentQuestValue_;
+            dialogue.nickname = GameManager.Instance.gameInfo.Nickname;
+
+            // GameManager.Instance.gameInfo.eventNum = dialogue.eventNum;
+            // GameManager.Instance.gameInfo.EndingNum = dialogue.endingNum;
+            // GameManager.Instance.gameInfo.QuestNum = dialogue.questNum;
+            // GameManager.Instance.dialogueManager.DoQuest = dialogue.doQuest;
+            // GameManager.Instance.gameInfo.DialogueNum = dialogue.dialogueNum;
+            // GameManager.Instance.questManager.currentQuestValue_ = dialogue.currentQuestValue;
+
             SaveSystem.Save(dialogue, "GameData");
 
         });
@@ -109,7 +118,7 @@ public class Popup_Setting : UIBase
         {
             //TODO: 불러오기 기능
             loadData = SaveSystem.Load("GameData");
-            DialogueLoad();
+            GameManager.instance.loadScene.DialogueLoad();
         });
 
         // 게임 나가기 기능
@@ -146,10 +155,10 @@ public class Popup_Setting : UIBase
         GameManager.Instance.gameInfo.eventNum = loadData.eventNum;
         GameManager.Instance.gameInfo.EndingNum = loadData.endingNum;
         GameManager.Instance.gameInfo.QuestNum = loadData.questNum;
-        GameManager.Instance.dialogueManager.DoQuest = loadData.doQuest;
+        DialogueManager.instance.DoQuest = loadData.doQuest;
         GameManager.Instance.gameInfo.DialogueNum = loadData.dialogueNum;
-        GameManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
-        GameManager.Instance.questManager.UpdateQuest(loadData.questNum);
-
+        DialogueManager.Instance.questManager.currentQuestValue_ = loadData.currentQuestValue;
+        GameManager.Instance.gameInfo.Nickname = loadData.nickname;
+        DialogueManager.Instance.questManager.UpdateQuest(loadData.questNum);
     }
 }

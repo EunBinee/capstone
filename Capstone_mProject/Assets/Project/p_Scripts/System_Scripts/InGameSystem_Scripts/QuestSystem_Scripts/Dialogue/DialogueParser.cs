@@ -6,7 +6,8 @@ using System.Data;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class DialogueParser : MonoBehaviour
+[Serializable]
+public class DialogueParser
 {
     int eventNum_in = 0;
     int npcNum_in = 0;
@@ -68,11 +69,15 @@ public class DialogueParser : MonoBehaviour
                 eventNum_in = int.Parse(row[1].ToString());
                 npcNum_in = int.Parse(row[2].ToString());
                 if (row[11] == "")
-                    endingNum_in = endingNum_in;
+                {
+                    //endingNum_in = endingNum_in;
+                }
                 else
                     endingNum_in = int.Parse(row[11].ToString());
                 if (row[10] == "")
-                    questNum_in = questNum_in;
+                {
+                    //questNum_in = questNum_in; 
+                }
                 else
                     questNum_in = int.Parse(row[10].ToString());
                 //lineNum_in = int.Parse(row[4].ToString());
@@ -186,7 +191,6 @@ public class DialogueParser : MonoBehaviour
                                 if (isNumeric) //만약 숫자 변환이 가능하다면 
                                 {
                                     line.nextDialogueNum = nextDialogueNum;
-                                    //Debug.Log(nextDialogueNum);
                                 }
                                 if (!isNumeric && row[3].ToString() == "")
                                 {
@@ -245,7 +249,6 @@ public class DialogueParser : MonoBehaviour
                                         line.changeQuestID = true;
                                         line.questIDToBeChange = changeQuestID;
                                     }
-                                    //Debug.Log(changeQuestID);
 
                                 }
 
@@ -307,6 +310,16 @@ public class DialogueParser : MonoBehaviour
             Quest quest = new Quest();
             quest.questId = int.Parse(row[0].ToString());
             quest.questClearValue = int.Parse(row[5].ToString());
+            quest.questClearString = row[6].ToString();
+
+            if (quest.questClearString == "") //퀘목표(숫자x)가 비어있지않으먼 
+            {
+                quest.questClearString = "";
+            }
+            else
+            {
+                quest.questClearString = row[6].ToString(); ;
+            }
 
             quest.questGoal = new List<string>();
             quest.questTitle = new List<string>();
@@ -329,7 +342,6 @@ public class DialogueParser : MonoBehaviour
                 }
             } while (row[0].ToString() == "");
             quests.Add(quest);
-            //Debug.Log(quest.questClearValue);
         }
         return quests.ToArray();
     }

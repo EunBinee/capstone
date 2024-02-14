@@ -10,7 +10,6 @@ public class SkillButton : MonoBehaviour
 {
     // ScriptableObject 로 생성한 스킬
     public SOSkill skill;
-    public float m_cool;
 
     // Player 객체 연결
     public PlayerController player;
@@ -37,7 +36,7 @@ public class SkillButton : MonoBehaviour
 
         // Cool 이미지 초기 설정
         imgCool.fillAmount = 0;
-        num = m_cool;
+        num = skill.cool;
         skill.isFirsttime = true;
         coolNum.gameObject.SetActive(false);
         imgCool_dark.gameObject.SetActive(false);
@@ -50,20 +49,9 @@ public class SkillButton : MonoBehaviour
         // Cool 이미지의 fillAmount 가 0 보다 크다는 것은
         // 아직 쿨타임이 끝나지 않았다는 뜻
         if (imgCool.fillAmount > 0) return;
-        //else skill.isFirsttime = true;
 
+        //m_cool = skill.cool;
 
-        if (skill.isTwice && skill.isFirsttime)  //* 조준스킬
-        {
-            //player.AimOnCamera();
-            m_cool = skill.cool / 6;
-            skill.isFirsttime = false;
-        }
-        else
-        {
-            //player.AimOnCameraReturn();
-            m_cool = skill.cool;
-        }
         // Player 객체의 ActivateSkill 호출     
         player.ActivateSkill(skill);
         // 스킬 Cool 처리
@@ -75,7 +63,7 @@ public class SkillButton : MonoBehaviour
         // skill.cool 값에 따라 달라짐
         // 예: skill.cool 이 10초 라면
         // tick = 0.1
-        float tick = 1f / m_cool;
+        float tick = 1f / skill.cool;
         float t = 0;
 
         imgCool.fillAmount = 1;
@@ -92,15 +80,18 @@ public class SkillButton : MonoBehaviour
             t += (Time.deltaTime * tick);
 
             deltaCoolNum += Time.deltaTime;
-            num = m_cool - deltaCoolNum;
+            num = skill.cool - deltaCoolNum;
             num = Math.Truncate(num * 10) / 10;   // 소수점 한자리 이하 버림
-            if (num % 1f != 0)
+            if (num >= 0)
             {
-                coolNum.text = num.ToString();
-            }
-            else
-            {
-                coolNum.text = num.ToString() + ".0";
+                if (num % 1f != 0)
+                {
+                    coolNum.text = num.ToString();
+                }
+                else
+                {
+                    coolNum.text = num.ToString() + ".0";
+                }
             }
 
             yield return null;

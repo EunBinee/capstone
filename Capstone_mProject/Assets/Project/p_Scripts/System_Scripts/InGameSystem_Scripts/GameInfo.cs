@@ -19,6 +19,9 @@ public class GameInfo : MonoBehaviour
     //대사 단락 번호
     [SerializeField]
     private int dialogueNum;
+    //플레이어 닉네임
+    [SerializeField]
+    private string nickname;
 
 
     public int EndingNum
@@ -41,5 +44,11 @@ public class GameInfo : MonoBehaviour
     {
         get { return dialogueNum; }
         set { dialogueNum = value; }
+    }
+    public string Nickname
+    {
+        get { return nickname; }
+        set { nickname = value; }
+
     }
 }
