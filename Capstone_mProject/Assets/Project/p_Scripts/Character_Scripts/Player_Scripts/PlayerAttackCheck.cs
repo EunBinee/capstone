@@ -23,6 +23,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private bool incoArrow = false;
     Vector3 dir = Vector3.zero;
     Transform nowArrow;
+    public float deltaShootTime = 0.0f;
 
     //계산식
     bool attackEnemy = false;
@@ -36,7 +37,6 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             isArrow = true;
         }
-        //currentTransform.GetComponent<PlayerController>();
         _playerController.hitMonsters.Clear();
     }
     void FixedUpdate()
@@ -71,13 +71,21 @@ public class PlayerAttackCheck : MonoBehaviour
                 dir = GameManager.Instance.gameData.cameraObj.transform.forward;
             }
             rigid.velocity = dir.normalized * 40f; ; //* 발사
-            ArrowRay();
             goShoot = true;
+            ArrowRay();
             //attackEnemy = false;
             //P_States.hadAttack = false;
         }
         incoArrow = false;
+        yield return new WaitUntil(() => shootDeltaTime() >= 5.0f);
+        this.gameObject.SetActive(false);
+        deltaShootTime = 0.0f;
         yield return null;
+    }
+    private float shootDeltaTime()
+    {
+        deltaShootTime = deltaShootTime + Time.deltaTime;
+        return deltaShootTime;
     }
 
     private void isBouncingToFalse()
@@ -165,9 +173,8 @@ public class PlayerAttackCheck : MonoBehaviour
                     //Debug.Log("[attack test]몬스터 상태 : " + monster.monsterPattern.GetCurMonsterState());
                 }
             }
-            else if (isArrow)
+            else
             {
-                this.gameObject.SetActive(false);   //! 일정 시간 지나면 false로
                 //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
             }
         }
