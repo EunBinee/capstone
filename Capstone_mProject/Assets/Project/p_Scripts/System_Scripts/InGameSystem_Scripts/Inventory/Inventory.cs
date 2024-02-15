@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -23,6 +24,20 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     private Item[] items;
+    private readonly static Dictionary<Type, int> sortWeight = new Dictionary<Type, int>
+    {
+        {typeof(PortionItemData),100}
+        //!아이템 종류 추가되면 여기에
+    };
+    private class ItemComparer : IComparer<Item>
+    {
+        public int Compare(Item a, Item b)
+        {
+            return (a.Data.ID + sortWeight[a.Data.GetType()])
+            - (b.Data.ID + sortWeight[b.Data.GetType()]);
+        }
+    }
+    private static readonly ItemComparer itemComparer = new ItemComparer();
 
 
     private void Awake()
@@ -69,6 +84,15 @@ public class Inventory : MonoBehaviour
 
             UIManager.Instance.Resume();
         }
+    }
+    public void CloseBtn()
+    {
+        GameManager.instance.cameraController.stopRotation = false;
+
+        inventory.SetActive(false);
+        openInventory = false;
+
+        UIManager.Instance.Resume();
     }
 
     //인덱스 슬롯상태 및 ui 업뎃
@@ -123,6 +147,13 @@ public class Inventory : MonoBehaviour
     private void UpdateSlot(params int[] indices)
     {
         foreach (var i in indices)
+        {
+            UpdateSlot(i);
+        }
+    }
+    private void UpdateAllSlot()
+    {
+        for (int i = 0; i < capacity; i++)
         {
             UpdateSlot(i);
         }
@@ -229,7 +260,6 @@ public class Inventory : MonoBehaviour
         if (itemA != null && itemB != null && itemA.Data == itemB.Data &&
             itemA is CountableItem ciA && itemB is CountableItem ciB)
         {
-            Debug.Log("셀수");
             int maxAmount = ciB.maxAmount;
             int sum = ciA.Amount + ciB.Amount;
 
@@ -250,11 +280,9 @@ public class Inventory : MonoBehaviour
         {
             items[indexA] = itemB;
             items[indexB] = itemA;
-            Debug.Log("aa");
         }
         //두 슬롯 정보 갱신
         UpdateSlot(indexA, indexB);
-        Debug.Log("ss");
     }
 
     public int Add(ItemData itemData, int amount = 1)
@@ -365,11 +393,42 @@ public class Inventory : MonoBehaviour
             if (useItem)
             {
                 UpdateSlot(index);
-                Debug.Log("아이템사용");
             }
         }
     }
+    public void Remove(int index)
+    {
+        if (!IsValidIndex(index)) return;
 
+        items[index] = null;
+        inventoryUI.RemoveItem(index);
+    }
+
+    public void SortAll()
+    {
+        //Trim
+        int i = -1;
+        while (items[++i] != null) ;
+        int j = i;
+
+        while (true)
+        {
+            while (++j < capacity && items[j] == null) ;
+
+            if (j == capacity)
+                break;
+
+            items[i] = items[j];
+            items[j] = null;
+            i++;
+        }
+
+        //sort
+        Array.Sort(items, 0, i, itemComparer);
+
+        UpdateAllSlot();
+        inventoryUI.UpdateAllSlotFilters();
+    }
 
 }
 

@@ -22,11 +22,15 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private bool showHighlight = true;
     [SerializeField] private bool showTooltip = true;
 
+    [Header("Button")]
+    [SerializeField] private Button sortBtn; //정렬버튼
+
     [Header("Connected Objects")]
     [SerializeField] private RectTransform content; //슬롯 부모 = content
     [SerializeField] private GameObject slotPrefab; //슬롯 프리팹
     [SerializeField] private ItemTooltipUI itemTooltip; //아이템 정보 보여줄 툴팁 UI
-    //[SerializeField] private //팝업창
+    [SerializeField] private PopupUI popup;//팝업창
+
 
 
     //아이템 드래그앤드랍
@@ -58,6 +62,7 @@ public class InventoryUI : MonoBehaviour
     {
         InitSlots();
         Init();
+        InitButtonEvents();
     }
 
     private void Update()
@@ -88,6 +93,10 @@ public class InventoryUI : MonoBehaviour
         rList = new List<RaycastResult>(10);
 
         _inventory = GetComponent<Inventory>();
+    }
+    private void InitButtonEvents()
+    {
+        sortBtn.onClick.AddListener(() => _inventory.SortAll());
     }
 
     //슬롯 동적 생성 
@@ -172,6 +181,16 @@ public class InventoryUI : MonoBehaviour
 
             slotUIList[index].SetItemState(isFiltered);
 
+        }
+    }
+    public void UpdateAllSlotFilters()
+    {
+        int capacity = _inventory.capacity;
+
+        for (int i = 0; i < capacity; i++)
+        {
+            ItemData data = _inventory.GetItemData(i);
+            UpdateSlotFilterState(i, data);
         }
     }
     //아이템 정보 툴팁 보여주고 숨기기
@@ -290,13 +309,18 @@ public class InventoryUI : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1))
         {
+            //popup.OpenUsePopup(() => Test());
             ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
 
             if (slot != null && slot.HaveItem && slot.IsAccess)
             {
-                TryUseItem(slot.Index);
+                //! 여기서부터 하기 클릭하면 팝업창뜨게 해야함 
+                //popup.OpenUsePopup(() => TryUseItem(slot.Index));
+                popup.OpenPopup(() => TryUseItem(slot.Index), () => TryRemoveItem(slot.Index));//TryRemoveItem(beginDragSlot.Index));
+                //TryUseItem(slot.Index);
             }
         }
+
     }
     //아이템 드래그 하는 도중
     private void OnPointerDrag()
@@ -358,7 +382,10 @@ public class InventoryUI : MonoBehaviour
         _inventory.Swap(from.Index, to.Index);
 
     }
-
+    public void TryRemoveItem(int index)
+    {
+        _inventory.Remove(index);
+    }
     //슬롯에 아이템 아이콘 등록
     public void SetItemIcon(int index, Sprite icon)
     {

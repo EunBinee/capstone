@@ -79,8 +79,6 @@ public class ItemTooltipUI : MonoBehaviour
     public void SetRectPosition(RectTransform slotRect)
     {
         canvasScaler = GetComponentInParent<CanvasScaler>();
-        Debug.Log(canvasScaler);
-        Debug.Log(canvasScaler.referenceResolution.x);
 
         //해상도따라 다르게
         float wRatio = Screen.width / canvasScaler.referenceResolution.x;

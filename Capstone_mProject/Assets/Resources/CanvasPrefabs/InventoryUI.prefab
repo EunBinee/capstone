@@ -1298,10 +1298,12 @@ MonoBehaviour:
   slotSize: 110
   showHighlight: 1
   showTooltip: 1
+  sortBtn: {fileID: 6400079793551034543}
   content: {fileID: 1442338745408174946}
   slotPrefab: {fileID: 6917375914960032844}
   itemTooltip: {fileID: 8723661712861757595}
-  _showDebug: 1
+  popup: {fileID: 6722578283923969881}
+  _showDebug: 0
 --- !u!114 &5977838797671988453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1801,7 +1803,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB124"
+  m_text: "\uC0AC\uC6A9"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
   m_sharedMaterial: {fileID: -4276299983396354495, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
@@ -2066,7 +2068,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2929515223495545126}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5977838797671988453}
+        m_TargetAssemblyTypeName: Inventory, Assembly-CSharp
+        m_MethodName: CloseBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3418367628419414381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2133,7 +2147,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC544\uB2C8\uC694\n"
+  m_text: "\uC0AD\uC81C\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
   m_sharedMaterial: {fileID: -4276299983396354495, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
@@ -2581,7 +2595,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC815\uB9D0\uB85C \uBC84\uB9AC\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?"
+  m_text: "\uC544\uC774\uD15C\uC744 \uCC98\uBD84\uBC29\uBC95?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
   m_sharedMaterial: {fileID: -4276299983396354495, guid: baad14e32c28dd04e8a6de42260d523c, type: 2}
@@ -2981,6 +2995,7 @@ GameObject:
   - component: {fileID: 5173209696244376342}
   - component: {fileID: 981673132527406198}
   - component: {fileID: 6736100353629171519}
+  - component: {fileID: 6722578283923969881}
   m_Layer: 5
   m_Name: Popup
   m_TagString: Untagged
@@ -3048,6 +3063,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6722578283923969881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7198858908556855049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7a85321484c71428a677251f82faa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwPopup: {fileID: 8747285584239384956}
+  throwOkBtn: {fileID: 4862332386466245407}
+  throwCancleBtn: {fileID: 2740131018889239098}
 --- !u!1 &7610591804556130039
 GameObject:
   m_ObjectHideFlags: 0
@@ -3187,7 +3217,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8324420169081731872
 RectTransform:
   m_ObjectHideFlags: 0
