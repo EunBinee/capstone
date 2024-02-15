@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
@@ -14,15 +15,23 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private int verticalSlot = 8; //세로 슬롯 개수 
     [SerializeField] private float slotMargin = 8f; //한 슬롯 상하좌우 여백
     [SerializeField] private float contentAreaPadding = 20f; //인벤토리 내부 영역 여백
-    [Range(0, 64)]
+    [Range(32, 128)]
     [SerializeField] private float slotSize = 64f; //슬롯 칸 사이즈 
 
     [Space]
     [SerializeField] private bool showHighlight = true;
+    [SerializeField] private bool showTooltip = true;
+
+    [Header("Button")]
+    [SerializeField] private Button sortBtn; //정렬버튼
 
     [Header("Connected Objects")]
     [SerializeField] private RectTransform content; //슬롯 부모 = content
     [SerializeField] private GameObject slotPrefab; //슬롯 프리팹
+    [SerializeField] private ItemTooltipUI itemTooltip; //아이템 정보 보여줄 툴팁 UI
+    [SerializeField] private PopupUI popup;//팝업창
+
+
 
     //아이템 드래그앤드랍
     private GraphicRaycaster gr;
@@ -39,7 +48,7 @@ public class InventoryUI : MonoBehaviour
 
 
     private List<ItemSlotUI> slotUIList = new List<ItemSlotUI>();
-    private Inventory inventory;
+    private Inventory _inventory;
 
     //인벤토리 ui 내 아이템 필터링 옵션
     private enum FilterOption
@@ -53,6 +62,7 @@ public class InventoryUI : MonoBehaviour
     {
         InitSlots();
         Init();
+        InitButtonEvents();
     }
 
     private void Update()
@@ -62,10 +72,11 @@ public class InventoryUI : MonoBehaviour
         {
             // 마우스 입력을 기반으로 위치 설정
             ped.position = Input.mousePosition;
-            //OnPointerEnterExit();
-            // OnPointerDown();
-            //OnPointerDrag();
-            //OnPointerUp();
+            OnPointerEnterExit();
+            if (showTooltip) ShowHideItemTooltip();
+            OnPointerDown();
+            OnPointerDrag();
+            OnPointerUp();
         }
 
     }
@@ -81,7 +92,11 @@ public class InventoryUI : MonoBehaviour
         ped = new PointerEventData(EventSystem.current);
         rList = new List<RaycastResult>(10);
 
-
+        _inventory = GetComponent<Inventory>();
+    }
+    private void InitButtonEvents()
+    {
+        sortBtn.onClick.AddListener(() => _inventory.SortAll());
     }
 
     //슬롯 동적 생성 
@@ -168,7 +183,45 @@ public class InventoryUI : MonoBehaviour
 
         }
     }
+    public void UpdateAllSlotFilters()
+    {
+        int capacity = _inventory.capacity;
 
+        for (int i = 0; i < capacity; i++)
+        {
+            ItemData data = _inventory.GetItemData(i);
+            UpdateSlotFilterState(i, data);
+        }
+    }
+    //아이템 정보 툴팁 보여주고 숨기기
+    private void ShowHideItemTooltip()
+    {
+        //마우스 커서가 유효한 아이템 아이콘위에 올라가 있으면 툴팁 보이게하기
+        bool isValid = pointerOverSlot != null && pointerOverSlot.HaveItem && pointerOverSlot.IsAccess
+        && (pointerOverSlot != beginDragSlot);
+
+        if (isValid)
+        {
+            UpdateTooltipUI(pointerOverSlot);
+            itemTooltip.Show();
+        }
+        else
+        {
+            itemTooltip.Hide();
+        }
+
+    }
+    //툴팁 UI 슬롯 데이터 업데이트
+    private void UpdateTooltipUI(ItemSlotUI slot)
+    {
+        if (!slot.IsAccess || !slot.HaveItem)
+            return;
+
+        itemTooltip.SetItemInfo(_inventory.GetItemData(slot.Index));
+        itemTooltip.SetRectPosition(slot.SlotRect);
+        // Debug.Log(slot.SlotRect);
+
+    }
     //아이템 드래그앤드롭
     private T RaycastAndGetFirstComponent<T>() where T : Component
     {
@@ -191,7 +244,7 @@ public class InventoryUI : MonoBehaviour
 
         if (preSlot == null)
         {
-            if (curSlot == null)
+            if (curSlot != null)
             {
                 OnCurrentEnter();
             }
@@ -246,8 +299,7 @@ public class InventoryUI : MonoBehaviour
                 beginDragSlot.transform.SetAsLastSibling();
 
                 //해당 슬롯 하이라이트 이미지를 아이콘보다 뒤에 위치
-                //! 나중에 추가요 
-                //beginDragSlot.SetHighlight(false);
+                beginDragSlot.SetHighlight(false);
             }
             else
             {
@@ -257,13 +309,18 @@ public class InventoryUI : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1))
         {
+            //popup.OpenUsePopup(() => Test());
             ItemSlotUI slot = RaycastAndGetFirstComponent<ItemSlotUI>();
 
             if (slot != null && slot.HaveItem && slot.IsAccess)
             {
-                TryUseItem(slot.Index);
+                //! 여기서부터 하기 클릭하면 팝업창뜨게 해야함 
+                //popup.OpenUsePopup(() => TryUseItem(slot.Index));
+                popup.OpenPopup(() => TryUseItem(slot.Index), () => TryRemoveItem(slot.Index));//TryRemoveItem(beginDragSlot.Index));
+                //TryUseItem(slot.Index);
             }
         }
+
     }
     //아이템 드래그 하는 도중
     private void OnPointerDrag()
@@ -284,9 +341,10 @@ public class InventoryUI : MonoBehaviour
             {
                 beginDragIconTransform.position = beginDragIconPoint; //위치 복원
                 beginDragSlot.transform.SetSiblingIndex(beginDragSlotIndex); //UI 순서복원
+
                 EndDrag(); //드래그 완료처리
 
-                //beginDragSlot.SetHighlight(true);
+                beginDragSlot.SetHighlight(true);
 
                 //참조 초기화
                 beginDragSlot = null;
@@ -303,10 +361,12 @@ public class InventoryUI : MonoBehaviour
         {
             TrySwapItems(beginDragSlot, endDragSlot);
         }
+        return;
     }
     private void TryUseItem(int index)
     {
-        inventory.Use(index);
+        EditorLog($"UI - Try Use Item : Slot [{index}]");
+        _inventory.Use(index);
     }
     //두 슬롯의 아이템 교환
     private void TrySwapItems(ItemSlotUI from, ItemSlotUI to)
@@ -319,10 +379,13 @@ public class InventoryUI : MonoBehaviour
         EditorLog($"UI - Try Swap Items: Slot [{from.Index} -> {to.Index}]");
 
         from.SwapOrMoveIcon(to);
-        inventory.Swap(from.Index, to.Index);
+        _inventory.Swap(from.Index, to.Index);
 
     }
-
+    public void TryRemoveItem(int index)
+    {
+        _inventory.Remove(index);
+    }
     //슬롯에 아이템 아이콘 등록
     public void SetItemIcon(int index, Sprite icon)
     {
@@ -353,7 +416,7 @@ public class InventoryUI : MonoBehaviour
     {
         EditorLog($"Remove Item : Slot [{index}]");
 
-        //slotUIList[index].RemoveItem();
+        slotUIList[index].RemoveItem();
     }
 
 #if UNITY_EDITOR
