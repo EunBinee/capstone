@@ -1605,41 +1605,36 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator BossAbyss_Skill04()
     {
         //* 5개의 패턴중 하나 랜덤으로 고름
-
-        int curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
+        //! 임시로 1~ 3패턴만 구현
+        int curRandomSkillPattern_num = UnityEngine.Random.Range(1, 4);
         SettingSkill04Pattern(curRandomSkillPattern_num);
 
+        CreateTargetMarker();
 
 
         yield return null;
     }
 
-
-    IEnumerator BossAbyss_Skill04_01()
+    public void CreateTargetMarker()
     {
-        int count = 0;
-
-        //while (count < 3)
-        // {
-        //*3턴
-        int randomElectric = UnityEngine.Random.Range(3, 6); //1 ~ 4
-        Debug.Log($"randomElectric  {randomElectric}");
-        for (int i = 0; i < randomElectric; i++)
+        float mAngle = 0f;
+        for (int i = 0; i < createTargetMarker; i++)
         {
-            //
-            StartCoroutine(SkillActivation_01());
-        }
-        //     count++;
+            if (i > 0)
+            {
+                mAngle += angle;
+            }
 
-        //}
-        yield return null;
+            StartCoroutine(SkillActivation(mAngle));
+        }
     }
 
-    IEnumerator SkillActivation_01()
+    IEnumerator SkillActivation(float mAngle)
     {
         //스킬 targetMarkerList
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
+        //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
         if (targetMarkerList.Count == 0)
         {
             skillIndicator_obj = Instantiate(targetMarker_Prefabs, transform.position, Quaternion.identity);
@@ -1651,25 +1646,34 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             targetMarkerList.RemoveAt(0);
             skillIndicator_obj.SetActive(true);
         }
+
+        //*------------------------------------------------------------------------------------------------//
+        //* 세팅-------------------------------------------------------------------------------------------//
         skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
         Quaternion originRotate = skillIndicator_obj.transform.rotation;
         Skill_Indicator skill_Indicator = skillIndicator_obj.GetComponent<Skill_Indicator>();
 
-        float angle = UnityEngine.Random.Range(0, 359);
-        Debug.Log($"angle {angle}");
         skill_Indicator.SetBounds();
-        skill_Indicator.SetAngle(angle);
+        skill_Indicator.SetAngle(mAngle);
 
-        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
+        Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
 
-        skill_Indicator.CheckTrigger(true);
-        StartCoroutine(electricityProduction(skill_Indicator, 10, angle));
+        skill_Indicator.CheckTrigger(true); // 트리거 ON
 
-        yield return new WaitForSeconds(10f);
+        //*------------------------------------------------------------------------------------------------//
+        yield return new WaitForSeconds(8f); //* 8초 뒤 체크
         bool insideBox = skill_Indicator.insideBox;
-
         Debug.Log($"플레이어는 안에 있다? {insideBox}");
+
+        //* 번개 공격 //Lightning strike 2
+
+        //* 파지직 넣기
+        StartCoroutine(electricityProduction(skill_Indicator, 10, mAngle));
+        //* 만약 insideBox가 true라면? 감전
+
+
+        yield return new WaitForSeconds(30f); //* 3초 뒤 체크
         skill_Indicator.CheckTrigger(false);
         skill_Indicator.gameObject.transform.rotation = originRotate;
         if (targetMarkerList.Count > 4)
@@ -1684,41 +1688,29 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-
-    IEnumerator BossAbyss_Skill04_()
-    {
-        Skill_Indicator skill_Indicator = targetMarker_Prefabs.GetComponent<Skill_Indicator>();
-        Quaternion originRotate = skill_Indicator.gameObject.transform.rotation;
-
-        float angle = UnityEngine.Random.Range(0, 359);
-        skill_Indicator.SetBounds();
-        skill_Indicator.SetAngle(angle);
-
-        Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
-        Debug.Log($"angle {angle}");
-        skill_Indicator.gameObject.transform.rotation = skill_Indicator.gameObject.transform.rotation * rotation;
-
-        skill_Indicator.CheckTrigger(true);
-        //1. 파지직거리는 이펙트..
-        //초마다 많아짐
-        StartCoroutine(electricityProduction(skill_Indicator, 10, angle));
-
-        //2. 3초뒤 insidetrue면 전기 통하도록
-        yield return new WaitForSeconds(10f);
-        bool insideBox = skill_Indicator.insideBox;
-
-        Debug.Log(insideBox);
-        skill_Indicator.CheckTrigger(false);
-        skill_Indicator.gameObject.transform.rotation = originRotate;
-        yield return null;
-    }
-
     IEnumerator electricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
     {
         float durationTime = duration / 3;
         int count = 0;
         float time = 0;
         Vector3 randomPos = Vector3.zero;
+
+        while (time < 2)
+        {
+            time += Time.deltaTime;
+            randomPos = skill_Indicator.GetRandomPos();
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2", skill_Indicator.gameObject.transform);
+            effect.transform.position = randomPos;
+
+            if (angle != -1)
+            {
+                Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
+                effect.transform.localPosition = rotation * effect.transform.localPosition;
+            }
+            yield return null;
+        }
+
+        time = 0;
         while (count < 3)
         {
             while (true)
@@ -1727,8 +1719,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 {
                     time += Time.deltaTime;
                     randomPos = skill_Indicator.GetRandomPos();
-
-
 
                     GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
                     yield return null;
@@ -1740,9 +1730,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     break;
                 }
             }
-
         }
-
 
         yield return null;
     }

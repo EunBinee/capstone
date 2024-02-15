@@ -83,7 +83,6 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_Movement = GetComponent<PlayerMovement>();
