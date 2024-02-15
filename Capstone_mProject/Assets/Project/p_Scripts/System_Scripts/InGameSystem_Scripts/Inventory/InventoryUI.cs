@@ -267,12 +267,12 @@ public class InventoryUI : MonoBehaviour
         {
             if (showHighlight)
             {
-                curSlot.Highlight(true);
+                //curSlot.Highlight(true);
             }
         }
         void OnPreExit()
         {
-            preSlot.Highlight(false);
+            //preSlot.Highlight(false);
         }
 
     }
@@ -299,7 +299,7 @@ public class InventoryUI : MonoBehaviour
                 beginDragSlot.transform.SetAsLastSibling();
 
                 //해당 슬롯 하이라이트 이미지를 아이콘보다 뒤에 위치
-                beginDragSlot.SetHighlight(false);
+                //beginDragSlot.SetHighlight(false);
             }
             else
             {
@@ -344,7 +344,7 @@ public class InventoryUI : MonoBehaviour
 
                 EndDrag(); //드래그 완료처리
 
-                beginDragSlot.SetHighlight(true);
+                //beginDragSlot.SetHighlight(true);
 
                 //참조 초기화
                 beginDragSlot = null;
