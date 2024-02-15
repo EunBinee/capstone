@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class PlayerAttackCheck : MonoBehaviour
@@ -21,8 +22,6 @@ public class PlayerAttackCheck : MonoBehaviour
     private bool goShoot = false;
     private bool incoArrow = false;
     Vector3 dir = Vector3.zero;
-    Vector3 arrpos = Vector3.zero;
-    Quaternion arrrot = Quaternion.identity;
     Transform nowArrow;
 
     //계산식
@@ -45,10 +44,13 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.startAim && !incoArrow)
+        if (isArrow && !goShoot && P_States.startAim)
         {
+            transform.position = P_Controller.shootPoint.position;
+            transform.rotation = P_Controller.shootPoint.rotation;
             //Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
-            StartCoroutine(Arrowing());
+            if (!incoArrow)
+                StartCoroutine(Arrowing());
         }
     }
     IEnumerator Arrowing()
@@ -62,18 +64,13 @@ public class PlayerAttackCheck : MonoBehaviour
             //Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
-            //Debug.Log("[arrow test] transform.position : " + transform.position);
             //* 키네매틱 끄기
             GetComponent<Rigidbody>().isKinematic = false;
-            //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
             if (dir == Vector3.zero)    //* 방향 지정
             {
-                //dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
                 dir = GameManager.Instance.gameData.cameraObj.transform.forward;
-                //Debug.Log("[arrow test] dir : " + dir);
             }
-            rigid.velocity = dir.normalized * 4f; ; //* 발사
-            //this.gameObject.SetActive(true);
+            rigid.velocity = dir.normalized * 40f; ; //* 발사
             ArrowRay();
             goShoot = true;
             //attackEnemy = false;
@@ -168,8 +165,9 @@ public class PlayerAttackCheck : MonoBehaviour
                     //Debug.Log("[attack test]몬스터 상태 : " + monster.monsterPattern.GetCurMonsterState());
                 }
             }
-            else
+            else if (isArrow)
             {
+                this.gameObject.SetActive(false);   //! 일정 시간 지나면 false로
                 //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
             }
         }
@@ -297,7 +295,6 @@ public class PlayerAttackCheck : MonoBehaviour
                     else
                     {
                         attackEnemy = false;
-                        this.gameObject.SetActive(false);
                         //P_States.hadAttack = false;
                     }
                 }
