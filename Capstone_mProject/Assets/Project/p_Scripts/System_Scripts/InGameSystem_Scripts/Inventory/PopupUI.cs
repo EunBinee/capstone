@@ -22,7 +22,7 @@ public class PopupUI : MonoBehaviour
     private event Action OnThrowBtn; //삭제버튼
     private void ShowPanel() => gameObject.SetActive(true);
     private void HidePanl() => gameObject.SetActive(false);
-    private void HideThrowPopup() => gameObject.SetActive(false);
+    public void HideThrowPopup() => gameObject.SetActive(false);
     //private void HideUsePopup() => gameObject.SetActive(false);
 
     private void Awake()
