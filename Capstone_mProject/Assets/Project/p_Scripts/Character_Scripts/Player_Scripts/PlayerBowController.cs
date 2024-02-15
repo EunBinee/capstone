@@ -21,8 +21,15 @@ public class PlayerBowController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        animator.SetBool("isAim", P_Controller.returnIsAim());
+        if (P_Controller.returnIsAim())
+        {
+            animator.SetBool("isAim", true);
+        }
+        else
+        {
+            animator.SetBool("isAim", false);
+        }
     }
 }

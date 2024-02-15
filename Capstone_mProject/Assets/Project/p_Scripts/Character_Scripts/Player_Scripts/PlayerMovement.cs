@@ -155,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
             }
             //* =====================================================================
 
-            if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때
+            if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때 => 기본공격
             {   //* 마우스 클릭
                 if (P_States.isGround && !P_States.isDodgeing && !P_States.isStop && !P_States.isElectricShock
                     && !EventSystem.current.IsPointerOverGameObject())
@@ -189,7 +189,7 @@ public class PlayerMovement : MonoBehaviour
             //* skills input
             if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
             {
-                if (P_States.isOnAim)   // 조준 중일때 전환 키 누르면
+                if (P_States.startAim)   // 조준 중일때 전환 키 누르면
                 {
                     arrowSkillOff();    // 조준 헤제
                 }
@@ -241,7 +241,8 @@ public class PlayerMovement : MonoBehaviour
     public void arrowSkillOn()
     {
         //* 장전
-        P_States.isOnAim = true;
+        //P_States.isOnAim = true;
+        P_Controller.shootPoint.gameObject.SetActive(true);
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
         //* 이펙트 회전
@@ -252,7 +253,9 @@ public class PlayerMovement : MonoBehaviour
     public void arrowSkillOff()
     {
         //* 발사 
-        P_States.isOnAim = false;
+        //P_States.isOnAim = false;
+        P_States.startAim = false;
+        P_States.isCamOnAim = false;
 
         P_Controller.offArrow();
     }
@@ -276,6 +279,7 @@ public class PlayerMovement : MonoBehaviour
                     {
                         P_States.isBowMode = true;
                         P_Controller.bow.SetActive(true);
+                        P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
                     }
                     skill_R.OnClicked();
@@ -434,16 +438,16 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim)
+        if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
         {
+            P_States.isCamOnAim = true;
             Vector3 rotationDirection = camForward;
             rotationDirection.y = 0;
             rotationDirection.Normalize();
             Quaternion tr = Quaternion.LookRotation(rotationDirection);
-            //Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = tr;
         }
-        if (P_States.isStrafing) //* 주목,조준할때만 쓰임
+        if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)

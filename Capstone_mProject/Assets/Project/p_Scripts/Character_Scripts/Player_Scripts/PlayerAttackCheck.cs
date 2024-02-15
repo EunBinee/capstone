@@ -19,6 +19,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private GameObject player;
     private bool isArrow = false;
     private bool goShoot = false;
+    private bool incoArrow = false;
     Vector3 dir = Vector3.zero;
     Vector3 arrpos = Vector3.zero;
     Quaternion arrrot = Quaternion.identity;
@@ -44,28 +45,42 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.isOnAim)
+        if (isArrow && !goShoot && P_States.startAim && !incoArrow)
         {
-            transform.localPosition = Vector3.zero;
-            transform.rotation = Quaternion.identity;
-            if (!P_Controller.returnIsAim())    //* isAim이 거짓이 되면
-            {
-                //* 키네매틱 끄기
-                GetComponent<Rigidbody>().isKinematic = false;
-                //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
-                if (dir == Vector3.zero)    //* 방향 지정
-                {
-                    dir = player.transform.forward;
-                    //dir = P_Controller.AimmingCam.transform.forward;
-                }
-                //transform.position += dir * 0.1f;
-                rigid.velocity = dir.normalized * 4f; ; //* 발사
-                ArrowRay();
-                goShoot = true;
-                //attackEnemy = false;
-                //P_States.hadAttack = false;
-            }
+            //Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
+            StartCoroutine(Arrowing());
         }
+    }
+    IEnumerator Arrowing()
+    {
+        //Debug.Log("[arrow test] IEnumerator Arrowing()");
+        incoArrow = true;
+        dir = Vector3.zero;
+        yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
+        //if (!P_States.isAim)   
+        {
+            //Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
+            transform.position = P_Controller.shootPoint.position;
+            transform.rotation = P_Controller.shootPoint.rotation;
+            //Debug.Log("[arrow test] transform.position : " + transform.position);
+            //* 키네매틱 끄기
+            GetComponent<Rigidbody>().isKinematic = false;
+            //Vector3 dir = GameManager.Instance.gameData.player.transform.forward;
+            if (dir == Vector3.zero)    //* 방향 지정
+            {
+                //dir = P_Controller._playerFollowCamera.cameraObj.transform.forward;
+                dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                //Debug.Log("[arrow test] dir : " + dir);
+            }
+            rigid.velocity = dir.normalized * 4f; ; //* 발사
+            //this.gameObject.SetActive(true);
+            ArrowRay();
+            goShoot = true;
+            //attackEnemy = false;
+            //P_States.hadAttack = false;
+        }
+        incoArrow = false;
+        yield return null;
     }
 
     private void isBouncingToFalse()
@@ -119,7 +134,7 @@ public class PlayerAttackCheck : MonoBehaviour
                                 GameObject curmon = _playerController.hitMonsters[i];
                                 GameObject premon = _playerController.hitMonsters[i - 1];
 
-                                if (curmon != premon && P_States.hasAttackSameMonster == false)   //* 다음 꺼랑 비교해서 다르면
+                                if (curmon != premon && P_States.hasAttackSameMonster == false)   // 다음 꺼랑 비교해서 다르면
                                 {
                                     P_States.notSameMonster = true;
                                     //P_States.hasAttackSameMonster = true;
@@ -207,7 +222,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
         //TODO: 나중에 연산식 사용.
-        int damageValue = 350;
+        int damageValue = (isArrow ? 400 : 350);
 
 
         if (P_Value.hits % 5 != 0)
@@ -239,7 +254,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()//float curArrowDistance)
     {
-        Debug.Log("ArrowRay()");
+        //Debug.Log("[arrow test] ArrowRay()");
         goShoot = false;
         float range = 100f;
         RaycastHit[] hits;
@@ -247,7 +262,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         float shortDist = 1000f;
         RaycastHit shortHit = hits[0];
-        RaycastHit m_Hit;
+        //RaycastHit m_Hit;
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.name != this.gameObject.name)
@@ -261,18 +276,28 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.tag == "Monster")
                     {
-                        Debug.Log("arrow hit");
-                        attackEnemy = true;
-                        //P_States.hadAttack = true;
-                        m_Hit = hit;
-                        Vector3 collisionPoint = hit.point;
-                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                        //Debug.Log("[arrow test] arrow hit");
+                        monster = hit.collider.GetComponentInParent<Monster>();
+                        if (monster == null)
+                        {
+                            Debug.LogError("몬스터 : null");
+                            return;
+                        }
+                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+                        {
+                            attackEnemy = true;
+                            //P_States.hadAttack = true;
+                            //m_Hit = hit;
+                            Vector3 collisionPoint = hit.point;
+                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        playerHitMonster(collisionPoint, otherQuaternion);
+                            playerHitMonster(collisionPoint, otherQuaternion);
+                        }
                     }
                     else
                     {
                         attackEnemy = false;
+                        this.gameObject.SetActive(false);
                         //P_States.hadAttack = false;
                     }
                 }

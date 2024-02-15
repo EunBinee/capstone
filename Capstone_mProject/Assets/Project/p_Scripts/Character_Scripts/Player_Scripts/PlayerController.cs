@@ -306,10 +306,10 @@ public class PlayerController : MonoBehaviour
         {
             if (!P_States.isAim)
             {
-                P_States.isAim = true;
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
                 GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
                 crosshairImage.gameObject.SetActive(true);  //* 조준점
+                P_States.isAim = true;
                 PoolingArrow(); //* 화살 풀링
             }
         }
@@ -320,11 +320,13 @@ public class PlayerController : MonoBehaviour
         {
             if (P_States.isAim)
             {
+                arrow.SetActive(true);
                 P_States.isAim = false;
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
                 GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 crosshairImage.gameObject.SetActive(false);
+                shootPoint.gameObject.SetActive(false);
             }
         }
     }
