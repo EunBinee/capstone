@@ -46,20 +46,20 @@ public class PlayerAttackCheck : MonoBehaviour
             checkMon();
 
         if (isArrow && !goShoot && P_States.startAim && !incoArrow)
-        {   
-            Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
+        {
+            //Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
             StartCoroutine(Arrowing());
         }
     }
     IEnumerator Arrowing()
     {
-        Debug.Log("[arrow test] IEnumerator Arrowing()");
+        //Debug.Log("[arrow test] IEnumerator Arrowing()");
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
         //if (!P_States.isAim)   
         {
-            Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
+            //Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
             //Debug.Log("[arrow test] transform.position : " + transform.position);
@@ -76,12 +76,11 @@ public class PlayerAttackCheck : MonoBehaviour
             //this.gameObject.SetActive(true);
             ArrowRay();
             goShoot = true;
-            Debug.Log("[arrow test] done");
             //attackEnemy = false;
             //P_States.hadAttack = false;
         }
-        yield return null;
         incoArrow = false;
+        yield return null;
     }
 
     private void isBouncingToFalse()
@@ -135,7 +134,7 @@ public class PlayerAttackCheck : MonoBehaviour
                                 GameObject curmon = _playerController.hitMonsters[i];
                                 GameObject premon = _playerController.hitMonsters[i - 1];
 
-                                if (curmon != premon && P_States.hasAttackSameMonster == false)   //* 다음 꺼랑 비교해서 다르면
+                                if (curmon != premon && P_States.hasAttackSameMonster == false)   // 다음 꺼랑 비교해서 다르면
                                 {
                                     P_States.notSameMonster = true;
                                     //P_States.hasAttackSameMonster = true;
@@ -223,7 +222,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
         //TODO: 나중에 연산식 사용.
-        int damageValue = 350;
+        int damageValue = (isArrow ? 400 : 350);
 
 
         if (P_Value.hits % 5 != 0)
@@ -255,7 +254,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()//float curArrowDistance)
     {
-        Debug.Log("ArrowRay()");
+        //Debug.Log("[arrow test] ArrowRay()");
         goShoot = false;
         float range = 100f;
         RaycastHit[] hits;
@@ -263,7 +262,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         float shortDist = 1000f;
         RaycastHit shortHit = hits[0];
-        RaycastHit m_Hit;
+        //RaycastHit m_Hit;
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.name != this.gameObject.name)
@@ -277,18 +276,28 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.tag == "Monster")
                     {
-                        Debug.Log("arrow hit");
-                        attackEnemy = true;
-                        //P_States.hadAttack = true;
-                        m_Hit = hit;
-                        Vector3 collisionPoint = hit.point;
-                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                        //Debug.Log("[arrow test] arrow hit");
+                        monster = hit.collider.GetComponentInParent<Monster>();
+                        if (monster == null)
+                        {
+                            Debug.LogError("몬스터 : null");
+                            return;
+                        }
+                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+                        {
+                            attackEnemy = true;
+                            //P_States.hadAttack = true;
+                            //m_Hit = hit;
+                            Vector3 collisionPoint = hit.point;
+                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        playerHitMonster(collisionPoint, otherQuaternion);
+                            playerHitMonster(collisionPoint, otherQuaternion);
+                        }
                     }
                     else
                     {
                         attackEnemy = false;
+                        this.gameObject.SetActive(false);
                         //P_States.hadAttack = false;
                     }
                 }
