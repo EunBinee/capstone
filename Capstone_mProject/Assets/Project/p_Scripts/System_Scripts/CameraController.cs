@@ -497,7 +497,13 @@ public class CameraController : MonoBehaviour
         AimCameraSetZ();
         AimCameraFollowPlayer();
         AimCameraRotate();
+
+        if (playerController._currentValue.moveAmount == 0)
+        {
+            AimCameraLeftRightRotate_moveAmount();
+        }
         AimCameraUpDownRotate();
+        AimCameraLeftRightRotate();
     }
 
     private void AimCameraSetZ()
@@ -533,6 +539,33 @@ public class CameraController : MonoBehaviour
         cameraRot.x = up_down_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
+    }
+    //* 좌우 카메라
+    private void AimCameraLeftRightRotate()
+    {
+        //마우스 방향에 따른 카메라 방향
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * 0.4f * Time.deltaTime;
+
+        //좌우 => playerCamera
+        cameraRot = Vector3.zero;
+        cameraRot.y = left_right_LookAngle;
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerCamera.transform.localRotation = targetCameraRot;
+    }
+    //* 좌우 카메라
+    private void AimCameraLeftRightRotate_moveAmount()
+    {
+        //마우스 방향에 따른 카메라 방향
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * 0.4f * Time.deltaTime;
+
+        cameraRot = Vector3.zero;
+        cameraRot.y = left_right_LookAngle;
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerController.transform.localRotation = targetCameraRot;
     }
 
     private void AimCameraFollowPlayer()

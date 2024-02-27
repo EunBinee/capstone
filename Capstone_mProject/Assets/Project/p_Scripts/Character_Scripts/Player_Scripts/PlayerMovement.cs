@@ -440,7 +440,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         if (P_States.isAim) // 조준모드 들어갔을 때 한번만 실행하도록
-        {   
+        {
             if (!P_States.isCamOnAim)   //* 카메라가 바라보는 방향으로 플레이어 회전
             {
                 P_States.isCamOnAim = true;
@@ -450,12 +450,6 @@ public class PlayerMovement : MonoBehaviour
                 Quaternion tr = Quaternion.LookRotation(rotationDirection);
                 transform.rotation = tr;
             }
-            //* 좌우 마우스 입력 받아서 플레이어 회전 = 카메라도 같이 회전함 = 에임모드에서도 좌우로 볼 수 있음
-            lookangle += (P_Input.mouseX * 50) * Time.deltaTime;
-            Vector3 playerRot = Vector3.zero;
-            playerRot.y = lookangle;
-            Quaternion targetPlayerRot = Quaternion.Euler(playerRot);
-            transform.rotation = targetPlayerRot;
         }
         if (P_States.isStrafing) //* 주목할때만 쓰임
         {
