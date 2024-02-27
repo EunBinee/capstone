@@ -521,7 +521,8 @@ public class CameraController : MonoBehaviour
         Vector3 targetDirection = playerController.gameObject.transform.position - playerCamera.gameObject.transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
 
-        Quaternion tempRot = Quaternion.Slerp(transform.rotation, targetRotation, 8 * Time.deltaTime);
+        //Quaternion tempRot = Quaternion.Slerp(transform.rotation, targetRotation, 30 * Time.deltaTime);
+        Quaternion tempRot = targetRotation;
         Vector3 tempRot_Euler = tempRot.eulerAngles;
         tempRot_Euler = new Vector3(0, tempRot_Euler.y, 0);
 
@@ -573,7 +574,8 @@ public class CameraController : MonoBehaviour
 
     private void AimCameraFollowPlayer()
     {
-        Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
+        //Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
+        Vector3 cameraPos = playerBackPos.position;
         playerCamera.transform.position = cameraPos;
     }
 
