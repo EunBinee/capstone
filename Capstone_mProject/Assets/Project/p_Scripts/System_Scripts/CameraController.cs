@@ -502,8 +502,11 @@ public class CameraController : MonoBehaviour
         {
             AimCameraLeftRightRotate_moveAmount();
         }
-        AimCameraUpDownRotate();
-        AimCameraLeftRightRotate();
+        else
+        {
+            AimCameraUpDownRotate();
+            AimCameraLeftRightRotate();
+        }
     }
 
     private void AimCameraSetZ()
