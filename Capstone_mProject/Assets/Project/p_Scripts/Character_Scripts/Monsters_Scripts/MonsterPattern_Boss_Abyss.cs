@@ -9,6 +9,7 @@ using UnityEngine.Animations;
 using UnityEditor.Rendering;
 using System.Threading;
 using UnityEditor;
+using Unity.VisualScripting.Dependencies.Sqlite;
 
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
@@ -98,10 +99,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         else if (GameManager.instance.cameraController == null)
         {
-            Debug.Log("===");
             GameManager.instance.startActionCam += (cameraObj) =>
             {
-                Debug.Log("실행 !");
                 GameManager.instance.bossBattle = true;
                 cameraObj.Check_Z();
                 cameraObj.ResetCameraZ();
@@ -226,8 +225,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 StartCoroutine(DeathBossMonster());
 
                 m_monster.RetrunHPBar();
-
-
                 break;
             default:
                 break;
@@ -1455,7 +1452,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         if (hits.Length != 0 && !findPlayer)
         {
             findPlayer = true;
-            Debug.Log("Player 발견");
 
             for (int i = 0; i < muzzlesL.Length; i++)
             {
@@ -1569,9 +1565,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     int createTargetMarker = 0;
     float angle = 0;
+    bool skillOver = false;
+    List<Skill_Indicator> curTargetMarker;
 
     public void Skill04()
     {
+        curTargetMarker = new List<Skill_Indicator>();
         StartCoroutine(BossAbyss_Skill04());
     }
 
@@ -1581,18 +1580,21 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         switch (patternNum)
         {
             case 1:
-                createTargetMarker = 3;
-                angle = 360 / createTargetMarker;
-                break;
-            case 2:
-                createTargetMarker = 4;
-                angle = 360 / createTargetMarker;
-                break;
-            case 3:
                 createTargetMarker = 5;
                 angle = 360 / createTargetMarker;
                 break;
+            case 2:
+                createTargetMarker = 6;
+                angle = 360 / createTargetMarker;
+                break;
+            case 3:
+                createTargetMarker = 7;
+                angle = 360 / createTargetMarker;
+
+                break;
             case 4:
+                createTargetMarker = 19;
+                angle = 20;
                 break;
             case 5:
                 break;
@@ -1601,23 +1603,54 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         }
     }
-
+    int curRandomSkillPattern_num = 0;
     IEnumerator BossAbyss_Skill04()
     {
         //* 5개의 패턴중 하나 랜덤으로 고름
         //! 임시로 1~ 3패턴만 구현
-        int curRandomSkillPattern_num = UnityEngine.Random.Range(1, 4);
-        SettingSkill04Pattern(curRandomSkillPattern_num);
+        int count = 0;
+        int curIndex = -1;
+        while (count < 1)
+        {
+            curRandomSkillPattern_num = 4;
+            // while (true)
+            // {
+            //     //curRandomSkillPattern_num = UnityEngine.Random.Range(1, 4);
+            //
+            //     if (curIndex != curRandomSkillPattern_num)
+            //     {
+            //         //중복 패턴 없도록
+            //         curIndex = curRandomSkillPattern_num;
+            //         break;
+            //     }
+            //     yield return null;
+            // }
 
-        CreateTargetMarker();
-
-
+            SettingSkill04Pattern(curRandomSkillPattern_num);
+            if (curRandomSkillPattern_num < 4)
+            {
+                //*1~3 번 패턴
+                CreateTargetMarker();
+                yield return new WaitUntil(() => skillOver == true && curTargetMarker.Count == 0);
+            }
+            else if (curRandomSkillPattern_num == 4)
+            {
+                //* 4번 패턴
+                CreateTargetMarker_4();
+            }
+            else if (curRandomSkillPattern_num == 5)
+            {
+                //* 5번 패턴
+            }
+            count++;
+        }
         yield return null;
     }
 
     public void CreateTargetMarker()
     {
         float mAngle = 0f;
+        skillOver = false;
         for (int i = 0; i < createTargetMarker; i++)
         {
             if (i > 0)
@@ -1632,6 +1665,28 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator SkillActivation(float mAngle)
     {
         //스킬 targetMarkerList
+        //* 타임 세팅---------------------------//
+        float waitTime = 0; //빨간색 경고후 기다리는 시간
+        float electricity_DurationTime = 0; //빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 0; //스킬이 끝나는 시간
+        if (curRandomSkillPattern_num < 4)
+        {
+            waitTime = 2;
+            electricity_DurationTime = 5;
+            endSkillTime = 2 + electricity_DurationTime;
+        }
+        else if (curRandomSkillPattern_num == 4)
+        {
+            waitTime = 2;
+            electricity_DurationTime = 5;
+            endSkillTime = 2 + electricity_DurationTime;
+        }
+        else if (curRandomSkillPattern_num == 5)
+        {
+
+        }
+        //---------------------------------------//
+
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -1653,30 +1708,41 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Quaternion originRotate = skillIndicator_obj.transform.rotation;
         Skill_Indicator skill_Indicator = skillIndicator_obj.GetComponent<Skill_Indicator>();
 
+        curTargetMarker.Add(skill_Indicator);
+
         skill_Indicator.SetBounds();
         skill_Indicator.SetAngle(mAngle);
 
         Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
 
-        skill_Indicator.CheckTrigger(true); // 트리거 ON
-
         //*------------------------------------------------------------------------------------------------//
-        yield return new WaitForSeconds(8f); //* 8초 뒤 체크
-        bool insideBox = skill_Indicator.insideBox;
-        Debug.Log($"플레이어는 안에 있다? {insideBox}");
+        yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
 
-        //* 번개 공격 //Lightning strike 2
+        //* 번개, 파지직 번개
+        StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle));
 
-        //* 파지직 넣기
-        StartCoroutine(electricityProduction(skill_Indicator, 10, mAngle));
-        //* 만약 insideBox가 true라면? 감전
+        yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
+        //* 스킬끝났음.----------------------------------------------//
+        //전기 공격 끄기
+        for (int i = 0; i < skill_Indicator.electricity_Effects.Count; ++i)
+        {
+            skill_Indicator.electricity_Effects[i].StopEffect();
+        }
 
+        yield return new WaitUntil(() => skill_Indicator.electricity_Effects.Count == 0);
 
-        yield return new WaitForSeconds(30f); //* 3초 뒤 체크
         skill_Indicator.CheckTrigger(false);
         skill_Indicator.gameObject.transform.rotation = originRotate;
-        if (targetMarkerList.Count > 4)
+
+        curTargetMarker.Remove(skill_Indicator);
+
+        if (!skillOver)
+            skillOver = true;
+
+
+        //*------------------------------------------------------------//
+        if (targetMarkerList.Count > 8)
         {
             Destroy(skillIndicator_obj);
         }
@@ -1685,23 +1751,28 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             targetMarkerList.Add(skillIndicator_obj);
             skillIndicator_obj.SetActive(false);
         }
-
     }
 
-    IEnumerator electricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
+    IEnumerator ElectricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
     {
         float durationTime = duration / 3;
         int count = 0;
         float time = 0;
         Vector3 randomPos = Vector3.zero;
-
-        while (time < 2)
+        bool isTrigger = false;
+        while (time < 2f)
         {
             time += Time.deltaTime;
             randomPos = skill_Indicator.GetRandomPos();
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2", skill_Indicator.gameObject.transform);
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red", skill_Indicator.gameObject.transform);
+
             effect.transform.position = randomPos;
 
+            if (time > 1f && !isTrigger)
+            {
+                isTrigger = true;
+                skill_Indicator.CheckTrigger(true); // 트리거 ON
+            }
             if (angle != -1)
             {
                 Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
@@ -1720,7 +1791,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     time += Time.deltaTime;
                     randomPos = skill_Indicator.GetRandomPos();
 
-                    GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
+                    Effect effect = GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
+                    effect.finishAction = () =>
+                    {
+                        skill_Indicator.electricity_Effects.Remove(effect);
+                    };
+                    skill_Indicator.electricity_Effects.Add(effect);
                     yield return null;
                 }
                 else
@@ -1732,6 +1808,44 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
         }
 
+        yield return null;
+    }
+
+    public void CreateTargetMarker_4()
+    {
+
+        StartCoroutine(CreateTargetMarker_4_co());
+
+    }
+
+    IEnumerator CreateTargetMarker_4_co()
+    {
+        float mAngle = 0f;
+        float time = 0;
+        skillOver = false;
+
+        for (int i = 0; i < createTargetMarker; i++)
+        {
+            if (i > 0)
+            {
+                mAngle += angle;
+            }
+            StartCoroutine(SkillActivation(mAngle));
+
+            while (true)
+            {
+                if (i >= (createTargetMarker - 1))
+                    break;
+                time += Time.deltaTime;
+
+                if (time > 0.8f)
+                {
+                    time = 0;
+                    break;
+                }
+                yield return null;
+            }
+        }
         yield return null;
     }
 

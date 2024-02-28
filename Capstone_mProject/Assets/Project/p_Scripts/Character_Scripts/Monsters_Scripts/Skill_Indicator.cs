@@ -10,14 +10,16 @@ public class Skill_Indicator : MonoBehaviour
 
     bool checkTrigger = false;
     public bool insideBox = false;
+    public List<Effect> electricity_Effects;
+    public List<Effect> lightningStrike_Effects;
     Bounds originBounds;
     float angle = 0;
+
+
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
-    }
-    private void Update()
-    {
+        electricity_Effects = new List<Effect>();
     }
 
     public void CheckTrigger(bool enabled)
@@ -29,32 +31,48 @@ public class Skill_Indicator : MonoBehaviour
     {
         if (checkTrigger && !insideBox)
         {
-
             if (other.CompareTag("Player"))
             {
-                insideBox = true;
+                CheckPlayerInsideBox(true);
             }
-
         }
     }
+
     private void OnTriggerStay(Collider other)
     {
         if (checkTrigger && !insideBox)
         {
             if (other.CompareTag("Player"))
             {
-                insideBox = true;
+                CheckPlayerInsideBox(true);
             }
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (checkTrigger && insideBox)
         {
             if (other.CompareTag("Player"))
             {
-                insideBox = false;
+                CheckPlayerInsideBox(false);
             }
+        }
+    }
+
+    public void CheckPlayerInsideBox(bool insideBox = true)
+    {
+        if (insideBox)
+        {
+            //만약 플레이어가 상자 안에 있을때
+            insideBox = true;
+
+            PlayerMovement playerMovement = GameManager.instance.gameData.GetPlayerMovement();
+            playerMovement.PlayerElectrocution(insideBox);
+        }
+        else
+        {
+            insideBox = false;
         }
     }
 
@@ -86,16 +104,11 @@ public class Skill_Indicator : MonoBehaviour
         }
 
         // BoxCollider의 bounds 가져오기
-
         float randomX = Random.Range(originBounds.min.x, originBounds.max.x);
         //float randomY = Random.Range(bounds.min.y, bounds.max.y);
         float randomY = 0.5f;
         float randomZ = Random.Range(originBounds.min.z, originBounds.max.z);
         return new Vector3(randomX, randomY, randomZ);
-
     }
-
-
-
 
 }

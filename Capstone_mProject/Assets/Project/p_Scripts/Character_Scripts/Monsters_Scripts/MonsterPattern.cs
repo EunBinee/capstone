@@ -403,7 +403,7 @@ public class MonsterPattern : MonoBehaviour
     }
 
     //* ----------------------------------------------------------------------------------------//
-    protected void GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
+    protected Effect GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
     {
         Effect effect;
         //* 전기 이펙트
@@ -418,6 +418,8 @@ public class MonsterPattern : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
             effect.transform.localPosition = rotation * effect.transform.localPosition;
         }
+
+        return effect;
     }
 
     // * ---------------------------------------------------------------------------------------//

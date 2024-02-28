@@ -666,14 +666,14 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator electricity_Damage()
     {   //todo: 파직 파직 파직(느리게) 나오면서 "감전" UI 같이 출력
-        float a = 0;
-        while (a < 5 && !showElec)
+        float num = 0;
+        while (num < 6 && !showElec)
         {
-            a++;
+            num++;
             showElec = true;
-            float x = UnityEngine.Random.Range(-0.01f, 0.01f);
-            float y = UnityEngine.Random.Range(-0.07f, 0.07f);
-            float z = UnityEngine.Random.Range(-0.01f, 0.01f);
+            float x = UnityEngine.Random.Range(-0.1f, 0.1f);
+            float y = UnityEngine.Random.Range(-0.5f, 0.5f);
+            float z = UnityEngine.Random.Range(-0.1f, 0.1f);
             Vector3 randomPos = new Vector3(x, y, z);   //* 랜덤 위치 저장
 
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_electric", this.transform);
@@ -771,12 +771,6 @@ public class PlayerMovement : MonoBehaviour
         {
             if (P_States.isStrafing)
             {
-                //주목기능; 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
-                /*if (P_States.isAim)
-                {
-                    P_Com.animator.SetFloat("Vertical", snappedVertical, 0.2f, Time.deltaTime);
-                    P_Com.animator.SetFloat("Horizontal", snappedHorizontal, 0.2f, Time.deltaTime);
-                }*/
                 if (P_States.isRunning)
                 {
                     //뛰기일 경우
@@ -796,7 +790,7 @@ public class PlayerMovement : MonoBehaviour
                     //뛰기의 경우
                     //Debug.Log("뛰기");
                     P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.05f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);          //하
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);                   //하
                 }
                 if (P_Value.moveAmount == 0)
                 {
@@ -1033,5 +1027,10 @@ public class PlayerMovement : MonoBehaviour
     public void PlayPlayer()
     {
         P_States.isStop = false;
+    }
+
+    public void PlayerElectrocution(bool electrocution = true)
+    {
+        P_States.isElectricShock = electrocution;
     }
 }
