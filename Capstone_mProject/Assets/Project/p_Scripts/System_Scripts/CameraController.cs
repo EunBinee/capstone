@@ -504,9 +504,9 @@ public class CameraController : MonoBehaviour
         }
         else
         {
-            AimCameraUpDownRotate();
             AimCameraLeftRightRotate();
         }
+        AimCameraUpDownRotate();
     }
 
     private void AimCameraSetZ()
@@ -537,7 +537,7 @@ public class CameraController : MonoBehaviour
         Quaternion targetCameraRot;
         up_down_LookAngle -= (playerController._input.mouseY * up_down_LookSpeed) * 0.4f * Time.deltaTime;
 
-        up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
+        up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, -40, maxPivot); //위아래 고정
         //위아래 => cameraPivot
         cameraRot = Vector3.zero;
         cameraRot.x = up_down_LookAngle;

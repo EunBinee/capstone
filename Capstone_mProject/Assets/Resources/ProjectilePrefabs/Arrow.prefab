@@ -133,6 +133,7 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  deltaShootTime: 0
 --- !u!120 &5891312319907364769
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -153,7 +154,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ed58ff9c044439946ae949ce3244486d, type: 2}
+  - {fileID: 2100000, guid: 1a5ca64f90e4459d8aa1a4089818a9a3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

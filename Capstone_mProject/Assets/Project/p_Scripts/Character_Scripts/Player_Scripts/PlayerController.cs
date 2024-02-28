@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
-
+    public Transform spine;     // 아바타 모델링
 
     public Vector3 originEpos;
     public Vector3 originRpos;
@@ -175,6 +175,8 @@ public class PlayerController : MonoBehaviour
         InitCapsuleCollider();
 
         NavMeshSurface_ReBuild();
+
+        spine = P_Com.animator.GetBoneTransform(HumanBodyBones.Spine); // 값 가져오기 
 
     }
     private void InitComponent()
@@ -326,6 +328,12 @@ public class PlayerController : MonoBehaviour
         {
             if (P_States.isAim)
             {
+                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
+                {
+                    //주목 풀기
+                    GameManager.instance.cameraController.AttentionMonster();
+                    P_States.beenAttention = false;
+                }
                 arrow.SetActive(true);
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
@@ -333,12 +341,6 @@ public class PlayerController : MonoBehaviour
                 crosshairImage.gameObject.SetActive(false);
                 shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
-                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
-                {
-                    //주목 풀기
-                    GameManager.instance.cameraController.AttentionMonster();
-                    P_States.beenAttention = false;
-                }
             }
         }
     }
