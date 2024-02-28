@@ -168,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.startAim)    //* 누르고 있는 중에
+            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.startAim)    //* 누르고 있는 중에
             {
                 if (!P_States.isAim)
                 {
@@ -439,19 +439,20 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim) // 조준모드 들어갔을 때 한번만 실행하도록
+        if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
         {
-            if (!P_States.isCamOnAim)   //* 카메라가 바라보는 방향으로 플레이어 회전
+            //if (!P_States.isCamOnAim)   //* 카메라가 바라보는 방향으로 플레이어 회전
             {
                 P_States.isCamOnAim = true;
                 Vector3 rotationDirection = camForward;
                 rotationDirection.y = 0;
                 rotationDirection.Normalize();
                 Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                //Quaternion tr = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rotationDirection), 4f * Time.deltaTime);
                 transform.rotation = tr;
             }
         }
-        if (P_States.isStrafing) //* 주목할때만 쓰임
+        else if (P_States.isStrafing) //* 주목할때만 쓰임
         {
             Vector3 rotationDirection = P_Value.moveDirection;
             if (rotationDirection != Vector3.zero)
@@ -504,7 +505,7 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
         }
-        else
+        else// if (!P_States.isAim)
         {
             //걷기와 뛰기는 동일하게
 

@@ -396,7 +396,7 @@ public class CameraController : MonoBehaviour
                 curTouchWall = false;
                 time_Z = 0;
             }
-            if (cameraPivotPos.y != maxY_Attention)
+            if (cameraPivotPos.y != maxY_Attention && !use_aimCamera)
             {
                 time_Z += Time.deltaTime;
                 float value = Mathf.Lerp(cameraPivotPos.y, maxY_Attention, time_Z / duration);
@@ -432,7 +432,7 @@ public class CameraController : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            float value = Mathf.Lerp(camPivotPos.y, 1.7f, time / duration);
+            float value = Mathf.Lerp(camPivotPos.y, minY, time / duration);
             camPivotPos.y = value;
             playerCameraPivot.transform.localPosition = camPivotPos;
 
@@ -446,7 +446,7 @@ public class CameraController : MonoBehaviour
         cameraTrans.localPosition = camPos;
 
         camPivotPos = playerCameraPivot.transform.localPosition;
-        camPivotPos.y = 1.7f;
+        camPivotPos.y = minY;
         playerCameraPivot.transform.localPosition = camPivotPos;
     }
 
@@ -559,12 +559,12 @@ public class CameraController : MonoBehaviour
         playerCamera.transform.localRotation = targetCameraRot;
     }
     //* 좌우 카메라
-    private void AimCameraLeftRightRotate_moveAmount()
+    private void AimCameraLeftRightRotate_moveAmount()  //안움직일때
     {
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * 0.4f * Time.deltaTime;
+        left_right_LookAngle += playerController._input.mouseX * left_right_LookSpeed * Time.deltaTime;
 
         cameraRot = Vector3.zero;
         cameraRot.y = left_right_LookAngle;
@@ -576,7 +576,7 @@ public class CameraController : MonoBehaviour
     {
         //Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
         Vector3 cameraPos = playerBackPos.position;
-        playerCamera.transform.position = cameraPos;
+        playerCamera.transform.position = playerBackPos.position;
     }
 
     #endregion

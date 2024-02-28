@@ -306,6 +306,12 @@ public class PlayerController : MonoBehaviour
         {
             if (!P_States.isAim)
             {
+                if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
+                {
+                    //주목 풀기
+                    GameManager.instance.cameraController.UndoAttention();
+                    P_States.beenAttention = true;
+                }
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
                 GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
                 crosshairImage.gameObject.SetActive(true);  //* 조준점
@@ -321,12 +327,18 @@ public class PlayerController : MonoBehaviour
             if (P_States.isAim)
             {
                 arrow.SetActive(true);
-                P_States.isAim = false;
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
                 GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 crosshairImage.gameObject.SetActive(false);
                 shootPoint.gameObject.SetActive(false);
+                P_States.isAim = false;
+                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
+                {
+                    //주목 풀기
+                    GameManager.instance.cameraController.AttentionMonster();
+                    P_States.beenAttention = false;
+                }
             }
         }
     }
