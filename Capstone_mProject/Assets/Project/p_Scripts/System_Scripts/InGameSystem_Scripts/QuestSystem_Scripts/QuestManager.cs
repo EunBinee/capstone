@@ -63,6 +63,7 @@ public class QuestManager : MonoBehaviour
     //퀘스트 버튼 클릭시에 퀘스트 상세내용 팝업창 띄우기
     public void QuestClick()
     {
+        UpdateQuest(quest_.questId);
         DialogueManager.instance.QuestDetailTitle_UI(text_title);
         DialogueManager.instance.QuestDetailContent_UI(text_content);
         DialogueManager.instance.QuestDetailGoal_UI(text_goal);

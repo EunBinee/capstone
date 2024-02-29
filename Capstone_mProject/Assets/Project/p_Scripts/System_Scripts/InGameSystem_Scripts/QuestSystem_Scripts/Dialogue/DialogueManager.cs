@@ -32,7 +32,6 @@ public class DialogueManager : MonoBehaviour
 
     public DialogueUI DialogueUI_info; // 대화 UI
     public DialogueInfo dialogueInfo;
-    SpriteManager spriteManager;
 
     //* 퀘스트
     public QuestManager questManager;
@@ -67,7 +66,6 @@ public class DialogueManager : MonoBehaviour
         SetUIVariable();
 
         dialogueController = GetComponent<DialogueController>();
-        spriteManager = GetComponent<SpriteManager>();
 
         DoQuest = false;
         IsQuestDetail = false;

@@ -63,7 +63,7 @@ public class DialogueParser
         csv_Line = 6;//대사
         csv_Portrait = 7;
         csv_Choice = 8;
-        csv_ChoiceLine = 8; //선택지대사
+        csv_ChoiceLine = 9; //선택지대사
         csv_SkipLine = 10;
         csv_Quest = 11;
         csv_Ending = 12;
