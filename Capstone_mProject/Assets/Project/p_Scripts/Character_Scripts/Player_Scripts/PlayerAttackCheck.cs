@@ -26,7 +26,7 @@ public class PlayerAttackCheck : MonoBehaviour
     public float deltaShootTime = 0.0f;
 
     //계산식
-    bool attackEnemy = false;
+    //bool attackEnemy = false;
 
     void Start()
     {
@@ -70,15 +70,15 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 dir = GameManager.Instance.gameData.cameraObj.transform.forward;
             }
-            rigid.velocity = dir.normalized * 40f; ; //* 발사
+            rigid.velocity = dir.normalized * 55f; ; //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
-            //P_States.hadAttack = false;
         }
         incoArrow = false;
-        yield return new WaitUntil(() => shootDeltaTime() >= 5.0f);
+        yield return new WaitUntil(() => P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         this.gameObject.SetActive(false);
+        P_States.hadAttack = false;
         deltaShootTime = 0.0f;
         yield return null;
     }
@@ -255,6 +255,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+        
     }
 
     private void ArrowRay()//float curArrowDistance)
@@ -274,7 +275,7 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 //자기 자신은 패스
                 float distance = hit.distance;
-                if (/*curArrowDistance < distance &&*/ shortDist > distance)
+                if (/*curArrowDistance < distance &&*/ shortDist > distance)    //범위 내 라면
                 {
                     shortHit = hit;
                     shortDist = distance;
@@ -288,10 +289,11 @@ public class PlayerAttackCheck : MonoBehaviour
                             Debug.LogError("몬스터 : null");
                             return;
                         }
-                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
+                            && P_States.hadAttack == false)
                         {
-                            attackEnemy = true;
-                            //P_States.hadAttack = true;
+                            //attackEnemy = true;
+                            P_States.hadAttack = true;
                             //m_Hit = hit;
                             Vector3 collisionPoint = hit.point;
                             Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
@@ -301,7 +303,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     }
                     else
                     {
-                        attackEnemy = false;
+                        //attackEnemy = false;
                         //P_States.hadAttack = false;
                     }
                 }
