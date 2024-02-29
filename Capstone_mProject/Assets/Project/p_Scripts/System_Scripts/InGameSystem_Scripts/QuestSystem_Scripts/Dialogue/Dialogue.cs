@@ -25,6 +25,7 @@ public class Line
     public int questIDToBeChange; //변경될 퀘스트 ID
 
     //public int nextLineNum;
+    public string[] spriteName; //초상화 이름 
 }
 
 
@@ -45,6 +46,8 @@ public class Dialogue
     public int questNum;
     //대사번호
     //ublic int lineNum;
+    public string[] portrait;
+
 
 }
 
