@@ -448,7 +448,6 @@ public class PlayerMovement : MonoBehaviour
                 rotationDirection.y = 0;
                 rotationDirection.Normalize();
                 Quaternion tr = Quaternion.LookRotation(rotationDirection);
-                //Quaternion tr = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rotationDirection), 4f * Time.deltaTime);
                 transform.rotation = tr;
             }
         }
@@ -608,11 +607,6 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isAim)    //조준
         {
-            //Vector3 spineLook = P_Controller.shootPoint.position;
-            // Vector3 spineLook = GameManager.instance.cameraController.transform.forward;
-            // P_Controller.spine.LookAt(spineLook); //플레이어가 타겟 위치 보기           
-            // P_Controller.spine.rotation = P_Controller.spine.rotation * Quaternion.Euler(spineLook - this.transform.position); // 타겟으로 회전
-
             P_Value.finalSpeed = P_COption.walkingSpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;

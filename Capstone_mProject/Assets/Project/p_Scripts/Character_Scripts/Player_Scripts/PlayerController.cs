@@ -162,6 +162,23 @@ public class PlayerController : MonoBehaviour
             CheckHP();
         }
     }
+    public void LateUpdate()
+    {
+        if(P_States.isAim)
+            Operation_boneRotation();
+    }
+    Vector3 ChestOffset = new Vector3(0, 180, 0);
+
+    Vector3 ChestDir = new Vector3();
+
+    void Operation_boneRotation()
+    {
+        //카메라가 보고있는 방향
+        //ChestDir = P_Camera.cameraObj.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        ChestDir = this.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
+        spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+    }
 
     public bool returnIsAim()
     {
@@ -176,7 +193,7 @@ public class PlayerController : MonoBehaviour
 
         NavMeshSurface_ReBuild();
 
-        spine = P_Com.animator.GetBoneTransform(HumanBodyBones.Spine); // 값 가져오기 
+        spine = P_Com.animator.GetBoneTransform(HumanBodyBones.UpperChest); // 값 가져오기 
 
     }
     private void InitComponent()
