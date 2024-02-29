@@ -647,11 +647,10 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Com.animator.Play("Front", 1);
             }
-            //P_Com.animator.Play("dodge", 0);
             P_Value.moveDirection.y = 0;
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 
-            Invoke("dodgeOut", 0.2f);    //대시 유지 시간
+            Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
 
         }
         else if (P_States.isSprinting || P_States.isRunning)
