@@ -23,6 +23,22 @@ public class DialogueParser
     bool finishBreak = false;
     //bool doQuest = false;
 
+    //csv 
+    int csv_Event = 1;
+    int csv_Npc = 2;
+    int csv_Context = 3; //대화단락
+    int csv_Dialogue = 4; //몇번째대사인지
+    int csv_Name = 5;
+    int csv_Line = 6;//대사
+    int csv_Portrait = 7; //초상화
+    int csv_Choice = 8;//7;
+    int csv_ChoiceLine = 9;//8; //선택지대사
+    int csv_SkipLine = 10;//9;
+    int csv_Quest = 11;//10;
+    int csv_Ending = 12;//11;
+    int csv_AfterEnding = 13;//12;
+
+
     void Initialization() //초기화
     {
         eventNum_in = 0;
@@ -38,6 +54,20 @@ public class DialogueParser
         finishBreak = false;
         //doQuest = false;
 
+        //csv
+        csv_Event = 1;
+        csv_Npc = 2;
+        csv_Context = 3; //대화단락
+        csv_Dialogue = 4; //몇번째대사인지
+        csv_Name = 5;
+        csv_Line = 6;//대사
+        csv_Portrait = 7;
+        csv_Choice = 8;
+        csv_ChoiceLine = 8; //선택지대사
+        csv_SkipLine = 10;
+        csv_Quest = 11;
+        csv_Ending = 12;
+        csv_AfterEnding = 13;
     }
     public Dialogue[] DialogueParse(string csvFileName)
     {
@@ -45,7 +75,7 @@ public class DialogueParser
 
         List<Dialogue> dialogues = new List<Dialogue>();
 
-        TextAsset csvData = Resources.Load<TextAsset>(csvFileName);
+        TextAsset csvData = Resources.Load<TextAsset>("Dialogues/" + csvFileName);
         string[] data = csvData.text.Split(new char[] { '\n' });
 
         for (int i = 1; i < (data.Length);)
@@ -55,7 +85,7 @@ public class DialogueParser
             Dialogue dialogue = new Dialogue();
             List<List<Line>> lines = new List<List<Line>>();
 
-            if (row[1].ToString() == "")
+            if (row[csv_Event].ToString() == "")
             {
                 dialogue.eventNum = eventNum_in;   //이벤트id
                 dialogue.npcNum = npcNum_in;     //Npcid
@@ -66,22 +96,25 @@ public class DialogueParser
             else
             {
 
-                eventNum_in = int.Parse(row[1].ToString());
-                npcNum_in = int.Parse(row[2].ToString());
-                if (row[11] == "")
+                eventNum_in = int.Parse(row[csv_Event].ToString());
+                npcNum_in = int.Parse(row[csv_Npc].ToString());
+                if (row[csv_Ending] == "")
                 {
                     //endingNum_in = endingNum_in;
                 }
                 else
-                    endingNum_in = int.Parse(row[11].ToString());
-                if (row[10] == "")
+                    endingNum_in = int.Parse(row[csv_Ending].ToString());
+                if (row[csv_Quest] == "")
                 {
                     //questNum_in = questNum_in; 
                 }
                 else
-                    questNum_in = int.Parse(row[10].ToString());
+                    questNum_in = int.Parse(row[csv_Quest].ToString());
                 //lineNum_in = int.Parse(row[4].ToString());
-
+                if (row[csv_Portrait] == "")
+                {
+                    //dialogue.
+                }
                 dialogue.eventNum = eventNum_in;   //이벤트 id
                 dialogue.npcNum = npcNum_in;     //Npc id
                 dialogue.endingNum = endingNum_in;  //ending id
@@ -91,13 +124,13 @@ public class DialogueParser
 
             }
 
-            if (row[3].ToString() == "")
+            if (row[csv_Context].ToString() == "")
             {
                 dialogue.dialogueNum = dialogueNum_in;
             }
             else
             {
-                dialogueNum_in = int.Parse(row[3].ToString());
+                dialogueNum_in = int.Parse(row[csv_Context].ToString());
                 dialogue.dialogueNum = dialogueNum_in;
             }
             // if (row[4].ToString() == "")
@@ -122,6 +155,7 @@ public class DialogueParser
             {
                 List<Line> LineList = new List<Line>();
                 List<string> contextList = new List<string>();  //Line.cs의 context[]에 넣기 위함. 
+                List<string> spriteList = new List<string>(); //초상화
 
                 do
                 {
@@ -138,13 +172,14 @@ public class DialogueParser
                     {
                         if (!startChoice) //선택지가 없을 경우
                         {
-                            if (row[5].ToString() != "")
+                            if (row[csv_Name].ToString() != "")
                             {
-                                name_in = row[5].ToString(); //npc 이름 
+                                name_in = row[csv_Name].ToString(); //npc 이름 
                             }
 
                             line.Name = name_in;
-                            contextList.Add(row[6].ToString());
+                            contextList.Add(row[csv_Line].ToString());
+                            spriteList.Add(row[csv_Portrait].ToString());
 
                         }
                         else if (startChoice) //선택지가 있을 경우
@@ -156,43 +191,43 @@ public class DialogueParser
                             {
                                 //첫번째 질문인지
                                 line.choice = new Choice();
-                                line.choice.firstOption = row[8].ToString();
-                                line.choice.firstOptDialogNum = int.Parse(row[9].ToString());
+                                line.choice.firstOption = row[csv_ChoiceLine].ToString();
+                                line.choice.firstOptDialogNum = int.Parse(row[csv_SkipLine].ToString());
 
                             }
                             else if (choice_OneTwo == 2)
                             {
                                 //두번째 질문인지
-                                line.choice.secondOption = row[8].ToString();
-                                line.choice.secondOptDialogNum = int.Parse(row[9].ToString());
+                                line.choice.secondOption = row[csv_ChoiceLine].ToString();
+                                line.choice.secondOptDialogNum = int.Parse(row[csv_SkipLine].ToString());
 
                                 choice_OneTwo = 0;
                                 startChoice = false;
                             }
                         }
 
-                        if (row[7].ToString() != "")
+                        if (row[csv_Choice].ToString() != "")
                         {
-                            if (int.Parse(row[7].ToString()) == 1)
+                            if (int.Parse(row[csv_Choice].ToString()) == 1)
                             {
                                 //선택지 있는 경우
                                 startChoice = true;
                                 line.isChoice = true;
                             }
-                            else if (int.Parse(row[7].ToString()) == 0)
+                            else if (int.Parse(row[csv_Choice].ToString()) == 0)
                             {
                                 line.isFinishLine = true;
 
                                 //선택지 없이 끝나는 경우 다음 대사 정해야함. 
                                 int nextDialogueNum = 0;
-                                bool isNumeric = int.TryParse(row[3].ToString(), out nextDialogueNum);
+                                bool isNumeric = int.TryParse(row[csv_Npc].ToString(), out nextDialogueNum);
 
 
                                 if (isNumeric) //만약 숫자 변환이 가능하다면 
                                 {
                                     line.nextDialogueNum = nextDialogueNum;
                                 }
-                                if (!isNumeric && row[3].ToString() == "")
+                                if (!isNumeric && row[csv_Npc].ToString() == "")
                                 {
                                     line.nextDialogueNum = dialogueNum_in + 1;
                                 }
@@ -216,7 +251,7 @@ public class DialogueParser
                                 if (!line.changeEvnetID) //false일때 변화
                                 {
                                     int changeEvnetID = 0;
-                                    isNumeric = int.TryParse(row[12].ToString(), out changeEvnetID);
+                                    isNumeric = int.TryParse(row[csv_AfterEnding].ToString(), out changeEvnetID);
 
                                     if (isNumeric)
                                     {
@@ -230,7 +265,7 @@ public class DialogueParser
                                 if (!line.changeEndingID)
                                 {
                                     int changeEndingID = 0;
-                                    isNumeric = int.TryParse(row[11].ToString(), out changeEndingID);
+                                    isNumeric = int.TryParse(row[csv_Ending].ToString(), out changeEndingID);
 
                                     if (isNumeric)
                                     {
@@ -242,7 +277,7 @@ public class DialogueParser
                                 if (!line.changeQuestID)
                                 {
                                     int changeQuestID = 0;
-                                    isNumeric = int.TryParse(row[10].ToString(), out changeQuestID);
+                                    isNumeric = int.TryParse(row[csv_Quest].ToString(), out changeQuestID);
 
                                     if (isNumeric)
                                     {
@@ -266,9 +301,10 @@ public class DialogueParser
                             finishBreak = true;
                             break;
                         }
-                    } while (row[5].ToString() == "");    //csv f열 비어있으면 대화 이어짐. 
+                    } while (row[csv_Name].ToString() == "");    //csv f열 비어있으면 대화 이어짐. 
 
                     line.context = contextList.ToArray();
+                    line.spriteName = spriteList.ToArray();
                     LineList.Add(line);
 
                     contextList.Clear();
@@ -280,7 +316,7 @@ public class DialogueParser
                     }
 
 
-                } while (row[4].ToString() == "");    //csv E.
+                } while (row[csv_Dialogue].ToString() == "");    //csv E.
 
                 lines.Add(LineList);
 
@@ -288,7 +324,7 @@ public class DialogueParser
                 {
                     break;
                 }
-            } while (row[3].ToString() == "");    //csv D
+            } while (row[csv_Npc].ToString() == "");    //csv D
 
 
             dialogue.lines = lines;
@@ -301,7 +337,7 @@ public class DialogueParser
     {
         List<Quest> quests = new List<Quest>();
 
-        TextAsset csvData = Resources.Load<TextAsset>(csvFileName);
+        TextAsset csvData = Resources.Load<TextAsset>("Dialogues/" + csvFileName);
         string[] data = csvData.text.Split(new char[] { '\n' });
 
         for (int i = 1; i < data.Length;)
