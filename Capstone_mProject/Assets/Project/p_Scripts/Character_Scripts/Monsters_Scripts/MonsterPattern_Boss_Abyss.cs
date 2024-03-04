@@ -41,6 +41,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     [Header("스킬 04")]
     public GameObject targetMarker_Prefabs;
     public List<GameObject> targetMarkerList = new List<GameObject>();
+    public GameObject targetMarker_Pattern05_Prefabs;
+    GameObject targetMarker_Pattern05_obj;
+    public List<Skill_Indicator> targetMarker_Pattern05_List = new List<Skill_Indicator>();
 
     bool isJump = false;
     bool isDodge = false;
@@ -1612,7 +1615,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         int curIndex = -1;
         while (count < 1)
         {
-            curRandomSkillPattern_num = 4;
+            curRandomSkillPattern_num = 5;
             // while (true)
             // {
             //     //curRandomSkillPattern_num = UnityEngine.Random.Range(1, 4);
@@ -1631,7 +1634,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 //*1~3 번 패턴
                 CreateTargetMarker();
-                yield return new WaitUntil(() => skillOver == true && curTargetMarker.Count == 0);
             }
             else if (curRandomSkillPattern_num == 4)
             {
@@ -1641,12 +1643,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             else if (curRandomSkillPattern_num == 5)
             {
                 //* 5번 패턴
+                CreateTargetMarker_5();
             }
+            yield return new WaitUntil(() => skillOver == true && curTargetMarker.Count == 0);
             count++;
         }
         yield return null;
     }
-
+    //! 스킬 4의 패턴 1~3
     public void CreateTargetMarker()
     {
         float mAngle = 0f;
@@ -1661,30 +1665,76 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(SkillActivation(mAngle));
         }
     }
+    //! 스킬 4의 패턴 4
+    public void CreateTargetMarker_4()
+    {
+        StartCoroutine(CreateTargetMarker_4_co());
+    }
+
+    IEnumerator CreateTargetMarker_4_co()
+    {
+        float mAngle = 0f;
+        float time = 0;
+        skillOver = false;
+
+        for (int i = 0; i < createTargetMarker; i++)
+        {
+            if (i > 0)
+            {
+                mAngle += angle;
+            }
+            StartCoroutine(SkillActivation(mAngle));
+
+            while (true)
+            {
+                if (i >= (createTargetMarker - 1))
+                    break;
+                time += Time.deltaTime;
+
+                if (time > 0.8f)
+                {
+                    time = 0;
+                    break;
+                }
+                yield return null;
+            }
+        }
+        yield return null;
+    }
+
+
+    public void CreateTargetMarker_5()
+    {
+        skillOver = false;
+        if (targetMarker_Pattern05_obj == null)
+        {
+            targetMarker_Pattern05_obj = Instantiate(targetMarker_Pattern05_Prefabs, GameManager.instance.transform.position, Quaternion.identity);
+            targetMarker_Pattern05_obj.transform.SetParent(GameManager.instance.transform);
+
+            Transform targetMarker_trans = targetMarker_Pattern05_obj.GetComponent<Transform>();
+            foreach (Transform child in targetMarker_trans)
+            {
+                Skill_Indicator skill_Indicator = child.GetComponent<Skill_Indicator>();
+                if (skill_Indicator != null)
+                {
+                    targetMarker_Pattern05_List.Add(skill_Indicator);
+                }
+            }
+        }
+
+        StartCoroutine(SkillActivation_Pattern05(-1));
+
+    }
+
 
     IEnumerator SkillActivation(float mAngle)
     {
         //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
-        float waitTime = 0; //빨간색 경고후 기다리는 시간
-        float electricity_DurationTime = 0; //빨간색 경고후, 번개 친 후 지속 시간
-        float endSkillTime = 0; //스킬이 끝나는 시간
-        if (curRandomSkillPattern_num < 4)
-        {
-            waitTime = 2;
-            electricity_DurationTime = 5;
-            endSkillTime = 2 + electricity_DurationTime;
-        }
-        else if (curRandomSkillPattern_num == 4)
-        {
-            waitTime = 2;
-            electricity_DurationTime = 5;
-            endSkillTime = 2 + electricity_DurationTime;
-        }
-        else if (curRandomSkillPattern_num == 5)
-        {
+        float waitTime = 2;//빨간색 경고후 기다리는 시간
+        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
 
-        }
         //---------------------------------------//
 
         GameObject skillIndicator_obj;
@@ -1753,6 +1803,64 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
 
+    IEnumerator SkillActivation_Pattern05(float mAngle)
+    {
+        //스킬 targetMarkerList
+        //* 타임 세팅---------------------------//
+        float waitTime = 2;//빨간색 경고후 기다리는 시간
+        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
+
+        //---------------------------------------//
+
+        GameObject skillIndicator_obj;
+        float posY = GetGroundPos(transform).y;
+        //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
+        skillIndicator_obj = targetMarker_Pattern05_obj;
+        //* 세팅-------------------------------------------------------------------------------------------//
+        skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
+        for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
+        {
+            curTargetMarker.Add(targetMarker_Pattern05_List[i]);
+            targetMarker_Pattern05_List[i].SetBounds();
+        }
+        //*------------------------------------------------------------------------------------------------//
+        yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
+
+        //* 번개, 파지직 번개
+        for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
+        {
+            StartCoroutine(ElectricityProduction(targetMarker_Pattern05_List[i], electricity_DurationTime, mAngle));
+        }
+
+        yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
+                                                       //* 스킬끝났음.----------------------------------------------//
+                                                       //전기 공격 끄기
+        for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
+        {
+            for (int j = 0; j < targetMarker_Pattern05_List[i].electricity_Effects.Count; ++j)
+            {
+                targetMarker_Pattern05_List[i].electricity_Effects[j].StopEffect();
+            }
+        }
+        for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
+        {
+            yield return new WaitUntil(() => targetMarker_Pattern05_List[i].electricity_Effects.Count == 0);
+        }
+
+        for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
+        {
+            targetMarker_Pattern05_List[i].CheckTrigger(false);
+            curTargetMarker.Remove(targetMarker_Pattern05_List[i]);
+        }
+
+        if (!skillOver)
+            skillOver = true;
+
+        skillIndicator_obj.SetActive(false);
+    }
+
+
     IEnumerator ElectricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
     {
         float durationTime = duration / 3;
@@ -1811,43 +1919,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
-    public void CreateTargetMarker_4()
-    {
-
-        StartCoroutine(CreateTargetMarker_4_co());
-
-    }
-
-    IEnumerator CreateTargetMarker_4_co()
-    {
-        float mAngle = 0f;
-        float time = 0;
-        skillOver = false;
-
-        for (int i = 0; i < createTargetMarker; i++)
-        {
-            if (i > 0)
-            {
-                mAngle += angle;
-            }
-            StartCoroutine(SkillActivation(mAngle));
-
-            while (true)
-            {
-                if (i >= (createTargetMarker - 1))
-                    break;
-                time += Time.deltaTime;
-
-                if (time > 0.8f)
-                {
-                    time = 0;
-                    break;
-                }
-                yield return null;
-            }
-        }
-        yield return null;
-    }
 
     #endregion
 
