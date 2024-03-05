@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using TMPro;
+//using Microsoft.Unity.VisualStudio.Editor;
+using UnityEngine.UI;
 
 public class DialogueUI_info : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class DialogueUI_info : MonoBehaviour
     public GameObject ObjectTextBox_Button02; //선택지 2번 UI
     public TMP_Text Text_Btn02; //선택지 2번 text
     public GameObject dialogueArrow; //대사 끝났을 경우 화살표ui
+    public Image portrait;
 
     public GameObject Quest_Button01;
     public GameObject Go_QuestDetail;
