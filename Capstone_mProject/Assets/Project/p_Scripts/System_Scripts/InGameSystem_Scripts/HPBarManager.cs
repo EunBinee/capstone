@@ -33,6 +33,7 @@ public class HPBarManager : MonoBehaviour
                 Debug.LogError("오브젝트 없음");
         }
         HPBar_Parent = CanvasManager.instance.monster_HPBarUI.GetComponent<Transform>();
+
         m_Camera = GameManager.instance.gameData.cameraObj;
     }
     private void InitHPBar()
@@ -119,7 +120,11 @@ public class HPBarManager : MonoBehaviour
         {
             HPBarUI_Info HPBar_Prefab = Resources.Load<HPBarUI_Info>("SystemPrefabs/" + bossHPBar_name);
             curBossHPBar = UnityEngine.Object.Instantiate(HPBar_Prefab);
+        }
 
+        if (HPBar_Parent == null)
+        {
+            HPBar_Parent = CanvasManager.instance.monster_HPBarUI.GetComponent<Transform>();
         }
         curBossHPBar.gameObject.transform.SetParent(HPBar_Parent);
         curBossHPBar.gameObject.SetActive(true);

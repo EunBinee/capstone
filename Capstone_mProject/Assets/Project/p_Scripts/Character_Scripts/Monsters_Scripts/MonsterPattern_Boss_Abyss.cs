@@ -246,7 +246,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 m_animator.SetBool("m_Dodge", false);
                 break;
             case MonsterAnimation.Move:
-
                 m_animator.SetBool("m_Idle", false);
                 m_animator.SetBool("m_Walk", true);
                 m_animator.SetBool("m_Dodge", false);
@@ -469,10 +468,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
 
             //isRoaming = false;
-            Skill04();
+            //Skill04();
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -505,7 +504,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         int skill = 0;
         bool pickAgain = false;
-        float breakTime = 0; //* 스킬 있은 후, 쉬는 시간
+        float breakTime = 0; //* 스킬 있은 후, 쉬는 간
         BossMonsterPhase curBossP = curBossPhase;
 
         List<int> skill_List = new List<int>(); //중복된 스킬을 막기 위한 리스트
@@ -518,8 +517,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (curBossPhase != curBossP)
                 break;
 
-            skill = UnityEngine.Random.Range(0, 2);
-
+            if (curBossPhase == BossMonsterPhase.Phase1)
+                skill = UnityEngine.Random.Range(0, 2);
+            else if (curBossPhase != BossMonsterPhase.Phase1)
+                skill = UnityEngine.Random.Range(0, 3);
             //* 중복 체크-----------------------//
             if (skill_List.Count <= 0)
             {
@@ -531,6 +532,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 {
                     skill_List.Clear();
                 }
+
                 skill_List.Add(skill);
             }
             else
@@ -573,11 +575,20 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case 1:
                     if (!ing_skill02)
                     {
+                        //* 페이즈 2 이상이면, 스킬 2번에서 바로 스킬 3번으로 연계
                         Monster_Motion(BossMonsterMotion.Skill02);
                         breakTime = 4;
                     }
                     else
                         pickAgain = true;
+                    break;
+                case 2:
+                    if (!ing_skill04)
+                    {
+                        //* 스킬 4번으로 연계
+                        Monster_Motion(BossMonsterMotion.Skill04);
+                        breakTime = 4;
+                    }
                     break;
                 default:
                     break;
@@ -605,6 +616,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isTracing = false;
         }
     }
+
 
     //* 스킬 끝났을 때 무조건 실행해주는 함수. (변수 수정할때 사용.)
     public void EndSkill(BossMonsterMotion skill)
@@ -1659,6 +1671,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return new WaitUntil(() => skillOver == true && curTargetMarker.Count == 0);
             count++;
         }
+
+        //! 스킬 끝
+        EndSkill(BossMonsterMotion.Skill03);
         yield return null;
     }
     //! 스킬 4의 패턴 1~3
@@ -2105,6 +2120,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StopCoroutine(skill02_MoveMonster_Co);
             skill02_MoveMonster_Co = null;
         }
+        //* 스킬 4번
+
+
 
     }
 
