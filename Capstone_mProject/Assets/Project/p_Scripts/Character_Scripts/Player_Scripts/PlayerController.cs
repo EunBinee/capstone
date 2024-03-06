@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
     }
     public void LateUpdate()
     {
-        if(P_States.isAim)
+        if (P_States.isAim)
             Operation_boneRotation();
     }
     Vector3 ChestOffset = new Vector3(0, 180, 0);
@@ -183,6 +183,10 @@ public class PlayerController : MonoBehaviour
     public bool returnIsAim()
     {
         return P_States.isAim;
+    }
+    public bool returnIsBowMode()
+    {
+        return P_States.isBowMode;
     }
 
     private void InitPlayer()
