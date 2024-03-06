@@ -60,6 +60,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     Coroutine skill02_Co = null;
     Coroutine changePhase02_Co = null;
 
+
     public List<NavMeshSurface> navMeshSurface;
 
     public override void Init()
@@ -1582,10 +1583,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool skillOver = false;
     List<Skill_Indicator> curTargetMarker;
 
+    Coroutine skill04_Co = null;
+    Coroutine skill04_Pattern04_Co = null;
     public void Skill04()
     {
         curTargetMarker = new List<Skill_Indicator>();
-        StartCoroutine(BossAbyss_Skill04());
+        skill04_Co = StartCoroutine(BossAbyss_Skill04());
     }
 
     public void SettingSkill04Pattern(int patternNum)
@@ -1661,7 +1664,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             else if (curRandomSkillPattern_num == 4)
             {
                 //* 4번 패턴
-                CreateTargetMarker_4();
+                CreateTargetMarker_Pattern04();
             }
             else if (curRandomSkillPattern_num == 5)
             {
@@ -1673,7 +1676,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
 
         //! 스킬 끝
-        EndSkill(BossMonsterMotion.Skill03);
+        EndSkill(BossMonsterMotion.Skill04);
+        skill04_Co = null;
+
         yield return null;
     }
     //! 스킬 4의 패턴 1~3
@@ -1692,9 +1697,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
     //! 스킬 4의 패턴 4
-    public void CreateTargetMarker_4()
+    public void CreateTargetMarker_Pattern04()
     {
-        StartCoroutine(CreateTargetMarker_4_co());
+        skill04_Pattern04_Co = StartCoroutine(CreateTargetMarker_4_co());
     }
 
     IEnumerator CreateTargetMarker_4_co()
@@ -1736,9 +1741,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 yield return null;
             }
         }
+        skill04_Pattern04_Co = null;
         yield return null;
     }
-
 
     public void CreateTargetMarker_5()
     {
@@ -1764,10 +1769,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     }
 
-
     IEnumerator SkillActivation(float mAngle)
-    {
-        //스킬 targetMarkerList
+    {   //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
@@ -1853,9 +1856,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-
         //---------------------------------------//
-
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -1970,6 +1971,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
+
+    public void StopSkill04()
+    {
+        if (skill04_Co != null)
+            StopCoroutine(skill04_Co);
+        if (skill04_Pattern04_Co != null)
+            StopCoroutine(skill04_Pattern04_Co);
+    }
 
     #endregion
 
@@ -2121,7 +2130,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             skill02_MoveMonster_Co = null;
         }
         //* 스킬 4번
-
+        if (ing_skill04)
+            StopSkill04();
 
 
     }
