@@ -87,6 +87,7 @@ public class CurrentState
     public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
     public bool isStartComboAttack;
     public bool isSkill;
+    public bool colliderHit;
     public bool hadAttack = false;
     public bool hasAttackSameMonster = false;
     public bool notSameMonster = false;
