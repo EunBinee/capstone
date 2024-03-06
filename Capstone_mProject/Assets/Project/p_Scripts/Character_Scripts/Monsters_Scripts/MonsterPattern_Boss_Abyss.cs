@@ -212,8 +212,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 if (curBossPhase != BossMonsterPhase.Phase1)
                 {
                     //* 전기
-                    //(구현 안됨)
                     ing_skill04 = true;
+                    Skill04();
                 }
                 break;
             case BossMonsterMotion.GetHit:
@@ -531,7 +531,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 {
                     skill_List.Clear();
                 }
-
                 skill_List.Add(skill);
             }
             else
@@ -1583,15 +1582,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         switch (patternNum)
         {
             case 1:
-                createTargetMarker = 5;
+                createTargetMarker = 8;
                 angle = 360 / createTargetMarker;
                 break;
             case 2:
-                createTargetMarker = 6;
+                createTargetMarker = 9;
                 angle = 360 / createTargetMarker;
                 break;
             case 3:
-                createTargetMarker = 7;
+                createTargetMarker = 10;
                 angle = 360 / createTargetMarker;
 
                 break;
@@ -1603,31 +1602,43 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             default:
                 break;
-
         }
     }
+
     int curRandomSkillPattern_num = 0;
+
     IEnumerator BossAbyss_Skill04()
     {
         //* 5개의 패턴중 하나 랜덤으로 고름
-        //! 임시로 1~ 3패턴만 구현
+
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+        //*------------------------------------------------------------------//
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        yield return new WaitForSeconds(4f);
+        //*-----------------------------------------------------------------------------------//
         int count = 0;
         int curIndex = -1;
-        while (count < 1)
+        while (count < 4)
         {
-            curRandomSkillPattern_num = 5;
-            // while (true)
-            // {
-            //     //curRandomSkillPattern_num = UnityEngine.Random.Range(1, 4);
-            //
-            //     if (curIndex != curRandomSkillPattern_num)
-            //     {
-            //         //중복 패턴 없도록
-            //         curIndex = curRandomSkillPattern_num;
-            //         break;
-            //     }
-            //     yield return null;
-            // }
+            // curRandomSkillPattern_num = 4;
+            while (true)
+            {
+                curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
+
+                if (curIndex != curRandomSkillPattern_num)
+                {
+                    //중복 패턴 없도록
+                    curIndex = curRandomSkillPattern_num;
+                    break;
+                }
+                yield return null;
+            }
 
             SettingSkill04Pattern(curRandomSkillPattern_num);
             if (curRandomSkillPattern_num < 4)
@@ -1653,7 +1664,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //! 스킬 4의 패턴 1~3
     public void CreateTargetMarker()
     {
-        float mAngle = 0f;
+        float mAngle = UnityEngine.Random.Range(0, 70);
         skillOver = false;
         for (int i = 0; i < createTargetMarker; i++)
         {
@@ -1673,7 +1684,18 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator CreateTargetMarker_4_co()
     {
-        float mAngle = 0f;
+
+        float mAngle = 180 + GameManager.instance.GetAngleSeparation(transform.position, transform.forward * 20, playerController.gameObject.transform.position);
+        Debug.Log($"angle {mAngle}");
+
+        bool isleftRight = PlayerLocationCheck_LeftRight();
+
+        if (isleftRight == false) //* 왼쪽일 경우,
+        {
+            mAngle *= -1;
+        }
+
+        //float mAngle = 0f;
         float time = 0;
         skillOver = false;
 
@@ -1717,7 +1739,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 Skill_Indicator skill_Indicator = child.GetComponent<Skill_Indicator>();
                 if (skill_Indicator != null)
                 {
-                    targetMarker_Pattern05_List.Add(skill_Indicator);
+                    if (skill_Indicator.gameObject.activeSelf == true)
+                        targetMarker_Pattern05_List.Add(skill_Indicator);
                 }
             }
         }
@@ -1773,8 +1796,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle));
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-        //* 스킬끝났음.----------------------------------------------//
-        //전기 공격 끄기
+                                                       //* 스킬끝났음.----------------------------------------------//
+                                                       //전기 공격 끄기
+
+        if (!skillOver)
+            skillOver = true;
+
         for (int i = 0; i < skill_Indicator.electricity_Effects.Count; ++i)
         {
             skill_Indicator.electricity_Effects[i].StopEffect();
@@ -1787,8 +1814,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         curTargetMarker.Remove(skill_Indicator);
 
-        if (!skillOver)
-            skillOver = true;
+        //if (!skillOver)
+        //    skillOver = true;
 
 
         //*------------------------------------------------------------//
@@ -1803,6 +1830,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
 
+    //* ### 체크문양 패턴
     IEnumerator SkillActivation_Pattern05(float mAngle)
     {
         //스킬 targetMarkerList
@@ -1821,8 +1849,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
+            Debug.Log($"i {i}");
             curTargetMarker.Add(targetMarker_Pattern05_List[i]);
-            targetMarker_Pattern05_List[i].SetBounds();
         }
         //*------------------------------------------------------------------------------------------------//
         yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
@@ -1835,7 +1863,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
                                                        //* 스킬끝났음.----------------------------------------------//
-                                                       //전기 공격 끄기
+                                                       //전기 공격 끄
+        if (!skillOver)
+            skillOver = true;
+
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
             for (int j = 0; j < targetMarker_Pattern05_List[i].electricity_Effects.Count; ++j)
@@ -1854,8 +1885,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             curTargetMarker.Remove(targetMarker_Pattern05_List[i]);
         }
 
-        if (!skillOver)
-            skillOver = true;
+        //if (!skillOver)
+        //    skillOver = true;
 
         skillIndicator_obj.SetActive(false);
     }
@@ -1868,10 +1899,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float time = 0;
         Vector3 randomPos = Vector3.zero;
         bool isTrigger = false;
+        bool getBounds = false;
         while (time < 2f)
         {
             time += Time.deltaTime;
-            randomPos = skill_Indicator.GetRandomPos();
+            if (angle == -1)
+                getBounds = true;
+            randomPos = skill_Indicator.GetRandomPos(getBounds);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red", skill_Indicator.gameObject.transform);
 
             effect.transform.position = randomPos;
@@ -1897,7 +1931,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 if (time < durationTime)
                 {
                     time += Time.deltaTime;
-                    randomPos = skill_Indicator.GetRandomPos();
+                    if (angle == -1)
+                        getBounds = true;
+                    randomPos = skill_Indicator.GetRandomPos(getBounds);
 
                     Effect effect = GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
                     effect.finishAction = () =>

@@ -469,7 +469,8 @@ public class MonsterPattern : MonoBehaviour
 
     //* ----------------------------------------------------------------------------------------//
     //! 플레이어가 몬스터의 뒤에 있는지 앞에 있는지 확인용 함수
-    public bool PlayerLocationCheck()
+    //* 위아래
+    public bool PlayerLocationCheck_BackForth()
     {
         //* 앞뒤 체크
         Vector3 curDirection = GetDirection(playerTargetPos.position, transform.position);
@@ -486,6 +487,24 @@ public class MonsterPattern : MonoBehaviour
         {
             // * 플레이어가 몬스터의 뒤에 있을 때:
             //Debug.Log("플레이어는 몬스터의 뒤에 있습니다.");
+            return false;
+        }
+    }
+    //* 좌우
+    public bool PlayerLocationCheck_LeftRight()
+    {
+        if (playerTargetPos.position.x < transform.position.x)
+        {
+            //* 왼쪽일 경우 true
+            return true;
+        }
+        else if (playerTargetPos.position.x > transform.position.x)
+        {
+            //* 오른 쪽일 경우 false;
+            return false;
+        }
+        else
+        {
             return false;
         }
     }

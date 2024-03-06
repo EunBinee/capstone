@@ -244,5 +244,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    //!---------------------------------------------------------------------------//
+    //* 사이 각 구하기 (0~180)
+    public float GetAngleSeparation(Vector3 center, Vector3 point1, Vector3 point2)
+    {
+        Vector3 v1 = (point1 - center).normalized;
+        Vector3 v2 = (point2 - center).normalized;
+
+        float dotProduct = Vector3.Dot(v1, v2);
+        float angle = Mathf.Acos(Mathf.Clamp(dotProduct, -1f, 1f));
+        float angleInDegrees = Mathf.Rad2Deg * angle;
+
+        return angleInDegrees;
+    }
+
 }
 

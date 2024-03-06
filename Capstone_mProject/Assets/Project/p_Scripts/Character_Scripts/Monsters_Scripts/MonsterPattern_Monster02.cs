@@ -241,7 +241,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                     if (isRoaming)
                     {
                         //* 플레이어가 뒤에 있는지 체크
-                        bool inFrontOf_Player = PlayerLocationCheck();
+                        bool inFrontOf_Player = PlayerLocationCheck_BackForth();
                         bool findPlayer = false;
                         if (!inFrontOf_Player)
                         {

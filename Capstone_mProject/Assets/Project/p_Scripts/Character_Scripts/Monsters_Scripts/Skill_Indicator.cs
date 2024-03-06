@@ -94,7 +94,7 @@ public class Skill_Indicator : MonoBehaviour
         angle = m_angle;
     }
 
-    public Vector3 GetRandomPos()
+    public Vector3 GetRandomPos(bool getBounds = false)
     {
         // BoxCollider 내부의 랜덤 좌표를 반환하는 함수
         if (boxCollider == null)
@@ -102,10 +102,12 @@ public class Skill_Indicator : MonoBehaviour
             Debug.LogError("BoxCollider없음");
             return Vector3.zero; // 에러 처리: BoxCollider가 없으면 원점 반환
         }
-
+        if (getBounds)
+        {
+            SetBounds();
+        }
         // BoxCollider의 bounds 가져오기
         float randomX = Random.Range(originBounds.min.x, originBounds.max.x);
-        //float randomY = Random.Range(bounds.min.y, bounds.max.y);
         float randomY = 0.5f;
         float randomZ = Random.Range(originBounds.min.z, originBounds.max.z);
         return new Vector3(randomX, randomY, randomZ);

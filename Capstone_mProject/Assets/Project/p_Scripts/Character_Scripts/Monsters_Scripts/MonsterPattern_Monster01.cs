@@ -286,7 +286,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     //로밍 코루틴 제거
                     if (isRoaming)
                     {
-                        bool inFrontOf_Player = PlayerLocationCheck();
+                        bool inFrontOf_Player = PlayerLocationCheck_BackForth();
                         bool findPlayer = false;
                         if (!inFrontOf_Player)
                         {
