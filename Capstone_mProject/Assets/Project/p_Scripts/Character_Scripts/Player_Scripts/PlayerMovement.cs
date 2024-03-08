@@ -168,23 +168,50 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.startAim)    //* 누르고 있는 중에
+            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && P_Value.aimClickDown <= 0.25f)
             {
-                if (!P_States.isAim)
-                {
-                    camForward = P_Camera.cameraObj.transform.forward;
-                    P_States.startAim = true;
-                    arrowSkillOn();
-                }
-            }
-            else if (Input.GetMouseButtonUp(0) && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
-            {
-                P_States.startAim = false;
+                Debug.Log("[player test] Input.GetMouseButtonDown(0)");
+                P_Value.aimClickDown = 0;
+                P_States.isClickDown = false;
+                //todo: 단타 치면 이펙트 없이 화살만 쵹쵹 하면서 나가기 -> 몬스터 방향으로 없으면 카메라 캐릭터 forward방향으로
+                /*
+                camForward = P_Camera.cameraObj.transform.forward;
+                arrowSkillOn(true);
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 //* 이펙트 회전
                 effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
                 arrowSkillOff();
+                */
+            }
+            else if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
+            {
+                P_States.isClickDown = true;
+
+                if (P_Value.aimClickDown > 0.25f && !P_States.startAim)
+                {
+                    if (!P_States.isAim)
+                    {
+                        camForward = P_Camera.cameraObj.transform.forward;
+                        arrowSkillOn(false);
+                        P_States.startAim = true;
+                    }  
+                }
+
+            }
+            else if (Input.GetMouseButtonUp(0))// && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
+            {
+                if (P_States.isBowMode && P_States.startAim)
+                {
+                    P_States.startAim = false;
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                    //* 이펙트 회전
+                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                    arrowSkillOff();
+                    P_States.isClickDown = false;
+                    P_Value.aimClickDown = 0;
+                }
             }
 
             //* skills input
@@ -239,7 +266,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void arrowSkillOn()
+    public void arrowSkillOn(bool isShortArrow)
     {
         //* 장전
         //P_States.isOnAim = true;
@@ -249,7 +276,7 @@ public class PlayerMovement : MonoBehaviour
         //* 이펙트 회전
         effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
-        P_Controller.onArrow();
+        P_Controller.onArrow(isShortArrow);
     }
     public void arrowSkillOff()
     {

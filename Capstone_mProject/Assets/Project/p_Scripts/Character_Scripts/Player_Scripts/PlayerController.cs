@@ -165,7 +165,17 @@ public class PlayerController : MonoBehaviour
     public void LateUpdate()
     {
         if (P_States.isAim)
-            Operation_boneRotation();
+            Operation_boneRotation();   // 모델링 변환
+        if (P_States.isBowMode && P_States.isClickDown){
+            P_Value.aimClickDown += Time.deltaTime;
+            Debug.Log("[player test]"+P_Value.aimClickDown);
+        }
+        else
+        {
+            P_States.isClickDown = false;
+            P_Value.aimClickDown = 0;
+        }
+
     }
     Vector3 ChestOffset = new Vector3(0, 180, 0);
 
@@ -323,21 +333,26 @@ public class PlayerController : MonoBehaviour
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
     }
-    public void onArrow()
+    public void onArrow(bool isShortArrow)
     {
         if (P_States.isBowMode)
         {
             if (!P_States.isAim)
             {
-                if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
+                if (!isShortArrow)
                 {
-                    //주목 풀기
-                    GameManager.instance.cameraController.UndoAttention();
-                    P_States.beenAttention = true;
+                    //* 조준 on
+                    if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
+                    {
+                        //주목 풀기
+                        GameManager.instance.cameraController.UndoAttention();
+                        P_States.beenAttention = true;
+                    }
+                    GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
+                    crosshairImage.gameObject.SetActive(true);  //* 조준점
                 }
+                //* 단타 
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-                GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-                crosshairImage.gameObject.SetActive(true);  //* 조준점
                 P_States.isAim = true;
                 PoolingArrow(); //* 화살 풀링
             }
