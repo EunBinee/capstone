@@ -1865,7 +1865,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
-            Debug.Log($"i {i}");
             curTargetMarker.Add(targetMarker_Pattern05_List[i]);
         }
         //*------------------------------------------------------------------------------------------------//
