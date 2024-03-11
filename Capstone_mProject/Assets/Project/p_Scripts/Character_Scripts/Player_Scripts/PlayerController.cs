@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviour
 
     GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
-
+    public Transform spine;     // 아바타 모델링
 
     public Vector3 originEpos;
     public Vector3 originRpos;
@@ -161,6 +161,23 @@ public class PlayerController : MonoBehaviour
             CheckHP();
         }
     }
+    public void LateUpdate()
+    {
+        if(P_States.isAim)
+            Operation_boneRotation();
+    }
+    Vector3 ChestOffset = new Vector3(0, 180, 0);
+
+    Vector3 ChestDir = new Vector3();
+
+    void Operation_boneRotation()
+    {
+        //카메라가 보고있는 방향
+        //ChestDir = P_Camera.cameraObj.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        ChestDir = this.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
+        spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+    }
 
     public bool returnIsAim()
     {
@@ -174,6 +191,8 @@ public class PlayerController : MonoBehaviour
         InitCapsuleCollider();
 
         NavMeshSurface_ReBuild();
+
+        spine = P_Com.animator.GetBoneTransform(HumanBodyBones.UpperChest); // 값 가져오기 
 
     }
     private void InitComponent()
@@ -305,10 +324,16 @@ public class PlayerController : MonoBehaviour
         {
             if (!P_States.isAim)
             {
-                P_States.isAim = true;
+                if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
+                {
+                    //주목 풀기
+                    GameManager.instance.cameraController.UndoAttention();
+                    P_States.beenAttention = true;
+                }
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
                 GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
                 crosshairImage.gameObject.SetActive(true);  //* 조준점
+                P_States.isAim = true;
                 PoolingArrow(); //* 화살 풀링
             }
         }
@@ -319,11 +344,19 @@ public class PlayerController : MonoBehaviour
         {
             if (P_States.isAim)
             {
-                P_States.isAim = false;
+                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
+                {
+                    //주목 풀기
+                    GameManager.instance.cameraController.AttentionMonster();
+                    P_States.beenAttention = false;
+                }
+                arrow.SetActive(true);
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
                 GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 crosshairImage.gameObject.SetActive(false);
+                shootPoint.gameObject.SetActive(false);
+                P_States.isAim = false;
             }
         }
     }

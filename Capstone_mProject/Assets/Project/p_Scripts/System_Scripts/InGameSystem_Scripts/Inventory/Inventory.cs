@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -9,12 +10,12 @@ public class Inventory : MonoBehaviour
     public int capacity { get; private set; }
 
 
-    [SerializeField, Range(8, 64)]
+    [SerializeField, Range(8, 50)]
     private int initalCapacity = 32; //초기 아이템 한도
 
 
-    [SerializeField, Range(8, 64)]
-    private int maxCapacity = 64; // 최대 수용 한도(아이템 배열 크기)
+    [SerializeField, Range(8, 50)]
+    private int maxCapacity = 50; // 최대 수용 한도(아이템 배열 크기)
 
     [SerializeField]
     private InventoryUI inventoryUI;
@@ -23,12 +24,27 @@ public class Inventory : MonoBehaviour
 
     [SerializeField]
     private Item[] items;
+    private readonly static Dictionary<Type, int> sortWeight = new Dictionary<Type, int>
+    {
+        {typeof(PortionItemData),100}
+        //!아이템 종류 추가되면 여기에
+    };
+    private class ItemComparer : IComparer<Item>
+    {
+        public int Compare(Item a, Item b)
+        {
+            return (a.Data.ID + sortWeight[a.Data.GetType()])
+            - (b.Data.ID + sortWeight[b.Data.GetType()]);
+        }
+    }
+    private static readonly ItemComparer itemComparer = new ItemComparer();
 
 
     private void Awake()
     {
         items = new Item[maxCapacity];
         capacity = initalCapacity;
+        inventory.SetActive(false);
     }
 
     private void Start()
@@ -57,8 +73,7 @@ public class Inventory : MonoBehaviour
             inventory.SetActive(true);
             openInventory = true;
 
-            Cursor.visible = true;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
+            UIManager.Instance.Pause();
         }
         else if (openInventory && Input.GetKeyDown(KeyCode.I))
         {
@@ -67,9 +82,17 @@ public class Inventory : MonoBehaviour
             inventory.SetActive(false);
             openInventory = false;
 
-            Cursor.visible = false;     //마우스 커서를 보이지 않게
-            Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+            UIManager.Instance.Resume();
         }
+    }
+    public void CloseBtn()
+    {
+        GameManager.instance.cameraController.stopRotation = false;
+
+        inventory.SetActive(false);
+        openInventory = false;
+
+        UIManager.Instance.Resume();
     }
 
     //인덱스 슬롯상태 및 ui 업뎃
@@ -106,7 +129,7 @@ public class Inventory : MonoBehaviour
                 inventoryUI.HideItemAmountText(index);
             }
 
-            //inventoryUI.UpdateSlotFilterState(index, item.Data);
+            inventoryUI.UpdateSlotFilterState(index, item.Data);
         }
         //빈 슬롯인 경우 -> 아이콘 제거
         else
@@ -124,6 +147,13 @@ public class Inventory : MonoBehaviour
     private void UpdateSlot(params int[] indices)
     {
         foreach (var i in indices)
+        {
+            UpdateSlot(i);
+        }
+    }
+    private void UpdateAllSlot()
+    {
+        for (int i = 0; i < capacity; i++)
         {
             UpdateSlot(i);
         }
@@ -348,7 +378,7 @@ public class Inventory : MonoBehaviour
                 UpdateSlot(index);
             }
         }
-
+        //Debug.Log(amount);
         return amount;
     }
     public void Use(int index)
@@ -366,7 +396,39 @@ public class Inventory : MonoBehaviour
             }
         }
     }
+    public void Remove(int index)
+    {
+        if (!IsValidIndex(index)) return;
 
+        items[index] = null;
+        inventoryUI.RemoveItem(index);
+    }
+
+    public void SortAll()
+    {
+        //Trim
+        int i = -1;
+        while (items[++i] != null) ;
+        int j = i;
+
+        while (true)
+        {
+            while (++j < capacity && items[j] == null) ;
+
+            if (j == capacity)
+                break;
+
+            items[i] = items[j];
+            items[j] = null;
+            i++;
+        }
+
+        //sort
+        Array.Sort(items, 0, i, itemComparer);
+
+        UpdateAllSlot();
+        inventoryUI.UpdateAllSlotFilters();
+    }
 
 }
 

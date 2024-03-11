@@ -164,7 +164,7 @@ public class Monster : MonoBehaviour
         }
         else if (!DialogueManager.instance.DoQuest)
         {
-            Debug.Log("ㄴㄴㄴ");
+            //Debug.Log("ㄴㄴㄴ");
         }
     }
 

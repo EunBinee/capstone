@@ -1,14 +1,15 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
+// using System.Collections.Generic;
+// using TMPro;
+// using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 //using UnityEngine.UIElements;
-using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
-using UnityEditor;
-using System.Runtime.CompilerServices;
-using System.Text;
+// using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
+// using UnityEditor;
+// using System.Runtime.CompilerServices;
+// using System.Text;
+// using UnityEditor.Rendering.LookDev;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -91,6 +92,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.ObjectTextBox_Button02 = dialogueUI_Info.ObjectTextBox_Button02;
         DialogueUI_info.Text_Btn02 = dialogueUI_Info.Text_Btn02;
         DialogueUI_info.dialogueArrow = dialogueUI_Info.dialogueArrow;
+        DialogueUI_info.portrait = dialogueUI_Info.portrait;
 
         DialogueUI_info.Quest_Button01 = dialogueUI_Info.Quest_Button01;
         DialogueUI_info.Go_QuestDetail = dialogueUI_Info.Go_QuestDetail;
@@ -99,6 +101,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Text_QuestDetailTitle = dialogueUI_Info.Text_QuestDetailTitle;
         DialogueUI_info.Text_QuestDetailContent = dialogueUI_Info.Text_QuestDetailContent;
     }
+
 
     public void Action_NPC(int id, Npc interaction_Item)
     {
@@ -178,7 +181,6 @@ public class DialogueManager : MonoBehaviour
 
         endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.
 
-
         while (!AllFinish && !DoQuest)
         {
             //* 게임 멈춤 = 참
@@ -208,10 +210,10 @@ public class DialogueManager : MonoBehaviour
                     DialogueUI_info.Text_Name.text = dialogue.lines[curPart][curLine].Name;
                     line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
 
+                    isPortrait();
                     dialogueController.Chat_Obect(line);
                     curContext++;
                     ClickChoiceBtn = false;
-
                 }
                 else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return))
                 {
@@ -222,8 +224,8 @@ public class DialogueManager : MonoBehaviour
                     DialogueUI_info.dialogueArrow.SetActive(false);
 
                     DialogueUI_info.Text_Name.text = dialogue.lines[curPart][curLine].Name;
-
                     line = dialogue.lines[curPart][curLine].context[curContext].Replace("'", ",");
+                    isPortrait();
                     dialogueController.Chat_Obect(line);
                     curContext++;
                 }
@@ -392,7 +394,19 @@ public class DialogueManager : MonoBehaviour
 
             yield return new WaitForSecondsRealtime(0.01f);
         }
-
+        void isPortrait()
+        {
+            if (dialogue.lines[curPart][curLine].spriteName[curContext] != "")
+            {
+                string nn = dialogue.lines[curPart][curLine].spriteName[curContext];
+                ShowPortrait(nn);
+                Debug.Log(nn);
+            }
+            else
+            {
+                HidePortrait();
+            }
+        }
         //엔딩 변화 있는 경우
         if (changeEndingID)
         {
@@ -418,7 +432,6 @@ public class DialogueManager : MonoBehaviour
 
         //yield return new WaitForSecondsRealtime(0.3f);
         player_InteractingFalse();
-
 
         isDialogue = false;
         GameManager.instance.cameraController.stopRotation = false;
@@ -515,4 +528,22 @@ public class DialogueManager : MonoBehaviour
 
         GameManager.Instance.Start_AllMonster();
     }
+    public void ShowPortrait(string name)
+    {
+        //초상화 활성화 
+        Sprite t_Sprite = Resources.Load("Characters/" + name, typeof(Sprite)) as Sprite;
+
+        if (t_Sprite != null)
+        {
+            DialogueUI_info.portrait.sprite = t_Sprite;
+            DialogueUI_info.portrait.gameObject.SetActive(true);
+        }
+
+    }
+    public void HidePortrait()
+    {
+        //초상화 비활성화
+        DialogueUI_info.portrait.gameObject.SetActive(false);
+    }
+
 }

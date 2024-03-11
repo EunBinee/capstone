@@ -140,8 +140,8 @@ public class ItemSlotUI : MonoBehaviour
 
 
         // " 없을경우 -> 이동
-        else
-            RemoveItem();
+        else RemoveItem();
+
         other.SetItem(temp); //슬롯에 있는 아이템을 삭제하고 아이템등록.
     }
 
@@ -201,6 +201,19 @@ public class ItemSlotUI : MonoBehaviour
         {
             StartCoroutine(nameof(HighlightFadeOutRoutine));
         }
+    }
+    //하이라이트 이미지 아이콘 상단하단표시 
+    public void SetHighlight(bool value)
+    {
+        if (value)
+        {
+            highlightRect.SetAsLastSibling(); //하이라키 순서 
+        }
+        else
+        {
+            highlightRect.SetAsFirstSibling();
+        }
+
     }
     private IEnumerator HighlightFadeInRoutine()
     {

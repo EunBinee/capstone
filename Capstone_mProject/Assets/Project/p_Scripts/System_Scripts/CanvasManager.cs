@@ -47,6 +47,11 @@ public class CanvasManager : MonoBehaviour
     public string monsterDamageName;
     public GameObject monsterDamageUI;
 
+    [Space]
+    [Header("인벤토리 UI 모음")]
+    public string inventoryUIName;
+    public GameObject inventoryUI;
+
 
     void Awake()
     {
@@ -89,7 +94,11 @@ public class CanvasManager : MonoBehaviour
         {
             monsterDamageUI = GetCanvasUI(monsterDamageName);
         }
-
+        //* 인벤토리 UI
+        if (inventoryUI == null)
+        {
+            inventoryUI = GetCanvasUI(inventoryUIName);
+        }
     }
 
     public GameObject GetCanvasUI(string name)

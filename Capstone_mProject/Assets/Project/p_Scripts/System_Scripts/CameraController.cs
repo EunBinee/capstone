@@ -396,7 +396,7 @@ public class CameraController : MonoBehaviour
                 curTouchWall = false;
                 time_Z = 0;
             }
-            if (cameraPivotPos.y != maxY_Attention)
+            if (cameraPivotPos.y != maxY_Attention && !use_aimCamera)
             {
                 time_Z += Time.deltaTime;
                 float value = Mathf.Lerp(cameraPivotPos.y, maxY_Attention, time_Z / duration);
@@ -432,7 +432,7 @@ public class CameraController : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            float value = Mathf.Lerp(camPivotPos.y, 1.7f, time / duration);
+            float value = Mathf.Lerp(camPivotPos.y, minY, time / duration);
             camPivotPos.y = value;
             playerCameraPivot.transform.localPosition = camPivotPos;
 
@@ -446,7 +446,7 @@ public class CameraController : MonoBehaviour
         cameraTrans.localPosition = camPos;
 
         camPivotPos = playerCameraPivot.transform.localPosition;
-        camPivotPos.y = 1.7f;
+        camPivotPos.y = minY;
         playerCameraPivot.transform.localPosition = camPivotPos;
     }
 
@@ -497,12 +497,21 @@ public class CameraController : MonoBehaviour
         AimCameraSetZ();
         AimCameraFollowPlayer();
         AimCameraRotate();
+
+        if (playerController._currentValue.moveAmount == 0)
+        {
+            AimCameraLeftRightRotate_moveAmount();
+        }
+        else
+        {
+            AimCameraLeftRightRotate();
+        }
         AimCameraUpDownRotate();
     }
 
     private void AimCameraSetZ()
     {
-        Vector3 cameraSetVec = new Vector3(0.2f, 0.2f, -1.5f);
+        Vector3 cameraSetVec = new Vector3(0.4f, 0.2f, -1.5f);
         cameraObj.transform.localPosition = cameraSetVec;
     }
 
@@ -512,7 +521,8 @@ public class CameraController : MonoBehaviour
         Vector3 targetDirection = playerController.gameObject.transform.position - playerCamera.gameObject.transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
 
-        Quaternion tempRot = Quaternion.Slerp(transform.rotation, targetRotation, 8 * Time.deltaTime);
+        //Quaternion tempRot = Quaternion.Slerp(transform.rotation, targetRotation, 30 * Time.deltaTime);
+        Quaternion tempRot = targetRotation;
         Vector3 tempRot_Euler = tempRot.eulerAngles;
         tempRot_Euler = new Vector3(0, tempRot_Euler.y, 0);
 
@@ -527,18 +537,46 @@ public class CameraController : MonoBehaviour
         Quaternion targetCameraRot;
         up_down_LookAngle -= (playerController._input.mouseY * up_down_LookSpeed) * 0.4f * Time.deltaTime;
 
-        up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
+        up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, -40, maxPivot); //위아래 고정
         //위아래 => cameraPivot
         cameraRot = Vector3.zero;
         cameraRot.x = up_down_LookAngle;
         targetCameraRot = Quaternion.Euler(cameraRot);
         playerCameraPivot.transform.localRotation = targetCameraRot;
     }
+    //* 좌우 카메라
+    private void AimCameraLeftRightRotate()
+    {
+        //마우스 방향에 따른 카메라 방향
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * 0.4f * Time.deltaTime;
+
+        //좌우 => playerCamera
+        cameraRot = Vector3.zero;
+        cameraRot.y = left_right_LookAngle;
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerCamera.transform.localRotation = targetCameraRot;
+    }
+    //* 좌우 카메라
+    private void AimCameraLeftRightRotate_moveAmount()  //안움직일때
+    {
+        //마우스 방향에 따른 카메라 방향
+        Vector3 cameraRot;
+        Quaternion targetCameraRot;
+        left_right_LookAngle += playerController._input.mouseX * left_right_LookSpeed * Time.deltaTime;
+
+        cameraRot = Vector3.zero;
+        cameraRot.y = left_right_LookAngle;
+        targetCameraRot = Quaternion.Euler(cameraRot);
+        playerController.transform.localRotation = targetCameraRot;
+    }
 
     private void AimCameraFollowPlayer()
     {
-        Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
-        playerCamera.transform.position = cameraPos;
+        //Vector3 cameraPos = Vector3.Lerp(playerCamera.transform.position, playerBackPos.position, 17f * Time.deltaTime);
+        Vector3 cameraPos = playerBackPos.position;
+        playerCamera.transform.position = playerBackPos.position;
     }
 
     #endregion
