@@ -1420,6 +1420,7 @@ MonoBehaviour:
   playerTargetPos: {fileID: 0}
   playerHide: 0
   noAttack: 0
+  canAttack: 0
   forcedReturnHome: 0
   isRoaming: 0
   isFinding: 0
@@ -1435,7 +1436,7 @@ MonoBehaviour:
   roamingAngle: 60
   attackTime: 2
   stopAttackTime: 2
-  shortRangeAttack_Radius: 2.5
+  shortRangeAttack_Radius: 3
   shortRangeAttackDistance: 3
   stopAttackDistance: 25
   findPlayerDistance: 4

@@ -398,9 +398,9 @@ public class DialogueManager : MonoBehaviour
         {
             if (dialogue.lines[curPart][curLine].spriteName[curContext] != "")
             {
-                string nn = dialogue.lines[curPart][curLine].spriteName[curContext];
-                ShowPortrait(nn);
-                Debug.Log(nn);
+                string name = dialogue.lines[curPart][curLine].spriteName[curContext];
+                ShowPortrait(name);
+                //Debug.Log(nn);
             }
             else
             {

@@ -18,6 +18,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
     //타겟팅 풀리고 자기 자리로 돌아가는 거리 (플레이어와 몬스터의 거리)
     float goingBackDistance = 25f;
 
+    [Header("몬스터 공격 중지 시간")]
+    public float stopAttackTime = 2.0f;
+
     [Space]
     public Transform attackEffectPos;
     public string shortAttackEffectName;
@@ -514,7 +517,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         EnabledWeaponsCollider(true);
         SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);//(0.5f);
 
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
         curEffect = effect;

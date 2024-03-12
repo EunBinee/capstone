@@ -28,10 +28,10 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     [Header("몬스터 공격 시간, 공격 중지 시간")]
     public int attackTime = 2;
-    public int stopAttackTime = 2;
+    public int stopAttackTime = 10;//2;
 
     [Header("몬스터 근거리 공격 범위 (실제 플레이어가 공격을 받는 범위)")]
-    public float shortRangeAttack_Radius = 2;
+    public float shortRangeAttack_Radius = 3;
 
     [Header("몬스터 근거리 공격 거리")]
     public float shortRangeAttackDistance = 3f;
