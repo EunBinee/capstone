@@ -87,12 +87,14 @@ public class CurrentState
     public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
     public bool isStartComboAttack;
     public bool isSkill;
+    public bool colliderHit;
     public bool hadAttack = false;
     public bool hasAttackSameMonster = false;
     public bool notSameMonster = false;
     public bool isBouncing;
     public bool isStop; //대화창 활성화될때 움직임 비활성화여부
     public bool isBowMode = false;  //활 모드
+    public bool isClickDown;  //조준스킬
     public bool isAim;  //조준스킬
     public bool startAim;  //조준스킬
     public bool isCamOnAim;  //조준스킬
@@ -134,6 +136,7 @@ public class CurrentValue
     public float minHitScale = 1f;
     public GameObject nowEnemy;
     public float finalSpeed;
+    public float aimClickDown;
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리

@@ -59,9 +59,8 @@ public class PlayerAttackCheck : MonoBehaviour
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
-        //if (!P_States.isAim)   
+        if (!goShoot)
         {
-            //Debug.Log("[arrow test] WaitUntil(() => !P_States.isAim)");
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
             //* 키네매틱 끄기
@@ -75,17 +74,25 @@ public class PlayerAttackCheck : MonoBehaviour
             ArrowRay();
             //attackEnemy = false;
         }
-        incoArrow = false;
-        yield return new WaitUntil(() => P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
-        this.gameObject.SetActive(false);
-        P_States.hadAttack = false;
-        deltaShootTime = 0.0f;
+        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        resetArrow();
         yield return null;
     }
     private float shootDeltaTime()
     {
         deltaShootTime = deltaShootTime + Time.deltaTime;
         return deltaShootTime;
+    }
+
+    public void resetArrow()
+    {
+        incoArrow = false;
+        goShoot = false;
+        this.gameObject.SetActive(false);
+        P_States.hadAttack = false;
+        P_States.colliderHit = false;
+        deltaShootTime = 0.0f;
+        GetComponent<Rigidbody>().isKinematic = true;
     }
 
     private void isBouncingToFalse()
@@ -97,7 +104,10 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("[attack test]콜라이더 충돌");
+        if (other.gameObject.tag != "Player" && other.gameObject.tag != "Arrow")
+        {
+            P_States.colliderHit = true;
+        }
         if (isEnable)
         {
             if (other.gameObject.tag == "Monster")
@@ -178,7 +188,6 @@ public class PlayerAttackCheck : MonoBehaviour
                 //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
             }
         }
-
     }
 
     public void checkMon()
@@ -260,8 +269,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()//float curArrowDistance)
     {
-        //Debug.Log("[arrow test] ArrowRay()");
-        goShoot = false;
         float range = 100f;
         RaycastHit[] hits;
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
