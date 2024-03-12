@@ -195,7 +195,7 @@ public class PlayerMovement : MonoBehaviour
                         camForward = P_Camera.cameraObj.transform.forward;
                         arrowSkillOn(false);
                         P_States.startAim = true;
-                    }  
+                    }
                 }
 
             }
