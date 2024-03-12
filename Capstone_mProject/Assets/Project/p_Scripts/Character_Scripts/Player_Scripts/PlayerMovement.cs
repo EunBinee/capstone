@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -32,6 +33,10 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 camForward;
     float lookangle;
+
+    //* 플레이어 전기 관련 함수 
+    public Action<bool> funcBeforeElec = null;
+
 
     // Start is called before the first frame update
     void Start()
@@ -1039,8 +1044,10 @@ public class PlayerMovement : MonoBehaviour
 
     public void PlayerElectrocution(bool electrocution = true)
     {
+        funcBeforeElec?.Invoke(electrocution);
+    }
+    public void PlayerElectricShock(bool electrocution = true)
+    {
         P_States.isElectricShock = electrocution;
-
-
     }
 }

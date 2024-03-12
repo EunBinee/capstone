@@ -528,8 +528,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         effect.transform.position = attackEffectPos.position;
 
 
-
-        //!!!!!---사운드
         m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
 
         yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));

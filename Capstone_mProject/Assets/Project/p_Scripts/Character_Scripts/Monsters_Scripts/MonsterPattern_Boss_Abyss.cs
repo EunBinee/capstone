@@ -15,6 +15,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
     PlayerController playerController;
+    PlayerMovement playerMovement;
 
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;
@@ -51,6 +52,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool startSkill = false;
     bool ing_skill01 = false;
     bool ing_skill02 = false;
+
     bool ing_skill03 = false;
     bool ing_skill04 = false;
 
@@ -70,6 +72,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //rigid = GetComponent<Rigidbody>();
         playerController = GameManager.Instance.gameData.GetPlayerController();
+        playerMovement = GameManager.Instance.gameData.GetPlayerMovement();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
         playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
         m_monster.monsterPattern = this;
@@ -1628,6 +1631,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
+
+        playerMovement.funcBeforeElec = (bool electrocution) =>
+        {
+            SimultaneousCheck_PlayerInMarker(electrocution);
+        };
+
         //*------------------------------------------------------------------//
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
@@ -1641,7 +1650,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         int curIndex = -1;
         while (count < 4)
         {
-            // curRandomSkillPattern_num = 4;
             while (true)
             {
                 curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
@@ -1677,6 +1685,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //! 스킬 끝
         EndSkill(BossMonsterMotion.Skill04);
+        playerMovement.funcBeforeElec = null;
         skill04_Co = null;
 
         yield return null;
@@ -1770,14 +1779,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     IEnumerator SkillActivation(float mAngle)
-    {   //스킬 targetMarkerList
+    {
+        //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-
         //---------------------------------------//
-
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -1798,7 +1806,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
         Quaternion originRotate = skillIndicator_obj.transform.rotation;
         Skill_Indicator skill_Indicator = skillIndicator_obj.GetComponent<Skill_Indicator>();
-
+        skill_Indicator.Init();
         curTargetMarker.Add(skill_Indicator);
 
         skill_Indicator.SetBounds();
@@ -1814,11 +1822,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle));
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-                                                       //* 스킬끝났음.----------------------------------------------//
-                                                       //전기 공격 끄기
+        //* 스킬끝났음.----------------------------------------------//
+        //전기 공격 끄기
 
         if (!skillOver)
             skillOver = true;
+
+        startCheckPlayerInside = false;
 
         for (int i = 0; i < skill_Indicator.electricity_Effects.Count; ++i)
         {
@@ -1882,6 +1892,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         if (!skillOver)
             skillOver = true;
 
+        startCheckPlayerInside = false;
+
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
             for (int j = 0; j < targetMarker_Pattern05_List[i].electricity_Effects.Count; ++j)
@@ -1905,7 +1917,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         skillIndicator_obj.SetActive(false);
     }
-
 
     IEnumerator ElectricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
     {
@@ -1970,14 +1981,41 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
-
     public void StopSkill04()
     {
         if (skill04_Co != null)
             StopCoroutine(skill04_Co);
         if (skill04_Pattern04_Co != null)
             StopCoroutine(skill04_Pattern04_Co);
+
+        playerMovement.funcBeforeElec = null;
     }
+
+    public bool startCheckPlayerInside = false;
+
+    public void SimultaneousCheck_PlayerInMarker(bool electrocution)
+    {
+        if (!startCheckPlayerInside)
+        {
+            startCheckPlayerInside = true;
+
+            //* 플레이어가 마커 안에 들어가있는지 동시 체크용.
+            int count = 0;
+            if (curTargetMarker.Count > 0)
+            {
+                for (int i = 0; i < curTargetMarker.Count; ++i)
+                {
+                    if (curTargetMarker[i].insideBox)
+                        count++;
+                }
+                Debug.Log($"플레이어는 {count} 개 마커 안에 있습니다.");
+
+                playerMovement.PlayerElectricShock(electrocution);
+            }
+
+        }
+    }
+
 
     #endregion
 
@@ -2131,7 +2169,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //* 스킬 4번
         if (ing_skill04)
             StopSkill04();
-
 
     }
 

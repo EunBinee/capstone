@@ -8,18 +8,23 @@ public class Skill_Indicator : MonoBehaviour
     public Transform tempPoint;
     public BoxCollider boxCollider;
 
-    bool checkTrigger = false;
+    public bool checkTrigger = false;
     public bool insideBox = false;
     public List<Effect> electricity_Effects;
     public List<Effect> lightningStrike_Effects;
     Bounds originBounds;
     float angle = 0;
 
-
     private void Start()
     {
         boxCollider = GetComponent<BoxCollider>();
         electricity_Effects = new List<Effect>();
+    }
+
+    public void Init()
+    {
+        checkTrigger = false;
+        insideBox = false;
     }
 
     public void CheckTrigger(bool enabled)
@@ -60,9 +65,9 @@ public class Skill_Indicator : MonoBehaviour
         }
     }
 
-    public void CheckPlayerInsideBox(bool insideBox = true)
+    public void CheckPlayerInsideBox(bool _insideBox = true)
     {
-        if (insideBox)
+        if (_insideBox)
         {
             //만약 플레이어가 상자 안에 있을때
             insideBox = true;
