@@ -70,7 +70,7 @@ public class Monster : MonoBehaviour
     }
 
     //*------------------------------------------------------------------------------------------//
-    //* 몬스터 //
+    //* 몬스터가 플레이어를 때렸을 때 //
     public virtual void OnHit(float damage = 0, Action action = null)
     {
         if (!playerController._currentState.isGettingHit)

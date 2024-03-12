@@ -1040,5 +1040,7 @@ public class PlayerMovement : MonoBehaviour
     public void PlayerElectrocution(bool electrocution = true)
     {
         P_States.isElectricShock = electrocution;
+
+
     }
 }

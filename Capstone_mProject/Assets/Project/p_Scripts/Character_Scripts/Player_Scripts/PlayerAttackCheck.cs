@@ -255,7 +255,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
-        
+
     }
 
     private void ArrowRay()//float curArrowDistance)
