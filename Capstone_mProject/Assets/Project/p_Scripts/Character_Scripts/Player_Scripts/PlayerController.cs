@@ -165,9 +165,9 @@ public class PlayerController : MonoBehaviour
     {
         if (P_States.isAim)
             Operation_boneRotation();   // 모델링 변환
-        if (P_States.isBowMode && P_States.isClickDown){
+        if (P_States.isBowMode && P_States.isClickDown)
+        {
             P_Value.aimClickDown += Time.deltaTime;
-            Debug.Log("[player test]"+P_Value.aimClickDown);
         }
         else
         {
