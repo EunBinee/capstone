@@ -168,9 +168,9 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && P_Value.aimClickDown <= 0.25f)
+            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.isElectricShock && P_Value.aimClickDown <= 0.25f)
             {
-                Debug.Log("[player test] Input.GetMouseButtonDown(0)");
+                //Debug.Log("[player test] Input.GetMouseButtonDown(0)");
                 P_Value.aimClickDown = 0;
                 P_States.isClickDown = false;
                 //todo: 단타 치면 이펙트 없이 화살만 쵹쵹 하면서 나가기 -> 몬스터 방향으로 없으면 카메라 캐릭터 forward방향으로
@@ -184,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
                 arrowSkillOff();
                 */
             }
-            else if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
+            else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)    //* 누르고 있는 중에
             {
                 P_States.isClickDown = true;
 
@@ -618,6 +618,17 @@ public class PlayerMovement : MonoBehaviour
             P_Value.finalSpeed = P_COption.walkingSpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
+            if (P_States.isBowMode && P_States.startAim)
+            {
+                P_States.startAim = false;
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                //* 이펙트 회전
+                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                arrowSkillOff();
+                P_States.isClickDown = false;
+                P_Value.aimClickDown = 0;
+            }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
             if (ElecTime >= 5f) //* 5초 후

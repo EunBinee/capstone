@@ -513,9 +513,8 @@ public class CameraController : MonoBehaviour
     private void AimCameraSetZ()
     {
         Vector3 cameraSetVec = new Vector3(0.4f, 0.2f, -1.5f);
-        Vector3 cameraSetAng = new Vector3(0.0f, -7.0f, 0.0f);
-        Quaternion cameraSetAngQua = playerCamera.transform.localRotation;
-        //cameraSetAngQua = quaternion.Euler(cameraSetAng);
+        Vector3 cameraSetAng = new Vector3(0.0f, -6.0f, 0.0f);
+        Quaternion cameraSetAngQua = playerCamera.transform.rotation;
         cameraSetAngQua.y += cameraSetAng.y;
 
         cameraObj.transform.localPosition = cameraSetVec;
