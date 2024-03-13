@@ -582,11 +582,25 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
 
         // 3.0초 대기
-        yield return new WaitForSeconds(3.0f);
+        //yield return new WaitForSeconds(2.5f);
 
-        // 공격 횟수 초기화 후 다시 공격 반복
         attackCount = 0;
-        Monster_Motion(MonsterMotion.Short_Range_Attack);
+
+        float distance = Vector3.Distance(transform.position, playerTrans.position);
+        if (distance < 1.3f)
+        {
+            yield return new WaitForSeconds(1f);
+            Monster_Motion(MonsterMotion.Short_Range_Attack);
+        }
+        else
+        {
+            yield return new WaitForSeconds(1.5f);
+            ChangeMonsterState(MonsterState.Tracing);
+            short_Range_Attack_co = null;
+        }
+        // 공격 횟수 초기화 후 다시 공격 반복
+        
+        //Monster_Motion(MonsterMotion.Short_Range_Attack);
     }
 
     //*원거리 공격 01
