@@ -390,6 +390,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(JumpDown(newRandomPos));
             yield return new WaitUntil(() => isJump == false);
             GameManager.Instance.cameraController.AttentionMonster();
+            GameManager.Instance.cameraController.banAttention=true;
             //* 연출 중, 플레이어 못다가오도록 이펙트
             CheckPlayerPos = true;
             StartCoroutine(CheckPlayer_Production());

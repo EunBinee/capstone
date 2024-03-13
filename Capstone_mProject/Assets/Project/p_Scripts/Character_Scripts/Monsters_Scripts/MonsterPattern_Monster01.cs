@@ -510,45 +510,83 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
+        // SetMove_AI(false);
+        // SetAnimation(MonsterAnimation.Idle);
+
+        // int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
+        // EnabledWeaponsCollider(true);
+        // SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
+
+        // yield return new WaitForSeconds(0.5f);//(0.5f);
+
+        // Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
+        // curEffect = effect;
+
+        // effect.finishAction = () =>
+        // {
+        //     curEffect = null;
+        // };
+
+        // effect.transform.localEulerAngles = effectRotation;
+        // effect.transform.position = attackEffectPos.position;
+
+        // //!!!!!---사운드
+        // m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+
+        // yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
+        // EnabledWeaponsCollider(false);
+
+        // float distance = Vector3.Distance(transform.position, playerTrans.position);
+        // if (distance < 1.3f)
+        // {
+        //     yield return new WaitForSeconds(1f);
+        //     Monster_Motion(MonsterMotion.Short_Range_Attack);
+        // }
+        // else
+        // {
+        //     ChangeMonsterState(MonsterState.Tracing);
+        //     short_Range_Attack_co = null;
+        // }
+        
+        //공격 텀 두기
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
 
-        int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
-        EnabledWeaponsCollider(true);
-        SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
-
-        yield return new WaitForSeconds(0.5f);//(0.5f);
-
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
-        curEffect = effect;
-
-        effect.finishAction = () =>
+        int attackCount = 0;
+        while (attackCount < 3) // 공격을 3번 반복
         {
-            curEffect = null;
-        };
+            int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
+            EnabledWeaponsCollider(true);
+            SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
 
-        effect.transform.localEulerAngles = effectRotation;
-        effect.transform.position = attackEffectPos.position;
+            yield return new WaitForSeconds(0.5f);
 
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
+            curEffect = effect;
 
+            effect.finishAction = () =>
+            {
+                curEffect = null;
+            };
 
-        //!!!!!---사운드
-        m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            effect.transform.localEulerAngles = effectRotation;
+            effect.transform.position = attackEffectPos.position;
 
-        yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
-        EnabledWeaponsCollider(false);
+            //!!!!!---사운드
+            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
 
-        float distance = Vector3.Distance(transform.position, playerTrans.position);
-        if (distance < 1.3f)
-        {
-            yield return new WaitForSeconds(1f);
-            Monster_Motion(MonsterMotion.Short_Range_Attack);
+            yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
+            EnabledWeaponsCollider(false);
+
+            attackCount++;
         }
-        else
-        {
-            ChangeMonsterState(MonsterState.Tracing);
-            short_Range_Attack_co = null;
-        }
+
+        // 3.0초 대기
+        yield return new WaitForSeconds(3.0f);
+
+        // 공격 횟수 초기화 후 다시 공격 반복
+        attackCount = 0;
+        Monster_Motion(MonsterMotion.Short_Range_Attack);
     }
 
     //*원거리 공격 01
