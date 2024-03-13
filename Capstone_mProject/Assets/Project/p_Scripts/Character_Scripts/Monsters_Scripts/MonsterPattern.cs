@@ -541,7 +541,7 @@ public class MonsterPattern : MonoBehaviour
                     //만약에 아무것도 주목이 안되어잇는상태면?
                     //주목
 
-                    cameraObj.AttentionMonster();
+                    //cameraObj.AttentionMonster();
                 }
             }
 
