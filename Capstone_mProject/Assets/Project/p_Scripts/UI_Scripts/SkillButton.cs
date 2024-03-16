@@ -53,7 +53,7 @@ public class SkillButton : MonoBehaviour
         //m_cool = skill.cool;
 
         // Player 객체의 ActivateSkill 호출     
-        player.ActivateSkill(skill);
+        player.P_Skills.ActivateSkill(skill);
         // 스킬 Cool 처리
         StartCoroutine(SC_Cool());
     }

@@ -274,6 +274,9 @@ public class PlayerAttackCheck : MonoBehaviour
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
 
         float shortDist = 1000f;
+
+        if (hits.Length == 0) return;   // 레이 히트 없으면 바로 리턴
+
         RaycastHit shortHit = hits[0];
         //RaycastHit m_Hit;
         foreach (RaycastHit hit in hits)

@@ -31,15 +31,16 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    public PlayerSkills _playerSkills = new PlayerSkills();
+    public PlayerArrows _playerArrows = new PlayerArrows();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    private PlayerSkills P_Skills => _playerSkills;
+    private PlayerArrows P_Arrows => _playerArrows;
     public PlayerMovement P_Movement;
+    public PlayerSkills P_Skills;
 
     private float _castRadius; //레이캐스트 반지름
     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
@@ -73,7 +74,7 @@ public class PlayerController : MonoBehaviour
     public GameObject sword;
     public TMP_Text crosshairImage; // 조준점 이미지
 
-    GameObject arrow;
+    public GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
     public Transform spine;     // 아바타 모델링
 
@@ -86,6 +87,7 @@ public class PlayerController : MonoBehaviour
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_Movement = GetComponent<PlayerMovement>();
+        P_Skills = GetComponent<PlayerSkills>();
         InitPlayer();
 
 
@@ -109,7 +111,7 @@ public class PlayerController : MonoBehaviour
             Destroy(this.gameObject);
         }
         SetUIVariable();
-        _playerSkills.Init();
+        _playerArrows.Init();
         // InitComponent();
     }
     public void SetUIVariable()
@@ -139,7 +141,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
-            P_Movement.arrowSkillOff();
+            P_Skills.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
@@ -218,8 +220,6 @@ public class PlayerController : MonoBehaviour
 
     public void NavMeshSurface_ReBuild()
     {
-
-
         if (navMeshSurface != null)
         {
             for (int i = 0; i < navMeshSurface.Count; ++i)
@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    P_Movement.arrowSkillOff();
+                    P_Skills.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -310,74 +310,6 @@ public class PlayerController : MonoBehaviour
     {
         if (HPgauge != null)
             HPgauge.value = P_Value.HP / P_Value.MaxHP;
-    }
-
-    //* skill
-    // UI 버튼에 의해 호출됩니다.
-    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
-    // damage 정보 만큼 피해를 입힙니다.
-    public void ActivateSkill(SOSkill skill)
-    {
-        if (skill.animationName != "Skill_Heal")
-        {
-            P_Com.animator.Play(skill.animationName);
-            P_States.isSkill = false;
-        }
-    }
-
-    void PoolingArrow()
-    {
-        // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Skills.GetArrowFromPool();
-        if (arrow == null) Debug.LogError("arrow null!");
-        arrow.SetActive(true);
-    }
-    public void onArrow(bool isShortArrow)
-    {
-        if (P_States.isBowMode)
-        {
-            if (!P_States.isAim)
-            {
-                if (!isShortArrow)
-                {
-                    //* 조준 on
-                    if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
-                    {
-                        //주목 풀기
-                        GameManager.instance.cameraController.UndoAttention();
-                        P_States.beenAttention = true;
-                    }
-                    GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-                    crosshairImage.gameObject.SetActive(true);  //* 조준점
-                }
-                //* 단타 
-                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-                P_States.isAim = true;
-                PoolingArrow(); //* 화살 풀링
-            }
-        }
-    }
-    public void offArrow()
-    {
-        if (P_States.isBowMode)
-        {
-            if (P_States.isAim)
-            {
-                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
-                {
-                    //주목 풀기
-                    GameManager.instance.cameraController.AttentionMonster();
-                    P_States.beenAttention = false;
-                }
-                arrow.SetActive(true);
-                P_Com.animator.SetBool("isAim", false);
-                P_Com.animator.SetTrigger("shoot");
-                GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
-                crosshairImage.gameObject.SetActive(false);
-                shootPoint.gameObject.SetActive(false);
-                P_States.isAim = false;
-            }
-        }
     }
 
     //* 물리(중력)
@@ -528,7 +460,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
-                P_Movement.arrowSkillOff();
+                P_Skills.arrowSkillOff();
             }
 
             //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.

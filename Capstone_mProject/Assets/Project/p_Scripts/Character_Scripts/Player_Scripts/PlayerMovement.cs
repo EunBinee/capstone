@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
+    public PlayerSkills P_Skills => P_Controller.P_Skills;
 
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
@@ -104,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                arrowSkillOff();
+                P_Skills.arrowSkillOff();
             }
         }
     }
@@ -193,7 +194,7 @@ public class PlayerMovement : MonoBehaviour
                     if (!P_States.isAim)
                     {
                         camForward = P_Camera.cameraObj.transform.forward;
-                        arrowSkillOn(false);
+                        P_Skills.arrowSkillOn(false);
                         P_States.startAim = true;
                     }
                 }
@@ -208,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     //* 이펙트 회전
                     effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-                    arrowSkillOff();
+                    P_Skills.arrowSkillOff();
                     P_States.isClickDown = false;
                     P_Value.aimClickDown = 0;
                 }
@@ -219,13 +220,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_States.startAim)   // 조준 중일때 전환 키 누르면
                 {
-                    arrowSkillOff();    // 조준 헤제
+                    P_Skills.arrowSkillOff();    // 조준 헤제
                 }
-                skillMotion('R');
+                P_Skills.skillMotion('R');
             }
             if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
-                skillMotion('E');
+                P_Skills.skillMotion('E');
             }
             /*if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -241,99 +242,6 @@ public class PlayerMovement : MonoBehaviour
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
                 P_States.isNotMoving = true;
             else P_States.isNotMoving = false;
-        }
-    }
-
-    IEnumerator PlayerHeal_co()
-    {
-        //Debug.Log("Player Heal");
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
-        P_Value.HP += P_Value.MaxHP * 0.5f;
-
-        bool stopHeal = false;
-
-        effect.finishAction = () =>
-        {
-            stopHeal = true;
-        };
-
-        while (!stopHeal)
-        {
-            //1. 플레이어 위치 계속
-            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-
-            yield return null;
-        }
-    }
-
-    public void arrowSkillOn(bool isShortArrow)
-    {
-        //* 장전
-        //P_States.isOnAim = true;
-        P_Controller.shootPoint.gameObject.SetActive(true);
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-        //* 이펙트 회전
-        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-
-        P_Controller.onArrow(isShortArrow);
-    }
-    public void arrowSkillOff()
-    {
-        //* 발사 
-        //P_States.isOnAim = false;
-        P_States.startAim = false;
-        P_States.isCamOnAim = false;
-
-        P_Controller.offArrow();
-    }
-
-    public void skillMotion(char a)
-    {
-        switch (a)
-        {
-            case 'R':   //* weapon change
-                if (skill_R.imgCool.fillAmount == 0)
-                {
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
-                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    if (P_States.isBowMode) //* 활 모드 -> 칼 모드
-                    {
-                        P_States.isBowMode = false;
-                        P_Controller.bow.SetActive(false);
-                        P_Controller.sword.SetActive(true);
-                    }
-                    else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
-                    {
-                        P_States.isBowMode = true;
-                        P_Controller.bow.SetActive(true);
-                        P_Controller.shootPoint.gameObject.SetActive(false);
-                        P_Controller.sword.SetActive(false);
-                    }
-                    skill_R.OnClicked();
-                }
-                break;
-
-            case 'Q':
-                if (skill_Q.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    Debug.Log("스킬Q");
-                }
-                skill_Q.OnClicked();
-                break;
-
-            case 'E':   //* heal
-                if (skill_E.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    StartCoroutine(PlayerHeal_co());
-                }
-                skill_E.OnClicked();
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -625,7 +533,7 @@ public class PlayerMovement : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 //* 이펙트 회전
                 effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-                arrowSkillOff();
+                P_Skills.arrowSkillOff();
                 P_States.isClickDown = false;
                 P_Value.aimClickDown = 0;
             }
