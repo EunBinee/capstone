@@ -8,11 +8,8 @@ public class PlayerSkills : MonoBehaviour
     public PlayerController _controller;// = new PlayerController();
     private PlayerController P_Controller => _controller;
     private PlayerComponents P_Com => P_Controller._playerComponents;
-    private PlayerInput P_Input => P_Controller._input;
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
-    private CheckOption P_COption => P_Controller._checkOption;
-    private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
 
     private GameObject arrow;// => P_Controller.arrow;

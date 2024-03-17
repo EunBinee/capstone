@@ -14,7 +14,8 @@ public class PlayerMovement : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
-    public PlayerSkills P_Skills => P_Controller.P_Skills;
+    private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private PlayerPhysicsCheck P_PhysicsCheck => P_Controller.P_PhysicsCheck;
 
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
@@ -94,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
         }
-        P_Controller.CheckedGround();
+        P_PhysicsCheck.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
         {
             //캐릭터의 실제 이동을 수행하는 함수
@@ -857,7 +858,7 @@ public class PlayerMovement : MonoBehaviour
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
             //앞이 막혀있지 않고 적이 있다면 //* 전진
-            if (P_Value.nowEnemy != null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
+            if (P_Value.nowEnemy != null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -877,14 +878,14 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             //앞이 막혀있지 않고 적이 없다면 //* 전진
-            else if (P_Value.nowEnemy == null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
+            else if (P_Value.nowEnemy == null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
-            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack)
+            else if (P_PhysicsCheck.forwardHit != null || !P_States.canGoForwardInAttack)
             {
                 //dir = this.gameObject.transform.forward.normalized;
             }

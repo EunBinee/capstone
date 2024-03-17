@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7195301709572235706}
   - component: {fileID: 1404091125779623576}
   - component: {fileID: 6504819662934625591}
+  - component: {fileID: 393605679751660245}
   m_Layer: 3
   m_Name: Player (1)
   m_TagString: Player
@@ -203,8 +204,8 @@ MonoBehaviour:
     arrowPrefabName: Arrow
     poolSize: 5
   P_Movement: {fileID: 0}
+  P_PhysicsCheck: {fileID: 0}
   P_Skills: {fileID: 0}
-  rayCastHeightOffset: 1
   navMeshSurface:
   - {fileID: 0}
   curPlayerState: 0
@@ -212,7 +213,6 @@ MonoBehaviour:
   hitUI: {fileID: 0}
   HPgauge: {fileID: 0}
   hitMonsters: []
-  forwardHit: []
   bow: {fileID: 8890993529786064295}
   sword: {fileID: 8890818801151058391}
   crosshairImage: {fileID: 0}
@@ -256,6 +256,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
+--- !u!114 &393605679751660245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: -7299792492529011644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34bd84148dbab3542a39a52ba321684e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 7195301709572235706}
+  rayCastHeightOffset: 1
+  forwardHit: []
 --- !u!1 &1721222532
 GameObject:
   m_ObjectHideFlags: 0
