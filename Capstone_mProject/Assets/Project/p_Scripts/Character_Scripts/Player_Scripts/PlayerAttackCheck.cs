@@ -13,6 +13,7 @@ public class PlayerAttackCheck : MonoBehaviour
     public PlayerController P_Controller => _playerController;
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
+    private PlayerSkills P_Skills => P_Controller.P_Skills;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
@@ -240,8 +241,27 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
+        //if (isArrow)  P_Skills.aimEffectCheck();
         //TODO: 나중에 연산식 사용.
-        int damageValue = (isArrow ? 400 : 350);
+        int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+        if (isArrow)
+        {
+            if (P_States.isStrongArrow)
+            {
+                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
+                damageValue = 550;
+            }
+            else
+            {
+                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
+                damageValue = 400;
+            }
+        }
+        else
+        {
+                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
+            damageValue = 350;
+        }
 
 
         if (P_Value.hits % 5 != 0)

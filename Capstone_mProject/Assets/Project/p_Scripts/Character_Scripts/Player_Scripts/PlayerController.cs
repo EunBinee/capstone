@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
-            
+
             CheckHitTime();
             CheckAnim();
             CheckHP();
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
             Operation_boneRotation();   // 모델링 변환
         if (P_States.isBowMode && P_States.isClickDown)
         {
-            P_Value.aimClickDown += Time.deltaTime;
+            //P_Value.aimClickDown += Time.deltaTime;
         }
         else
         {

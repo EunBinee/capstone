@@ -26,9 +26,16 @@ public class PlayerSkills : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        if (P_Value.aimClickDown > 1.8f)
+        {
+            P_States.isStrongArrow = true;
+        }
+        else
+        {
+            P_States.isStrongArrow = false;
+        }
     }
 
     //* skill
@@ -79,14 +86,15 @@ public class PlayerSkills : MonoBehaviour
         {
             if (!P_States.isAim || P_States.isShortArrow)
             {
+                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
+                P_States.isAim = true;
                 if (!P_States.isShortArrow)
                 {
                     //* 조준 on
                     P_Controller.shootPoint.gameObject.SetActive(true);
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    //* 이펙트 회전
-                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                    Effect Effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+                    Effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                    Effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
                     if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
                     {
@@ -98,8 +106,6 @@ public class PlayerSkills : MonoBehaviour
                     P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
                 }
                 //* 단타 
-                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-                P_States.isAim = true;
                 PoolingArrow(); //* 화살 풀링
                 if (P_States.isShortArrow)
                 {
@@ -132,6 +138,7 @@ public class PlayerSkills : MonoBehaviour
                 P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
+                P_States.isStrongArrow = false;
             }
         }
     }
@@ -157,7 +164,6 @@ public class PlayerSkills : MonoBehaviour
             yield return null;
         }
     }
-
 
     public void skillMotion(char a)
     {

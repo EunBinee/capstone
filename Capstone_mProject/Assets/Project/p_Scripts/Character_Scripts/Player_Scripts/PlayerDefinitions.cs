@@ -111,6 +111,7 @@ public class CurrentState
     public bool isCamOnAim;
     public bool beenAttention;
     public bool isShortArrow;   //단타?
+    public bool isStrongArrow;
 
     [Header("Physics Check")]
     public bool isForwardBlocked;   //앞에 장애물이 있는지 여부
