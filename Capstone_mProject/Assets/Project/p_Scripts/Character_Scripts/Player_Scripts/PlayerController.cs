@@ -155,12 +155,7 @@ public class PlayerController : MonoBehaviour
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
-            //_fixedDeltaTime = Time.fixedDeltaTime;
-
-            // Update_Physics();
-            // CheckedForward();
-            // CheckedBackward();
-            // CheckedGround();
+            
             CheckHitTime();
             CheckAnim();
             CheckHP();

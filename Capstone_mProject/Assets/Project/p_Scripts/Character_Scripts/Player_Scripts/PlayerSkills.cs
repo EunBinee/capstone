@@ -44,6 +44,28 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
+    public void arrowSkillOn()
+    {
+        // //* 장전
+        // //P_States.isOnAim = true;
+        // P_Controller.shootPoint.gameObject.SetActive(true);
+        // Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+        // effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        // //* 이펙트 회전
+        // effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
+        onArrow();
+    }
+    public void arrowSkillOff()
+    {
+        //* 발사 
+        //P_States.isOnAim = false;
+        P_States.startAim = false;
+        P_States.isCamOnAim = false;
+
+        offArrow();
+    }
+
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
@@ -51,15 +73,21 @@ public class PlayerSkills : MonoBehaviour
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
     }
-    public void onArrow(bool isShortArrow)
+    public void onArrow()
     {
         if (P_States.isBowMode)
         {
-            if (!P_States.isAim)
+            if (!P_States.isAim || P_States.isShortArrow)
             {
-                if (!isShortArrow)
+                if (!P_States.isShortArrow)
                 {
                     //* 조준 on
+                    P_Controller.shootPoint.gameObject.SetActive(true);
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                    //* 이펙트 회전
+                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+
                     if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
                     {
                         //주목 풀기
@@ -73,6 +101,13 @@ public class PlayerSkills : MonoBehaviour
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
                 P_States.isAim = true;
                 PoolingArrow(); //* 화살 풀링
+                if (P_States.isShortArrow)
+                {
+                    //Debug.Log("[arrow test] onArrow() / if (P_States.isShortArrow)");
+                    arrowSkillOff();
+                    P_States.isClickDown = false;
+                    P_Value.aimClickDown = 0;
+                }
             }
         }
     }
@@ -80,18 +115,20 @@ public class PlayerSkills : MonoBehaviour
     {
         if (P_States.isBowMode)
         {
-            if (P_States.isAim)
+            if (P_States.isAim || P_States.isShortArrow)
             {
-                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
-                {
-                    //주목 풀기
-                    GameManager.instance.cameraController.AttentionMonster();
-                    P_States.beenAttention = false;
+                if (!P_States.isShortArrow){
+                    if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
+                    {
+                        //주목 풀기
+                        GameManager.instance.cameraController.AttentionMonster();
+                        P_States.beenAttention = false;
+                    }
+                    //arrow.SetActive(true);
+                    GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 }
-                arrow.SetActive(true);
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
-                GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
@@ -121,27 +158,6 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    public void arrowSkillOn(bool isShortArrow)
-    {
-        //* 장전
-        //P_States.isOnAim = true;
-        P_Controller.shootPoint.gameObject.SetActive(true);
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-        //* 이펙트 회전
-        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-
-        onArrow(isShortArrow);
-    }
-    public void arrowSkillOff()
-    {
-        //* 발사 
-        //P_States.isOnAim = false;
-        P_States.startAim = false;
-        P_States.isCamOnAim = false;
-
-        offArrow();
-    }
 
     public void skillMotion(char a)
     {

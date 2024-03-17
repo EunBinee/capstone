@@ -44,7 +44,7 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.startAim)
+        if (isArrow && !goShoot && (P_States.startAim || P_States.isShortArrow))
         {
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
@@ -58,7 +58,7 @@ public class PlayerAttackCheck : MonoBehaviour
         //Debug.Log("[arrow test] IEnumerator Arrowing()");
         incoArrow = true;
         dir = Vector3.zero;
-        yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
+        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow));  //* isAim이 거짓이 되거나 단타라면
         if (!goShoot)
         {
             transform.position = P_Controller.shootPoint.position;
@@ -67,9 +67,11 @@ public class PlayerAttackCheck : MonoBehaviour
             GetComponent<Rigidbody>().isKinematic = false;
             if (dir == Vector3.zero)    //* 방향 지정
             {
-                dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                if (!P_States.isShortArrow)
+                    dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * 55f; ; //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow? 40f : 55f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
@@ -91,6 +93,9 @@ public class PlayerAttackCheck : MonoBehaviour
         this.gameObject.SetActive(false);
         P_States.hadAttack = false;
         P_States.colliderHit = false;
+        P_States.isShortArrow = false;
+        P_States.isClickDown = false;
+        P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
     }
