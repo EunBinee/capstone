@@ -72,7 +72,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
                 else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow? 40f : 55f); //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 55f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
@@ -241,25 +241,22 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
-        //if (isArrow)  P_Skills.aimEffectCheck();
         //TODO: 나중에 연산식 사용.
         int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
         if (isArrow)
         {
-            if (P_States.isStrongArrow)
+            if (P_States.isStrongArrow) //* 예스 차징
             {
-                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
                 damageValue = 550;
+                P_States.isStrongArrow = false;
             }
-            else
+            else                        //* 노 차징
             {
-                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
                 damageValue = 400;
             }
         }
-        else
+        else                            //* 검
         {
-                Debug.Log("P_States.isStrongArrow : "+P_States.isStrongArrow);
             damageValue = 350;
         }
 

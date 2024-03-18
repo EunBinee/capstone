@@ -123,7 +123,8 @@ public class PlayerSkills : MonoBehaviour
         {
             if (P_States.isAim || P_States.isShortArrow)
             {
-                if (!P_States.isShortArrow){
+                if (!P_States.isShortArrow)
+                {
                     if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
                     {
                         //주목 풀기
@@ -138,7 +139,6 @@ public class PlayerSkills : MonoBehaviour
                 P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
-                P_States.isStrongArrow = false;
             }
         }
     }
