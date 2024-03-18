@@ -81,7 +81,6 @@ public class Monster : MonoBehaviour
             playerController.OnHitPlayerEffect = action;
             playerController.GetHit(this, damage);
         }
-
     }
 
     public virtual void OnHit_FallDown(float damage = 0, float distance = 10f, Action action = null)
@@ -164,7 +163,6 @@ public class Monster : MonoBehaviour
         }
         else if (!DialogueManager.instance.DoQuest)
         {
-            //Debug.Log("ㄴㄴㄴ");
         }
     }
 

@@ -71,6 +71,9 @@ public class CheckOption
 
     [Range(-9.81f, 0f), Tooltip("중력")]
     public float gravity = -9.81f;
+
+    [Range(1f, 10f), Tooltip("감전 시간")]
+    public float electricShock_Time = 5;
 }
 
 [Serializable]

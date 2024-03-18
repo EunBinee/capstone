@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -32,6 +33,8 @@ public class PlayerMovement : MonoBehaviour
 
     Vector3 camForward;
     float lookangle;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -620,7 +623,7 @@ public class PlayerMovement : MonoBehaviour
             P_States.isDodgeing = false;
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
-            if (ElecTime >= 5f) //* 5초 후
+            if (ElecTime >= P_COption.electricShock_Time) //* 5초 후
             {
                 P_States.isElectricShock = false;
                 ElecTime = 0f;
@@ -1063,10 +1066,9 @@ public class PlayerMovement : MonoBehaviour
         P_States.isStop = false;
     }
 
-    public void PlayerElectrocution(bool electrocution = true)
+
+    public void PlayerElectricShock(bool electrocution = true)
     {
         P_States.isElectricShock = electrocution;
-
-
     }
 }

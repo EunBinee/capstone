@@ -547,7 +547,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //     ChangeMonsterState(MonsterState.Tracing);
         //     short_Range_Attack_co = null;
         // }
-        
+
         //공격 텀 두기
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
@@ -599,7 +599,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
             short_Range_Attack_co = null;
         }
         // 공격 횟수 초기화 후 다시 공격 반복
-        
+
         //Monster_Motion(MonsterMotion.Short_Range_Attack);
     }
 

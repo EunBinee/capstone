@@ -165,9 +165,10 @@ public class PlayerController : MonoBehaviour
     {
         if (P_States.isAim)
             Operation_boneRotation();   // 모델링 변환
-        if (P_States.isBowMode && P_States.isClickDown){
+        if (P_States.isBowMode && P_States.isClickDown)
+        {
             P_Value.aimClickDown += Time.deltaTime;
-            Debug.Log("[player test]"+P_Value.aimClickDown);
+            Debug.Log("[player test]" + P_Value.aimClickDown);
         }
         else
         {
@@ -637,6 +638,8 @@ public class PlayerController : MonoBehaviour
     }
 
     //*-------------------------------------------------------------------//
+    public Action TriggerMonsterCheck = null; //* 몬스터 쪽에서 플레이어 트리거 쓸 일있을때 사용할거임
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
@@ -664,6 +667,8 @@ public class PlayerController : MonoBehaviour
                 LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }
+
+        TriggerMonsterCheck?.Invoke();
     }
 
 
