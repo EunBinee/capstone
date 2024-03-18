@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour
     }
     public void LateUpdate()
     {
-        if(P_States.isAim)
+        if (P_States.isAim)
             Operation_boneRotation();
     }
     Vector3 ChestOffset = new Vector3(0, 180, 0);
@@ -618,6 +618,8 @@ public class PlayerController : MonoBehaviour
     }
 
     //*-------------------------------------------------------------------//
+    public Action TriggerMonsterCheck = null; //* 몬스터 쪽에서 플레이어 트리거 쓸 일있을때 사용할거임
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
@@ -645,6 +647,8 @@ public class PlayerController : MonoBehaviour
                 LoadingSceneController.LoadScene(loadSceneObj_info.sceneName);
             }
         }
+
+        TriggerMonsterCheck?.Invoke();
     }
 
 

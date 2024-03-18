@@ -48,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tempPoint: {fileID: 0}
   boxCollider: {fileID: 6143700464115571618}
+  checkTrigger: 0
   insideBox: 0
   electricity_Effects: []
   lightningStrike_Effects: []
@@ -62,8 +63,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10.8, y: 5, z: 95}
-  m_Center: {x: 0, y: 1.7600002, z: 0}
+  m_Size: {x: 10.8, y: 2, z: 95}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2868130181333973100
 GameObject:
   m_ObjectHideFlags: 0

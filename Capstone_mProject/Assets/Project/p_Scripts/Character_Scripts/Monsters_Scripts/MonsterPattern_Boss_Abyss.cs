@@ -472,10 +472,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
 
             //isRoaming = false;
-            Skill04();
+            //Skill04();
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -490,8 +490,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             switch (curBossPhase)
             {
                 case BossMonsterPhase.Phase1:
-                    StartCoroutine(Phase01_Abyss_Tracing());
-                    break;
                 case BossMonsterPhase.Phase2:
                 case BossMonsterPhase.Phase3:
                     //! 일단은 페이즈 1이랑 2,3랑 실행시키는 건 똑같으니깐 페이즈가 달라도 이 코루틴 사용.
@@ -1588,6 +1586,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     Coroutine skill04_Co = null;
     Coroutine skill04_Pattern04_Co = null;
+
     public void Skill04()
     {
         curTargetMarker = new List<Skill_Indicator>();
@@ -1632,10 +1631,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
 
-        playerMovement.funcBeforeElec = (bool electrocution) =>
-        {
-            SimultaneousCheck_PlayerInMarker(electrocution);
-        };
 
         //*------------------------------------------------------------------//
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
@@ -1681,11 +1676,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
             yield return new WaitUntil(() => skillOver == true && curTargetMarker.Count == 0);
             count++;
+            isTrigger_si = false;
         }
 
         //! 스킬 끝
         EndSkill(BossMonsterMotion.Skill04);
-        playerMovement.funcBeforeElec = null;
         skill04_Co = null;
 
         yield return null;
@@ -1702,7 +1697,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 mAngle += angle;
             }
 
-            StartCoroutine(SkillActivation(mAngle));
+            StartCoroutine(SkillActivation(mAngle, i, true));
         }
     }
     //! 스킬 4의 패턴 4
@@ -1734,7 +1729,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 mAngle += angle;
             }
-            StartCoroutine(SkillActivation(mAngle));
+            StartCoroutine(SkillActivation(mAngle, i, false));
 
             while (true)
             {
@@ -1754,31 +1749,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
-    public void CreateTargetMarker_5()
-    {
-        skillOver = false;
-        if (targetMarker_Pattern05_obj == null)
-        {
-            targetMarker_Pattern05_obj = Instantiate(targetMarker_Pattern05_Prefabs, GameManager.instance.transform.position, Quaternion.identity);
-            targetMarker_Pattern05_obj.transform.SetParent(GameManager.instance.transform);
 
-            Transform targetMarker_trans = targetMarker_Pattern05_obj.GetComponent<Transform>();
-            foreach (Transform child in targetMarker_trans)
-            {
-                Skill_Indicator skill_Indicator = child.GetComponent<Skill_Indicator>();
-                if (skill_Indicator != null)
-                {
-                    if (skill_Indicator.gameObject.activeSelf == true)
-                        targetMarker_Pattern05_List.Add(skill_Indicator);
-                }
-            }
-        }
 
-        StartCoroutine(SkillActivation_Pattern05(-1));
-
-    }
-
-    IEnumerator SkillActivation(float mAngle)
+    IEnumerator SkillActivation(float mAngle, int index = 0, bool simultaneous = true)
     {
         //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
@@ -1819,7 +1792,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
 
         //* 번개, 파지직 번개
-        StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle));
+        StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
         //* 스킬끝났음.----------------------------------------------//
@@ -1827,8 +1800,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         if (!skillOver)
             skillOver = true;
-
-        startCheckPlayerInside = false;
 
         for (int i = 0; i < skill_Indicator.electricity_Effects.Count; ++i)
         {
@@ -1838,14 +1809,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return new WaitUntil(() => skill_Indicator.electricity_Effects.Count == 0);
 
         skill_Indicator.CheckTrigger(false);
+
         skill_Indicator.gameObject.transform.rotation = originRotate;
 
         curTargetMarker.Remove(skill_Indicator);
-
-        //if (!skillOver)
-        //    skillOver = true;
-
-
         //*------------------------------------------------------------//
         if (targetMarkerList.Count > 8)
         {
@@ -1856,9 +1823,38 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             targetMarkerList.Add(skillIndicator_obj);
             skillIndicator_obj.SetActive(false);
         }
+
+        if (index == (createTargetMarker - 1))
+        {
+            Debug.Log("끝ㅌ");
+            stopSkillPattern = true;
+        }
+
+    }
+    //*--------------------------------------------------------//
+    //* ### 체크문양 패턴
+    public void CreateTargetMarker_5()
+    {
+        skillOver = false;
+        if (targetMarker_Pattern05_obj == null)
+        {
+            targetMarker_Pattern05_obj = Instantiate(targetMarker_Pattern05_Prefabs, GameManager.instance.transform.position, Quaternion.identity);
+            targetMarker_Pattern05_obj.transform.SetParent(GameManager.instance.transform);
+
+            Transform targetMarker_trans = targetMarker_Pattern05_obj.GetComponent<Transform>();
+            foreach (Transform child in targetMarker_trans)
+            {
+                Skill_Indicator skill_Indicator = child.GetComponent<Skill_Indicator>();
+                if (skill_Indicator != null)
+                {
+                    if (skill_Indicator.gameObject.activeSelf == true)
+                        targetMarker_Pattern05_List.Add(skill_Indicator);
+                }
+            }
+        }
+        StartCoroutine(SkillActivation_Pattern05(-1));
     }
 
-    //* ### 체크문양 패턴
     IEnumerator SkillActivation_Pattern05(float mAngle)
     {
         //스킬 targetMarkerList
@@ -1892,7 +1888,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         if (!skillOver)
             skillOver = true;
 
-        startCheckPlayerInside = false;
+
 
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
@@ -1912,13 +1908,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             curTargetMarker.Remove(targetMarker_Pattern05_List[i]);
         }
 
-        //if (!skillOver)
-        //    skillOver = true;
-
         skillIndicator_obj.SetActive(false);
+
+        stopSkillPattern = true;
     }
 
-    IEnumerator ElectricityProduction(Skill_Indicator skill_Indicator, float duration, float angle)
+    bool isTrigger_si = false; // 동시 체크 트리거
+    IEnumerator ElectricityProduction(Skill_Indicator skill_Indicator, float duration, float angle, bool simultaneous = true)
     {
         float durationTime = duration / 3;
         int count = 0;
@@ -1936,10 +1932,22 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             effect.transform.position = randomPos;
 
-            if (time > 1f && !isTrigger)
+            if (!isTrigger_si)
             {
-                isTrigger = true;
-                skill_Indicator.CheckTrigger(true); // 트리거 ON
+                if (time > 1f && !isTrigger)
+                {
+                    if (simultaneous)
+                        SimultaneousCheck();
+                    else
+                    {
+                        isTrigger = true;
+                        skill_Indicator.CheckTrigger(true); // 트리거 ON
+                        if (CheckPlayerInMarker_co == null)
+                        {
+                            CheckPlayerInMarker_co = StartCoroutine(CheckPlayerInMarker());
+                        }
+                    }
+                }
             }
             if (angle != -1)
             {
@@ -1981,40 +1989,72 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return null;
     }
 
+    private void SimultaneousCheck()
+    {
+        isTrigger_si = true;
+        for (int i = 0; i < curTargetMarker.Count; i++)
+        {
+            curTargetMarker[i].CheckTrigger(true); // 트리거 ON
+        }
+        if (CheckPlayerInMarker_co == null)
+        {
+            CheckPlayerInMarker_co = StartCoroutine(CheckPlayerInMarker());
+        }
+    }
+
+    Coroutine CheckPlayerInMarker_co = null;
+    bool stopSkillPattern = false;
+    IEnumerator CheckPlayerInMarker()
+    {
+        LayerMask layerMask = LayerMask.GetMask("Monster");
+        int count = 0;
+        stopSkillPattern = false;
+
+        while (!stopSkillPattern)
+        {
+            if (!playerController._currentState.isElectricShock)
+            {
+                count = 0;
+                // 플레이어의 위치와 방향에서 아래로 레이케스트를 쏴서 오브젝트를 탐지
+                Collider[] overlappedColliders = Physics.OverlapSphere(playerController.gameObject.transform.position, 0.3f, layerMask);
+                foreach (Collider hit in overlappedColliders)
+                {
+                    Skill_Indicator skill_Indicator = hit.gameObject.gameObject.GetComponent<Skill_Indicator>();
+                    if (skill_Indicator != null)
+                    {
+                        if (skill_Indicator.checkTrigger)
+                        {
+                            count++;
+                        }
+                    }
+                }
+
+                if (count > 0)
+                {
+                    //* 만약 플레이어가 indicator에 플레이어가 포함 되어있다면?
+                    playerMovement.PlayerElectricShock(true);
+                    float damage = 20 * count;
+                    Debug.Log($"count {count} ,   damage {damage}");
+                    m_monster.OnHit(damage);
+                }
+            }
+
+            yield return null;
+        }
+
+        CheckPlayerInMarker_co = null;
+    }
+
     public void StopSkill04()
     {
         if (skill04_Co != null)
             StopCoroutine(skill04_Co);
         if (skill04_Pattern04_Co != null)
             StopCoroutine(skill04_Pattern04_Co);
-
-        playerMovement.funcBeforeElec = null;
+        if (stopSkillPattern == true)
+            stopSkillPattern = false;
     }
 
-    public bool startCheckPlayerInside = false;
-
-    public void SimultaneousCheck_PlayerInMarker(bool electrocution)
-    {
-        if (!startCheckPlayerInside)
-        {
-            startCheckPlayerInside = true;
-
-            //* 플레이어가 마커 안에 들어가있는지 동시 체크용.
-            int count = 0;
-            if (curTargetMarker.Count > 0)
-            {
-                for (int i = 0; i < curTargetMarker.Count; ++i)
-                {
-                    if (curTargetMarker[i].insideBox)
-                        count++;
-                }
-                Debug.Log($"플레이어는 {count} 개 마커 안에 있습니다.");
-
-                playerMovement.PlayerElectricShock(electrocution);
-            }
-
-        }
-    }
 
 
     #endregion
@@ -2089,7 +2129,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         UIManager.Instance.PadeInBlack(1f);
         useExplosionSound = false;
         this.gameObject.SetActive(false);
-
     }
 
     IEnumerator Death_Production(Vector3 point, float range = 1)
@@ -2144,7 +2183,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 m_monster.SoundPlay(Monster.monsterSound.Death, false);
             }
         }
-
     }
 
     public override void StopAtackCoroutine()
@@ -2188,11 +2226,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 {
                     ChangeBossPhase(BossMonsterPhase.Death, production);
                 }
-                else if (curHP < Phase3_BossHP)
-                {
-                    //*페이즈 3
-                    ChangeBossPhase(BossMonsterPhase.Phase3, production);
-                }
                 else if (curHP < Phase2_BossHP)
                 {
                     //*페이즈 2
@@ -2201,18 +2234,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             case BossMonsterPhase.Phase2:
                 //20%체크
-                if (curHP == 0)
-                {
-                    ChangeBossPhase(BossMonsterPhase.Death, production);
-                }
-                else if (curHP < Phase3_BossHP)
-                {
-                    //*페이즈 3
-                    ChangeBossPhase(BossMonsterPhase.Phase3, production);
-                }
-                break;
-            case BossMonsterPhase.Phase3:
-                //0%체크
                 if (curHP == 0)
                 {
                     ChangeBossPhase(BossMonsterPhase.Death, production);

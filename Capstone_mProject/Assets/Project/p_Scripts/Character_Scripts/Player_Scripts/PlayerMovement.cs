@@ -34,8 +34,6 @@ public class PlayerMovement : MonoBehaviour
     Vector3 camForward;
     float lookangle;
 
-    //* 플레이어 전기 관련 함수 
-    public Action<bool> funcBeforeElec = null;
 
 
     // Start is called before the first frame update
@@ -598,7 +596,7 @@ public class PlayerMovement : MonoBehaviour
             P_States.isDodgeing = false;
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
-            if (ElecTime >= 5f) //* 5초 후
+            if (ElecTime >= P_COption.electricShock_Time) //* 5초 후
             {
                 P_States.isElectricShock = false;
                 ElecTime = 0f;
@@ -1042,10 +1040,7 @@ public class PlayerMovement : MonoBehaviour
         P_States.isStop = false;
     }
 
-    public void PlayerElectrocution(bool electrocution = true)
-    {
-        funcBeforeElec?.Invoke(electrocution);
-    }
+
     public void PlayerElectricShock(bool electrocution = true)
     {
         P_States.isElectricShock = electrocution;
