@@ -164,18 +164,18 @@ public class PlayerController : MonoBehaviour
     public void LateUpdate()
     {
         if (P_States.isAim)
-            Operation_boneRotation();   // 모델링 변환
-        if (P_States.isBowMode && P_States.isClickDown)
-        {
-            P_Value.aimClickDown += Time.deltaTime;
-            Debug.Log("[player test]" + P_Value.aimClickDown);
+            // Operation_boneRotation();   // 모델링 변환
+            if (P_States.isBowMode && P_States.isClickDown)
+            {
+                P_Value.aimClickDown += Time.deltaTime;
+                // Debug.Log("[player test]" + P_Value.aimClickDown);
 
-        }
-        else
-        {
-            P_States.isClickDown = false;
-            P_Value.aimClickDown = 0;
-        }
+            }
+            else
+            {
+                P_States.isClickDown = false;
+                P_Value.aimClickDown = 0;
+            }
 
     }
     Vector3 ChestOffset = new Vector3(0, 180, 0);

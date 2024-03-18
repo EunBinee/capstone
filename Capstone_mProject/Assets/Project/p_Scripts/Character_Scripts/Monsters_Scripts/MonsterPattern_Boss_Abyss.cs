@@ -393,7 +393,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(JumpDown(newRandomPos));
             yield return new WaitUntil(() => isJump == false);
             GameManager.Instance.cameraController.AttentionMonster();
-            GameManager.Instance.cameraController.banAttention=true;
+            GameManager.Instance.cameraController.banAttention = true;
             //* 연출 중, 플레이어 못다가오도록 이펙트
             CheckPlayerPos = true;
             StartCoroutine(CheckPlayer_Production());
@@ -474,8 +474,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //isRoaming = false;
             //Skill04();
             //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            // ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -510,7 +510,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         BossMonsterPhase curBossP = curBossPhase;
 
         List<int> skill_List = new List<int>(); //중복된 스킬을 막기 위한 리스트
-        
+
         while (true)
         {
             if (curMonsterState == MonsterState.Death)

@@ -69,7 +69,7 @@ public class PlayerAttackCheck : MonoBehaviour
         while ((!goShoot && !P_States.colliderHit) || (goShoot && shootTime < 5.0f))
         {
             shootTime = shootDeltaTime();
-            Debug.Log($"{shootTime} ");
+            //Debug.Log($"{shootTime} ");
             effect.gameObject.transform.position = this.gameObject.transform.position;
 
             yield return null;
