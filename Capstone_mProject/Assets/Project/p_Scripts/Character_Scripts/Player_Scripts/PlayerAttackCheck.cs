@@ -45,14 +45,37 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && (P_States.startAim || P_States.isShortArrow))
+        if (isArrow)
         {
-            transform.position = P_Controller.shootPoint.position;
-            transform.rotation = P_Controller.shootPoint.rotation;
-            //Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
-            if (!incoArrow)
-                StartCoroutine(Arrowing());
+            if (!goShoot && (P_States.startAim || P_States.isShortArrow))
+            {
+                transform.position = P_Controller.shootPoint.position;
+                transform.rotation = P_Controller.shootPoint.rotation;
+
+                if (!incoArrow)
+                    StartCoroutine(Arrowing());
+            }
         }
+    }
+    public void StrongArrowEffect_co()
+    {
+        StartCoroutine(StrongArrowEffect());
+    }
+    IEnumerator StrongArrowEffect()
+    {
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Bow_Attack_ChargingLoop");
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+        float shootTime = shootDeltaTime();
+        while ((!goShoot && !P_States.colliderHit) || (goShoot && shootTime < 5.0f))
+        {
+            shootTime = shootDeltaTime();
+            Debug.Log($"{shootTime} ");
+            effect.gameObject.transform.position = this.gameObject.transform.position;
+
+            yield return null;
+        }
+        effect.StopEffect();
+        yield return null;
     }
     IEnumerator Arrowing()
     {

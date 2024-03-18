@@ -11,6 +11,7 @@ public class PlayerSkills : MonoBehaviour
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
+    private PlayerAttackCheck playerAttackCheck;
 
     private GameObject arrow;// => P_Controller.arrow;
 
@@ -30,6 +31,8 @@ public class PlayerSkills : MonoBehaviour
     {
         if (P_Value.aimClickDown > 1.8f)
         {
+            if (P_States.isStrongArrow == false)
+                playerAttackCheck.StrongArrowEffect_co();
             P_States.isStrongArrow = true;
         }
         else
@@ -79,6 +82,8 @@ public class PlayerSkills : MonoBehaviour
         arrow = P_Arrows.GetArrowFromPool();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
+
+        playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
     public void onArrow()
     {
