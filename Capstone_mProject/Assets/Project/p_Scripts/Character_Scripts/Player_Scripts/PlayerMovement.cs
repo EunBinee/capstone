@@ -206,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 // 길게 누르고 있는 중
                 P_Value.aimClickDown += Time.deltaTime;
-                
+
                 if (P_Value.aimClickDown > 0.25f && !P_States.startAim && !P_States.isShortArrow)
                 {
                     // 길게 클릭 로직 실행
@@ -502,7 +502,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if ((P_States.isStartComboAttack 
+        if ((P_States.isStartComboAttack
                 && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
@@ -714,7 +714,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow) 
+        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow)
                 && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
