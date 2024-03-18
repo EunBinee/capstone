@@ -79,6 +79,7 @@ public class CheckOption
 [Serializable]
 public class CurrentState
 {
+    [Header("Player Moving")]
     public bool isNotMoving;
     public bool isWalking;  //걷기
     public bool isRunning;  //뛰기
@@ -86,36 +87,40 @@ public class CurrentState
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
     public bool isJumping;  //점프
     public bool isDodgeing;  //닷지
+    public bool isSkill;
+
+    [Header("Timing Check")]
+    public bool isPerformingAction; //액션을 수행 중인지 여부
+    public bool isStop; //대화창 활성화될때 움직임 비활성화여부
+    [Space]
     public bool previousDodgeKeyPress;   //이전 프레임에서 대시 키 여부
     public bool currentDodgeKeyPress;    //현재 프레임에서 대시 키 여부
+    [Space]
     public bool isStartComboAttack;
-    public bool isSkill;
     public bool colliderHit;
     public bool hadAttack = false;
     public bool hasAttackSameMonster = false;
     public bool notSameMonster = false;
-    public bool isBouncing;
-    public bool isStop; //대화창 활성화될때 움직임 비활성화여부
-    public bool isBowMode = false;  //활 모드
-    public bool isClickDown;  //조준스킬
-    public bool isAim;  //조준스킬
-    public bool startAim;  //조준스킬
-    public bool isCamOnAim;  //조준스킬
-    public bool beenAttention;  //조준스킬
     public bool canGoForwardInAttack;
+    public bool isGettingHit; //몬스터에게 맞았을 경우.
     public bool isElectricShock;
+    public bool isBouncing;
 
-    [Space]
-    public bool isPerformingAction; //액션을 수행 중인지 여부
+    [Header("Aimming")]
+    public bool isBowMode = false;  //활 모드
+    public bool isClickDown;
+    public bool isAim;  //조준스킬
+    public bool startAim;
+    public bool isCamOnAim;
+    public bool beenAttention;
+    public bool isShortArrow;   //단타?
+    public bool isStrongArrow;
 
-    [Space]
+    [Header("Physics Check")]
     public bool isForwardBlocked;   //앞에 장애물이 있는지 여부
     public bool isBackwardBlocked;   //앞에 장애물이 있는지 여부
     public bool isGround;           //Player가 지면에 닿아있는 상태인지.
     public bool isOnSteepSlop;      //가파른 경사 있음!
-
-    [Space]
-    public bool isGettingHit; //몬스터에게 맞았을 경우.
 }
 
 [Serializable]
