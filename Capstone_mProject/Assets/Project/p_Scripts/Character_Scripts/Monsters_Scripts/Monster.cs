@@ -43,7 +43,6 @@ public class Monster : MonoBehaviour
         {
             Death();
         }
-
         //---====================================//
     }
     //*------------------------------------------------------------------------------------------//
@@ -254,16 +253,16 @@ public class Monster : MonoBehaviour
         damageUI.Reset(this, randomPos, damage);
     }
     //*---------------------------------------------------------------------------------------//
-    public int GetIndex_NearestWeakness(Transform target)
+    public int GetIndex_NearestLegs(Transform target)
     {
-        //! 약점이 존재하는 경우, 플레이어와 가장 가까운 약점의 Index를 알려줌
-        if (monsterData.useWeakness)
+        //! 몬스터의 아래가 뚫려있을 경우, 플레이어와 가장 가까운 다리의 Index를 알려줌
+        if (monsterData.isBottomlessMonster)
         {
             float distance = 10000;
             int curW_index = 0;
-            for (int i = 0; i < monsterData.weakness.Count; ++i)
+            for (int i = 0; i < monsterData.bottomlessMonsterLegs.Count; ++i)
             {
-                float m_distance = Vector3.Distance(monsterData.weakness[i].position, target.gameObject.transform.position);
+                float m_distance = Vector3.Distance(monsterData.bottomlessMonsterLegs[i].position, target.gameObject.transform.position);
                 if (m_distance < distance)
                 {
                     distance = m_distance;

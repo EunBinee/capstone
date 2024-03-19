@@ -20,6 +20,10 @@ public class MonsterData
     public string monsterExplanation; //* 보스 몬스터일 경우 필수
     public MonsterType monsterType;
 
+    [Header("밑이 뚫려 있는 몬스터")]
+    public bool isBottomlessMonster = false;
+    public List<Transform> bottomlessMonsterLegs;
+
     [Header("몬스터 약점")]
     public bool useWeakness = false;
     public List<Transform> weakness;

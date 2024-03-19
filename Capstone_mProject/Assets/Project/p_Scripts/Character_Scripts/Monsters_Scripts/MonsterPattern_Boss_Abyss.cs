@@ -24,7 +24,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
     public GameObject redImage;
-    public GameObject BossText;
+    public GameObject bossText;
     public Vector3 centerPoint;
 
     List<Vector3> randomPos_skill02;
@@ -406,7 +406,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
             redImage.SetActive(true);
             GameManager.instance.PadeIn_Alpha(redImage, true, 90);
-            BossText.SetActive(true);
+            bossText.SetActive(true);
             //* 카메라 흔들림        
             GameManager.Instance.cameraController.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
 
@@ -441,7 +441,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //*s나중에 주석 풀기 !
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
             // GameManager.instance.PadeIn_Alpha(redImage, true, 0, false);
-            BossText.SetActive(false);
+            bossText.SetActive(false);
             CheckPlayerPos = false;
             Base_Phase_HP(false);
             yield return new WaitForSeconds(1f);

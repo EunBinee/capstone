@@ -109,6 +109,22 @@ public class MonsterPattern_Boss : MonsterPattern
     {
         //HP로 나누는 페이즈
 
+    }
+
+    //*-----------------------------------------------------------------------------//
+    //* 보스 약점
+    public virtual void BossWeakness()
+    {
+        if (m_monster.monsterData.useWeakness)
+        {
+            if (curBossPhase != BossMonsterPhase.Phase1)
+            {
+                //! 1페이즈 이하 부터만 나오도록.
+            }
+
+
+        }
+
 
     }
 }

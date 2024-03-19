@@ -209,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 // 길게 누르고 있는 중
                 P_Value.aimClickDown += Time.deltaTime;
-                
+
                 if (P_Value.aimClickDown > 0.25f && !P_States.startAim && !P_States.isShortArrow)
                 {
                     // 길게 클릭 로직 실행
@@ -405,15 +405,15 @@ public class PlayerMovement : MonoBehaviour
                 if (GameManager.instance.cameraController.curTargetMonster != null)
                 {
                     Monster targetMonster = GameManager.instance.cameraController.curTargetMonster;
-                    if (targetMonster.monsterData.useWeakness)
+                    if (targetMonster.monsterData.isBottomlessMonster)
                     {
-                        int curW_index = targetMonster.GetIndex_NearestWeakness(this.transform);
-                        float distance = Vector3.Distance(targetMonster.monsterData.weakness[curW_index].transform.position, this.transform.position);
+                        int curW_index = targetMonster.GetIndex_NearestLegs(this.transform);
+                        float distance = Vector3.Distance(targetMonster.monsterData.bottomlessMonsterLegs[curW_index].transform.position, this.transform.position);
 
                         if (distance < 2f)
                         {
                             //가까워지면 Player 몸을 약점 쪽으로 돌려주기
-                            Vector3 weaknessPos = targetMonster.monsterData.weakness[curW_index].transform.position;
+                            Vector3 weaknessPos = targetMonster.monsterData.bottomlessMonsterLegs[curW_index].transform.position;
                             Vector3 targetPos = new Vector3(weaknessPos.x, targetMonster.gameObject.transform.position.y, weaknessPos.z);
 
                             rotationDirection = targetPos - this.transform.position;
@@ -458,20 +458,20 @@ public class PlayerMovement : MonoBehaviour
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
                 Vector3 toMonsterDir = Vector3.zero;
-                if (nowEnemy_Monster.monsterData.useWeakness)
+                if (nowEnemy_Monster.monsterData.isBottomlessMonster)
                 {
                     float distance = 10000;
                     int curW_index = 0;
-                    for (int i = 0; i < nowEnemy_Monster.monsterData.weakness.Count; ++i)
+                    for (int i = 0; i < nowEnemy_Monster.monsterData.bottomlessMonsterLegs.Count; ++i)
                     {
-                        float m_distance = Vector3.Distance(nowEnemy_Monster.monsterData.weakness[i].position, this.transform.position);
+                        float m_distance = Vector3.Distance(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[i].position, this.transform.position);
                         if (m_distance < distance)
                         {
                             distance = m_distance;
                             curW_index = i;
                         }
                     }
-                    Vector3 _monster = new Vector3(nowEnemy_Monster.monsterData.weakness[curW_index].position.x, 0, nowEnemy_Monster.monsterData.weakness[curW_index].position.z);
+                    Vector3 _monster = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x, 0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
                     toMonsterDir = (_monster - this.transform.position).normalized;
                 }
                 else
@@ -505,7 +505,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if ((P_States.isStartComboAttack 
+        if ((P_States.isStartComboAttack
                 && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
@@ -717,7 +717,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow) 
+        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow)
                 && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
@@ -872,11 +872,11 @@ public class PlayerMovement : MonoBehaviour
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
-                if (nowEnemy_Monster.monsterData.useWeakness)
+                if (nowEnemy_Monster.monsterData.isBottomlessMonster)
                 {
-                    int curW_index = nowEnemy_Monster.GetIndex_NearestWeakness(this.transform);
+                    int curW_index = nowEnemy_Monster.GetIndex_NearestLegs(this.transform);
 
-                    Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.weakness[curW_index].position.x, 0, nowEnemy_Monster.monsterData.weakness[curW_index].position.z);
+                    Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x, 0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
                     dir = (monster_ - this.transform.position).normalized;
                 }
                 else
