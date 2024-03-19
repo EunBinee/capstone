@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -511,7 +512,8 @@ public class CameraController : MonoBehaviour
 
     private void AimCameraSetZ()
     {
-        Vector3 cameraSetVec = new Vector3(0.4f, 0.2f, -1.5f);
+        Vector3 cameraSetVec = new Vector3(0.15f, 0.4f, -1.5f);
+
         cameraObj.transform.localPosition = cameraSetVec;
     }
 

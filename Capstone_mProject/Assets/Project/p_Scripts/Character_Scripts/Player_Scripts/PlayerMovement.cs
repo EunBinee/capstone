@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 public class PlayerMovement : MonoBehaviour
 {
-    public PlayerController _controller;// = new PlayerController();
+    private PlayerController _controller;// = new PlayerController();
     private PlayerController P_Controller => _controller;
     private PlayerComponents P_Com => P_Controller._playerComponents;
     private PlayerInput P_Input => P_Controller._input;
@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
+    private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private PlayerPhysicsCheck P_PhysicsCheck => P_Controller.P_PhysicsCheck;
 
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
@@ -27,12 +29,10 @@ public class PlayerMovement : MonoBehaviour
     public Collider[] attackColliders;
     private List<PlayerAttackCheck> playerAttackChecks;
 
-    float yRotation;
     float ElecTime = 0;
     bool showElec = false;
 
     Vector3 camForward;
-    float lookangle;
 
 
 
@@ -96,7 +96,7 @@ public class PlayerMovement : MonoBehaviour
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
         }
-        P_Controller.CheckedGround();
+        P_PhysicsCheck.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
         {
             //캐릭터의 실제 이동을 수행하는 함수
@@ -107,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드라면
             {
                 P_Com.animator.SetTrigger("shoot");
-                arrowSkillOff();
+                P_Skills.arrowSkillOff();
             }
         }
     }
@@ -171,49 +171,56 @@ public class PlayerMovement : MonoBehaviour
                     }
                 }
             }
-            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && P_Value.aimClickDown <= 0.25f)
-            {
-                Debug.Log("[player test] Input.GetMouseButtonDown(0)");
-                P_Value.aimClickDown = 0;
-                P_States.isClickDown = false;
-                //todo: 단타 치면 이펙트 없이 화살만 쵹쵹 하면서 나가기 -> 몬스터 방향으로 없으면 카메라 캐릭터 forward방향으로
-                /*
-                camForward = P_Camera.cameraObj.transform.forward;
-                arrowSkillOn(true);
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                //* 이펙트 회전
-                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-                arrowSkillOff();
-                */
-            }
-            else if (Input.GetMouseButton(0) && P_States.isBowMode)    //* 누르고 있는 중에
-            {
-                P_States.isClickDown = true;
 
-                if (P_Value.aimClickDown > 0.25f && !P_States.startAim)
+            //* 활 
+            if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.isElectricShock)
+            {
+                P_Value.aimClickDown = 0;
+                P_States.isClickDown = true;
+                // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
+            }
+
+            else if (Input.GetMouseButtonUp(0))
+            {
+                if (P_States.isClickDown)
                 {
+                    if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
+                    {
+                        // 짧게 클릭 로직 실행
+                        //Debug.Log("[player test] Short click action");
+                        P_States.isShortArrow = true; // 짧게 클릭한 상태로 설정
+                        P_Com.animator.SetTrigger("isShortArrow");
+                        P_Skills.arrowSkillOn();
+                    }
+                    P_States.isClickDown = false;
+                    P_Value.aimClickDown = 0;
+                    if (P_States.startAim)
+                    {
+                        P_States.startAim = false;
+                        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                        P_Skills.arrowSkillOff();
+                    }
+                }
+            }
+
+            else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
+            {
+                // 길게 누르고 있는 중
+                P_Value.aimClickDown += Time.deltaTime;
+
+                if (P_Value.aimClickDown > 0.25f && !P_States.startAim && !P_States.isShortArrow)
+                {
+                    // 길게 클릭 로직 실행
+                    //Debug.Log("[player test] Long click action - Entering aim mode");
+                    P_States.isShortArrow = false;
                     if (!P_States.isAim)
                     {
                         camForward = P_Camera.cameraObj.transform.forward;
-                        arrowSkillOn(false);
+                        P_Skills.arrowSkillOn();
                         P_States.startAim = true;
                     }
-                }
-
-            }
-            else if (Input.GetMouseButtonUp(0))// && P_States.isBowMode && P_States.startAim)   //* 눌렀다가 뗄 때
-            {
-                if (P_States.isBowMode && P_States.startAim)
-                {
-                    P_States.startAim = false;
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    //* 이펙트 회전
-                    effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-                    arrowSkillOff();
-                    P_States.isClickDown = false;
-                    P_Value.aimClickDown = 0;
                 }
             }
 
@@ -222,13 +229,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_States.startAim)   // 조준 중일때 전환 키 누르면
                 {
-                    arrowSkillOff();    // 조준 헤제
+                    P_Skills.arrowSkillOff();    // 조준 헤제
                 }
-                skillMotion('R');
+                P_Skills.skillMotion('R');
             }
             if (Input.GetKeyUp(KeyCode.E))  //*Heal
             {
-                skillMotion('E');
+                P_Skills.skillMotion('E');
             }
             /*if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -244,99 +251,6 @@ public class PlayerMovement : MonoBehaviour
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
                 P_States.isNotMoving = true;
             else P_States.isNotMoving = false;
-        }
-    }
-
-    IEnumerator PlayerHeal_co()
-    {
-        //Debug.Log("Player Heal");
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
-        P_Value.HP += P_Value.MaxHP * 0.5f;
-
-        bool stopHeal = false;
-
-        effect.finishAction = () =>
-        {
-            stopHeal = true;
-        };
-
-        while (!stopHeal)
-        {
-            //1. 플레이어 위치 계속
-            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-
-            yield return null;
-        }
-    }
-
-    public void arrowSkillOn(bool isShortArrow)
-    {
-        //* 장전
-        //P_States.isOnAim = true;
-        P_Controller.shootPoint.gameObject.SetActive(true);
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
-        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-        //* 이펙트 회전
-        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-
-        P_Controller.onArrow(isShortArrow);
-    }
-    public void arrowSkillOff()
-    {
-        //* 발사 
-        //P_States.isOnAim = false;
-        P_States.startAim = false;
-        P_States.isCamOnAim = false;
-
-        P_Controller.offArrow();
-    }
-
-    public void skillMotion(char a)
-    {
-        switch (a)
-        {
-            case 'R':   //* weapon change
-                if (skill_R.imgCool.fillAmount == 0)
-                {
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
-                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    if (P_States.isBowMode) //* 활 모드 -> 칼 모드
-                    {
-                        P_States.isBowMode = false;
-                        P_Controller.bow.SetActive(false);
-                        P_Controller.sword.SetActive(true);
-                    }
-                    else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
-                    {
-                        P_States.isBowMode = true;
-                        P_Controller.bow.SetActive(true);
-                        P_Controller.shootPoint.gameObject.SetActive(false);
-                        P_Controller.sword.SetActive(false);
-                    }
-                    skill_R.OnClicked();
-                }
-                break;
-
-            case 'Q':
-                if (skill_Q.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    Debug.Log("스킬Q");
-                }
-                skill_Q.OnClicked();
-                break;
-
-            case 'E':   //* heal
-                if (skill_E.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    StartCoroutine(PlayerHeal_co());
-                }
-                skill_E.OnClicked();
-                break;
-
-            default:
-                break;
         }
     }
 
@@ -587,15 +501,16 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
     private void PlayerMovements()
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if ((P_States.isStartComboAttack && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+        if ((P_States.isStartComboAttack
+                && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
-                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp"))     //* 넉백 후 일어나는 애니메이션 시 or
+                || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
+                || P_States.isShortArrow)
         {
             P_Com.rigidbody.velocity = Vector3.zero;    //* 꼼짝마
             P_Com.animator.SetBool("p_Locomotion", true);
@@ -621,6 +536,17 @@ public class PlayerMovement : MonoBehaviour
             P_Value.finalSpeed = P_COption.walkingSpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
+            if (P_States.isBowMode && P_States.startAim)
+            {
+                P_States.startAim = false;
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                //* 이펙트 회전
+                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                P_Skills.arrowSkillOff();
+                P_States.isClickDown = false;
+                P_Value.aimClickDown = 0;
+            }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
             if (ElecTime >= P_COption.electricShock_Time) //* 5초 후
@@ -791,7 +717,8 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing) && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
+        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow)
+                && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
             P_Com.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime); //하
@@ -941,7 +868,7 @@ public class PlayerMovement : MonoBehaviour
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
             //앞이 막혀있지 않고 적이 있다면 //* 전진
-            if (P_Value.nowEnemy != null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
+            if (P_Value.nowEnemy != null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
@@ -961,14 +888,14 @@ public class PlayerMovement : MonoBehaviour
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             //앞이 막혀있지 않고 적이 없다면 //* 전진
-            else if (P_Value.nowEnemy == null && P_Controller.forwardHit == null && P_States.canGoForwardInAttack)
+            else if (P_Value.nowEnemy == null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
             {
                 dir = this.gameObject.transform.forward.normalized;
                 Vector3 pos = transform.position + dir * 2f;
                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
-            else if (P_Controller.forwardHit != null || !P_States.canGoForwardInAttack)
+            else if (P_PhysicsCheck.forwardHit != null || !P_States.canGoForwardInAttack)
             {
                 //dir = this.gameObject.transform.forward.normalized;
             }

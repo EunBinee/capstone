@@ -31,27 +31,17 @@ public class PlayerController : MonoBehaviour
     public CurrentState _currentState = new CurrentState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    public PlayerSkills _playerSkills = new PlayerSkills();
+    public PlayerArrows _playerArrows = new PlayerArrows();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    private PlayerSkills P_Skills => _playerSkills;
+    private PlayerArrows P_Arrows => _playerArrows;
     public PlayerMovement P_Movement;
-
-    private float _castRadius; //레이캐스트 반지름
-    private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
-    private float _capsuleRadiusDiff;
-    private float _fixedDeltaTime; //물리 업데이트 발생주기
-    public float rayCastHeightOffset = 1;
-    //캡슐 가운데 가장 위쪽
-    private Vector3 CapsuleTopCenterPoint
-    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.height - P_Com.capsuleCollider.radius, transform.position.z);
-    //캡슐 가운데 가장 아래쪽
-    private Vector3 CapsuleBottomCenterPoint
-   => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
+    public PlayerPhysicsCheck P_PhysicsCheck;
+    public PlayerSkills P_Skills;
 
     public List<NavMeshSurface> navMeshSurface;
 
@@ -67,25 +57,28 @@ public class PlayerController : MonoBehaviour
     public Slider HPgauge;
     float nowHitTime;
     public List<GameObject> hitMonsters;
-    public List<Collider> forwardHit;
+    //public List<Collider> forwardHit;
 
     public GameObject bow;
     public GameObject sword;
     public TMP_Text crosshairImage; // 조준점 이미지
 
-    GameObject arrow;
+    public GameObject arrow;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
     public Transform spine;     // 아바타 모델링
 
     public Vector3 originEpos;
     public Vector3 originRpos;
 
+    private Vector3 screenCenter;
 
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
         P_Movement = GetComponent<PlayerMovement>();
+        P_Skills = GetComponent<PlayerSkills>();
+        P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         InitPlayer();
 
 
@@ -102,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
         if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
             DontDestroyOnLoad(this.gameObject);
         else
@@ -109,7 +103,7 @@ public class PlayerController : MonoBehaviour
             Destroy(this.gameObject);
         }
         SetUIVariable();
-        _playerSkills.Init();
+        _playerArrows.Init();
         // InitComponent();
     }
     public void SetUIVariable()
@@ -139,7 +133,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
-            P_Movement.arrowSkillOff();
+            P_Skills.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
@@ -151,11 +145,7 @@ public class PlayerController : MonoBehaviour
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
-            _fixedDeltaTime = Time.fixedDeltaTime;
 
-            Update_Physics();
-            CheckedForward();
-            CheckedGround();
             CheckHitTime();
             CheckAnim();
             CheckHP();
@@ -167,8 +157,7 @@ public class PlayerController : MonoBehaviour
             Operation_boneRotation();   // 모델링 변환
         if (P_States.isBowMode && P_States.isClickDown)
         {
-            P_Value.aimClickDown += Time.deltaTime;
-            Debug.Log("[player test]" + P_Value.aimClickDown);
+            //P_Value.aimClickDown += Time.deltaTime;
         }
         else
         {
@@ -181,13 +170,58 @@ public class PlayerController : MonoBehaviour
 
     Vector3 ChestDir = new Vector3();
 
+    Quaternion lastRotation; // 마지막 회전값을 저장할 변수
+    float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
     void Operation_boneRotation()
     {
-        //카메라가 보고있는 방향
+        //Transform camTrans = Camera.main.transform;
+        RaycastHit hit;
+        // 화면 중앙에서 레이를 생성합니다.
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            //Debug.DrawRay(ray.origin, ray.direction * 20, Color.yellow, 5f);
+
+            //Debug.Log(hit.point);
+        }
+
+        // 레이의 방향으로 대상을 회전시킵니다.
+        // 레이의 방향은 ray.direction에 저장되어 있습니다.
+        //RotateTowardsRayDirection(ray.direction);
+
+        //Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+        //Debug.DrawRay(P_Camera.cameraObj.transform.position, P_Camera.cameraObj.transform.forward * 10f, Color.red);
+        //Debug.DrawRay();
+        ChestDir = this.transform.position + ray.direction * 30;
+        //카메라가 보고있는 방향 '벡터=목적지-출발지'
         //ChestDir = P_Camera.cameraObj.transform.position + P_Camera.cameraObj.transform.forward * 50f;
-        ChestDir = this.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        //ChestDir = hit.point - this.transform.position;
+
         spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
         spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+    }
+    void RotateTowardsRayDirection(Vector3 direction)
+    {
+        // 레이의 방향으로 목표 회전값을 계산합니다.
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        // 급격한 회전 방지를 위해 마지막 회전값과 비교하여, 변화가 너무 클 경우 조정합니다.
+        if (Quaternion.Angle(lastRotation, targetRotation) > 10)
+        {
+            // 마지막 회전값과 현재 목표 회전값 사이에 큰 차이가 있다면, 회전 속도를 감소시켜 부드럽게 조정합니다.
+            rotationSpeed = Mathf.Lerp(rotationSpeed, 0.5f, Time.deltaTime * 10);
+        }
+        else
+        {
+            // 회전값 사이의 차이가 작다면, 정상 회전 속도로 복귀합니다.
+            rotationSpeed = Mathf.Lerp(rotationSpeed, 2.0f, Time.deltaTime * 10);
+        }
+
+        // 캐릭터의 회전을 부드럽게 목표 회전값으로 조정합니다.
+        spine.rotation = Quaternion.Lerp(spine.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
+        // 현재 회전값을 마지막 회전값으로 저장합니다.
+        lastRotation = spine.rotation;
     }
 
     public bool returnIsAim()
@@ -203,7 +237,7 @@ public class PlayerController : MonoBehaviour
     {
         if (P_Com.playerTargetPos == null)
             P_Com.playerTargetPos = GameManager.Instance.gameData.playerTargetPos;
-        InitCapsuleCollider();
+        P_PhysicsCheck.InitCapsuleCollider();
 
         NavMeshSurface_ReBuild();
 
@@ -219,21 +253,11 @@ public class PlayerController : MonoBehaviour
 
     public void NavMeshSurface_ReBuild()
     {
-
-
         if (navMeshSurface != null)
         {
             for (int i = 0; i < navMeshSurface.Count; ++i)
                 navMeshSurface[i].BuildNavMesh();
         }
-    }
-
-    void InitCapsuleCollider()
-    {
-        P_Com.capsuleCollider = GetComponent<CapsuleCollider>();
-        _castRadius = P_Com.capsuleCollider.radius * 0.9f;
-        _castRadiusDiff = P_Com.capsuleCollider.radius - _castRadius + 0.05f;
-        //그냥 캡슐 콜라이더 radius와 castRadius의 차이
     }
 
     public void StopToFalse()
@@ -290,7 +314,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    P_Movement.arrowSkillOff();
+                    P_Skills.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -311,179 +335,6 @@ public class PlayerController : MonoBehaviour
     {
         if (HPgauge != null)
             HPgauge.value = P_Value.HP / P_Value.MaxHP;
-    }
-
-    //* skill
-    // UI 버튼에 의해 호출됩니다.
-    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
-    // damage 정보 만큼 피해를 입힙니다.
-    public void ActivateSkill(SOSkill skill)
-    {
-        if (skill.animationName != "Skill_Heal")
-        {
-            P_Com.animator.Play(skill.animationName);
-            P_States.isSkill = false;
-        }
-    }
-
-    void PoolingArrow()
-    {
-        // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Skills.GetArrowFromPool();
-        if (arrow == null) Debug.LogError("arrow null!");
-        arrow.SetActive(true);
-    }
-    public void onArrow(bool isShortArrow)
-    {
-        if (P_States.isBowMode)
-        {
-            if (!P_States.isAim)
-            {
-                if (!isShortArrow)
-                {
-                    //* 조준 on
-                    if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
-                    {
-                        //주목 풀기
-                        GameManager.instance.cameraController.UndoAttention();
-                        P_States.beenAttention = true;
-                    }
-                    GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-                    crosshairImage.gameObject.SetActive(true);  //* 조준점
-                }
-                //* 단타 
-                P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-                P_States.isAim = true;
-                PoolingArrow(); //* 화살 풀링
-            }
-        }
-    }
-    public void offArrow()
-    {
-        if (P_States.isBowMode)
-        {
-            if (P_States.isAim)
-            {
-                if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
-                {
-                    //주목 풀기
-                    GameManager.instance.cameraController.AttentionMonster();
-                    P_States.beenAttention = false;
-                }
-                arrow.SetActive(true);
-                P_Com.animator.SetBool("isAim", false);
-                P_Com.animator.SetTrigger("shoot");
-                GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
-                crosshairImage.gameObject.SetActive(false);
-                shootPoint.gameObject.SetActive(false);
-                P_States.isAim = false;
-            }
-        }
-    }
-
-    //* 물리(중력)
-    private void Update_Physics()
-    {
-        if (P_States.isGround && !P_States.isJumping)
-        {
-            //지면에 잘 붙어있을 경우
-            P_Value.gravity = 0f;
-        }
-        else if (!P_States.isGround && !P_States.isJumping)
-        {
-            P_Value.gravity += _fixedDeltaTime * P_COption.gravity;
-        }
-        else if (!P_States.isGround && P_States.isJumping)
-        {
-            //Debug.Log("Here");
-            P_Value.gravity = P_COption.gravity * P_COption.jumpGravity;
-        }
-
-    }
-
-    //* 전방체크
-    public void CheckedForward()
-    {
-        //Debug.Log("CheckedForward()");
-        //캐릭터가 이동하는 방향으로 막힘 길이 있는가?
-        // 함수 파라미터 : Capsule의 시작점, Capsule의 끝점,
-        // Capsule의 크기(x, z 중 가장 큰 값이 크기가 됨), Ray의 방향,
-        // RaycastHit 결과, Capsule의 회전값, CapsuleCast를 진행할 거리
-        /*bool cast = Physics.SphereCast(transform.position, 5f, transform.forward,
-        out var hit, Mathf.Infinity, 0);*/
-
-        bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
-        _castRadius, P_Value.moveDirection,// + Vector3.down * 0.25f,
-        out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
-
-        //Debug.Log("cast : " + cast);
-        // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
-        P_Value.hitDistance = hit.distance;
-        P_States.isForwardBlocked = false;
-        if (cast)
-        {
-            P_States.isForwardBlocked = true;
-            forwardHit.Add(hit.collider);    //* 전방체크 해서 걸린 거 리스트에 추가 
-                                             //Debug.Log("if (cast)");
-            float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
-            P_States.isForwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            //if (P_States.isForwardBlocked)
-            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
-            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
-        }
-        else
-        {
-            forwardHit.Clear(); //* P_Controller.forwardHit == null
-        }
-    }
-    //* 후방체크
-    public void CheckedBackward()
-    {
-        bool cast = Physics.CapsuleCast(CapsuleBottomCenterPoint, CapsuleTopCenterPoint,
-        _castRadius, P_Value.moveDirection + Vector3.down * -0.25f,
-        out var hit, P_COption.forwardCheckDistance, -1, QueryTriggerInteraction.Ignore);
-
-        //Debug.Log("cast : " + cast);
-        // QueryTriggerInteraction.Ignore 란? 트리거콜라이더의 충돌은 무시한다는 뜻
-        P_Value.hitDistance = hit.distance;
-        P_States.isBackwardBlocked = false;
-        if (cast)
-        {
-            P_States.isBackwardBlocked = true;
-            //Debug.Log("if (cast)");
-            float forwardObstacleAngle = Vector3.Angle(hit.normal, Vector3.up);
-            P_States.isBackwardBlocked = forwardObstacleAngle >= P_COption.maxSlopAngle;
-            //if (P_States.isForwardBlocked)
-            //Debug.Log("앞에 장애물있음!" + forwardObstacleAngle + "도");
-            //Debug.Log("P_Value.hitDistance : " + P_Value.hitDistance);
-        }
-    }
-
-    //*바닥 체크
-    public void CheckedGround()
-    {
-        //캐릭터와 지면사이의 높이
-        P_Value.groundDistance = float.MaxValue; //float의 최대값을 넣어준다.
-        P_Value.groundNormal = Vector3.up;      //현재 바닥의 노멀 값. 
-        P_Value.groundSlopeAngle = 0f;          //바닥의 경사면.
-        P_Value.forwardSlopeAngle = 0f;         // 플레이어가 이동하는 방향의 바닥의 경사면.
-        bool cast = Physics.SphereCast(CapsuleBottomCenterPoint, _castRadius, Vector3.down,
-        out var hit, P_COption.groundCheckDistance, P_COption.groundLayerMask, QueryTriggerInteraction.Ignore);
-        if (cast)
-        {
-            //지면의 노멀값
-            P_Value.groundNormal = hit.normal;
-            //지면의 경사각(기울기)
-            P_Value.groundSlopeAngle = Vector3.Angle(P_Value.groundNormal, Vector3.up);
-            //캐릭터 앞의 경사각
-            P_Value.forwardSlopeAngle = Vector3.Angle(P_Value.groundNormal, P_Value.moveDirection) - 90f;
-            //가파른 경사 있는지 체크
-            P_States.isOnSteepSlop = P_Value.groundSlopeAngle >= P_COption.maxSlopAngle;
-            P_Value.groundDistance = Mathf.Max((hit.distance - _capsuleRadiusDiff - P_COption.groundCheckThreshold), -10f);
-            P_States.isGround = (P_Value.groundDistance <= 0.03f) && !P_States.isOnSteepSlop;
-        }
-        P_Value.groundCross = Vector3.Cross(P_Value.groundNormal, Vector3.up);
-        //경사면의 회전축벡터 => 플레이어가 경사면을 따라 움직일수있도록 월드 이동 벡터를 회전
     }
 
     //* 데미지 받는 코루틴 실행
@@ -529,7 +380,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
-                P_Movement.arrowSkillOff();
+                P_Skills.arrowSkillOff();
             }
 
             //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.
