@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
+    private string R_StrongName = "ChargingArrowLaunch";
     public SkillButton skill_Q;
     public SkillButton skill_R; //* AIM
 
@@ -197,9 +198,18 @@ public class PlayerMovement : MonoBehaviour
                     if (P_States.startAim)
                     {
                         P_States.startAim = false;
-                        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                        if (P_States.isStrongArrow)
+                        {
+                            Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_StrongName);
+                            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                            effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
+                        }
+                        else
+                        {
+                            Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                            effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
+                        }
                         P_Skills.arrowSkillOff();
                     }
                 }
