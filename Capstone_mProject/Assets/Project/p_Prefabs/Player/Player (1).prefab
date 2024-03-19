@@ -144,30 +144,32 @@ MonoBehaviour:
     isStrafing: 0
     isJumping: 0
     isDodgeing: 0
+    isSkill: 0
+    isPerformingAction: 0
+    isStop: 0
     previousDodgeKeyPress: 0
     currentDodgeKeyPress: 0
     isStartComboAttack: 0
-    isSkill: 0
     colliderHit: 0
     hadAttack: 0
     hasAttackSameMonster: 0
     notSameMonster: 0
+    canGoForwardInAttack: 0
+    isGettingHit: 0
+    isElectricShock: 0
     isBouncing: 0
-    isStop: 0
     isBowMode: 0
     isClickDown: 0
     isAim: 0
     startAim: 0
     isCamOnAim: 0
     beenAttention: 0
-    canGoForwardInAttack: 0
-    isElectricShock: 0
-    isPerformingAction: 0
+    isShortArrow: 0
+    isStrongArrow: 0
     isForwardBlocked: 0
     isBackwardBlocked: 0
     isGround: 0
     isOnSteepSlop: 0
-    isGettingHit: 0
   _currentValue:
     moveAmount: 0
     moveDirection: {x: 0, y: 0, z: 0}
@@ -233,7 +235,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 7195301709572235706}
   skill_E: {fileID: 0}
   skill_Q: {fileID: 0}
   skill_R: {fileID: 0}

@@ -100,7 +100,7 @@ public class PlayerAttackCheck : MonoBehaviour
             ArrowRay();
             //attackEnemy = false;
         }
-        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        yield return new WaitUntil(() => /*P_States.colliderHit == true ||*/ P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         resetArrow();
         yield return null;
     }
@@ -312,11 +312,12 @@ public class PlayerAttackCheck : MonoBehaviour
 
     }
 
-    private void ArrowRay()//float curArrowDistance)
+
+    private void ArrowRay()
     {
-        float range = 100f;
+        //float range = 100f;
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
+        hits = Physics.RaycastAll(this.transform.position, this.transform.forward, Mathf.Infinity);
 
         float shortDist = 1000f;
 
@@ -332,6 +333,10 @@ public class PlayerAttackCheck : MonoBehaviour
                 float distance = hit.distance;
                 if (/*curArrowDistance < distance &&*/ shortDist > distance)    //범위 내 라면
                 {
+                    if (hit.collider.tag != "Monster")
+                    {
+                        //Time.timeScale = 0;
+                    }
                     shortHit = hit;
                     shortDist = distance;
 

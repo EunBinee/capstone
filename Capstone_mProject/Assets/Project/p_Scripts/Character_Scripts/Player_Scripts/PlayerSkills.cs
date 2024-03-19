@@ -11,7 +11,8 @@ public class PlayerSkills : MonoBehaviour
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
-    private PlayerAttackCheck playerAttackCheck;
+    private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
+    public PlayerAttackCheck playerAttackCheck;
 
     private GameObject arrow;// => P_Controller.arrow;
 

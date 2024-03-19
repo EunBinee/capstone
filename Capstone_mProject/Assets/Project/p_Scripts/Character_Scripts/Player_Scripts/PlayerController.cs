@@ -43,18 +43,6 @@ public class PlayerController : MonoBehaviour
     public PlayerPhysicsCheck P_PhysicsCheck;
     public PlayerSkills P_Skills;
 
-    //     private float _castRadius; //레이캐스트 반지름
-    //     private float _castRadiusDiff; //그냥 캡슐 콜라이더 radius와 castRadius의 차이
-    //     private float _capsuleRadiusDiff;
-    //     private float _fixedDeltaTime; //물리 업데이트 발생주기
-    //     public float rayCastHeightOffset = 1;
-    //     //캡슐 가운데 가장 위쪽
-    //     private Vector3 CapsuleTopCenterPoint
-    //     => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.height - P_Com.capsuleCollider.radius, transform.position.z);
-    //     //캡슐 가운데 가장 아래쪽
-    //     private Vector3 CapsuleBottomCenterPoint
-    //    => new Vector3(transform.position.x, transform.position.y + P_Com.capsuleCollider.radius, transform.position.z);
-
     public List<NavMeshSurface> navMeshSurface;
 
     private bool isGettingHit = false;
@@ -82,6 +70,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 originEpos;
     public Vector3 originRpos;
 
+    private Vector3 screenCenter;
 
     void Awake()
     {
@@ -106,6 +95,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
         if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
             DontDestroyOnLoad(this.gameObject);
         else
@@ -164,31 +154,74 @@ public class PlayerController : MonoBehaviour
     public void LateUpdate()
     {
         if (P_States.isAim)
-            // Operation_boneRotation();   // 모델링 변환
-            if (P_States.isBowMode && P_States.isClickDown)
-            {
-                P_Value.aimClickDown += Time.deltaTime;
-                // Debug.Log("[player test]" + P_Value.aimClickDown);
-
-            }
-            else
-            {
-                P_States.isClickDown = false;
-                P_Value.aimClickDown = 0;
-            }
+            Operation_boneRotation();   // 모델링 변환
+        if (P_States.isBowMode && P_States.isClickDown)
+        {
+            //P_Value.aimClickDown += Time.deltaTime;
+        }
+        else
+        {
+            P_States.isClickDown = false;
+            P_Value.aimClickDown = 0;
+        }
 
     }
     Vector3 ChestOffset = new Vector3(0, 180, 0);
 
     Vector3 ChestDir = new Vector3();
 
+    Quaternion lastRotation; // 마지막 회전값을 저장할 변수
+    float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
     void Operation_boneRotation()
     {
-        //카메라가 보고있는 방향
+        //Transform camTrans = Camera.main.transform;
+        RaycastHit hit;
+        // 화면 중앙에서 레이를 생성합니다.
+        Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            //Debug.DrawRay(ray.origin, ray.direction * 20, Color.yellow, 5f);
+
+            //Debug.Log(hit.point);
+        }
+
+        // 레이의 방향으로 대상을 회전시킵니다.
+        // 레이의 방향은 ray.direction에 저장되어 있습니다.
+        //RotateTowardsRayDirection(ray.direction);
+
+        //Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+        //Debug.DrawRay(P_Camera.cameraObj.transform.position, P_Camera.cameraObj.transform.forward * 10f, Color.red);
+        //Debug.DrawRay();
+        ChestDir = this.transform.position + ray.direction * 30;
+        //카메라가 보고있는 방향 '벡터=목적지-출발지'
         //ChestDir = P_Camera.cameraObj.transform.position + P_Camera.cameraObj.transform.forward * 50f;
-        ChestDir = this.transform.position + P_Camera.cameraObj.transform.forward * 50f;
+        //ChestDir = hit.point - this.transform.position;
+
         spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
         spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+    }
+    void RotateTowardsRayDirection(Vector3 direction)
+    {
+        // 레이의 방향으로 목표 회전값을 계산합니다.
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+
+        // 급격한 회전 방지를 위해 마지막 회전값과 비교하여, 변화가 너무 클 경우 조정합니다.
+        if (Quaternion.Angle(lastRotation, targetRotation) > 10)
+        {
+            // 마지막 회전값과 현재 목표 회전값 사이에 큰 차이가 있다면, 회전 속도를 감소시켜 부드럽게 조정합니다.
+            rotationSpeed = Mathf.Lerp(rotationSpeed, 0.5f, Time.deltaTime * 10);
+        }
+        else
+        {
+            // 회전값 사이의 차이가 작다면, 정상 회전 속도로 복귀합니다.
+            rotationSpeed = Mathf.Lerp(rotationSpeed, 2.0f, Time.deltaTime * 10);
+        }
+
+        // 캐릭터의 회전을 부드럽게 목표 회전값으로 조정합니다.
+        spine.rotation = Quaternion.Lerp(spine.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
+        // 현재 회전값을 마지막 회전값으로 저장합니다.
+        lastRotation = spine.rotation;
     }
 
     public bool returnIsAim()
