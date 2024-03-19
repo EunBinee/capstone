@@ -174,22 +174,31 @@ public class PlayerController : MonoBehaviour
     float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
     void Operation_boneRotation()
     {
-
+        //Transform camTrans = Camera.main.transform;
+        RaycastHit hit;
         // 화면 중앙에서 레이를 생성합니다.
         Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+        {
+            //Debug.DrawRay(ray.origin, ray.direction * 20, Color.yellow, 5f);
+
+            //Debug.Log(hit.point);
+        }
 
         // 레이의 방향으로 대상을 회전시킵니다.
         // 레이의 방향은 ray.direction에 저장되어 있습니다.
-        RotateTowardsRayDirection(ray.direction);
+        //RotateTowardsRayDirection(ray.direction);
 
-        //Ray ray = Camera.main.ScreenPointToRay(screenCenter);spine
+        //Ray ray = Camera.main.ScreenPointToRay(screenCenter);
         //Debug.DrawRay(P_Camera.cameraObj.transform.position, P_Camera.cameraObj.transform.forward * 10f, Color.red);
-        //ChestDir = this.transform.position + ray.direction;
-        //카메라가 보고있는 방향
+        //Debug.DrawRay();
+        ChestDir = this.transform.position + ray.direction * 30;
+        //카메라가 보고있는 방향 '벡터=목적지-출발지'
         //ChestDir = P_Camera.cameraObj.transform.position + P_Camera.cameraObj.transform.forward * 50f;
-        //ChestDir = this.transform.position + P_Camera.cameraObj.transform.forward * 50f;
-        //spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
-        //spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+        //ChestDir = hit.point - this.transform.position;
+
+        spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
+        spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
     }
     void RotateTowardsRayDirection(Vector3 direction)
     {
