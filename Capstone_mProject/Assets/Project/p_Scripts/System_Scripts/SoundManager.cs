@@ -50,7 +50,8 @@ public class SoundManager : MonoBehaviour
     private int sfx_channelIndex;
     public enum SfxSound
     {
-        UI
+        UI,
+        SoundObject
     }
 
     void Awake()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -104,13 +105,13 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != "Player" && other.gameObject.tag != "Arrow")
+        if (other.gameObject.CompareTag("Player") && other.gameObject.CompareTag("Arrow"))
         {
             P_States.colliderHit = true;
         }
         if (isEnable)
         {
-            if (other.gameObject.tag == "Monster")
+            if (other.gameObject.CompareTag("Monster"))
             {
                 monster = other.GetComponentInParent<Monster>();
 
@@ -122,6 +123,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                 if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
                 {
+                    //attackShield = false;
                     _playerController.hitMonsters.Add(other.gameObject);
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
                     if (P_States.hadAttack == false || P_States.notSameMonster)
@@ -185,7 +187,7 @@ public class PlayerAttackCheck : MonoBehaviour
             }
             else
             {
-                //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);
+                //Debug.Log("[attack test]몬스터 아님 : " + other.gameObject.tag);  
             }
         }
     }
@@ -235,9 +237,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
-        //TODO: 나중에 연산식 사용.
+        // //TODO: 나중에 연산식 사용.
         int damageValue = (isArrow ? 400 : 350);
-
 
         if (P_Value.hits % 5 != 0)
         {
@@ -264,7 +265,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
-
     }
 
     private void ArrowRay()//float curArrowDistance)
