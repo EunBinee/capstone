@@ -8,13 +8,12 @@ public class Skill_Indicator : MonoBehaviour
     public Transform tempPoint;
     public BoxCollider boxCollider;
 
-    bool checkTrigger = false;
+    public bool checkTrigger = false; //* 현재 이 콜라이더 안에 있으면  플레이어가 공격 받는다는 뜻.
     public bool insideBox = false;
     public List<Effect> electricity_Effects;
     public List<Effect> lightningStrike_Effects;
     Bounds originBounds;
     float angle = 0;
-
 
     private void Start()
     {
@@ -22,58 +21,16 @@ public class Skill_Indicator : MonoBehaviour
         electricity_Effects = new List<Effect>();
     }
 
+    public void Init()
+    {
+        checkTrigger = false;
+        insideBox = false;
+    }
+
     public void CheckTrigger(bool enabled)
     {
         checkTrigger = enabled;
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (checkTrigger && !insideBox)
-        {
-            if (other.CompareTag("Player"))
-            {
-                CheckPlayerInsideBox(true);
-            }
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (checkTrigger && !insideBox)
-        {
-            if (other.CompareTag("Player"))
-            {
-                CheckPlayerInsideBox(true);
-            }
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (checkTrigger && insideBox)
-        {
-            if (other.CompareTag("Player"))
-            {
-                CheckPlayerInsideBox(false);
-            }
-        }
-    }
-
-    public void CheckPlayerInsideBox(bool insideBox = true)
-    {
-        if (insideBox)
-        {
-            //만약 플레이어가 상자 안에 있을때
-            insideBox = true;
-
-            PlayerMovement playerMovement = GameManager.instance.gameData.GetPlayerMovement();
-            playerMovement.PlayerElectrocution(insideBox);
-        }
-        else
-        {
-            insideBox = false;
-        }
     }
 
     public void SetBounds()

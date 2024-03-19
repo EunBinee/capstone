@@ -14,6 +14,7 @@ public class PlayerAttackCheck : MonoBehaviour
     public PlayerController P_Controller => _playerController;
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
+    private PlayerSkills P_Skills => P_Controller.P_Skills;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
@@ -45,21 +46,44 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow && !goShoot && P_States.startAim)
+        if (isArrow)
         {
-            transform.position = P_Controller.shootPoint.position;
-            transform.rotation = P_Controller.shootPoint.rotation;
-            //Debug.Log("[arrow test] if(isArrow && !goShoot && P_States.startAim)");
-            if (!incoArrow)
-                StartCoroutine(Arrowing());
+            if (!goShoot && (P_States.startAim || P_States.isShortArrow))
+            {
+                transform.position = P_Controller.shootPoint.position;
+                transform.rotation = P_Controller.shootPoint.rotation;
+
+                if (!incoArrow)
+                    StartCoroutine(Arrowing());
+            }
         }
+    }
+    public void StrongArrowEffect_co()
+    {
+        StartCoroutine(StrongArrowEffect());
+    }
+    IEnumerator StrongArrowEffect()
+    {
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Bow_Attack_ChargingLoop");
+        effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+        float shootTime = shootDeltaTime();
+        while ((!goShoot && !P_States.colliderHit) || (goShoot && shootTime < 5.0f))
+        {
+            shootTime = shootDeltaTime();
+            //Debug.Log($"{shootTime} ");
+            effect.gameObject.transform.position = this.gameObject.transform.position;
+
+            yield return null;
+        }
+        effect.StopEffect();
+        yield return null;
     }
     IEnumerator Arrowing()
     {
         //Debug.Log("[arrow test] IEnumerator Arrowing()");
         incoArrow = true;
         dir = Vector3.zero;
-        yield return new WaitUntil(() => !P_States.isAim);  //* isAim이 거짓이 되면
+        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow));  //* isAim이 거짓이 되거나 단타라면
         if (!goShoot)
         {
             transform.position = P_Controller.shootPoint.position;
@@ -68,9 +92,11 @@ public class PlayerAttackCheck : MonoBehaviour
             GetComponent<Rigidbody>().isKinematic = false;
             if (dir == Vector3.zero)    //* 방향 지정
             {
-                dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                if (!P_States.isShortArrow)
+                    dir = GameManager.Instance.gameData.cameraObj.transform.forward;
+                else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * 55f; ; //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 55f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
@@ -92,6 +118,9 @@ public class PlayerAttackCheck : MonoBehaviour
         this.gameObject.SetActive(false);
         P_States.hadAttack = false;
         P_States.colliderHit = false;
+        P_States.isShortArrow = false;
+        P_States.isClickDown = false;
+        P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
     }
@@ -237,8 +266,25 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
-        // //TODO: 나중에 연산식 사용.
-        int damageValue = (isArrow ? 400 : 350);
+
+        //TODO: 나중에 연산식 사용.
+        int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+        if (isArrow)
+        {
+            if (P_States.isStrongArrow) //* 예스 차징
+            {
+                damageValue = 550;
+                P_States.isStrongArrow = false;
+            }
+            else                        //* 노 차징
+            {
+                damageValue = 400;
+            }
+        }
+        else                            //* 검
+        {
+            damageValue = 350;
+        }
 
         if (P_Value.hits % 5 != 0)
         {
@@ -267,13 +313,17 @@ public class PlayerAttackCheck : MonoBehaviour
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
     }
 
-    private void ArrowRay()//float curArrowDistance)
+
+    private void ArrowRay()
     {
-        float range = 100f;
+        //float range = 100f;
         RaycastHit[] hits;
-        hits = Physics.RaycastAll(this.transform.position, this.transform.forward, range);
+        hits = Physics.RaycastAll(this.transform.position, this.transform.forward, Mathf.Infinity);
 
         float shortDist = 1000f;
+
+        if (hits.Length == 0) return;   // 레이 히트 없으면 바로 리턴
+
         RaycastHit shortHit = hits[0];
         //RaycastHit m_Hit;
         foreach (RaycastHit hit in hits)
@@ -284,6 +334,10 @@ public class PlayerAttackCheck : MonoBehaviour
                 float distance = hit.distance;
                 if (/*curArrowDistance < distance &&*/ shortDist > distance)    //범위 내 라면
                 {
+                    if (hit.collider.tag != "Monster")
+                    {
+                        //Time.timeScale = 0;
+                    }
                     shortHit = hit;
                     shortDist = distance;
 
