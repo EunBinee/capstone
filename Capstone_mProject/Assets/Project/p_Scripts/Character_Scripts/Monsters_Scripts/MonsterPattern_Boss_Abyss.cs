@@ -2065,7 +2065,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     #region 피격
     private void GetHit()
     {
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_S");
+        effect.gameObject.transform.position = curHitPos;
+        effect.gameObject.transform.rotation = curHitQuaternion;
+
+        effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
         effect.gameObject.transform.position = curHitPos;
         effect.gameObject.transform.rotation = curHitQuaternion;
 

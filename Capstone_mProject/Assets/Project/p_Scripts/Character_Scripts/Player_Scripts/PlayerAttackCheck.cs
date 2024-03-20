@@ -344,8 +344,7 @@ public class PlayerAttackCheck : MonoBehaviour
                             Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                         }
 
-                        bossWeakness.destroy_BossWeakness = true;
-                        bossWeakness.WeaknessGetDamage();
+                        bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
                     }
                     if (hit.collider.tag == "Monster")
                     {
