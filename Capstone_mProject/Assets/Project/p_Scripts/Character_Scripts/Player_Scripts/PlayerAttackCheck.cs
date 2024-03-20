@@ -49,7 +49,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
         if (isArrow)
         {
-            if (!goShoot && (P_States.startAim || P_States.isShortArrow))
+            if (!goShoot && (P_States.isAim || P_States.startAim || P_States.isShortArrow))
             {
                 transform.position = P_Controller.shootPoint.position;
                 transform.rotation = P_Controller.shootPoint.rotation;
@@ -83,7 +83,7 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         incoArrow = true;
         dir = Vector3.zero;
-        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow));  //* isAim이 거짓이 되거나 단타라면
+        yield return new WaitUntil(() => (!P_States.isAim || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -91,7 +91,7 @@ public class PlayerAttackCheck : MonoBehaviour
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
             //* 키네매틱 끄기
-            GetComponent<Rigidbody>().isKinematic = false;
+            rigid.isKinematic = false;
             if (dir == Vector3.zero)    //* 방향 지정
             {
                 if (!P_States.isShortArrow)

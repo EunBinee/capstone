@@ -191,6 +191,8 @@ public class PlayerMovement : MonoBehaviour
                     P_States.isShortArrow = true; // 짧게 클릭한 상태로 설정
                     P_Com.animator.SetTrigger("isShortArrow");
                     P_Skills.arrowSkillOn();
+                    // /Debug.Log("P_Skills.arrowSkillOn(); 이후");
+                    P_States.isShortArrow = false;
                 }
                 P_States.isClickDown = false;
                 P_Value.aimClickDown = 0;

@@ -94,10 +94,10 @@ public class PlayerSkills : MonoBehaviour
             {
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
                 P_States.isAim = true;
+                P_Controller.shootPoint.gameObject.SetActive(true);
                 if (!P_States.isShortArrow)
                 {
                     //* 조준 on
-                    P_Controller.shootPoint.gameObject.SetActive(true);
                     Effect Effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
                     Effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     Effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
