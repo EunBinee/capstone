@@ -136,6 +136,7 @@ MonoBehaviour:
     dodgingSpeed: 5
     slopeAccel: 1
     gravity: -9.81
+    electricShock_Time: 5
   _currentState:
     isNotMoving: 0
     isWalking: 0
@@ -205,9 +206,9 @@ MonoBehaviour:
   _playerArrows:
     arrowPrefabName: Arrow
     poolSize: 5
-  P_Movement: {fileID: 0}
-  P_PhysicsCheck: {fileID: 0}
-  P_Skills: {fileID: 0}
+  P_Movement: {fileID: 1404091125779623576}
+  P_PhysicsCheck: {fileID: 393605679751660245}
+  P_Skills: {fileID: 6504819662934625591}
   navMeshSurface:
   - {fileID: 0}
   curPlayerState: 0
@@ -257,6 +258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
+  playerAttackCheck: {fileID: 0}
 --- !u!114 &393605679751660245
 MonoBehaviour:
   m_ObjectHideFlags: 0

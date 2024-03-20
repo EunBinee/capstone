@@ -95,12 +95,12 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
                 else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 100f); //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 65f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
         }
-        yield return new WaitUntil(() => /*P_States.colliderHit == true ||*/ P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         resetArrow();
         yield return null;
     }
@@ -118,7 +118,7 @@ public class PlayerAttackCheck : MonoBehaviour
         P_States.hadAttack = false;
         P_States.colliderHit = false;
         P_States.isShortArrow = false;
-        P_States.isClickDown = false;
+        //P_States.isClickDown = false;
         P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
@@ -135,7 +135,8 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         if (other.gameObject.tag != "Player" && other.gameObject.tag != "Arrow")
         {
-            P_States.colliderHit = true;
+            //Debug.Log($"other.gameObject {other.gameObject.name}");
+            //P_States.colliderHit = true;
         }
         if (isEnable)
         {
@@ -348,6 +349,8 @@ public class PlayerAttackCheck : MonoBehaviour
                     }
                     if (hit.collider.tag == "Monster")
                     {
+                        P_States.colliderHit = true;
+                        //Debug.Log("[arrow test] arrow hit");
                         monster = hit.collider.GetComponentInParent<Monster>();
                         if (monster == null)
                         {

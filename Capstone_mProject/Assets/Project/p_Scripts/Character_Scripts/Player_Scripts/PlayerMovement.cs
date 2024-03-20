@@ -16,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
-    private PlayerPhysicsCheck P_PhysicsCheck => P_Controller.P_PhysicsCheck;
+    private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
 
     public SkillButton skill_E; //* HEAL
     private string R_Start_Name = "Bow_Attack_Charging";
@@ -42,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     {
         _controller = GetComponent<PlayerController>();
         playerAttackChecks = new List<PlayerAttackCheck>();
+        P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         SetUIVariable();
         for (int i = 0; i < attackColliders.Length; i++)
         {
@@ -181,37 +182,34 @@ public class PlayerMovement : MonoBehaviour
                 // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
             }
 
-            else if (Input.GetMouseButtonUp(0))
+            else if (Input.GetMouseButtonUp(0) && P_States.isClickDown)
             {
-                if (P_States.isClickDown)
+                if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
                 {
-                    if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
+                    // 짧게 클릭 로직 실행
+                    //Debug.Log("[player test] Short click action");
+                    P_States.isShortArrow = true; // 짧게 클릭한 상태로 설정
+                    P_Com.animator.SetTrigger("isShortArrow");
+                    P_Skills.arrowSkillOn();
+                }
+                P_States.isClickDown = false;
+                P_Value.aimClickDown = 0;
+                if (P_States.startAim)
+                {
+                    P_States.startAim = false;
+                    if (P_States.isStrongArrow)
                     {
-                        // 짧게 클릭 로직 실행
-                        //Debug.Log("[player test] Short click action");
-                        P_States.isShortArrow = true; // 짧게 클릭한 상태로 설정
-                        P_Com.animator.SetTrigger("isShortArrow");
-                        P_Skills.arrowSkillOn();
+                        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_StrongName);
+                        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                        effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
                     }
-                    P_States.isClickDown = false;
-                    P_Value.aimClickDown = 0;
-                    if (P_States.startAim)
+                    else
                     {
-                        P_States.startAim = false;
-                        if (P_States.isStrongArrow)
-                        {
-                            Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_StrongName);
-                            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                            effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
-                        }
-                        else
-                        {
-                            Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                            effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
-                        }
-                        P_Skills.arrowSkillOff();
+                        Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                        effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
                     }
+                    P_Skills.arrowSkillOff();
                 }
             }
 
@@ -223,13 +221,12 @@ public class PlayerMovement : MonoBehaviour
                 if (P_Value.aimClickDown > 0.25f && !P_States.startAim && !P_States.isShortArrow)
                 {
                     // 길게 클릭 로직 실행
-                    //Debug.Log("[player test] Long click action - Entering aim mode");
-                    P_States.isShortArrow = false;
+                    Debug.Log("[player test] Long click action - Entering aim mode");
                     if (!P_States.isAim)
                     {
                         camForward = P_Camera.cameraObj.transform.forward;
-                        P_Skills.arrowSkillOn();
                         P_States.startAim = true;
+                        P_Skills.arrowSkillOn();
                     }
                 }
             }
@@ -548,14 +545,12 @@ public class PlayerMovement : MonoBehaviour
             P_States.isDodgeing = false;
             if (P_States.isBowMode && P_States.startAim)
             {
-                P_States.startAim = false;
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
-                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                //* 이펙트 회전
-                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
                 P_Skills.arrowSkillOff();
                 P_States.isClickDown = false;
                 P_Value.aimClickDown = 0;
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
             }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
