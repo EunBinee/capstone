@@ -12,11 +12,22 @@ public class SoundObject : MonoBehaviour
     private void Start() {
         attackSoundObj = false;
     }
+    private void Update() {
+        CheckSound();
+    }
+    private void CheckSound()
+    {
+        if(attackSoundObj)
+        {
+            SoundManager.Instance.Play_SfxSound(SoundManager.SfxSound.SoundObject);
+            //attackSoundObj = false;
+        }
+    }
    private void OnTriggerEnter(Collider other)
    {
-        attackSoundObj = true;
-        collisionPos = other.transform.position; // 충돌한 위치 저장
-        SoundManager.Instance.Play_SfxSound(SoundManager.SfxSound.SoundObject);
-        Debug.Log("소리 오브젝트");
+        // attackSoundObj = true;
+        // collisionPos = other.transform.position; // 충돌한 위치 저장
+        // SoundManager.Instance.Play_SfxSound(SoundManager.SfxSound.SoundObject);
+        // Debug.Log("소리 오브젝트");
    }
 }

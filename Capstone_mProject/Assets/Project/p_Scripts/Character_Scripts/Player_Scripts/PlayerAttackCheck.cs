@@ -27,6 +27,8 @@ public class PlayerAttackCheck : MonoBehaviour
     Transform nowArrow;
     public float deltaShootTime = 0.0f;
 
+    private SoundObject soundObject;
+
     //계산식
     //bool attackEnemy = false;
 
@@ -34,12 +36,13 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         player = GameManager.Instance.gameData.player;
         _playerController = player.GetComponent<PlayerController>();
-        rigid = GetComponent<Rigidbody>();
+        rigid = GetComponent<Rigidbody>(); 
         if (this.gameObject.tag == "Arrow")  //* 화살인지 확인을 해
         {
             isArrow = true;
         }
         _playerController.hitMonsters.Clear();
+       
     }
     void FixedUpdate()
     {
@@ -340,7 +343,13 @@ public class PlayerAttackCheck : MonoBehaviour
                     }
                     shortHit = hit;
                     shortDist = distance;
-
+                    if (hit.collider.CompareTag("SoundObject")) 
+                    {
+                        soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
+                        //Debug.Log(soundObject);
+                        soundObject.attackSoundObj = true;
+                        soundObject.collisionPos = hit.transform.position;
+                    }
                     if (hit.collider.tag == "Monster")
                     {
                         //Debug.Log("[arrow test] arrow hit");
