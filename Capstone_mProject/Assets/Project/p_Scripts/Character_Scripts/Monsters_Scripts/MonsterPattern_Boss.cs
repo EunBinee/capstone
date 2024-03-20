@@ -123,6 +123,7 @@ public class MonsterPattern_Boss : MonsterPattern
     //*-----------------------------------------------------------------------------//
     //* 보스 약점
     bool showWeaknessEffect = true; //이펙트 활성화 여부
+    bool finishEffect = false;
     public virtual void BossWeaknessUpdate()
     {
         if (m_monster.monsterData.useWeakness && curBossPhase != BossMonsterPhase.Phase1)
@@ -133,7 +134,7 @@ public class MonsterPattern_Boss : MonsterPattern
                 //* 보스의 약점이 활성화 되어있지않다면?
                 EnableBossWeakness(true); //약점 보여주기
             }
-            else if (!playerController._currentState.isAim && enableBossWeakness)
+            else if (!playerController._currentState.isAim && finishEffect)
             {
                 //* 플레이어 조준이 꺼졌는데, 보스 몬스터의 약점이 켜져있는 경우.
                 if (playerMovement.playerArrowList.Count == 0)
@@ -151,15 +152,8 @@ public class MonsterPattern_Boss : MonsterPattern
     //* 보스 약점 활성화
     protected void EnableBossWeakness(bool enableWeakness)
     {
+        finishEffect = enableWeakness;
         enableBossWeakness = enableWeakness;
-
-        if (!enableWeakness)
-        {
-            if (!showWeaknessEffect)
-            {
-                EnableBossWeaknessEffect(true);
-            }
-        }
 
         for (int i = 0; i < m_monster.monsterData.weakness.Count; i++)
         {
@@ -174,11 +168,22 @@ public class MonsterPattern_Boss : MonsterPattern
                 bossWeakness.gameObject.SetActive(enableWeakness);
             }
         }
+
+        if (enableWeakness)
+        {
+            if (!showWeaknessEffect)
+                EnableBossWeaknessEffect(true);
+        }
+
     }
 
     protected void EnableBossWeaknessEffect(bool enableWeaknessEffect)
     {
+        if (!enableWeaknessEffect)
+            enableBossWeakness = enableWeaknessEffect;
+
         showWeaknessEffect = enableWeaknessEffect;
+
         for (int i = 0; i < m_monster.monsterData.weakness.Count; i++)
         {
             BossWeakness bossWeakness = m_monster.monsterData.weakness[i].GetComponent<BossWeakness>();
@@ -186,7 +191,8 @@ public class MonsterPattern_Boss : MonsterPattern
             if (!bossWeakness.destroy_BossWeakness)
             {
                 //* 아직 공격당하지않은 약점이라면? => 활성화
-                bossWeakness.bossWeaknessEffect.SetActive(enableWeaknessEffect);
+
+                bossWeakness.bossWeaknessEffect.gameObject.SetActive(enableWeaknessEffect);
             }
         }
     }
