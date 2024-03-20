@@ -14,7 +14,6 @@ using Unity.VisualScripting.Dependencies.Sqlite;
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
-    PlayerController playerController;
     PlayerMovement playerMovement;
 
     [Header("스킬 02 잔해물 범위")]
@@ -24,7 +23,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
     public GameObject redImage;
-    public GameObject BossText;
+    public GameObject bossText;
     public Vector3 centerPoint;
 
     List<Vector3> randomPos_skill02;
@@ -159,6 +158,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             m_animator.SetFloat("Vertical", x, 0f, Time.deltaTime);   //상
             m_animator.SetFloat("Horizontal", z, 0f, Time.deltaTime); //하
         }
+
+        BossWeaknessUpdate();
     }
 
     public override void Monster_Pattern()
@@ -393,7 +394,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(JumpDown(newRandomPos));
             yield return new WaitUntil(() => isJump == false);
             GameManager.Instance.cameraController.AttentionMonster();
-            GameManager.Instance.cameraController.banAttention=true;
+            GameManager.Instance.cameraController.banAttention = true;
             //* 연출 중, 플레이어 못다가오도록 이펙트
             CheckPlayerPos = true;
             StartCoroutine(CheckPlayer_Production());
@@ -406,7 +407,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
             redImage.SetActive(true);
             GameManager.instance.PadeIn_Alpha(redImage, true, 90);
-            BossText.SetActive(true);
+            bossText.SetActive(true);
             //* 카메라 흔들림        
             GameManager.Instance.cameraController.cameraShake.ShakeCamera(8f, 1.5f, 1.5f);
 
@@ -441,7 +442,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //*s나중에 주석 풀기 !
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
             // GameManager.instance.PadeIn_Alpha(redImage, true, 0, false);
-            BossText.SetActive(false);
+            bossText.SetActive(false);
             CheckPlayerPos = false;
             Base_Phase_HP(false);
             yield return new WaitForSeconds(1f);
@@ -474,8 +475,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //isRoaming = false;
             //Skill04();
             //* 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            // ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -510,7 +511,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         BossMonsterPhase curBossP = curBossPhase;
 
         List<int> skill_List = new List<int>(); //중복된 스킬을 막기 위한 리스트
-        
+
         while (true)
         {
             if (curMonsterState == MonsterState.Death)
@@ -1758,7 +1759,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-        //---------------------------------------//
+                                                           //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -1795,8 +1796,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-        //* 스킬끝났음.----------------------------------------------//
-        //전기 공격 끄기
+                                                       //* 스킬끝났음.----------------------------------------------//
+                                                       //전기 공격 끄기
 
         if (!skillOver)
             skillOver = true;
@@ -1862,7 +1863,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-        //---------------------------------------//
+                                                           //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -2064,7 +2065,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     #region 피격
     private void GetHit()
     {
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_S");
+        effect.gameObject.transform.position = curHitPos;
+        effect.gameObject.transform.rotation = curHitQuaternion;
+
+        effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
         effect.gameObject.transform.position = curHitPos;
         effect.gameObject.transform.rotation = curHitQuaternion;
 

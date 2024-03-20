@@ -8,6 +8,7 @@ using UnityEngine.Animations;
 
 public class MonsterPattern : MonoBehaviour
 {
+    protected PlayerController playerController;
     protected Monster m_monster;
     protected Animator m_animator;
 
@@ -61,7 +62,6 @@ public class MonsterPattern : MonoBehaviour
         Short_Range_Attack,
         Long_Range_Attack,
     }
-
 
     protected float overlapRadius; //플레이어 발견 범위
     // * --------------------------------------------------------//

@@ -99,12 +99,12 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
                 else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 55f); //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 65f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
         }
-        yield return new WaitUntil(() => /*P_States.colliderHit == true ||*/ P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         resetArrow();
         yield return null;
     }
@@ -122,7 +122,7 @@ public class PlayerAttackCheck : MonoBehaviour
         P_States.hadAttack = false;
         P_States.colliderHit = false;
         P_States.isShortArrow = false;
-        P_States.isClickDown = false;
+        //P_States.isClickDown = false;
         P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
@@ -139,7 +139,8 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && other.gameObject.CompareTag("Arrow"))
         {
-            P_States.colliderHit = true;
+            //Debug.Log($"other.gameObject {other.gameObject.name}");
+            //P_States.colliderHit = true;
         }
         if (isEnable)
         {
@@ -319,7 +320,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()
     {
-        //float range = 100f;
         RaycastHit[] hits;
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, Mathf.Infinity);
 
@@ -335,23 +335,34 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 //자기 자신은 패스
                 float distance = hit.distance;
-                if (/*curArrowDistance < distance &&*/ shortDist > distance)    //범위 내 라면
+                if (shortDist > distance)    //범위 내 라면
                 {
-                    if (hit.collider.tag != "Monster")
-                    {
-                        //Time.timeScale = 0;
-                    }
                     shortHit = hit;
                     shortDist = distance;
-                    if (hit.collider.CompareTag("SoundObject")) 
+
+                    if (hit.collider.CompareTag("SoundObject"))
                     {
                         soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
                         //Debug.Log(soundObject);
                         soundObject.attackSoundObj = true;
                         soundObject.collisionPos = hit.transform.position;
                     }
+
+                    if (hit.collider.tag == "BossWeakness")
+                    {
+                        //* 보스 약점
+                        BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
+                        monster = bossWeakness.m_monster;
+                        if (monster != null)
+                        {
+                            Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
+                        }
+
+                        bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
+                    }
                     if (hit.collider.tag == "Monster")
                     {
+                        P_States.colliderHit = true;
                         //Debug.Log("[arrow test] arrow hit");
                         monster = hit.collider.GetComponentInParent<Monster>();
                         if (monster == null)
@@ -371,16 +382,9 @@ public class PlayerAttackCheck : MonoBehaviour
                             playerHitMonster(collisionPoint, otherQuaternion);
                         }
                     }
-                    else
-                    {
-                        //attackEnemy = false;
-                        //P_States.hadAttack = false;
-                    }
                 }
             }
         }
 
-        // if (shortDist != 1000)
-        //     targetDistance = shortDist;
     }
 }
