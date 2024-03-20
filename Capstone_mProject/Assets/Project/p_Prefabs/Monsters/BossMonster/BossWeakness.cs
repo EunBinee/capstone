@@ -5,6 +5,7 @@ using UnityEngine;
 public class BossWeakness : MonoBehaviour
 {
     public Monster m_monster;
+    public GameObject bossWeaknessEffect;
     //! 보스 약점
     public bool destroy_BossWeakness = false; //* false 아직 공격안당한 보스 약점. true 이미 공격당한 보스 약점
     Vector3 normalHitPoint = Vector3.zero;
@@ -25,7 +26,6 @@ public class BossWeakness : MonoBehaviour
         destroy_BossWeakness = true;
 
         StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
-
     }
 
     IEnumerator GetDamageEffect(Vector3 _normalHitPoint, Vector3 hitPoint)

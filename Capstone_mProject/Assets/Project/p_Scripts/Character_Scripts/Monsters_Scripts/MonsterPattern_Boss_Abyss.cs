@@ -14,7 +14,6 @@ using Unity.VisualScripting.Dependencies.Sqlite;
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
-    PlayerMovement playerMovement;
 
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;

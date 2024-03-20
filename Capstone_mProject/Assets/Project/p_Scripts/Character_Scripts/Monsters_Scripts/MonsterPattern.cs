@@ -9,6 +9,7 @@ using UnityEngine.Animations;
 public class MonsterPattern : MonoBehaviour
 {
     protected PlayerController playerController;
+    protected PlayerMovement playerMovement;
     protected Monster m_monster;
     protected Animator m_animator;
 

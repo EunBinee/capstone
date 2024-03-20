@@ -10,6 +10,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private Rigidbody rigid;
 
     public PlayerController _playerController;// = new PlayerController();
+    public PlayerMovement _playerMovement;// = new PlayerController();
     public PlayerController P_Controller => _playerController;
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
@@ -33,6 +34,7 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         player = GameManager.Instance.gameData.player;
         _playerController = player.GetComponent<PlayerController>();
+        _playerMovement = player.GetComponent<PlayerMovement>();
         rigid = GetComponent<Rigidbody>();
         if (this.gameObject.tag == "Arrow")  //* 화살인지 확인을 해
         {
@@ -79,12 +81,13 @@ public class PlayerAttackCheck : MonoBehaviour
     }
     IEnumerator Arrowing()
     {
-        //Debug.Log("[arrow test] IEnumerator Arrowing()");
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow));  //* isAim이 거짓이 되거나 단타라면
         if (!goShoot)
         {
+            _playerMovement.playerArrowList.Add(this);
+
             transform.position = P_Controller.shootPoint.position;
             transform.rotation = P_Controller.shootPoint.rotation;
             //* 키네매틱 끄기
@@ -114,6 +117,9 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         incoArrow = false;
         goShoot = false;
+
+        _playerMovement.playerArrowList.Remove(this);
+
         this.gameObject.SetActive(false);
         P_States.hadAttack = false;
         P_States.colliderHit = false;
