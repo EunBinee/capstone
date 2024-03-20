@@ -29,13 +29,12 @@ public class PlayerMovement : MonoBehaviour
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
     public Collider[] attackColliders;
     private List<PlayerAttackCheck> playerAttackChecks;
+    public List<PlayerAttackCheck> playerArrowList; //* 현재 사용중인 화살
 
     float ElecTime = 0;
     bool showElec = false;
 
     Vector3 camForward;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -49,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
             PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
             playerAttackChecks.Add(attackCheck);
         }
+        playerArrowList = new List<PlayerAttackCheck>();
         P_Value.index = 1;
         P_States.hadAttack = false;
         P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임

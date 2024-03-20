@@ -59,6 +59,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 914765597af43574ea2cf87e6d0839ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_monster: {fileID: 0}
+  bossWeaknessEffect: {fileID: 5116460983429905292}
+  destroy_BossWeakness: 0
+  effectName01: 
+  effectName02: 
 --- !u!1001 &4568362666059732726
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -119,5 +124,10 @@ PrefabInstance:
 --- !u!4 &5116460983429905281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8675981873703923063, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
+  m_PrefabInstance: {fileID: 4568362666059732726}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5116460983429905292 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8675981873703923066, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
   m_PrefabInstance: {fileID: 4568362666059732726}
   m_PrefabAsset: {fileID: 0}
