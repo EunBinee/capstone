@@ -331,7 +331,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         //SetAnimation(MonsterAnimation.Move);
         //몬스터와 플레이어 사이의 거리 체크
-        CheckDistance();
+        //CheckDistance();
     
     }
 
