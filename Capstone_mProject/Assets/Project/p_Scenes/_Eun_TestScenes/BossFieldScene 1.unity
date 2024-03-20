@@ -10825,6 +10825,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossMonster_abyss
       objectReference: {fileID: 0}
+    - target: {fileID: 2836291601694631456, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960241717877835010, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3032461171993248330, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4043314309483684128, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4960948139861666604, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
 --- !u!4 &1253461562 stripped
@@ -14574,6 +14594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 1667497995}
+  playerAttackCheck: {fileID: 0}
 --- !u!1001 &1670296430
 PrefabInstance:
   m_ObjectHideFlags: 0

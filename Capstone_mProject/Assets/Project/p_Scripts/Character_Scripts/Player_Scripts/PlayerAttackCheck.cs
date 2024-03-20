@@ -95,7 +95,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
                 else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 55f); //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 100f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
@@ -315,7 +315,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void ArrowRay()
     {
-        //float range = 100f;
         RaycastHit[] hits;
         hits = Physics.RaycastAll(this.transform.position, this.transform.forward, Mathf.Infinity);
 
@@ -331,18 +330,25 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 //자기 자신은 패스
                 float distance = hit.distance;
-                if (/*curArrowDistance < distance &&*/ shortDist > distance)    //범위 내 라면
+                if (shortDist > distance)    //범위 내 라면
                 {
-                    if (hit.collider.tag != "Monster")
-                    {
-                        //Time.timeScale = 0;
-                    }
                     shortHit = hit;
                     shortDist = distance;
+                    if (hit.collider.tag == "BossWeakness")
+                    {
+                        //* 보스 약점
+                        BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
+                        monster = bossWeakness.m_monster;
+                        if (monster != null)
+                        {
+                            Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
+                        }
 
+                        bossWeakness.destroy_BossWeakness = true;
+                        bossWeakness.WeaknessGetDamage();
+                    }
                     if (hit.collider.tag == "Monster")
                     {
-                        //Debug.Log("[arrow test] arrow hit");
                         monster = hit.collider.GetComponentInParent<Monster>();
                         if (monster == null)
                         {
@@ -361,16 +367,9 @@ public class PlayerAttackCheck : MonoBehaviour
                             playerHitMonster(collisionPoint, otherQuaternion);
                         }
                     }
-                    else
-                    {
-                        //attackEnemy = false;
-                        //P_States.hadAttack = false;
-                    }
                 }
             }
         }
 
-        // if (shortDist != 1000)
-        //     targetDistance = shortDist;
     }
 }

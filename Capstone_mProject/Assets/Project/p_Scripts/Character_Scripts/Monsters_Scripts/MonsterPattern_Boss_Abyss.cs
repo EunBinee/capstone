@@ -14,7 +14,6 @@ using Unity.VisualScripting.Dependencies.Sqlite;
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
-    PlayerController playerController;
     PlayerMovement playerMovement;
 
     [Header("스킬 02 잔해물 범위")]
@@ -159,6 +158,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             m_animator.SetFloat("Vertical", x, 0f, Time.deltaTime);   //상
             m_animator.SetFloat("Horizontal", z, 0f, Time.deltaTime); //하
         }
+
+        BossWeaknessUpdate();
     }
 
     public override void Monster_Pattern()
@@ -1758,7 +1759,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-        //---------------------------------------//
+                                                           //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
@@ -1795,8 +1796,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
 
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-        //* 스킬끝났음.----------------------------------------------//
-        //전기 공격 끄기
+                                                       //* 스킬끝났음.----------------------------------------------//
+                                                       //전기 공격 끄기
 
         if (!skillOver)
             skillOver = true;
@@ -1862,7 +1863,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         float waitTime = 2;//빨간색 경고후 기다리는 시간
         float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
         float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
-        //---------------------------------------//
+                                                           //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = GetGroundPos(transform).y;
         //* 오브젝트 풀링 ---------------------------------------------------------------------------------//

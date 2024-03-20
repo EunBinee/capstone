@@ -37,6 +37,15 @@ public class MonsterPattern_Boss : MonsterPattern
     protected float Phase2_BossHP = 0;
     protected float Phase3_BossHP = 0;
 
+    protected bool enableBossWeakness = false;
+
+    public override void useUpdate()
+    {
+        base.useUpdate();
+
+        BossWeaknessUpdate();
+    }
+
     public virtual void SetBossAttackAnimation(BossMonsterAttackAnimation bossMonsterAttackAnimation, int animIndex = 0)
     {
         switch (bossMonsterAttackAnimation)
@@ -113,18 +122,43 @@ public class MonsterPattern_Boss : MonsterPattern
 
     //*-----------------------------------------------------------------------------//
     //* 보스 약점
-    public virtual void BossWeakness()
+
+    public virtual void BossWeaknessUpdate()
     {
-        if (m_monster.monsterData.useWeakness)
+        if (m_monster.monsterData.useWeakness && curBossPhase != BossMonsterPhase.Phase1)
         {
-            if (curBossPhase != BossMonsterPhase.Phase1)
+            if ((playerController._currentState.isAim && m_monster.monsterData.useWeakness) && !enableBossWeakness)
             {
-                //! 1페이즈 이하 부터만 나오도록.
+                //* 플레이어가 화살을 조준, 그리고 몬스터가 약점을 가지고 있을 경우.
+                //* 보스의 약점이 활성화 되어있지않다면?
+
+                EnableBossWeakness(true); //약점 보여주기
             }
-
-
+            else if (!playerController._currentState.isAim && enableBossWeakness)
+            {
+                //* 플레이어 조준이 꺼졌는데, 보스 몬스터의 약점이 켜져있는 경우.
+                EnableBossWeakness(false); // 약점 끄기
+            }
         }
-
-
     }
+
+    //* 보스 약점 활성화
+    protected void EnableBossWeakness(bool enableWeakness)
+    {
+        enableBossWeakness = enableWeakness;
+        for (int i = 0; i < m_monster.monsterData.weakness.Count; i++)
+        {
+            BossWeakness bossWeakness = m_monster.monsterData.weakness[i].GetComponent<BossWeakness>();
+
+            if (bossWeakness.m_monster == null)
+                bossWeakness.SetMonster(m_monster);
+
+            if (!bossWeakness.destroy_BossWeakness)
+            {
+                //* 아직 공격당하지않은 약점이라면? => 활성화
+                bossWeakness.gameObject.SetActive(enableWeakness);
+            }
+        }
+    }
+
 }
