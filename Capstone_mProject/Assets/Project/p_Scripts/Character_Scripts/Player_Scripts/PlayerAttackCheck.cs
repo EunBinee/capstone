@@ -104,7 +104,7 @@ public class PlayerAttackCheck : MonoBehaviour
             ArrowRay();
             //attackEnemy = false;
         }
-        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        yield return new WaitUntil(() => /*P_States.colliderHit == true ||*/ P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         resetArrow();
         yield return null;
     }
