@@ -722,7 +722,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if ((P_States.isStartComboAttack || !P_States.isGround || P_States.isDodgeing || P_States.isShortArrow)
+        if ((P_States.isStartComboAttack || !P_States.isGround /*|| P_States.isDodgeing*/ || P_States.isShortArrow)
                 && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상

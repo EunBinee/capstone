@@ -95,7 +95,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
                 else dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 65f); //* 발사
+            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
             goShoot = true;
             ArrowRay();
             //attackEnemy = false;
