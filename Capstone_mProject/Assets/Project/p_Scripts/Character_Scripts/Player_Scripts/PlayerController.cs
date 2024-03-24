@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerArrows P_Arrows => _playerArrows;
+    public PlayerInputHandle P_InputHandle;
     public PlayerMovement P_Movement;
     public PlayerPhysicsCheck P_PhysicsCheck;
     public PlayerSkills P_Skills;
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
     {
         P_Com.animator = GetComponent<Animator>();
         P_Com.rigidbody = GetComponent<Rigidbody>();
+        P_InputHandle = GetComponent<PlayerInputHandle>();
         P_Movement = GetComponent<PlayerMovement>();
         P_Skills = GetComponent<PlayerSkills>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
@@ -191,28 +193,6 @@ public class PlayerController : MonoBehaviour
 
         spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
         spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
-    }
-    void RotateTowardsRayDirection(Vector3 direction)
-    {
-        // 레이의 방향으로 목표 회전값을 계산합니다.
-        Quaternion targetRotation = Quaternion.LookRotation(direction);
-
-        // 급격한 회전 방지를 위해 마지막 회전값과 비교하여, 변화가 너무 클 경우 조정합니다.
-        if (Quaternion.Angle(lastRotation, targetRotation) > 10)
-        {
-            // 마지막 회전값과 현재 목표 회전값 사이에 큰 차이가 있다면, 회전 속도를 감소시켜 부드럽게 조정합니다.
-            rotationSpeed = Mathf.Lerp(rotationSpeed, 0.5f, Time.deltaTime * 10);
-        }
-        else
-        {
-            // 회전값 사이의 차이가 작다면, 정상 회전 속도로 복귀합니다.
-            rotationSpeed = Mathf.Lerp(rotationSpeed, 2.0f, Time.deltaTime * 10);
-        }
-
-        // 캐릭터의 회전을 부드럽게 목표 회전값으로 조정합니다.
-        spine.rotation = Quaternion.Lerp(spine.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-
-        // 현재 회전값을 마지막 회전값으로 저장합니다.
         lastRotation = spine.rotation;
     }
 

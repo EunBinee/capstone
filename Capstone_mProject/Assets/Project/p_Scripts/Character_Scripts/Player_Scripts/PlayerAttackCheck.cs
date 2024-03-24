@@ -67,12 +67,9 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Bow_Attack_ChargingLoop");
         effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-        float shootTime = shootDeltaTime();
-        while ((!goShoot && !P_States.colliderHit) || (goShoot && shootTime < 5.0f))
+        while ((!goShoot && !P_States.colliderHit) || (deltaShootTime < 5.0f))    // 발사하지 않았거나 / 쏘고나서 5초 미만이라면
         {
-            shootTime = shootDeltaTime();
-            //Debug.Log($"{shootTime} ");
-            effect.gameObject.transform.position = this.gameObject.transform.position;
+            effect.gameObject.transform.position = this.gameObject.transform.position; // 오브젝트에 이펙트 부착
 
             yield return null;
         }
@@ -83,7 +80,7 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         incoArrow = true;
         dir = Vector3.zero;
-        yield return new WaitUntil(() => (!P_States.isAim || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
+        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -142,7 +139,7 @@ public class PlayerAttackCheck : MonoBehaviour
         if (other.gameObject.tag != "Player" && other.gameObject.tag != "Arrow")
         {
             //Debug.Log($"other.gameObject {other.gameObject.name}");
-            //P_States.colliderHit = true;
+            P_States.colliderHit = true;
         }
         if (isEnable)
         {
