@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -31,6 +32,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
     //계산식
     //bool attackEnemy = false;
+
+   
 
     void Start()
     {
@@ -78,6 +81,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             yield return null;
         }
+        
         effect.StopEffect();
         yield return null;
     }
@@ -158,6 +162,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     //attackShield = false;
                     _playerController.hitMonsters.Add(other.gameObject);
+
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
                     if (P_States.hadAttack == false || P_States.notSameMonster)
                     {
@@ -167,12 +172,35 @@ public class PlayerAttackCheck : MonoBehaviour
                         // 충돌 지점의 좌표를 얻기
                         Vector3 collisionPoint = other.ClosestPoint(transform.position);
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                        playerHitMonster(collisionPoint, otherQuaternion);
+
+                        if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
+                        {
+                            monster.monsterPattern.isShield = false;
+                            playerHitShield(collisionPoint, otherQuaternion);
+                            //monster.monsterPattern.isShield = false;
+                        }
+                        else
+                        {
+                            playerHitMonster(collisionPoint, otherQuaternion);
+                        }
+//                        Debug.Log(isShield);
+                        // if(isShield)
+                        // {
+                        //     playerHitShield(collisionPoint, otherQuaternion);
+                        //     Debug.Log("실드");
+                           
+                        // }
+                        // else if(!isShield)
+                        // {
+                      //playerHitMonster(collisionPoint, otherQuaternion);
+                        //     Debug.Log("실드아님");
+                        // }
+                        
                         //사운드
                         SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
                     }
-                    else
-                    {
+                    //else
+                    //{
                         //이미 한번 때린 상태
                         //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
                         //Debug.Log("[attack test]P_States.hadAttack : " + P_States.hadAttack);
@@ -210,7 +238,48 @@ public class PlayerAttackCheck : MonoBehaviour
                                 }
                             }
                         }*/
-                    }
+                    //}
+
+                    // if (P_States.hadAttack == false || P_States.notSameMonster)
+                    // {
+
+                    //     foreach(GameObject monster in _playerController.hitMonsters )
+                    //     {
+                    //         if(monster.name=="Shield")
+                    //         {
+                    //             isShield = true;
+                    //             break;
+                    //         }
+                    //     }
+
+                    //     Transform collidedTransform;
+                    //     // 충돌 지점의 좌표를 얻기
+                    //     Vector3 collisionPoint;
+                    //     Quaternion otherQuaternion;
+
+                    //     if(isShield)
+                    //     {
+                    //         // Debug.Log("[attack test]몬스터 피격");
+                    //         // 충돌한 객체의 Transform을 얻기
+                    //         collidedTransform = other.transform;
+                    //         // 충돌 지점의 좌표를 얻기
+                    //         collisionPoint = other.ClosestPoint(transform.position);
+                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
+                    //         playerHitShield(collisionPoint, otherQuaternion);
+                    //         //사운드
+                    //         // SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
+    
+                    //     }
+                    //     else
+                    //     {
+                    //         collidedTransform = other.transform;
+                    //         // 충돌 지점의 좌표를 얻기
+                    //         collisionPoint = other.ClosestPoint(transform.position);
+                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
+                    //         playerHitMonster(collisionPoint, otherQuaternion);
+                    //     }
+                    // }
+
 
                 }
                 else
@@ -224,7 +293,7 @@ public class PlayerAttackCheck : MonoBehaviour
             }
         }
     }
-
+   // private bool isShield = false;
     public void checkMon()
     {
         //Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
@@ -316,7 +385,22 @@ public class PlayerAttackCheck : MonoBehaviour
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
     }
+    public void playerHitShield(Vector3 collisionPoint, Quaternion otherQuaternion)
+    {
 
+        //TODO: 나중에 연산식 사용.
+        int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+        
+        GameManager.instance.damageCalculator.damageExpression = "A+B";
+        GameManager.instance.damageCalculator.CalculateAndPrint();
+        damageValue = 0;
+        
+        monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
+        _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        //monster.monsterPattern.isShield = false;
+
+    
+    }
 
     private void ArrowRay()
     {
@@ -379,8 +463,33 @@ public class PlayerAttackCheck : MonoBehaviour
                             Vector3 collisionPoint = hit.point;
                             Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
+
                             playerHitMonster(collisionPoint, otherQuaternion);
+                            // if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
+                            // {
+                            //     monster.monsterPattern.isShield = false;
+                            //     playerHitShield(collisionPoint, otherQuaternion);
+                            //     //monster.monsterPattern.isShield = false;
+                            // }
+                            // else
+                            // {
+                            //     playerHitMonster(collisionPoint, otherQuaternion);
+                            // }
                         }
+                    }
+                    if(hit.collider.tag == "Shield")
+                    {
+                        monster = hit.collider.GetComponentInParent<Monster>();
+                        
+                        if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
+                            {
+                                Vector3 collisionPoint = hit.point;
+                                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                                monster.monsterPattern.isShield = false;
+                                playerHitShield(collisionPoint, otherQuaternion);
+                                //monster.monsterPattern.isShield = false;
+                            }
                     }
                 }
             }

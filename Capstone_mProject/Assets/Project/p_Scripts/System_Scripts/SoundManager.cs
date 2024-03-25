@@ -226,7 +226,7 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void Play_SfxSound(SfxSound sfx_Sound)
+    public void Play_SfxSound(SfxSound sfx_Sound, bool useLoop = false)
     {
         for (int index = 0; index < sfxPlayer.Length; index++)
         {
@@ -236,8 +236,23 @@ public class SoundManager : MonoBehaviour
                 continue;
 
             sfx_channelIndex = loopIndex;
+            sfxPlayer[sfx_channelIndex].loop = useLoop;
             sfxPlayer[sfx_channelIndex].clip = sfxClips[(int)sfx_Sound];
             sfxPlayer[sfx_channelIndex].Play();
+            break;
+        }
+    }
+     public void Stop_SfxSound(SfxSound sfx_Sound)
+    {
+        for (int index = 0; index < sfxPlayer.Length; index++)
+        {
+            int loopIndex = (index + sfx_channelIndex) % sfxPlayer.Length;
+
+            if (sfxPlayer[loopIndex].isPlaying)
+                continue;
+
+            sfx_channelIndex = loopIndex;
+            sfxPlayer[sfx_channelIndex].Stop();
             break;
         }
     }

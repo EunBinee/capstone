@@ -35,6 +35,7 @@ public class MonsterPattern : MonoBehaviour
     protected Quaternion curHitQuaternion;
 
 
+
     public enum MonsterState
     {
         Roaming,
@@ -81,6 +82,7 @@ public class MonsterPattern : MonoBehaviour
     public bool isTracing = false;
     public bool isGoingBack = false;
     public bool isGettingHit = false;
+    public bool isShield = false; //몬스터와 플레이어사이에 방패있는지 여부 
 
     public enum MonsterMotion
     {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,8 +13,8 @@ public class MonsterPattern_Monster03 : MonsterPattern
     // private float roundDistance = 1.0f;
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
     public float findPlayerDistance = 6f;
-    // [Header("몬스터 회전각도")]
-    // private Quaternion originRotatation;
+    [Header("다시 어그로까지의 쿨탐")]
+    private float coolTime=5.0f;
 
     SoundObject soundObject;
     GameObject soundObjectGameObject;
@@ -48,8 +49,11 @@ public class MonsterPattern_Monster03 : MonsterPattern
         playerHide = true;
         StartMonster();
 
+        coolTime = 5.0f;
+
         soundObjectGameObject = GameObject.FindGameObjectWithTag("SoundObject");
         soundObject = soundObjectGameObject.GetComponent<SoundObject>();
+        isShield = false;
     }
 
     public override void Monster_Pattern()
@@ -219,13 +223,14 @@ public class MonsterPattern_Monster03 : MonsterPattern
         {
             isFinding = true;
 
-            if (discovery_Monster_co != null)
-            {
-                StopCoroutine(discovery_Monster_co);
-            }
-            discovery_Monster_co = StartCoroutine(DiscoveryPlayer_co());
-            ChangeMonsterState(MonsterState.Tracing);
+           
         }
+        if (discovery_Monster_co != null)
+        {
+            StopCoroutine(discovery_Monster_co);
+        }
+        discovery_Monster_co = StartCoroutine(DiscoveryPlayer_co());
+        ChangeMonsterState(MonsterState.Tracing);
     }
 
     IEnumerator DiscoveryPlayer_co()
@@ -233,16 +238,39 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         float time = 0f; // 경과 시간
         Quaternion targetAngle;//= Quaternion.LookRotation(curPlayerdirection); // 플레이어를 바라보는 각도
-
+        RaycastHit raycastHit;
+      
         // 플레이어가 움직이는 동안 계속 플레이어를 바라보도록 함
         while (true)
         {
+            Debug.DrawRay(transform.position, playerTargetPos.position - transform.position , Color.yellow);
+
+            if(Physics.Raycast(transform.position, playerTargetPos.position - transform.position, out raycastHit))
+            {
+                //Debug.Log($"{raycastHit.collider.name}");
+                if(raycastHit.collider.CompareTag("Shield"))
+                {
+                    //실드가 앞에 있으면 true, 없으면 false
+                    //GameManager.Instance.gameData.player.GetComponentInChildren<PlayerAttackCheck>().isShield = true; 
+                    //Debug.Log(GameManager.Instance.gameData.player.GetComponentInChildren<PlayerAttackCheck>().isShield);
+                    isShield = true;
+
+
+                }
+                else
+                {
+                    //isShield = false;
+                }
+                yield return null;
+            }
+            
            
             if (time >= 60.0f)
             {
                 Debug.Log("60초 지남/ BOOM~");
                 time = 0;
                 //! 몬스터 폭발, 죽음, 타임 초기화 해야함. 
+                Monster_Motion(MonsterMotion.Death);
                 yield break;
             }
 
@@ -270,8 +298,8 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 targetAngle = Quaternion.LookRotation(curSoundObjdirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
                 //soundObject.attackSoundObj = false;
-                yield return new WaitForSeconds(5.0f);
-            
+                yield return new WaitForSeconds(coolTime);
+                soundObject.attackSoundObj = false;
             }
     
             
@@ -341,34 +369,32 @@ public class MonsterPattern_Monster03 : MonsterPattern
         float distanceToPlayer = Vector3.Distance(transform.position, playerTrans.position);
 
         float tracingDistance = 3.0f; //거리
-        float tracingSpeed =1.0f;  //속도 
+        float tracingSpeed = 1.0f;  //속도 
 
-    
-       if(distanceToPlayer > tracingDistance)
+
+        if (distanceToPlayer > tracingDistance)
         {
             //일정 범위 밖이라면 플레이어를 향해 이동
             Vector3 directionToPlayer = (playerTrans.position - transform.position).normalized;
             directionToPlayer.y = 0; // y축 이동을 막음
 
-            if(!soundObject.attackSoundObj)
+            if (!soundObject.attackSoundObj)
             {
+       
                 transform.position += directionToPlayer * tracingSpeed * Time.deltaTime;
             }
-            else if(soundObject.attackSoundObj)
+            else if (soundObject.attackSoundObj)
             {
-                soundObject.attackSoundObj = false;
-                Debug.Log(soundObject.attackSoundObj);
-                //CheckDistance();
-                yield return new WaitForSeconds(5.0f);
-            
+               tracingSpeed = 0.0f; // 이동을 멈추도록 함
+                yield return new WaitForSeconds(coolTime); // 5초 대기 후에
+
+                // 움직임을 다시 시작
+                tracingSpeed = 1.0f;
             }
-        
-            
-           
         }
-      
-       
+
     }
+           
 
     public override void CheckDistance()
     {
@@ -384,17 +410,12 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
                 if (distance >= findPlayerDistance)
                 {
-                    //isGoingBack = true;d
-                    //ChangeMonsterState(MonsterState.Discovery);
-                    //ChangeMonsterState(MonsterState.Tracing);
+    
                 }
 
                 if (distance < findPlayerDistance)
                 {
-                    //거리가 2.5만큼 가깝다.
-                    //일반 공격
-                    ChangeMonsterState(MonsterState.Tracing);
-                    // Monster_Motion(MonsterMotion.Short_Range_Attack);
+                  
                 }
 
                 break;
@@ -497,7 +518,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
      // * 죽음 모션
     IEnumerator Death_co()
     {
-        StopAtackCoroutine();
+        StopCoroutine(discovery_Monster_co);
 
         if (isTracing)
         {
@@ -514,7 +535,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         yield return new WaitForSeconds(0.5f);
         //! 사운드
-        //m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        m_monster.SoundPlay(Monster.monsterSound.Death, false);
         m_monster.RetrunHPBar();
         //SetAnimation(MonsterAnimation.Death);
 
