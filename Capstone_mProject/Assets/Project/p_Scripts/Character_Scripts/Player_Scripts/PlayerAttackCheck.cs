@@ -434,6 +434,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.tag == "BossWeakness")
                     {
+                        P_States.colliderHit = true;
                         //* 보스 약점
                         BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
                         monster = bossWeakness.m_monster;
