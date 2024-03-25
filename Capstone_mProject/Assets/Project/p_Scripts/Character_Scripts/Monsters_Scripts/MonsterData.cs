@@ -11,7 +11,8 @@ public class MonsterData
         None,
         NomalMonster,
         DistantAttackMonster,
-        BossMonster
+        BossMonster,
+        ShieldMonster
     }
 
     [Header("몬스터 정보")]
@@ -23,6 +24,9 @@ public class MonsterData
     [Header("밑이 뚫려 있는 몬스터")]
     public bool isBottomlessMonster = false;
     public List<Transform> bottomlessMonsterLegs;
+
+    [Header("방패 몬스터")]
+    public bool isShieldMonster = false;
 
     [Header("몬스터 약점")]
     public bool useWeakness = false;
