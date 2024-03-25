@@ -1,15 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.Timeline;
 
 public class CameraController : MonoBehaviour
 {
     public CameraInfo cameraInfo;
+    public CinemachineBrain cinemachineBrain;
+    public SignalReceiver signalReceiver;
     public CameraShake cameraShake;
     public PlayerController playerController;
     public Transform playerHeadPos; //* 벽체크에쓰임
@@ -694,6 +698,11 @@ public class CameraController : MonoBehaviour
     {
         Check_Z();
         CamReset(); //rotation, position 변경
+    }
+    public void CinemachineSetting(bool _value)
+    {
+        cinemachineBrain.enabled = _value;
+        signalReceiver.enabled = _value;
     }
     //*------------------------------------------------------------------------------------------//
     void OnPreCull() => GL.Clear(true, true, Color.black);

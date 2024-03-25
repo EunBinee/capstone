@@ -40,7 +40,7 @@ public class MonsterPattern_Boss : MonsterPattern
 
     //* 약점--------------------------------------------------------------//
     protected bool enableBossWeakness = false;
-    protected int curRemainWeaknessesNum = 0; // 남은 약점 수
+    public int curRemainWeaknessesNum = 0; // 남은 약점 수
     //*-------------------------------------------------------------------//
     public override void useUpdate()
     {
@@ -228,7 +228,6 @@ public class MonsterPattern_Boss : MonsterPattern
                 if (!bossWeakness.destroy_BossWeakness)
                 {
                     //* 아직 공격당하지않은 약점이라면? => 활성화
-
                     bossWeakness.bossWeaknessEffect.gameObject.SetActive(enableWeaknessEffect);
                 }
             }

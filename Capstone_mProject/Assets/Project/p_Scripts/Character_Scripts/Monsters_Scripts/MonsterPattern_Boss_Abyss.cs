@@ -2335,9 +2335,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
+        GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
-
-
         CurSceneManager.instance.PlayTimeline("Abyss_LastWeakness_TimeLine");
     }
 
@@ -2381,7 +2380,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public void EndDirectorMonsterLastWeakness()
     {
-
+        GameManager.instance.cameraController.CinemachineSetting(false);
         if (m_monster.monsterData.haveLastWeakness)
         {
             for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
