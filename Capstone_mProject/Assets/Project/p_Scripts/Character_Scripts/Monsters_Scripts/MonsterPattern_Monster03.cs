@@ -347,6 +347,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
         if (!isTracing)
         {
             isTracing = true;
+            SetPlayerAttackList(true);
         }
      
         //! 여기서 플레이어 쫒게추가함. 
@@ -369,7 +370,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
         float distanceToPlayer = Vector3.Distance(transform.position, playerTrans.position);
 
         float tracingDistance = 3.0f; //거리
-        float tracingSpeed = 1.0f;  //속도 
+        float tracingSpeed = 1.5f;  //속도 
 
 
         if (distanceToPlayer > tracingDistance)

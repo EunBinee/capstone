@@ -235,18 +235,28 @@ public class Monster : MonoBehaviour
     public void Get_DamageUI(double damage)
     {
         float randomRange = 0;
+        float randomRangeMin = 0;
+        float randdomRangeMax = 0;
+
         if (monsterData.monsterType == MonsterData.MonsterType.BossMonster)
         {
             //보스전일때는 좀더 크게
-            randomRange = 1.5f;
+            //randomRange = 1.5f;
+            randomRangeMin = 1.0f;
+            randdomRangeMax = 2.5f;
         }
         else
-            randomRange = 0.5f;
+        {
+            //randomRange = 0.5f;
+            randomRangeMin = -0.5f;
+            randdomRangeMax = 0.5f;
+        }
+           
         DamageUI_Info damageUI = UIManager.Instance.damageManager.Get_DamageUI();
 
-        float x = UnityEngine.Random.Range(-randomRange, randomRange);
-        float y = UnityEngine.Random.Range(-randomRange, randomRange);
-        float z = UnityEngine.Random.Range(-randomRange, randomRange);
+        float x = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
+        float y = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
+        float z = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         Vector3 randomPos = new Vector3(x, y, z);
         randomPos = monsterData.effectTrans.position + randomPos;
 
