@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 7195301709572235709}
   - component: {fileID: 7195301709572235706}
   - component: {fileID: 1404091125779623576}
+  - component: {fileID: 1667498000}
+  - component: {fileID: 1667498001}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -134,6 +136,7 @@ MonoBehaviour:
     dodgingSpeed: 5
     slopeAccel: 1
     gravity: -9.81
+    electricShock_Time: 5
   _currentState:
     isNotMoving: 0
     isWalking: 0
@@ -142,24 +145,32 @@ MonoBehaviour:
     isStrafing: 0
     isJumping: 0
     isDodgeing: 0
+    isSkill: 0
+    isPerformingAction: 0
+    isStop: 0
     previousDodgeKeyPress: 0
     currentDodgeKeyPress: 0
     isStartComboAttack: 0
-    isSkill: 0
+    colliderHit: 0
     hadAttack: 0
     hasAttackSameMonster: 0
     notSameMonster: 0
-    isBouncing: 0
-    isStop: 0
-    isAim: 0
     canGoForwardInAttack: 0
+    isGettingHit: 0
     isElectricShock: 0
-    isPerformingAction: 0
+    isBouncing: 0
+    isBowMode: 0
+    isClickDown: 0
+    isAim: 0
+    startAim: 0
+    isCamOnAim: 0
+    beenAttention: 0
+    isShortArrow: 0
+    isStrongArrow: 0
     isForwardBlocked: 0
     isBackwardBlocked: 0
     isGround: 0
     isOnSteepSlop: 0
-    isGettingHit: 0
   _currentValue:
     moveAmount: 0
     moveDirection: {x: 0, y: 0, z: 0}
@@ -179,6 +190,7 @@ MonoBehaviour:
     minHitScale: 1
     nowEnemy: {fileID: 0}
     finalSpeed: 0
+    aimClickDown: 0
     groundDistance: 0
     hitDistance: 0
     groundSlopeAngle: 0
@@ -191,23 +203,26 @@ MonoBehaviour:
     playerCamera: {fileID: 0}
     playerCameraPivot: {fileID: 0}
     cameraObj: {fileID: 0}
-  _playerSkills:
-    arrowPrefabPath: Arrow
+  _playerArrows:
+    arrowPrefabName: Arrow
     poolSize: 5
   P_Movement: {fileID: 0}
-  rayCastHeightOffset: 1
+  P_PhysicsCheck: {fileID: 0}
+  P_Skills: {fileID: 0}
   navMeshSurface: []
   curPlayerState: 0
   hitNum: {fileID: 0}
   hitUI: {fileID: 0}
   HPgauge: {fileID: 0}
   hitMonsters: []
-  forwardHit: []
   bow: {fileID: 8890993529786064295}
   sword: {fileID: 8890818801151058391}
   crosshairImage: {fileID: 0}
+  arrow: {fileID: 0}
   shootPoint: {fileID: 5607881394436242999}
-  originVpos: {x: 0, y: 0, z: 0}
+  spine: {fileID: 0}
+  originEpos: {x: 0, y: 0, z: 0}
+  originRpos: {x: 0, y: 0, z: 0}
 --- !u!114 &1404091125779623576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,7 +235,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controller: {fileID: 7195301709572235706}
   skill_E: {fileID: 0}
   skill_Q: {fileID: 0}
   skill_R: {fileID: 0}
@@ -230,6 +244,36 @@ MonoBehaviour:
   - {fileID: 8431399734445593098}
   - {fileID: 1229694935}
   - {fileID: 5043616183923541767, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
+  playerArrowList: []
+--- !u!114 &1667498000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: -7299792492529011644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34bd84148dbab3542a39a52ba321684e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 7195301709572235706}
+  rayCastHeightOffset: 1
+  forwardHit: []
+--- !u!114 &1667498001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: -7299792492529011644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889f37518ef32224b83ea0b73542eddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 7195301709572235706}
+  playerAttackCheck: {fileID: 0}
 --- !u!1 &1721222532
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +329,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1997270829}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.3}
+  m_LocalPosition: {x: 0, y: 0, z: -0.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2070,6 +2114,8 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  _playerMovement: {fileID: 0}
+  deltaShootTime: 0
 --- !u!1 &6045919126286535076
 GameObject:
   m_ObjectHideFlags: 0
@@ -2443,6 +2489,8 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  _playerMovement: {fileID: 0}
+  deltaShootTime: 0
 --- !u!1 &7284528994713667442
 GameObject:
   m_ObjectHideFlags: 0
@@ -4485,6 +4533,8 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  _playerMovement: {fileID: 0}
+  deltaShootTime: 0
 --- !u!4 &3723415152261526016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5246327162783607734, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -4573,3 +4623,5 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  _playerMovement: {fileID: 0}
+  deltaShootTime: 0
