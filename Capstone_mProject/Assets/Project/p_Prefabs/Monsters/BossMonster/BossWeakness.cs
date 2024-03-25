@@ -24,6 +24,9 @@ public class BossWeakness : MonoBehaviour
     {
         //* 공격 당했을 때 연출
         destroy_BossWeakness = true;
+
+        m_monster.bossMonsterPattern.ReduceRemainWeaknessesNum();
+
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.8f, 2f, 2f);
         StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
     }

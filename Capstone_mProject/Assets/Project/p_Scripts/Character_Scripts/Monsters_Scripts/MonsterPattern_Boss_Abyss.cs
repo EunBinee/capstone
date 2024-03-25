@@ -123,6 +123,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         CheckBossHP();
         noAttack = false;
+
+        //*----------------------------------------------------------------------//
+        if (m_monster.monsterData.useWeakness)
+        {
+            curRemainWeaknessesNum = m_monster.monsterData.weaknessList.Count;
+        }
+
+        //*----------------------------------------------------------------------//
+
     }
 
     public override void UpdateRotation()
@@ -2110,9 +2119,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetAnimation(MonsterAnimation.Idle);
 
         //- 다리 몸통에서 전기와 폭탄 나오도록.
-        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
         {
-            StartCoroutine(Death_Production(m_monster.monsterData.weakness[i].position, 1));
+            StartCoroutine(Death_Production(m_monster.monsterData.weaknessList[i].position, 1));
         }
         Vector3 neckPos = new Vector3(bossNeck.position.x - 2, bossNeck.position.y, bossNeck.position.z);
         StartCoroutine(Death_Production(neckPos, 3));
@@ -2121,9 +2130,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //- 사라질때는 전기만.
         yield return new WaitForSeconds(8f);
         useExplosionSound = true;
-        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
         {
-            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weakness[i].position, 1, 0, 0.1f, true));
+            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weaknessList[i].position, 1, 0, 0.1f, true));
         }
         StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));
         StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));

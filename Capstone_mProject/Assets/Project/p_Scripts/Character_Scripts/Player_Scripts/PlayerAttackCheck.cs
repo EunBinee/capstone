@@ -350,7 +350,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                         bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
                     }
-                    if (hit.collider.tag == "Monster")
+                    else if (hit.collider.tag == "Monster")
                     {
                         P_States.colliderHit = true;
                         //Debug.Log("[arrow test] arrow hit");

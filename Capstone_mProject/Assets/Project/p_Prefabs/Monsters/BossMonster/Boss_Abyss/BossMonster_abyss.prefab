@@ -3895,11 +3895,13 @@ MonoBehaviour:
     - {fileID: 2755003019288645445}
     - {fileID: 2755003018265630036}
     useWeakness: 1
-    weakness:
+    weaknessList:
     - {fileID: 4960948139861666607}
     - {fileID: 3032461171993248329}
     - {fileID: 4043314309483684131}
     - {fileID: 2960241717877835009}
+    haveLastWeakness: 1
+    lastWeaknessList:
     - {fileID: 2836291601694631459}
     HPBarPos: {fileID: 0}
     MaxHP: 20000
@@ -6338,6 +6340,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossWeakness_FLeft
       objectReference: {fileID: 0}
+    - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8163665208408752206, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -6399,6 +6405,10 @@ PrefabInstance:
     - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_Name
       value: BossWeakness_RLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8163665208408752206, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_RootOrder
@@ -6466,6 +6476,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossWeakness_Neck
       objectReference: {fileID: 0}
+    - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8163665208408752206, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -6532,6 +6546,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossWeakness_RRight
       objectReference: {fileID: 0}
+    - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8163665208408752206, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -6593,6 +6611,10 @@ PrefabInstance:
     - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_Name
       value: BossWeakness_FRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 8163665208408752205, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8163665208408752206, guid: 3bcbe55313a811e418c48c76e266c338, type: 3}
       propertyPath: m_RootOrder

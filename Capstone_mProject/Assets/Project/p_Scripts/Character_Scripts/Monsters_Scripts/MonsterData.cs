@@ -26,7 +26,9 @@ public class MonsterData
 
     [Header("몬스터 약점")]
     public bool useWeakness = false;
-    public List<Transform> weakness;
+    public List<Transform> weaknessList;
+    public bool haveLastWeakness = false; //약점 끝나고, 마지막 약점
+    public List<Transform> lastWeaknessList;
 
     [Header("몬스터 체력")]
     public Transform HPBarPos;
