@@ -269,10 +269,8 @@ public class MonsterPattern_Boss : MonsterPattern
     }
 
     //* 보스 마지막 약점 연출
-
-    public void DirectTheBossLastWeakness()
+    public virtual void DirectTheBossLastWeakness()
     {
-        Debug.Log("연출끝!");
-        curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
+
     }
 }

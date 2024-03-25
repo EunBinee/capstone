@@ -603,6 +603,8 @@ public class CameraController : MonoBehaviour
         float resetZ = WallInFrontOfCamera(minZ, maxZ);
         cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, resetZ);
         cameraObj.gameObject.transform.localRotation = Quaternion.identity;
+        cameraObj.fieldOfView = default_FieldOfView;
+
     }
 
     //* 보스전 끝난 후 주목 풀기.

@@ -2331,5 +2331,66 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 navMeshSurface[i].BuildNavMesh();
         }
     }
+    //*-------------------------------------------------------------------------------------//
+    //* 보스 마지막 약점 연출
+    public override void DirectTheBossLastWeakness()
+    {
+        //* 모든 것 멈추기
+
+
+        CurSceneManager.instance.PlayTimeline("Abyss_LastWeakness_TimeLine");
+    }
+
+    //* 타임라인에서 사용되는 이펙트 
+    public void MonsterLastWeakness_TimeLineEffect()
+    {
+        StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
+    }
+
+    IEnumerator MonsterLastWeakness_TimeLineEffect_co()
+    {
+        //* 연기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //* 연기 이펙트
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
+        effectPos = transform.position;
+        effectPos.y -= 2.5f;
+        effect.transform.position = effectPos;
+
+        Vector3 originPos = transform.position;
+        effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+        originPos.y += 1.1f;
+        effect.transform.position = originPos;
+
+        yield return new WaitForSeconds(8f);
+
+        if (m_monster.monsterData.haveLastWeakness)
+        {
+            for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
+            {
+                m_monster.monsterData.lastWeaknessList[i].gameObject.SetActive(true);
+            }
+        }
+    }
+    //* 보스 마지막 약점 연출
+    public void EndDirectorMonsterLastWeakness()
+    {
+
+        if (m_monster.monsterData.haveLastWeakness)
+        {
+            for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
+            {
+                m_monster.monsterData.lastWeaknessList[i].gameObject.SetActive(false);
+            }
+        }
+
+        curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
+    }
 
 }
