@@ -234,7 +234,7 @@ public class Monster : MonoBehaviour
     //* 데미지 UI //
     public void Get_DamageUI(double damage)
     {
-        float randomRange = 0;
+        //float randomRange = 0;
         float randomRangeMin = 0;
         float randdomRangeMax = 0;
 
@@ -242,8 +242,8 @@ public class Monster : MonoBehaviour
         {
             //보스전일때는 좀더 크게
             //randomRange = 1.5f;
-            randomRangeMin = 1.0f;
-            randdomRangeMax = 2.5f;
+            randomRangeMin = 0.0f;
+            randdomRangeMax = 1.2f;
         }
         else
         {
@@ -256,9 +256,9 @@ public class Monster : MonoBehaviour
 
         float x = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         float y = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
-        float z = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
+        float z = UnityEngine.Random.Range(randomRangeMin,randdomRangeMax);
         Vector3 randomPos = new Vector3(x, y, z);
-        randomPos = monsterData.effectTrans.position + randomPos;
+        randomPos = GameManager.Instance.gameData.playerHeadPos.position+randomPos;//monsterData.effectTrans.position + randomPos;
 
         damageUI.Reset(this, randomPos, damage);
     }
