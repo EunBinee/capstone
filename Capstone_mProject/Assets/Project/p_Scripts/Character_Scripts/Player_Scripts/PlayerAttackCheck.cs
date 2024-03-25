@@ -67,7 +67,7 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Bow_Attack_ChargingLoop");
         effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
-        while ((!goShoot && !P_States.colliderHit) || (deltaShootTime < 5.0f))    // 발사하지 않았거나 / 쏘고나서 5초 미만이라면
+        while (!goShoot || !P_States.colliderHit)
         {
             effect.gameObject.transform.position = this.gameObject.transform.position; // 오브젝트에 이펙트 부착
 
@@ -97,17 +97,16 @@ public class PlayerAttackCheck : MonoBehaviour
             }
             rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
             goShoot = true;
-            ArrowRay();
-            //attackEnemy = false;
         }
-        yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
+        while (!(P_States.colliderHit == true || P_States.hadAttack == true || deltaShootTime >= 4.0f))
+        {
+            deltaShootTime = deltaShootTime + Time.deltaTime;
+            ArrowRay();
+            yield return null;
+        }
+        //yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
         resetArrow();
         yield return null;
-    }
-    private float shootDeltaTime()
-    {
-        deltaShootTime = deltaShootTime + Time.deltaTime;
-        return deltaShootTime;
     }
 
     public void resetArrow()
@@ -136,11 +135,31 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag != "Player" && other.gameObject.tag != "Arrow")
-        {
-            //Debug.Log($"other.gameObject {other.gameObject.name}");
-            P_States.colliderHit = true;
-        }
+        // if (isArrow)    //화살인데
+        // {
+        //     if (other.gameObject.tag == "BossWeakness")
+        //     {
+        //         monster = other.GetComponentInParent<Monster>();
+        //         if (monster == null)
+        //         {
+        //             Debug.LogError("몬스터 : null");
+        //             return;
+        //         }
+        //         if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
+        //         {
+        //             _playerController.hitMonsters.Add(other.gameObject);
+        //             //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
+        //             if (P_States.hadAttack == false || P_States.notSameMonster)
+        //             {
+        //                 P_States.colliderHit = true;
+        //                 ArrowRay();
+        //                 Debug.Log($"other.gameObject {other.gameObject.name}");
+        //                 //사운드
+        //                 //SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
+        //             }
+        //         }
+        //     }
+        // }
         if (isEnable)
         {
             if (other.gameObject.tag == "Monster")
@@ -350,7 +369,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                         bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
                     }
-                    if (hit.collider.tag == "Monster")
+                    else if (hit.collider.tag == "Monster")
                     {
                         P_States.colliderHit = true;
                         //Debug.Log("[arrow test] arrow hit");
