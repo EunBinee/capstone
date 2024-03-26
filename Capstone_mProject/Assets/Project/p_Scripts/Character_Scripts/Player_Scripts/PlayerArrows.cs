@@ -10,8 +10,6 @@ public class PlayerArrows
     private PlayerController playerController;
     public string arrowName = "Arrow"; // Prefabs 폴더에 Arrow 프리팹
     public int poolSize = 5;
-    private GameObject[] arrowPool;
-    private int currentArrowIndex = 0;
     public int arrowsPoolCount = 50;
     public Dictionary<string, GameObject> arrowPrefabs;
     public Dictionary<string, List<GameObject>> arrowPools;
