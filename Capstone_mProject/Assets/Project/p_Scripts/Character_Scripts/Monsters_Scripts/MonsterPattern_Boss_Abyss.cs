@@ -408,8 +408,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             StartCoroutine(JumpDown(newRandomPos));
             yield return new WaitUntil(() => isJump == false);
+            //* 강제 주목 -------------------------------------------------------//
             GameManager.Instance.cameraController.AttentionMonster();
             GameManager.Instance.cameraController.banAttention = true;
+            //---------------------------------------------------------------------//
             //* 연출 중, 플레이어 못다가오도록 이펙트
             CheckPlayerPos = true;
             StartCoroutine(CheckPlayer_Production());
@@ -440,6 +442,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             //! 사운드
             m_monster.SoundPlay(Monster.monsterSound.Phase, true);
+
             yield return new WaitForSeconds(10f);
 
             //! 사운드 멈춤
@@ -453,19 +456,27 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             effect.transform.position = effectPos;
 
             yield return new WaitForSeconds(2f);
-
-            //*s나중에 주석 풀기 !
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
-            // GameManager.instance.PadeIn_Alpha(redImage, true, 0, false);
             bossText.SetActive(false);
-            CheckPlayerPos = false;
-            Base_Phase_HP(false);
-            yield return new WaitForSeconds(1f);
-            ChangeMonsterState(MonsterState.Tracing);
-            changePhase02_Co = null;
-            GameManager.Instance.cameraController.UndoAttention();
+            //* 타임 라인
+            DirectTheBossWeakness();
+            //End_Phase02_Production(); //이것도 타임라인에서 사용
         }
     }
+
+    public void End_Phase02_Production()
+    {
+        //*s나중에 주석 풀기 !
+
+        CheckPlayerPos = false;
+        Base_Phase_HP(false);
+        //yield return new WaitForSeconds(1f);
+        ChangeMonsterState(MonsterState.Tracing);
+        changePhase02_Co = null;
+        GameManager.Instance.cameraController.UndoAttention();
+    }
+
+
 
     IEnumerator CheckPlayer_Production()
     {
@@ -487,6 +498,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
 
+            ChangeBossPhase(BossMonsterPhase.Phase2);
             //isRoaming = false;
             //Skill04();
             //* 테스트 후 아래 주석 풀기
@@ -2339,6 +2351,37 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
     //*-------------------------------------------------------------------------------------//
+    //* 타임라인 => 보스 일반 약점
+    public override void DirectTheBossWeakness()
+    {
+        GameManager.instance.cameraController.CinemachineSetting(true);
+        //* 모든 것 멈추기
+        CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimLine");
+    }
+
+    public void ShowBossWeaknessEffect()
+    {
+        if (m_monster.monsterData.useWeakness)
+        {
+            for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
+            {
+                m_monster.monsterData.weaknessList[i].gameObject.SetActive(true);
+                BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
+                if (!bossWeakness.destroy_BossWeakness)
+                {
+                    bossWeakness.bossWeaknessEffect.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+    public void EndDirectTheBossWeakness()
+    {
+        GameManager.instance.cameraController.CinemachineSetting(false);
+        EnableBossWeaknessEffect(false);
+        //
+    }
+
+    //*-------------------------------------------------------------------------------------//
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
@@ -2395,7 +2438,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
-
     }
+
+
 
 }

@@ -275,6 +275,11 @@ public class MonsterPattern_Boss : MonsterPattern
     {
 
     }
+    //* 보스 약점 연출
+    public virtual void DirectTheBossWeakness()
+    {
+
+    }
 
 
 
