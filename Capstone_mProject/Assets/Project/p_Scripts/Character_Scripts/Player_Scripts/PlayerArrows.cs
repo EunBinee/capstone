@@ -27,35 +27,6 @@ public class PlayerArrows
         arrowPools = new Dictionary<string, List<GameObject>>();
         arrowPrefabs.Clear();
         arrowPools.Clear();
-
-        InitializeArrowPool();
-    }
-
-    void InitializeArrowPool()
-    {
-        arrowPool = new GameObject[poolSize];
-
-        for (int i = 0; i < poolSize; i++)
-        {
-            GameObject arrowPrefab = Resources.Load<GameObject>("ProjectilePrefabs/" + arrowName);
-            if (arrowPrefab == null)
-            {
-                Debug.Log("arrowPrefab = null");
-            }
-            //arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.transform.position, Quaternion.identity);
-            arrowPool[i] = UnityEngine.Object.Instantiate(arrowPrefab, playerController.shootPoint.position, playerController.shootPoint.rotation);
-            //arrowPool[i].gameObject.transform.SetParent(playerController.shootPoint);
-            arrowPool[i].gameObject.transform.SetParent(GameManager.Instance.transform);
-            arrowPool[i].SetActive(false);
-        }
-    }
-
-    public GameObject GetArrowFromPool()
-    {
-        GameObject arrow = arrowPool[currentArrowIndex];
-        currentArrowIndex = (currentArrowIndex + 1) % poolSize;
-        arrow.SetActive(false);
-        return arrow;
     }
 
     public GameObject GetArrowPrefab()
@@ -109,7 +80,7 @@ public class PlayerArrows
         return curArrowObj; //최근 오브젝트 반환
     }
 
-    public void AddArrowPool(string arrowName, GameObject arrowObj)
+    public void AddArrowPool(GameObject arrowObj)
     {
         if (arrowPools[arrowName].Count >= arrowsPoolCount) //화살 풀에서 화살의 갯수가 풀 카운트보다 크다면
         {

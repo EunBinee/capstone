@@ -17,6 +17,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private PlayerArrows P_Arrows => P_Controller._playerArrows;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
@@ -126,7 +127,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
         _playerMovement.playerArrowList.Remove(this);
 
-        this.gameObject.SetActive(false);
         P_States.hadAttack = false;
         P_States.colliderHit = false;
         P_States.isShortArrow = false;
@@ -134,6 +134,8 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
+        P_Arrows.AddArrowPool(this.gameObject);
+        this.gameObject.SetActive(false);
     }
 
     private void isBouncingToFalse()
@@ -203,84 +205,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     //{
                     //이미 한번 때린 상태
                     //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
-                    //Debug.Log("[attack test]P_States.hadAttack : " + P_States.hadAttack);
-                    /*if (_playerController.hitMonsters.Count >= 2)
-                    {
-                        Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
-                        for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
-                        {
-                            GameObject curmon = _playerController.hitMonsters[i];
-                            GameObject premon = _playerController.hitMonsters[i - 1];
-
-                            if (curmon != premon && P_States.hasAttackSameMonster == false)   // 다음 꺼랑 비교해서 다르면
-                            {
-                                P_States.notSameMonster = true;
-                                //P_States.hasAttackSameMonster = true;
-                                Debug.Log("[attack test]curmon != premon");
-                                // 충돌한 객체의 Transform을 얻기
-                                Transform collidedTransform = other.transform;
-                                // 충돌 지점의 좌표를 얻기
-                                Vector3 collisionPoint = other.ClosestPoint(transform.position);
-                                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                                playerHitMonster(collisionPoint, otherQuaternion);
-                                //사운드
-                                SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
-                                //return;
-                            }
-                            else if (curmon == premon)
-                            {
-                                Debug.Log("[attack test]curmon == premon");
-                                P_States.notSameMonster = false;
-                                if (_playerController.hitMonsters.Count > 0)
-                                    _playerController.hitMonsters.RemoveAt(i);
-                                //_playerController.hitMonsters.RemoveAt(i - 1);
-                                //return;
-                            }
-                        }
-                    }*/
                     //}
-
-                    // if (P_States.hadAttack == false || P_States.notSameMonster)
-                    // {
-
-                    //     foreach(GameObject monster in _playerController.hitMonsters )
-                    //     {
-                    //         if(monster.name=="Shield")
-                    //         {
-                    //             isShield = true;
-                    //             break;
-                    //         }
-                    //     }
-
-                    //     Transform collidedTransform;
-                    //     // 충돌 지점의 좌표를 얻기
-                    //     Vector3 collisionPoint;
-                    //     Quaternion otherQuaternion;
-
-                    //     if(isShield)
-                    //     {
-                    //         // Debug.Log("[attack test]몬스터 피격");
-                    //         // 충돌한 객체의 Transform을 얻기
-                    //         collidedTransform = other.transform;
-                    //         // 충돌 지점의 좌표를 얻기
-                    //         collisionPoint = other.ClosestPoint(transform.position);
-                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                    //         playerHitShield(collisionPoint, otherQuaternion);
-                    //         //사운드
-                    //         // SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
-
-                    //     }
-                    //     else
-                    //     {
-                    //         collidedTransform = other.transform;
-                    //         // 충돌 지점의 좌표를 얻기
-                    //         collisionPoint = other.ClosestPoint(transform.position);
-                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                    //         playerHitMonster(collisionPoint, otherQuaternion);
-                    //     }
-                    // }
-
-
                 }
                 else
                 {
@@ -296,26 +221,6 @@ public class PlayerAttackCheck : MonoBehaviour
     // private bool isShield = false;
     public void checkMon()
     {
-        //Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
-        // for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
-        // {
-        //     GameObject curmon = _playerController.hitMonsters[i];
-        //     GameObject premon = _playerController.hitMonsters[i - 1];
-
-        //     if (curmon != premon)   //* 다음 꺼랑 비교해서 다르면
-        //     {
-        //         P_States.notSameMonster = true;
-        //         P_States.hasAttackSameMonster = true;
-        //     }
-        //     else if (curmon == premon)  //* 다음 꺼랑 비교해서 같으면
-        //     {
-        //         P_States.notSameMonster = false;
-        //         if (_playerController.hitMonsters.Count > 0)
-        //             _playerController.hitMonsters.RemoveAt(i);  //* 삭제
-        //     }
-        // }
-
-
         // 리스트를 거꾸로 순회합니다. 이렇게 하는 이유는 리스트를 순회하면서 항목을 제거할 때 문제가 발생하지 않도록 하기 위함입니다.
         for (int i = _playerController.hitMonsters.Count - 1; i >= 0; i--)
         {

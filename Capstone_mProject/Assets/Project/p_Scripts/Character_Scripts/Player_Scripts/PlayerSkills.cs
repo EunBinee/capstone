@@ -67,7 +67,7 @@ public class PlayerSkills : MonoBehaviour
 
         if (P_States.isShortArrow)
         {
-            
+
         }
         else
         {
@@ -91,7 +91,8 @@ public class PlayerSkills : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Arrows.GetArrowFromPool();
+        //arrow = P_Arrows.GetArrowFromPool();
+        arrow = P_Arrows.GetArrowPrefab();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
 
