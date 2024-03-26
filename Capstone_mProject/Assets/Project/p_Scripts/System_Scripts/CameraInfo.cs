@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
+using UnityEngine.Timeline;
 
 public class CameraInfo : MonoBehaviour
 {
@@ -30,6 +32,10 @@ public class CameraInfo : MonoBehaviour
 
         GameManager.instance.startActionCam?.Invoke(cameraController);
         GameManager.instance.startActionCam = null;
+
+        cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
+        cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
+
     }
 
     public void ResetCamera()
@@ -38,6 +44,8 @@ public class CameraInfo : MonoBehaviour
         GameManager.instance.gameData.playerCamera = null;
         GameManager.instance.gameData.playerCameraPivot = null;
         GameManager.instance.gameData.cameraObj = null;
+        cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
+        cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
         //플레이어
         PlayerController playerController = GameManager.instance.gameData.GetPlayerController();
         playerController._playerFollowCamera.playerCamera = null;

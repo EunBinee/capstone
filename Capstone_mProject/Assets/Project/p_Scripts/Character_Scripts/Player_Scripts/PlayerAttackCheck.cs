@@ -205,7 +205,6 @@ public class PlayerAttackCheck : MonoBehaviour
                     //{
                     //이미 한번 때린 상태
                     //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
-                    //}
                 }
                 else
                 {
@@ -293,6 +292,7 @@ public class PlayerAttackCheck : MonoBehaviour
         P_States.isBouncing = true;     //* 히트 UI 출력효과
         Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
     }
+
     public void playerHitShield(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
 
@@ -334,6 +334,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.CompareTag("SoundObject"))
                     {
+                        P_States.colliderHit = true;
                         soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
                         //Debug.Log(soundObject);
                         soundObject.attackSoundObj = true;
@@ -350,8 +351,8 @@ public class PlayerAttackCheck : MonoBehaviour
                         {
                             Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                         }
-
-                        bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
+                        if (!bossWeakness.destroy_BossWeakness)
+                            bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
                     }
                     else if (hit.collider.tag == "Monster")
                     {
@@ -374,16 +375,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
 
                             playerHitMonster(collisionPoint, otherQuaternion);
-                            // if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
-                            // {
-                            //     monster.monsterPattern.isShield = false;
-                            //     playerHitShield(collisionPoint, otherQuaternion);
-                            //     //monster.monsterPattern.isShield = false;
-                            // }
-                            // else
-                            // {
-                            //     playerHitMonster(collisionPoint, otherQuaternion);
-                            // }
+
                         }
                     }
                     if (hit.collider.tag == "Shield")

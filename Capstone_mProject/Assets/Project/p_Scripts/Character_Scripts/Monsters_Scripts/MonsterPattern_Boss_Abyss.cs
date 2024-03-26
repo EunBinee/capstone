@@ -123,6 +123,22 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         CheckBossHP();
         noAttack = false;
+
+        //*----------------------------------------------------------------------//
+        if (m_monster.monsterData.useWeakness)
+        {
+            curRemainWeaknessesNum = m_monster.monsterData.weaknessList.Count;
+        }
+
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
+        {
+            BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
+
+            if (bossWeakness.m_monster == null)
+                bossWeakness.SetMonster(m_monster);
+        }
+        //*----------------------------------------------------------------------//
+
     }
 
     public override void UpdateRotation()
@@ -2110,9 +2126,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         SetAnimation(MonsterAnimation.Idle);
 
         //- 다리 몸통에서 전기와 폭탄 나오도록.
-        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
         {
-            StartCoroutine(Death_Production(m_monster.monsterData.weakness[i].position, 1));
+            StartCoroutine(Death_Production(m_monster.monsterData.weaknessList[i].position, 1));
         }
         Vector3 neckPos = new Vector3(bossNeck.position.x - 2, bossNeck.position.y, bossNeck.position.z);
         StartCoroutine(Death_Production(neckPos, 3));
@@ -2121,9 +2137,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //- 사라질때는 전기만.
         yield return new WaitForSeconds(8f);
         useExplosionSound = true;
-        for (int i = 0; i < m_monster.monsterData.weakness.Count; ++i)
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
         {
-            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weakness[i].position, 1, 0, 0.1f, true));
+            StartCoroutine(Explode_Damage(0.1f, m_monster.monsterData.weaknessList[i].position, 1, 0, 0.1f, true));
         }
         StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));
         StartCoroutine(Explode_Damage(0.1f, neckPos, 3, 0, 0.1f, true));
@@ -2321,6 +2337,65 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             for (int i = 0; i < navMeshSurface.Count; ++i)
                 navMeshSurface[i].BuildNavMesh();
         }
+    }
+    //*-------------------------------------------------------------------------------------//
+    //* 보스 마지막 약점 연출
+    public override void DirectTheBossLastWeakness()
+    {
+        GameManager.instance.cameraController.CinemachineSetting(true);
+        //* 모든 것 멈추기
+        CurSceneManager.instance.PlayTimeline("Abyss_LastWeakness_TimeLine");
+    }
+
+    //* 타임라인에서 사용되는 이펙트 
+    public void MonsterLastWeakness_TimeLineEffect()
+    {
+        StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
+    }
+
+    IEnumerator MonsterLastWeakness_TimeLineEffect_co()
+    {
+        //* 연기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //* 연기 이펙트
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
+        effectPos = transform.position;
+        effectPos.y -= 2.5f;
+        effect.transform.position = effectPos;
+
+        Vector3 originPos = transform.position;
+        effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+        originPos.y += 1.1f;
+        effect.transform.position = originPos;
+
+        yield return new WaitForSeconds(8f);
+
+        if (m_monster.monsterData.haveLastWeakness)
+        {
+            for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
+            {
+                m_monster.monsterData.lastWeaknessList[i].gameObject.SetActive(true);
+                BossWeakness bossWeakness = m_monster.monsterData.lastWeaknessList[i].GetComponent<BossWeakness>();
+                if (!bossWeakness.destroy_BossWeakness)
+                {
+                    bossWeakness.bossWeaknessEffect.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
+    //* 보스 마지막 약점 연출
+    public void EndDirectorMonsterLastWeakness()
+    {
+        GameManager.instance.cameraController.CinemachineSetting(false);
+        EnableBossWeaknessEffect(false);
+        curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
+
     }
 
 }

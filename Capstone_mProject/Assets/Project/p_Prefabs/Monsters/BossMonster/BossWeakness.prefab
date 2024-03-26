@@ -71,6 +71,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8163665208408752206}
     m_Modifications:
+    - target: {fileID: 8675981873201111585, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8675981873703923063, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -118,6 +122,10 @@ PrefabInstance:
     - target: {fileID: 8675981873703923066, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
       propertyPath: m_Name
       value: Boss_WeakPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675981873703923066, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c0426444dfd4d9044892838f9e1aba74, type: 3}

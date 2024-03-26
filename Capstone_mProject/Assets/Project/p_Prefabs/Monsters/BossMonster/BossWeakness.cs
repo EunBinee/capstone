@@ -26,6 +26,7 @@ public class BossWeakness : MonoBehaviour
         destroy_BossWeakness = true;
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.8f, 2f, 2f);
         StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
+        m_monster.bossMonsterPattern.ReduceRemainWeaknessesNum(this);
     }
 
     IEnumerator GetDamageEffect(Vector3 _normalHitPoint, Vector3 hitPoint)
