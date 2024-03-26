@@ -277,7 +277,10 @@ public class PlayerAttackCheck : MonoBehaviour
             damageValue = GameManager.instance.damageCalculator.result;
         }
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
-        _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        if (!P_States.isBowMode)
+        {
+            _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        }
 
         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
         P_Value.curHitTime = Time.time; //* 현재 시간 저장
