@@ -17,6 +17,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private PlayerArrows P_Arrows => P_Controller._playerArrows;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
@@ -34,7 +35,7 @@ public class PlayerAttackCheck : MonoBehaviour
     //계산식
     //bool attackEnemy = false;
 
-   
+
 
     void Start()
     {
@@ -48,7 +49,7 @@ public class PlayerAttackCheck : MonoBehaviour
             isArrow = true;
         }
         _playerController.hitMonsters.Clear();
-       
+
     }
     void FixedUpdate()
     {
@@ -81,7 +82,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             yield return null;
         }
-        
+
         effect.StopEffect();
         yield return null;
     }
@@ -90,6 +91,7 @@ public class PlayerAttackCheck : MonoBehaviour
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
+        P_States.isShortArrow = false;
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -125,7 +127,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
         _playerMovement.playerArrowList.Remove(this);
 
-        this.gameObject.SetActive(false);
         P_States.hadAttack = false;
         P_States.colliderHit = false;
         P_States.isShortArrow = false;
@@ -133,6 +134,8 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
+        P_Arrows.AddArrowPool(this.gameObject);
+        this.gameObject.SetActive(false);
     }
 
     private void isBouncingToFalse()
@@ -172,7 +175,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         Vector3 collisionPoint = other.ClosestPoint(transform.position);
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
 
-                        if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
+                        if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
                         {
                             monster.monsterPattern.isShield = false;
                             playerHitShield(collisionPoint, otherQuaternion);
@@ -182,104 +185,27 @@ public class PlayerAttackCheck : MonoBehaviour
                         {
                             playerHitMonster(collisionPoint, otherQuaternion);
                         }
-//                        Debug.Log(isShield);
+                        //                        Debug.Log(isShield);
                         // if(isShield)
                         // {
                         //     playerHitShield(collisionPoint, otherQuaternion);
                         //     Debug.Log("실드");
-                           
+
                         // }
                         // else if(!isShield)
                         // {
-                      //playerHitMonster(collisionPoint, otherQuaternion);
+                        //playerHitMonster(collisionPoint, otherQuaternion);
                         //     Debug.Log("실드아님");
                         // }
-                        
+
                         //사운드
                         SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
                     }
                     //else
                     //{
-                        //이미 한번 때린 상태
-                        //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
-                        //Debug.Log("[attack test]P_States.hadAttack : " + P_States.hadAttack);
-                        /*if (_playerController.hitMonsters.Count >= 2)
-                        {
-                            Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
-                            for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
-                            {
-                                GameObject curmon = _playerController.hitMonsters[i];
-                                GameObject premon = _playerController.hitMonsters[i - 1];
-
-                                if (curmon != premon && P_States.hasAttackSameMonster == false)   // 다음 꺼랑 비교해서 다르면
-                                {
-                                    P_States.notSameMonster = true;
-                                    //P_States.hasAttackSameMonster = true;
-                                    Debug.Log("[attack test]curmon != premon");
-                                    // 충돌한 객체의 Transform을 얻기
-                                    Transform collidedTransform = other.transform;
-                                    // 충돌 지점의 좌표를 얻기
-                                    Vector3 collisionPoint = other.ClosestPoint(transform.position);
-                                    Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                                    playerHitMonster(collisionPoint, otherQuaternion);
-                                    //사운드
-                                    SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
-                                    //return;
-                                }
-                                else if (curmon == premon)
-                                {
-                                    Debug.Log("[attack test]curmon == premon");
-                                    P_States.notSameMonster = false;
-                                    if (_playerController.hitMonsters.Count > 0)
-                                        _playerController.hitMonsters.RemoveAt(i);
-                                    //_playerController.hitMonsters.RemoveAt(i - 1);
-                                    //return;
-                                }
-                            }
-                        }*/
+                    //이미 한번 때린 상태
+                    //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
                     //}
-
-                    // if (P_States.hadAttack == false || P_States.notSameMonster)
-                    // {
-
-                    //     foreach(GameObject monster in _playerController.hitMonsters )
-                    //     {
-                    //         if(monster.name=="Shield")
-                    //         {
-                    //             isShield = true;
-                    //             break;
-                    //         }
-                    //     }
-
-                    //     Transform collidedTransform;
-                    //     // 충돌 지점의 좌표를 얻기
-                    //     Vector3 collisionPoint;
-                    //     Quaternion otherQuaternion;
-
-                    //     if(isShield)
-                    //     {
-                    //         // Debug.Log("[attack test]몬스터 피격");
-                    //         // 충돌한 객체의 Transform을 얻기
-                    //         collidedTransform = other.transform;
-                    //         // 충돌 지점의 좌표를 얻기
-                    //         collisionPoint = other.ClosestPoint(transform.position);
-                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                    //         playerHitShield(collisionPoint, otherQuaternion);
-                    //         //사운드
-                    //         // SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
-    
-                    //     }
-                    //     else
-                    //     {
-                    //         collidedTransform = other.transform;
-                    //         // 충돌 지점의 좌표를 얻기
-                    //         collisionPoint = other.ClosestPoint(transform.position);
-                    //         otherQuaternion = Quaternion.FromToRotation(Vector3.up, collisionPoint.normalized);
-                    //         playerHitMonster(collisionPoint, otherQuaternion);
-                    //     }
-                    // }
-
-
                 }
                 else
                 {
@@ -292,29 +218,9 @@ public class PlayerAttackCheck : MonoBehaviour
             }
         }
     }
-   // private bool isShield = false;
+    // private bool isShield = false;
     public void checkMon()
     {
-        //Debug.Log("[attack test] _playerController.hitMonsters.Count: " + _playerController.hitMonsters.Count);
-        // for (int i = _playerController.hitMonsters.Count - 1; i > 1; i--)
-        // {
-        //     GameObject curmon = _playerController.hitMonsters[i];
-        //     GameObject premon = _playerController.hitMonsters[i - 1];
-
-        //     if (curmon != premon)   //* 다음 꺼랑 비교해서 다르면
-        //     {
-        //         P_States.notSameMonster = true;
-        //         P_States.hasAttackSameMonster = true;
-        //     }
-        //     else if (curmon == premon)  //* 다음 꺼랑 비교해서 같으면
-        //     {
-        //         P_States.notSameMonster = false;
-        //         if (_playerController.hitMonsters.Count > 0)
-        //             _playerController.hitMonsters.RemoveAt(i);  //* 삭제
-        //     }
-        // }
-
-
         // 리스트를 거꾸로 순회합니다. 이렇게 하는 이유는 리스트를 순회하면서 항목을 제거할 때 문제가 발생하지 않도록 하기 위함입니다.
         for (int i = _playerController.hitMonsters.Count - 1; i >= 0; i--)
         {
@@ -371,7 +277,10 @@ public class PlayerAttackCheck : MonoBehaviour
             damageValue = GameManager.instance.damageCalculator.result;
         }
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
-        _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        if (!P_States.isBowMode)
+        {
+            _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        }
 
         P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
         P_Value.curHitTime = Time.time; //* 현재 시간 저장
@@ -389,16 +298,16 @@ public class PlayerAttackCheck : MonoBehaviour
 
         //TODO: 나중에 연산식 사용.
         int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
-        
+
         GameManager.instance.damageCalculator.damageExpression = "A+B";
         GameManager.instance.damageCalculator.CalculateAndPrint();
         damageValue = 0;
-        
+
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
         _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
-        //monster.monsterPattern.isShield = false;
+                                                                //monster.monsterPattern.isShield = false;
 
-    
+
     }
 
     private void ArrowRay()
@@ -433,6 +342,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
                     if (hit.collider.tag == "BossWeakness")
                     {
+                        P_States.colliderHit = true;
                         //* 보스 약점
                         BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
                         monster = bossWeakness.m_monster;
@@ -476,19 +386,19 @@ public class PlayerAttackCheck : MonoBehaviour
                             // }
                         }
                     }
-                    if(hit.collider.tag == "Shield")
+                    if (hit.collider.tag == "Shield")
                     {
                         monster = hit.collider.GetComponentInParent<Monster>();
-                        
-                        if(monster.monsterData.isShieldMonster&&monster.monsterPattern.isShield )
-                            {
-                                Vector3 collisionPoint = hit.point;
-                                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                                monster.monsterPattern.isShield = false;
-                                playerHitShield(collisionPoint, otherQuaternion);
-                                //monster.monsterPattern.isShield = false;
-                            }
+                        if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
+                        {
+                            Vector3 collisionPoint = hit.point;
+                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                            monster.monsterPattern.isShield = false;
+                            playerHitShield(collisionPoint, otherQuaternion);
+                            //monster.monsterPattern.isShield = false;
+                        }
                     }
                 }
             }

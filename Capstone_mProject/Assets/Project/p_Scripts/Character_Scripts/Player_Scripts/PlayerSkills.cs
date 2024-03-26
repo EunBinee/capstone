@@ -11,8 +11,7 @@ public class PlayerSkills : MonoBehaviour
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
-    private PlayerSkills P_Skills => P_Controller.P_Skills;
-    public PlayerAttackCheck playerAttackCheck;
+    private PlayerAttackCheck playerAttackCheck;
 
     private GameObject arrow;// => P_Controller.arrow;
 
@@ -26,9 +25,9 @@ public class PlayerSkills : MonoBehaviour
     void Awake()
     {
         arrow = P_Controller.arrow;
+        //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if (P_Value.aimClickDown > 1.8f)
@@ -67,7 +66,7 @@ public class PlayerSkills : MonoBehaviour
 
         if (P_States.isShortArrow)
         {
-            
+
         }
         else
         {
@@ -75,13 +74,13 @@ public class PlayerSkills : MonoBehaviour
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_StrongName);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
+                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
             }
             else
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                effect.transform.rotation = Quaternion.LookRotation(P_Skills.playerAttackCheck.transform.forward);
+                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
             }
         }
 
@@ -91,7 +90,7 @@ public class PlayerSkills : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Arrows.GetArrowFromPool();
+        arrow = P_Arrows.GetArrowPrefab();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
 
