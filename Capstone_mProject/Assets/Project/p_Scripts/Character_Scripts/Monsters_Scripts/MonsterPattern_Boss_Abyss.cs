@@ -130,6 +130,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             curRemainWeaknessesNum = m_monster.monsterData.weaknessList.Count;
         }
 
+        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
+        {
+            BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
+
+            if (bossWeakness.m_monster == null)
+                bossWeakness.SetMonster(m_monster);
+        }
         //*----------------------------------------------------------------------//
 
     }
@@ -2374,6 +2381,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
             {
                 m_monster.monsterData.lastWeaknessList[i].gameObject.SetActive(true);
+                BossWeakness bossWeakness = m_monster.monsterData.lastWeaknessList[i].GetComponent<BossWeakness>();
+                if (!bossWeakness.destroy_BossWeakness)
+                {
+                    bossWeakness.bossWeaknessEffect.gameObject.SetActive(true);
+                }
             }
         }
     }
@@ -2381,15 +2393,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public void EndDirectorMonsterLastWeakness()
     {
         GameManager.instance.cameraController.CinemachineSetting(false);
-        if (m_monster.monsterData.haveLastWeakness)
-        {
-            for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
-            {
-                m_monster.monsterData.lastWeaknessList[i].gameObject.SetActive(false);
-            }
-        }
-
+        EnableBossWeaknessEffect(false);
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
+
     }
 
 }

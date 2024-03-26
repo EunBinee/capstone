@@ -126,11 +126,35 @@ public class MonsterPattern_Boss : MonsterPattern
     //*-----------------------------------------------------------------------------//
     //* 보스 약점
     bool isLastWeakness = false;
-    bool showWeaknessEffect = true; //이펙트 활성화 여부
+    bool showWeaknessEffect = false; //이펙트 활성화 여부
     bool finishEffect = false;
+
+
+    bool OnEnableWeakness = false;
 
     public virtual void BossWeaknessUpdate()
     {
+        if (curRemainWeaknessesNum != 0)
+        {
+            if (m_monster.monsterData.useWeakness && curBossPhase != BossMonsterPhase.Phase1)
+            {
+                if (!OnEnableWeakness)
+                {
+                    OnEnableWeakness = true;
+                    EnableBossWeakness(true);
+                }
+                if ((playerController._currentState.isAim && m_monster.monsterData.useWeakness) && !showWeaknessEffect)
+                    EnableBossWeaknessEffect(true);
+                else if ((!playerController._currentState.isAim && m_monster.monsterData.useWeakness) && showWeaknessEffect)
+                {
+                    EnableBossWeaknessEffect(false);
+                }
+            }
+
+
+        }
+
+        /*
         if (curRemainWeaknessesNum != 0)
         {
             if (m_monster.monsterData.useWeakness && curBossPhase != BossMonsterPhase.Phase1)
@@ -145,7 +169,7 @@ public class MonsterPattern_Boss : MonsterPattern
                 {
                     //* 플레이어 조준이 꺼졌는데, 보스 몬스터의 약점이 켜져있는 경우.
                     if (playerMovement.playerArrowList.Count == 0)
-                        EnableBossWeakness(false); // 약점 끄기
+                     EnableBossWeakness(false); // 약점 끄기
                     else if (showWeaknessEffect)
                     {
                         //* 조준은 끝났지만, 아직 날아가는 화살이 있을 경우
@@ -155,20 +179,17 @@ public class MonsterPattern_Boss : MonsterPattern
                 }
             }
         }
+        */
     }
 
     //* 보스 약점 활성화
     protected void EnableBossWeakness(bool enableWeakness)
     {
-        finishEffect = enableWeakness;
-        enableBossWeakness = enableWeakness;
-
         if (!isLastWeakness)
         {
             for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
             {
                 BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
-
                 if (bossWeakness.m_monster == null)
                     bossWeakness.SetMonster(m_monster);
 
@@ -177,12 +198,6 @@ public class MonsterPattern_Boss : MonsterPattern
                     //* 아직 공격당하지않은 약점이라면? => 활성화
                     bossWeakness.gameObject.SetActive(enableWeakness);
                 }
-            }
-
-            if (enableWeakness)
-            {
-                if (!showWeaknessEffect)
-                    EnableBossWeaknessEffect(true); //* 이펙트가 꺼져있다면 켜주기
             }
         }
         else
@@ -200,25 +215,13 @@ public class MonsterPattern_Boss : MonsterPattern
                     bossWeakness.gameObject.SetActive(enableWeakness);
                 }
             }
-
-            if (enableWeakness)
-            {
-                if (!showWeaknessEffect)
-                    EnableBossWeaknessEffect(true); //* 이펙트가 꺼져있다면 켜주기
-            }
         }
-
-
     }
 
     //* 보스 약점 이펙트 ( 플레이어 화살이 살아있으면, 조준 끝나도 이펙트만 사라지고 콜라이더는 그대로 있도록. )
     protected void EnableBossWeaknessEffect(bool enableWeaknessEffect)
     {
-        if (!enableWeaknessEffect)
-            enableBossWeakness = enableWeaknessEffect;
-
         showWeaknessEffect = enableWeaknessEffect;
-
         if (!isLastWeakness)
         {
             for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
@@ -241,7 +244,6 @@ public class MonsterPattern_Boss : MonsterPattern
                 if (!bossWeakness.destroy_BossWeakness)
                 {
                     //* 아직 공격당하지않은 약점이라면? => 활성화
-
                     bossWeakness.bossWeaknessEffect.gameObject.SetActive(enableWeaknessEffect);
                 }
             }
@@ -249,20 +251,21 @@ public class MonsterPattern_Boss : MonsterPattern
     }
 
     //* 남은 약점 없애기
-    public void ReduceRemainWeaknessesNum()
+    public void ReduceRemainWeaknessesNum(BossWeakness bossWeakness)
     {
         curRemainWeaknessesNum--;
+        bossWeakness.gameObject.SetActive(false);
         if (curRemainWeaknessesNum == 0)
         {
             if (m_monster.monsterData.haveLastWeakness && !isLastWeakness)
             {
                 //! 보스 연출
                 isLastWeakness = true;
+                OnEnableWeakness = false;
                 DirectTheBossLastWeakness();
             }
             else
             {
-
             }
         }
     }
@@ -272,4 +275,119 @@ public class MonsterPattern_Boss : MonsterPattern
     {
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+
+        //* 보스 약점 활성화
+        protected void EnableBossWeakness_(bool enableWeakness)
+        {
+            finishEffect = enableWeakness;
+            enableBossWeakness = enableWeakness;
+
+            if (!isLastWeakness)
+            {
+                for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
+                {
+                    BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
+                    if (bossWeakness.m_monster == null)
+                        bossWeakness.SetMonster(m_monster);
+
+                    if (!bossWeakness.destroy_BossWeakness)
+                    {
+                        //* 아직 공격당하지않은 약점이라면? => 활성화
+                        bossWeakness.gameObject.SetActive(enableWeakness);
+                    }
+                }
+
+                if (enableWeakness)
+                {
+                    if (!showWeaknessEffect)
+                        EnableBossWeaknessEffect(true); //* 이펙트가 꺼져있다면 켜주기
+                }
+            }
+            else
+            {
+                for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
+                {
+                    BossWeakness bossWeakness = m_monster.monsterData.lastWeaknessList[i].GetComponent<BossWeakness>();
+
+                    if (bossWeakness.m_monster == null)
+                        bossWeakness.SetMonster(m_monster);
+
+                    if (!bossWeakness.destroy_BossWeakness)
+                    {
+                        //* 아직 공격당하지않은 약점이라면? => 활성화
+                        bossWeakness.gameObject.SetActive(enableWeakness);
+                    }
+                }
+
+                if (enableWeakness)
+                {
+                    if (!showWeaknessEffect)
+                        EnableBossWeaknessEffect(true); //* 이펙트가 꺼져있다면 켜주기
+                }
+            }
+        }
+
+        //* 보스 약점 이펙트 ( 플레이어 화살이 살아있으면, 조준 끝나도 이펙트만 사라지고 콜라이더는 그대로 있도록. )
+        protected void EnableBossWeaknessEffect_(bool enableWeaknessEffect)
+        {
+            if (!enableWeaknessEffect)
+                enableBossWeakness = enableWeaknessEffect;
+
+            showWeaknessEffect = enableWeaknessEffect;
+
+            if (!isLastWeakness)
+            {
+                for (int i = 0; i < m_monster.monsterData.weaknessList.Count; i++)
+                {
+                    BossWeakness bossWeakness = m_monster.monsterData.weaknessList[i].GetComponent<BossWeakness>();
+
+                    if (!bossWeakness.destroy_BossWeakness)
+                    {
+                        //* 아직 공격당하지않은 약점이라면? => 활성화
+                        bossWeakness.bossWeaknessEffect.gameObject.SetActive(enableWeaknessEffect);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < m_monster.monsterData.lastWeaknessList.Count; i++)
+                {
+                    BossWeakness bossWeakness = m_monster.monsterData.lastWeaknessList[i].GetComponent<BossWeakness>();
+
+                    if (!bossWeakness.destroy_BossWeakness)
+                    {
+                        //* 아직 공격당하지않은 약점이라면? => 활성화
+
+                        bossWeakness.bossWeaknessEffect.gameObject.SetActive(enableWeaknessEffect);
+                    }
+                }
+            }
+        }
+    */
+
 }
