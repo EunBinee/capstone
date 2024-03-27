@@ -12,17 +12,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
 
     List<Vector3> randomPos_skill02; //스킬 02번 폭탄의 랜덤 좌표
 
-    [Header("스킬 02 잔해물 범위")]
-    public int rangeXZ = 50;
-    public List<Wreckage> wreckages;
-    public Transform prefabPos;
-
-    public GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
-
-    //* 사운드
-    bool useExplosionSound = false; // 폭발음 중복을 막기 위한..
-
-
     //* 스킬 2번 코루틴
     Coroutine skill02_MonsterMovement_Co = null;
     Coroutine skill02_Co = null;
@@ -141,7 +130,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         curMonsterPoint = monsterPattern_Abyss.GetGroundPos(transform);
         List<Vector3> roundPos = monsterPattern_Abyss.GetRoundPos(curMonsterPoint);
 
-        useExplosionSound = false;
+        monsterPattern_Abyss.useExplosionSound = false;
 
         foreach (Vector3 pos in roundPos)
         {
@@ -186,7 +175,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         {
             //* 잔해물 떨어지기
             yield return new WaitForSeconds(3f);
-            StartCoroutine(SetWreckage());
+            monsterPattern_Abyss.boss_Abyss_Skill03.SettingWreckage();
             yield return new WaitForSeconds(1f);
             monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);
         }
@@ -303,9 +292,9 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             //! 사운드
             if (!soundCancle)
                 monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-            else if (soundCancle && !useExplosionSound)
+            else if (soundCancle && !monsterPattern_Abyss.useExplosionSound)
             {
-                useExplosionSound = true;
+                monsterPattern_Abyss.useExplosionSound = true;
                 monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
             }
         }
@@ -326,9 +315,9 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             //! 사운드
             if (!soundCancle)
                 monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
-            else if (soundCancle && !useExplosionSound)
+            else if (soundCancle && !monsterPattern_Abyss.useExplosionSound)
             {
-                useExplosionSound = true;
+                monsterPattern_Abyss.useExplosionSound = true;
                 monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
             }
         }
@@ -353,143 +342,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         }
     }
 
-    // 잔해물
-    IEnumerator SetWreckage()
-    {
-        Vector3 wreckageRandomPos = Vector3.zero;
-
-        if (wreckage_obj == null)
-        {
-            GameObject wreckagesPrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "Wreckages");
-
-            if (wreckagesPrefab == null)
-            {
-#if UNITY_EDITOR
-                Debug.LogError("Projectile 프리펩 없음. 오류.");
-#endif
-            }
-            else
-            {
-                //prefabPos에 생성
-                wreckage_obj = UnityEngine.Object.Instantiate(wreckagesPrefab);
-                wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
-
-                wreckages = new List<Wreckage>();
-
-                Transform[] childTransforms = wreckage_obj.GetComponentsInChildren<Transform>(true);
-
-                foreach (Transform childTransform in childTransforms)
-                {
-                    Wreckage wreckageComponent = childTransform.GetComponent<Wreckage>();
-                    if (wreckageComponent != null)
-                        wreckages.Add(wreckageComponent);
-                }
-            }
-        }
-        else
-        {
-            wreckage_obj.SetActive(true);
-            wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
-        }
-
-        //* 잔해물 배치(플레이어와 떨어진 곳으로 지정)
-        //* randomPos 지정.
-        List<Vector3> randomPosList = new List<Vector3>();
-        NavMeshHit hit;
-        Vector3 PosY = monsterPattern_Abyss.GetGroundPos(transform);
-        Vector3 curMonsterPoint = monsterPattern_Abyss.centerPoint;
-
-        for (int i = 0; i < wreckages.Count; i++)
-        {
-            Vector3 randomPos = Vector3.zero;
-
-            bool stop = false;
-            float time = 0;
-            while (true)
-            {
-                time += Time.deltaTime;
-                if (time < 2)
-                {
-                    randomPos = monsterPattern_Abyss.GetRandomPos(rangeXZ, curMonsterPoint);
-                    if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
-                        Vector3.Distance(transform.position, randomPos) >= 10f)
-                    {
-                        // - 플레이어랑은 3 정도의 거리를 유지하고, 
-                        // - 보스와는 20정도의 거리를 유지하고
-                        if (NavMesh.SamplePosition(randomPos, out hit, 35f, NavMesh.AllAreas))
-                        {
-                            if (hit.position != randomPos)
-                                randomPos = hit.position;
-                            // - 네비에이전트가 움직일 수 있는 곳인지 체크
-                            if (randomPosList.Contains(randomPos) == false)
-                            {
-                                //randomPos에도 없으면.. 생성
-                                int j = 0;
-                                bool canBreak = true;
-                                while (j < randomPosList.Count)
-                                {
-                                    if (Vector3.Distance(randomPosList[j], randomPos) < 8f)
-                                    {
-                                        canBreak = false;
-                                        break;
-                                    }
-                                    ++j;
-                                }
-                                if (canBreak)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    stop = true;
-                    break;
-                }
-            }
-            if (!stop)
-            {
-                randomPosList.Add(randomPos);
-            }
-            else
-                break;
-        }
-        yield return new WaitForSeconds(1f);
-
-        //떨어뜨리기 전 경고 이펙트 && 떨어뜨리기
-        for (int i = 0; i < randomPosList.Count; ++i)
-        {
-            wreckages[i].m_monster = monsterPattern_Abyss.m_monster;
-            wreckages[i].gameObject.SetActive(true);
-            wreckages[i].StartDropWreckage(randomPosList[i]);
-        }
-
-        //전부 떨어지게 하면 네비 서페이스 (?)e 다시 Bake해주기
-        bool navReBuild = false;
-        while (true)
-        {
-            navReBuild = true;
-            for (int i = 0; i < randomPosList.Count; ++i)
-            {
-                if (!wreckages[i].finishDrop)
-                {
-                    navReBuild = false;
-                    break;
-                }
-            }
-            if (navReBuild)
-                break;
-            yield return null;
-        }
-
-        MonsterPattern.MonsterState monsterState = monsterPattern_Abyss.GetCurMonsterState();
-        if (monsterState != MonsterPattern.MonsterState.Death)
-            monsterPattern_Abyss.Monster_Motion(MonsterPattern_Boss.BossMonsterMotion.Skill03);
-
-        yield return null;
-    }
 
     #endregion
 }

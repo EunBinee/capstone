@@ -15,19 +15,22 @@ using UnityEngine.UIElements;
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
-    Boss_Abyss_Skill01 boss_Abyss_Skill01;
-    Boss_Abyss_Skill02 boss_Abyss_Skill02;
+    public Boss_Abyss_Skill01 boss_Abyss_Skill01;
+    public Boss_Abyss_Skill02 boss_Abyss_Skill02;
+    public Boss_Abyss_Skill03 boss_Abyss_Skill03;
 
     public GameObject redImage;
     public GameObject bossText;
+    public Transform prefabPos;
     public Vector3 centerPoint;
+
 
     List<Vector3> randomPos_skill02;
     [Space]
     [Header("스킬 03")]
     public Transform bossNeck;
-    bool findPlayer = false;
-    public float skillRadius = 10;
+    //bool findPlayer = false;
+    //public float skillRadius = 10;
     [Header("스킬 03 총알이 나가는 위치")]
     public Transform[] muzzlesL;
     public Transform[] muzzlesR;
@@ -52,6 +55,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool ing_skill03 = false;
     bool ing_skill04 = false;
 
+    //* 사운드
+    public bool useExplosionSound = false; // 폭발음 중복을 막기 위한..
+
     //보스 페이즈 체력 기준
     //* 스킬 2번 코루틴
     Coroutine skill02_MoveMonster_Co = null;
@@ -70,6 +76,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         boss_Abyss_Skill01.Init(this);
         boss_Abyss_Skill02 = GetComponent<Boss_Abyss_Skill02>();
         boss_Abyss_Skill02.Init(this);
+        boss_Abyss_Skill03 = GetComponent<Boss_Abyss_Skill03>();
+        boss_Abyss_Skill03.Init(this);
 
         playerController = GameManager.Instance.gameData.GetPlayerController();
         playerMovement = GameManager.Instance.gameData.GetPlayerMovement();
@@ -243,7 +251,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                         //* 총
                         Debug.Log("다음 스킬 : 03");
                         ing_skill03 = true;
-                        Skill03();
+                        boss_Abyss_Skill03.Skill03();
                     }
                     break;
                 case BossMonsterMotion.Skill04:
@@ -497,10 +505,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         while (CheckPlayerPos)
         {
-            CheckPlayerInMonster_skill03(skillRadius);
+            //* 페이즈 넘어갈때, 플레이어가 몬스터 밑에 있는 지 체크
+            boss_Abyss_Skill03.CheckPlayerInMonster_skill03(boss_Abyss_Skill03.skillRadius);
             yield return null;
         }
-
     }
 
     // *---------------------------------------------------------------------------------------------------------//
@@ -706,342 +714,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     // *---------------------------------------------------------------------------------------------------------//
 
     // *---------------------------------------------------------------------------------------------------------//
-    //* 스킬 03  총쏘기
-    #region 스킬 03
-    Coroutine skill03_co = null;
-    public void Skill03()
-    {
-        skill03_co = StartCoroutine(BossAbyss_Skill03());
-    }
 
-    float skillTime = 0;
-    bool canFire = false;
-    List<Quaternion> muzzleL_OriginQ = null;
-    List<Quaternion> muzzleR_OriginQ = null;
-    Quaternion originChildWorldRot = Quaternion.identity;
-    IEnumerator BossAbyss_Skill03()
-    {
-        canFire = CheckPlayerInMonster_skill03(skillRadius);
-
-        yield return new WaitUntil(() => canFire == true);
-        //* 총구들과 Neck 부분의 원래 Rotation 얻기
-        muzzleL_OriginQ = new List<Quaternion>();
-        muzzleR_OriginQ = new List<Quaternion>();
-        for (int i = 0; i < muzzlesL.Length; i++)
-            muzzleL_OriginQ.Add(GetWorldRotation(muzzlesL[i]));
-        for (int i = 0; i < muzzlesR.Length; i++)
-            muzzleR_OriginQ.Add(GetWorldRotation(muzzlesR[i]));
-        //------------------------------------------------
-        skillTime = 0;
-        float fireTime = 0;
-        Vector3 targetPos = playerTargetPos.position;
-        //애니메이터 끄기
-        SetAnimation(MonsterAnimation.Idle);
-        yield return new WaitForSeconds(1f);
-
-        m_animator.enabled = false;
-        //--------------------------------------------------//
-        Quaternion childWorldRotation = GetWorldRotation(bossNeck);
-        originChildWorldRot = childWorldRotation;
-        bossNeck.rotation = childWorldRotation;
-        // 가져온 월드 회전값을 출력해보기
-        Vector3 rayPos = new Vector3(bossNeck.position.x, playerTargetPos.position.y, bossNeck.position.z);
-
-
-        for (int i = 0; i < muzzlesL.Length; i++)
-        {
-            muzzlesL[i].rotation = Quaternion.Euler(muzzlesL[i].eulerAngles.x + 20, muzzlesL[i].eulerAngles.y, muzzlesL[i].eulerAngles.z);
-        }
-        for (int i = 0; i < muzzlesR.Length; i++)
-        {
-            muzzlesR[i].rotation = Quaternion.Euler(muzzlesR[i].eulerAngles.x + 20, muzzlesR[i].eulerAngles.y, muzzlesR[i].eulerAngles.z);
-        }
-
-
-        bool isStop = false;
-        while (!isStop)
-        {
-            CheckPlayerInMonster_skill03(skillRadius);
-
-            skillTime += Time.deltaTime;
-            fireTime += Time.deltaTime;
-            if (fireTime >= 0.1f)
-            {
-                fireTime = 0;
-                //GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 0.75f, 0.75f);
-                //L
-                StartCoroutine(Fire(playerTargetPos.position, muzzlePos[0]));
-                //R
-                StartCoroutine(Fire(playerTargetPos.position, muzzlePos[1]));
-            }
-            else
-            {
-                childWorldRotation = GetWorldRotation(bossNeck);
-                Vector3 currentRotation = childWorldRotation.eulerAngles;
-
-                bossNeck.rotation = Quaternion.Euler(currentRotation.x, currentRotation.y + (1f * Time.timeScale), currentRotation.z);
-
-                CheckCheckPlayer_Front(rayPos);
-
-                if (skillTime >= 10)
-                {
-                    //계속 체크
-                    if (Mathf.Abs(bossNeck.rotation.eulerAngles.y - originChildWorldRot.eulerAngles.y) < 2)
-                    {
-                        bossNeck.rotation = originChildWorldRot;
-                        isStop = true;
-                        break;
-                    }
-                }
-            }
-
-            yield return null;
-        }
-
-        //--------------------------------------------------//
-        //* 총구들원래 Rotation 로 바꿔주
-        ResetSkill02Rotation();
-
-        yield return new WaitForSeconds(1f);
-        EndSkill(BossMonsterMotion.Skill03);
-
-
-
-        //* 잔해물 치우기
-        yield return new WaitForSeconds(1f);
-        ClearWreckage();
-
-        //NavMeshSurface_ReBuild();
-        skill03_co = null;
-        yield return null;
-    }
-
-    public void ResetSkill02Rotation()
-    {
-        bossNeck.rotation = originChildWorldRot;
-        originChildWorldRot = Quaternion.identity;
-
-        for (int i = 0; i < muzzlesL.Length; i++)
-            muzzlesL[i].rotation = muzzleL_OriginQ[i];
-        for (int i = 0; i < muzzlesR.Length; i++)
-            muzzlesR[i].rotation = muzzleR_OriginQ[i];
-        muzzleL_OriginQ = null;
-        muzzleR_OriginQ = null;
-        m_animator.enabled = true;
-
-        SetAnimation(MonsterAnimation.Idle);
-    }
-
-    public void ClearWreckage()
-    {
-        for (int i = 0; i < wreckages.Count; ++i)
-        {
-            wreckages[i].DisappearWreckage();
-        }
-        bool wreckageActive = false;
-
-        while (!wreckageActive)
-        {
-            wreckageActive = true;
-            for (int i = 0; i < wreckages.Count; ++i)
-            {
-                if (wreckages[i].gameObject.activeSelf)
-                {
-                    wreckageActive = false;
-                    break;
-                }
-            }
-        }
-
-        boss_Abyss_Skill02.wreckage_obj.SetActive(false);
-    }
-
-    IEnumerator Fire(Vector3 targetPos, Transform muzzlePos, bool findPlayer = false)
-    {
-
-        //* 총알 //
-        GameObject bulletObj = GameManager.Instance.objectPooling.GetProjectilePrefab("BossMonsterAbyss_Bullet_02", prefabPos);
-        Rigidbody bulletRigid = bulletObj.GetComponent<Rigidbody>();
-
-        Bullet bullet = bulletObj.GetComponent<Bullet>();
-        bullet.Reset(m_monster, "BossMonsterAbyss_Bullet_02", muzzlePos);
-        // 플레이어에게  총알이 맞았을 경우
-        bullet.OnHitPlayerEffect = () =>
-        {
-            //*플레이어가 총에 맞았을 경우, 이펙트
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
-
-            effect.gameObject.transform.position = targetPos;
-            Vector3 curDirection = targetPos - bulletObj.transform.position;
-            effect.gameObject.transform.position += curDirection * 0.35f;
-        };
-        //총알 발사.
-
-        if (findPlayer)
-        {
-            Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
-
-            Quaternion targetAngle = Quaternion.LookRotation(curDirection);
-            bulletObj.transform.rotation = targetAngle;
-
-            bullet.SetInfo(curDirection.normalized, "FX_Shoot_10_hit");
-            bulletRigid.velocity = curDirection.normalized * 100f;
-        }
-        else
-        {
-            Quaternion targetAngle = Quaternion.LookRotation(muzzlePos.forward);
-            bulletObj.transform.rotation = targetAngle;
-
-            bullet.SetInfo(muzzlePos.forward, "FX_Shoot_10_hit"); //* Bullet.cs에 방향 벡터 보냄
-            bulletRigid.velocity = (muzzlePos.forward) * 100f;
-        }
-
-        //총쏠때 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_10_muzzle");
-        EffectController effectController = effect.GetComponent<EffectController>();
-        effectController.ChangeSize();
-        effect.gameObject.transform.position = muzzlePos.position + (muzzlePos.forward * 0.2f);
-        effect.gameObject.transform.rotation = muzzlePos.rotation;
-
-        //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
-
-        yield return null;
-    }
-
-    private float CheckCheckPlayer_Front(Vector3 rayPos)
-    {
-        // 바로 앞에 플레이어가 있는지 확인
-        float range = 100f;
-        float angle = 0;
-        Debug.DrawRay(rayPos, (-bossNeck.up) * range, Color.blue);
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(rayPos, (-bossNeck.up), range, playerlayerMask);
-
-        if (hits.Length != 0 && !findPlayer)
-        {
-            findPlayer = true;
-
-            for (int i = 0; i < muzzlesL.Length; i++)
-            {
-                Vector3 direction = (playerTrans.position - muzzlesL[i].position).normalized;
-                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-
-                // targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, muzzlesL[i].eulerAngles.y, muzzlesL[i].eulerAngles.z);
-                targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, muzzlesL[i].eulerAngles.z);
-                muzzlesL[i].rotation = targetRotation;
-            }
-            for (int i = 0; i < muzzlesR.Length; i++)
-            {
-                Vector3 direction = (playerTrans.position - muzzlesR[i].position).normalized;
-                Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-                // targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, muzzlesR[i].eulerAngles.y, muzzlesR[i].eulerAngles.z);
-                targetRotation = Quaternion.Euler(targetRotation.eulerAngles.x, targetRotation.eulerAngles.y, muzzlesR[i].eulerAngles.z);
-                muzzlesR[i].rotation = targetRotation;
-            }
-
-            StartCoroutine(Fire(playerTargetPos.position, muzzlePos[0], true));
-            //R
-            StartCoroutine(Fire(playerTargetPos.position, muzzlePos[1], true));
-        }
-
-        else if (hits.Length == 0 && findPlayer)
-        {
-            findPlayer = false;
-        }
-
-        return angle;
-    }
-
-    Effect Shield_Effect_skill03 = null;
-
-    public bool CheckPlayerInMonster_skill03(float radius)
-    {
-        //* 스킬 3번 일때 플레이어가 몬스터의 아래에 있을 경우.
-        //* false 플레이어가 아래에 있다. true 플레이어가 밖에 있다.
-        float distance = Vector3.Distance(this.transform.position, playerTrans.position);
-        {
-            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius - 1, playerlayerMask);
-
-            if (0 < playerColliders.Length)
-            {
-                //넉백!! 튕겨내기 후, 이펙트 생성.\
-                StartCoroutine(BouncePlayer());
-                return false;
-            }
-            else
-            {
-                //* 스킬 3번일때 플레이어가 몬스터 근처에 왔을경우.
-                //* 장벽 치기
-                playerColliders = Physics.OverlapSphere(this.transform.position, radius + 5, playerlayerMask);
-
-                if (0 < playerColliders.Length)
-                {
-                    //이펙트생성으로 들어오는 것 막기
-                    if (Shield_Effect_skill03 == null)
-                    {
-                        //null이면 이펙트가 없는것.
-                        Shield_Effect_skill03 = GameManager.Instance.objectPooling.ShowEffect("BossMonsterShield_01", prefabPos);
-                        Shield_Effect_skill03.gameObject.transform.position = transform.position;
-                        //지속 시간 바꾸기
-                        Shield_Effect_skill03.finishAction = () =>
-                        {
-                            Shield_Effect_skill03 = null;
-                        };
-                    }
-                }
-                else
-                {
-                    if (Shield_Effect_skill03 != null)
-                    {
-                        //이펙트가 있다면 없애기.
-                        Shield_Effect_skill03.StopEffect();
-                    }
-                }
-
-                return true;
-            }
-        }
-    }
-
-    IEnumerator BouncePlayer()
-    {
-        //* 스킬 3번 시작전 플레이어가 아래에 있으면 튕겨내는 함수.   
-
-        //이펙트 주고
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterShield_StartEffect", prefabPos);
-        effect.gameObject.transform.position = transform.position;
-
-        yield return new WaitForSeconds(2.5f);
-        bool checkPlayer = CheckPlayerInMonster_skill03(skillRadius);
-        if (!checkPlayer)
-        {
-            //넉백
-            m_monster.OnHit_FallDown(3, 60);
-
-            yield return new WaitForSeconds(1f);
-            //그리고 다시 체크
-            canFire = CheckPlayerInMonster_skill03(skillRadius);
-        }
-        else
-            canFire = checkPlayer;
-    }
-
-    public void Stop_MonsterSkill03()
-    {
-        if (skill03_co != null)
-        {
-            StopCoroutine(skill03_co);
-            skill03_co = null;
-
-            ResetSkill02Rotation();
-            EndSkill(BossMonsterMotion.Skill03);
-            ClearWreckage();
-        }
-    }
-
-
-    #endregion
 
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 04  전기
@@ -1687,7 +1360,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //* 스킬 3번
         if (ing_skill03)
         {
-            Stop_MonsterSkill03();
+            boss_Abyss_Skill03.Stop_MonsterSkill03();
         }
         //* 스킬 4번
         if (ing_skill04)
@@ -1790,19 +1463,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         return posList;
     }
 
-    private void OnDrawGizmos()
-    {
-        //몬스터 감지 범위 Draw
-        //크기는  monsterData.overlapRadius
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, rangeXZ);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, skillRadius);
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, skillRadius + 5);
-    }
 
     //*---------------------------------------------------------------------------------//
     public void NavMeshSurface_ReBuild()

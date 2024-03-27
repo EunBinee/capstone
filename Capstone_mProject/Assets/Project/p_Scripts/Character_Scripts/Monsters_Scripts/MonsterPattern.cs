@@ -11,7 +11,7 @@ public class MonsterPattern : MonoBehaviour
     protected PlayerController playerController;
     protected PlayerMovement playerMovement;
     public Monster m_monster;
-    protected Animator m_animator;
+    public Animator m_animator;
 
     public Rigidbody rigid;
     protected Vector3 originPosition; //원래 캐릭터 position
@@ -622,7 +622,7 @@ public class MonsterPattern : MonoBehaviour
         return curDirection;
     }
     //* 특정 자식의 로테이션 값 가져오는 함수
-    protected Quaternion GetWorldRotation(Transform currentTransform)
+    public Quaternion GetWorldRotation(Transform currentTransform)
     {
         if (currentTransform == null)
             return Quaternion.identity;
