@@ -3823,6 +3823,8 @@ GameObject:
   - component: {fileID: 2755003020157360584}
   - component: {fileID: 2755003020157360585}
   - component: {fileID: 2755003020157360586}
+  - component: {fileID: 6273765010286152407}
+  - component: {fileID: 684069831230791878}
   - component: {fileID: 2755003020157360587}
   - component: {fileID: 2755003020157360588}
   m_Layer: 6
@@ -3939,8 +3941,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d7335b8042dcdf4b985c27ae08892ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_monster: {fileID: 0}
   rigid: {fileID: 2755003018785695446}
+  playerlayerMask: 0
   playerTargetPos: {fileID: 0}
+  navMeshAgent: {fileID: 0}
   playerHide: 0
   noAttack: 0
   canAttack: 0
@@ -3975,7 +3980,35 @@ MonoBehaviour:
   targetMarkerList: []
   targetMarker_Pattern05_Prefabs: {fileID: 8261404793505796278, guid: cd5b85c1623ae6f4a88b6af6ea2768f3, type: 3}
   targetMarker_Pattern05_List: []
+  isJump: 0
   navMeshSurface: []
+--- !u!114 &6273765010286152407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2755003020157360589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8a293070a869348ad9053802e6cad7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &684069831230791878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2755003020157360589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 518ff37324fed154a81fa2536d15afd3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rangeXZ: 50
+  wreckages: []
+  prefabPos: {fileID: 2755003018568943496}
 --- !u!195 &2755003020157360587
 NavMeshAgent:
   m_ObjectHideFlags: 0

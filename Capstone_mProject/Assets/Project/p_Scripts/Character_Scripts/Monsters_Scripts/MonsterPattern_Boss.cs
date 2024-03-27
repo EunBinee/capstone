@@ -109,6 +109,10 @@ public class MonsterPattern_Boss : MonsterPattern
                 break;
         }
     }
+    public BossMonsterPhase GetBossMonsterPhase()
+    {
+        return curBossPhase;
+    }
 
     protected void CheckBossHP()
     {

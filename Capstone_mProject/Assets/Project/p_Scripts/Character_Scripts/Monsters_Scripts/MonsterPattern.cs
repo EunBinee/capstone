@@ -10,18 +10,18 @@ public class MonsterPattern : MonoBehaviour
 {
     protected PlayerController playerController;
     protected PlayerMovement playerMovement;
-    protected Monster m_monster;
+    public Monster m_monster;
     protected Animator m_animator;
 
     public Rigidbody rigid;
     protected Vector3 originPosition; //원래 캐릭터 position
 
     protected int playerLayerId = 3;
-    protected int playerlayerMask; //플레이어 캐릭터 레이어 마스크
+    public int playerlayerMask; //플레이어 캐릭터 레이어 마스크
     protected Transform playerTrans;
     public Transform playerTargetPos; //총알 과녁 (플레이어 몸)
 
-    protected NavMeshAgent navMeshAgent;
+    public NavMeshAgent navMeshAgent;
     protected MonsterState curMonsterState;
 
     protected bool drawDamageCircle = false;
@@ -213,7 +213,7 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
-    protected void NavMesh_Enable(bool enable)
+    public void NavMesh_Enable(bool enable)
     {
         if (enable)
         {
@@ -227,7 +227,7 @@ public class MonsterPattern : MonoBehaviour
         }
     }
 
-    protected void SetMove_AI(bool moveAI)
+    public void SetMove_AI(bool moveAI)
     {
         if (moveAI)
         {
@@ -693,7 +693,10 @@ public class MonsterPattern : MonoBehaviour
         return Vector3.zero;
     }
 
-
+    public Vector3 GetOriginPosition()
+    {
+        return originPosition;
+    }
 
 
 }

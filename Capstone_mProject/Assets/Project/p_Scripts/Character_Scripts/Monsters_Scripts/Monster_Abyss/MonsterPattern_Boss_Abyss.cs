@@ -15,19 +15,9 @@ using UnityEngine.UIElements;
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
+    Boss_Abyss_Skill01 boss_Abyss_Skill01;
+    Boss_Abyss_Skill02 boss_Abyss_Skill02;
 
-
-
-
-
-
-
-    [Header("스킬 02 잔해물 범위")]
-    public int rangeXZ = 50;
-    public List<Wreckage> wreckages;
-    public Transform prefabPos;
-
-    GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
     public GameObject redImage;
     public GameObject bossText;
     public Vector3 centerPoint;
@@ -51,7 +41,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     GameObject targetMarker_Pattern05_obj;
     public List<Skill_Indicator> targetMarker_Pattern05_List = new List<Skill_Indicator>();
 
-    bool isJump = false;
+
+    public bool isJump = false;
     bool isDodge = false;
 
     bool startSkill = false;
@@ -75,7 +66,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         m_monster = GetComponent<Monster>();
         m_animator = GetComponent<Animator>();
 
-        //rigid = GetComponent<Rigidbody>();
+        boss_Abyss_Skill01 = GetComponent<Boss_Abyss_Skill01>();
+        boss_Abyss_Skill01.Init(this);
+        boss_Abyss_Skill02 = GetComponent<Boss_Abyss_Skill02>();
+        boss_Abyss_Skill02.Init(this);
+
         playerController = GameManager.Instance.gameData.GetPlayerController();
         playerMovement = GameManager.Instance.gameData.GetPlayerMovement();
         playerTrans = GameManager.Instance.gameData.GetPlayerTransform();
@@ -234,13 +229,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     //*내려찍기
                     Debug.Log("다음 스킬 : 01");
                     ing_skill01 = true;
-                    Skill01();
+                    boss_Abyss_Skill01.Skill01();
                     break;
                 case BossMonsterMotion.Skill02:
                     //* 폭탄
                     Debug.Log("다음 스킬 : 02");
                     ing_skill02 = true;
-                    Skill02();
+                    boss_Abyss_Skill02.Skill02();
                     break;
                 case BossMonsterMotion.Skill03:
                     if (curBossPhase != BossMonsterPhase.Phase1)
@@ -387,7 +382,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         yield return new WaitForSeconds(0.5f);
         //* 몬스터 지정된 장소로 점프
         isJump = true;
-        StartCoroutine(JumpUp());
+        boss_Abyss_Skill01.BossAbyss_JumpUp();
         yield return new WaitUntil(() => isJump == false);
 
         if (curMonsterState != MonsterState.Death)
@@ -430,8 +425,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 yield return null;
             }
             isJump = true;
-
-            StartCoroutine(JumpDown(newRandomPos));
+            boss_Abyss_Skill01.BossAbyss_JumpDown(newRandomPos);
             yield return new WaitUntil(() => isJump == false);
             //* 강제 주목 -------------------------------------------------------//
             GameManager.Instance.cameraController.AttentionMonster();
@@ -707,629 +701,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     //*----------------------------------------------------------------------------------------------------------//
-    //* 스킬 01 내려찍기
-    #region 스킬 01
 
-    private void Skill01()
-    {
-        StartCoroutine(BossAbyss_Skill01());
-    }
-
-    IEnumerator BossAbyss_Skill01()
-    {
-        //* 이펙트
-        Vector3 originPos = transform.position;
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("HeartOfBattle_01");
-        effect.transform.position = originPos;
-
-        yield return new WaitForSeconds(1f);
-        //* 점프 --------------------------------------------------------------------//
-        isJump = true;
-        StartCoroutine(JumpUp());
-        yield return new WaitUntil(() => isJump == false);
-        //*-------------------------------------------------------------------------------//
-        if (curMonsterState != MonsterState.Death)
-        {
-            //* 플레이어를 쫓아 다니는 이펙트 
-            float duration = 5f;
-            StartCoroutine(FollowPlayer_Effect_InSkill01(duration));
-            yield return new WaitForSeconds(duration);
-            Vector3 curPlayerPos = playerTrans.position;
-            NavMeshHit hit;
-
-            if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
-            {
-                if (hit.position != curPlayerPos)
-                    curPlayerPos = hit.position;
-            }
-
-            isJump = true;
-            StartCoroutine(JumpDown(curPlayerPos));
-            yield return new WaitUntil(() => isJump == false);
-        }
-        //------------------------------------------------------------------------------------//
-
-
-        EndSkill(BossMonsterMotion.Skill01);
-    }
-
-    IEnumerator JumpUp()
-    {
-        //*네비메쉬 끄기
-        noAttack = true;
-
-        NavMesh_Enable(false);
-        Vector3 originPos = transform.position;
-        float speed = 30;
-        float time = 0;
-
-
-        SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 0);
-        yield return new WaitForSeconds(1f);
-
-        if (curMonsterState != MonsterState.Death)
-        {
-            //------------------------------------------------------------------------------------//
-            //*점프전 주목 풀기
-            GameManager.instance.cameraController.AttentionBan(true);
-            //-----------------------------------------------------------------------------------//
-
-            // 점프전 잠깐 밑으로 내려감.
-            while (time < 0.1)
-            {
-                time += Time.deltaTime;
-                transform.Translate(-Vector3.up * speed * Time.deltaTime);
-                yield return null;
-            }
-            //? 연기이펙트-----------------------------------------------------------------------//
-
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_02");
-            Vector3 effectPos = originPos;
-            effectPos.y += 2.5f;
-            effect.transform.position = effectPos;
-            //-------------------------------------------------------------------------------------//
-            GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 2, 2);
-            //*점프
-            time = 0;
-            Vector3 targetPos = transform.position + (Vector3.up * 60);
-            while (time < 5f)
-            {
-                time += Time.deltaTime;
-                speed = Mathf.Lerp(90, 60, Time.time);
-                transform.Translate(Vector3.up * speed * Time.deltaTime);
-
-                if (transform.position.y >= targetPos.y)
-                    break;
-                yield return null;
-            }
-        }
-        else
-        {
-            SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 2);
-        }
-
-
-        isJump = false;
-    }
-
-    IEnumerator JumpDown(Vector3 curPlayerPos, bool getDamage = true)
-    {
-        float speed;
-        float time = 0;
-        transform.position = new Vector3(curPlayerPos.x, transform.position.y, curPlayerPos.z);
-
-        speed = 50f;
-        SetBossAttackAnimation(BossMonsterAttackAnimation.Skill01, 1);
-
-        while (time < 5f)
-        {
-            time += Time.deltaTime;
-            speed = Mathf.Lerp(50, 90, Time.time);
-            transform.Translate(-Vector3.up * speed * Time.deltaTime);
-            if (transform.position.y <= curPlayerPos.y)
-                break;
-            yield return null;
-        }
-
-        transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
-
-        //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
-        if (getDamage)
-            CheckPlayerDamage(6.5f, transform.position, 20, true);
-
-        //? 연기이펙트-----------------------------------------------------------------------//
-        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
-        Vector3 effectPos = transform.position;
-        effectPos.y -= 1.5f;
-        effect.transform.position = effectPos;
-
-        //* 점프 후 주목 가능
-        GameManager.instance.cameraController.AttentionBan(false);
-        //- 떨어지고 나서 주목 On
-        //GameManager.instance.cameraController.AttentionMonster();
-
-        isJump = false;
-        if (curMonsterState != MonsterState.Death)
-            noAttack = false;
-        NavMesh_Enable(true);
-
-        SetMove_AI(false);
-        SetAnimation(MonsterAnimation.Idle);
-
-    }
-
-    IEnumerator FollowPlayer_Effect_InSkill01(float duration)
-    {
-        //* 스킬01 내려찍기 중, 플레이어를 쫒아다니는 이펙트 
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
-        EffectController effectController = effect.gameObject.GetComponent<EffectController>();
-        effectController.ChangeSize();
-
-        Vector3 GroundPos = GetGroundPos(playerTrans);
-        effect.transform.position = GroundPos; // playerTrans.position;
-        float time = 0;
-
-        while (time < duration)
-        {
-            time += Time.deltaTime;
-            GroundPos = GetGroundPos(playerTrans);
-            effect.transform.position = GroundPos; // playerTrans.position;
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(4f);
-        effect.StopEffect();
-    }
-
-    #endregion
 
     // *---------------------------------------------------------------------------------------------------------//
-    //* 스킬 02  폭탄 떨구기
-    #region 스킬 02
-
-    private void Skill02()
-    {
-        skill02_Co = StartCoroutine(BossAbyss_Skill02());
-    }
-
-    IEnumerator BossAbyss_Skill02()
-    {
-        yield return new WaitForSeconds(4f);
-        //* 몬스터 뒤로 이동하는 코루틴
-        if (skill02_MoveMonster_Co != null)
-        {
-            StopCoroutine(skill02_MoveMonster_Co);
-        }
-
-        skill02_MoveMonster_Co = StartCoroutine(MoveMonster_Skill02());
-
-        yield return new WaitForSeconds(2f);
-        float time = 0;
-        bool getRandomPos = false;
-        Vector3 newRandomPos = Vector3.zero;
-        Vector3 curMonsterPoint;
-
-        float getrandomTime = 0;
-        while (time < 15)
-        {
-            time += Time.deltaTime;
-            float randTime = UnityEngine.Random.Range(0.5f, 3f);
-            yield return new WaitForSeconds(randTime);
-            time += randTime;
-
-            while (!getRandomPos)
-            {
-                getrandomTime += Time.deltaTime;
-                getRandomPos = true;
-                curMonsterPoint = GetGroundPos(playerTrans);
-                newRandomPos = GetRandomPos(3f, curMonsterPoint);
-                foreach (Vector3 randomPos in randomPos_skill02)
-                {
-                    if (Vector3.Distance(newRandomPos, randomPos) <= 4f)
-                    {
-                        getRandomPos = false;
-                        break;
-                    }
-                }
-
-                if (getRandomPos)
-                {
-                    randomPos_skill02.Add(newRandomPos);
-                }
-
-                if (getrandomTime > 3f)
-                {
-                    //1.5초 동안 못찾으면 걍 break;
-                    getrandomTime = 0;
-                    break;
-                }
-                yield return null;
-            }
-
-            if (getRandomPos)
-                StartCoroutine(SetBomb(newRandomPos));
-            getRandomPos = false;
-            yield return null;
-        }
-
-        yield return new WaitForSeconds(5f);
-
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
-        Vector3 effectPos = transform.position;
-        effectPos.y -= 1.5f;
-        effect.transform.position = effectPos;
-
-        effect = GameManager.Instance.objectPooling.ShowEffect("MC01_Red_02");
-        EffectController effectController = effect.GetComponent<EffectController>();
-        effectController.ChangeSize();
-        effect.transform.position = transform.position;
-
-
-        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
-
-        yield return new WaitForSeconds(0.7f);
-
-        //* 보스 주변에 공격--------------------------------------------
-        //* 보스의 마지막 공격
-
-        if (skill02_MoveMonster_Co != null)
-        {
-            StopCoroutine(skill02_MoveMonster_Co);
-            skill02_MoveMonster_Co = null;
-
-            SetMove_AI(false);
-            SetAnimation(MonsterAnimation.Idle);
-        }
-        curMonsterPoint = GetGroundPos(transform);
-        List<Vector3> roundPos = GetRoundPos(curMonsterPoint);
-        useExplosionSound = false;
-        foreach (Vector3 pos in roundPos)
-        {
-            randomPos_skill02.Add(pos);
-            StartCoroutine(SetBomb(pos, true, true));
-        }
-        //*-------------------------------------------------------------
-        //만약 플레이어가 현재 몬스터 아래에 있으면.. 공격할때 앞으로 이동하는 거 멈추기
-        float radius = 7.5f;
-        while (randomPos_skill02.Count != 0)
-        {
-            // 몬스터 아래에 있는지 확인
-            Collider[] playerColliders = Physics.OverlapSphere(this.transform.position, radius, playerlayerMask);
-
-            if (0 < playerColliders.Length)
-            {
-                // player 공격시 앞으로 이동 금지
-                // 플레이어
-                if (playerController._currentState.canGoForwardInAttack)
-                    playerController._currentState.canGoForwardInAttack = false;
-            }
-            else
-            {
-                //여기 없으면 이동 풀기
-                if (!playerController._currentState.canGoForwardInAttack)
-                    playerController._currentState.canGoForwardInAttack = true;
-            }
-
-            yield return null;
-        }
-
-        if (!playerController._currentState.canGoForwardInAttack)
-            playerController._currentState.canGoForwardInAttack = true;
-        //*-------------------------------------------------------------
-
-        if (curBossPhase != BossMonsterPhase.Phase1)
-        {
-            //* 잔해물 떨어지기
-            yield return new WaitForSeconds(3f);
-            StartCoroutine(SetWreckage());
-            yield return new WaitForSeconds(1f);
-            EndSkill(BossMonsterMotion.Skill02);
-        }
-        else
-        {
-            yield return new WaitForSeconds(1f);
-
-            EndSkill(BossMonsterMotion.Skill02);
-        }
-        skill02_Co = null;
-
-    }
-
-    //* 보스 뒤로 이동
-    IEnumerator MoveMonster_Skill02()
-    {
-        float time = 0;
-
-        SetMove_AI(false);
-        SetAnimation(MonsterAnimation.Idle);
-
-        float defaultSpeed = navMeshAgent.speed;
-        float defaultAcceleration = navMeshAgent.acceleration;
-        NavMeshHit hit;
-
-        randomPos_skill02.Clear();
-
-        Vector3 targetDir = (playerTrans.position - transform.position).normalized;
-        Vector3 monsterNewPos = transform.position + (-targetDir * 20);
-
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
-        Vector3 effectPos = transform.position;
-        effectPos.y -= 1.5f;
-        effect.transform.position = effectPos;
-
-        effect = GameManager.Instance.objectPooling.ShowEffect("MC01_Red_02");
-        EffectController effectController = effect.GetComponent<EffectController>();
-        effectController.ChangeSize();
-        effect.transform.position = transform.position;
-
-
-        GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
-        yield return new WaitForSeconds(0.7f);
-
-        if (NavMesh.SamplePosition(monsterNewPos, out hit, 20f, NavMesh.AllAreas))
-        {
-            if (monsterNewPos != hit.position)
-            {
-                monsterNewPos = hit.position;
-            }
-            SetMove_AI(true);
-            navMeshAgent.SetDestination(monsterNewPos);
-            SetAnimation(MonsterAnimation.Move);
-
-            while (true)
-            {
-                if (Vector3.Distance(monsterNewPos, transform.position) <= 2f)
-                {
-                    SetMove_AI(false);
-
-                    //TODO: 몬스터 방향 플레이어 쪽으로 돌리기
-                    time = 0;
-                    while (time < 2)
-                    {
-                        time += Time.deltaTime;
-                        Vector3 direction = playerTrans.position - transform.position;
-                        Quaternion targetAngle = Quaternion.LookRotation(direction);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 0.8f);
-
-                        if (Quaternion.Angle(transform.rotation, targetAngle) < 1.5f)
-                            break;
-
-                        yield return null;
-                    }
-                    time = 0;
-                    break;
-                }
-                yield return null;
-            }
-
-        }
-        else
-        {
-            Debug.Log("보스가 못가는 곳입니다..");
-        }
-
-        SetAnimation(MonsterAnimation.Idle);
-        skill02_MoveMonster_Co = null;
-
-    }
-
-    bool useExplosionSound = false;
-    IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false, bool soundCancle = false)
-    {
-        float time = 0;
-        Effect effect;
-        if (curBossPhase == BossMonsterPhase.Phase1 || usePhase01)
-        {
-            effect = GameManager.Instance.objectPooling.ShowEffect("RocketBarrage");
-            effect.transform.position = randomPos;
-            effect.finishAction = () =>
-            {
-                randomPos_skill02.Remove(randomPos);
-            };
-
-            yield return new WaitForSeconds(2f);
-            //! 사운드
-            if (!soundCancle)
-                m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-            else if (soundCancle && !useExplosionSound)
-            {
-                useExplosionSound = true;
-                m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-            }
-        }
-        else
-        {
-            effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_02");
-            effect.transform.position = randomPos;
-            yield return new WaitForSeconds(0.5f);
-            effect = GameManager.Instance.objectPooling.ShowEffect("MeteorStrike");
-            effect.transform.position = randomPos;
-            effect.finishAction = () =>
-            {
-                randomPos_skill02.Remove(randomPos);
-            };
-
-            yield return new WaitForSeconds(1f);
-            //! 사운드
-            if (!soundCancle)
-                m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
-            else if (soundCancle && !useExplosionSound)
-            {
-                useExplosionSound = true;
-                m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
-            }
-        }
-
-
-
-
-        while (time < 5)
-        {
-            time += Time.deltaTime;
-            if (curMonsterState == MonsterState.Death)
-            {
-                effect.StopEffect();
-                break;
-            }
-
-            //TODO: 범위 지정
-            bool playerTrue = CheckPlayerDamage(2f, randomPos, 20, true);
-
-            if (playerTrue)
-                break;
-
-            yield return null;
-        }
-    }
-
-    // 잔해물
-    IEnumerator SetWreckage()
-    {
-        Vector3 wreckageRandomPos = Vector3.zero;
-
-        if (wreckage_obj == null)
-        {
-            GameObject wreckagesPrefab = Resources.Load<GameObject>("GameObjPrefabs/" + "Wreckages");
-
-            if (wreckagesPrefab == null)
-            {
-#if UNITY_EDITOR
-                Debug.LogError("Projectile 프리펩 없음. 오류.");
-#endif
-            }
-            else
-            {
-                //prefabPos에 생성
-                wreckage_obj = UnityEngine.Object.Instantiate(wreckagesPrefab);
-                wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
-
-                wreckages = new List<Wreckage>();
-
-                Transform[] childTransforms = wreckage_obj.GetComponentsInChildren<Transform>(true);
-
-                foreach (Transform childTransform in childTransforms)
-                {
-                    Wreckage wreckageComponent = childTransform.GetComponent<Wreckage>();
-                    if (wreckageComponent != null)
-                        wreckages.Add(wreckageComponent);
-                }
-            }
-        }
-        else
-        {
-            wreckage_obj.SetActive(true);
-            wreckage_obj.gameObject.transform.SetParent(GameManager.instance.gameObject.transform);
-        }
-
-        //*잔해물 배치(플레이어와 떨어진 곳으로 지정)
-        //randomPos 지정.
-
-        List<Vector3> randomPosList = new List<Vector3>();
-        NavMeshHit hit;
-        Vector3 PosY = GetGroundPos(transform);
-        Vector3 curMonsterPoint = centerPoint; //new Vector3(centerPoint.x, PosY.y, centerPoint.z);
-        Debug.Log($"centerPoint {centerPoint}");
-        for (int i = 0; i < wreckages.Count; i++)
-        {
-            Vector3 randomPos = Vector3.zero;
-
-            bool stop = false;
-            float time = 0;
-            while (true)
-            {
-                time += Time.deltaTime;
-                if (time < 2)
-                {
-                    randomPos = GetRandomPos(rangeXZ, curMonsterPoint);
-                    if (Vector3.Distance(playerTrans.position, randomPos) >= 3f &&
-                        Vector3.Distance(transform.position, randomPos) >= 10f)
-                    {
-                        // - 플레이어랑은 3 정도의 거리를 유지하고, 
-                        // - 보스와는 20정도의 거리를 유지하고
-                        if (NavMesh.SamplePosition(randomPos, out hit, 35f, NavMesh.AllAreas))
-                        {
-                            if (hit.position != randomPos)
-                                randomPos = hit.position;
-                            // - 네비에이전트가 움직일 수 있는 곳인지 체크
-                            if (randomPosList.Contains(randomPos) == false)
-                            {
-                                //randomPos에도 없으면.. 생성
-                                int j = 0;
-                                bool canBreak = true;
-                                while (j < randomPosList.Count)
-                                {
-                                    if (Vector3.Distance(randomPosList[j], randomPos) < 8f)
-                                    {
-                                        canBreak = false;
-                                        break;
-                                    }
-                                    ++j;
-                                }
-                                if (canBreak)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    stop = true;
-                    break;
-                }
-            }
-            if (!stop)
-            {
-                randomPosList.Add(randomPos);
-            }
-            else
-                break;
-        }
-        yield return new WaitForSeconds(1f);
-
-        //떨어뜨리기 전 경고 이펙트 && 떨어뜨리기
-        for (int i = 0; i < randomPosList.Count; ++i)
-        {
-            wreckages[i].m_monster = this.m_monster;
-            wreckages[i].gameObject.SetActive(true);
-            wreckages[i].StartDropWreckage(randomPosList[i]);
-        }
-        //떨어뜨리기   
-
-        //전부 떨어지게 하면 네비 서페이스 (?)e 다시 Bake해주기
-        bool navReBuild = false;
-        while (true)
-        {
-            navReBuild = true;
-            for (int i = 0; i < randomPosList.Count; ++i)
-            {
-                if (!wreckages[i].finishDrop)
-                {
-                    navReBuild = false;
-                    break;
-                }
-            }
-            if (navReBuild)
-                break;
-            yield return null;
-        }
-
-        //playerController.NavMeshSurface_ReBuild();
-        // 사라지게 하기
-        yield return null;
-        if (curMonsterState != MonsterState.Death)
-            Monster_Motion(BossMonsterMotion.Skill03);
-
-        //잔해물 위치 다시 돌려두기
-        //비활성화해서 나중에 재활용..
-        // wreckage_obj.gameObject.transform.SetParent(GameManager.Instance.transform);
-        yield return null;
-    }
-
-    #endregion
 
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 03  총쏘기
@@ -1478,7 +852,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 }
             }
         }
-        wreckage_obj.SetActive(false);
+
+        boss_Abyss_Skill02.wreckage_obj.SetActive(false);
     }
 
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos, bool findPlayer = false)
