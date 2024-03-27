@@ -91,7 +91,7 @@ public class PlayerAttackCheck : MonoBehaviour
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
-        P_States.isShortArrow = false;
+
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -107,6 +107,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 else dir = player.transform.forward;
             }
             rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
+            P_States.isShortArrow = false;
             goShoot = true;
         }
         while (!(P_States.colliderHit == true || P_States.hadAttack == true || deltaShootTime >= 4.0f))
