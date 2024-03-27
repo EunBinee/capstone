@@ -12,7 +12,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
     // [Header("어그로 해제 후 다시 어그로가능한 거리 ")]
     // private float roundDistance = 1.0f;
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
-    public float findPlayerDistance = 6f;
+    public float findPlayerDistance = 10f;
     [Header("다시 어그로까지의 쿨탐")]
     private float coolTime=5.0f;
 
@@ -73,9 +73,10 @@ public class MonsterPattern_Monster03 : MonsterPattern
                     }
                     break;
                 case MonsterState.Discovery:
-                    if (m_monster.HPBar_CheckNull() == false)
-                        m_monster.GetHPBar();
+                    // if (m_monster.HPBar_CheckNull() == false)
+                    //     m_monster.GetHPBar();
                     Discovery_Player();
+                   
                     break;
                 case MonsterState.Tracing:
                     Tracing_Movement();
@@ -90,7 +91,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
                     break;
                 case MonsterState.GoingBack:
-                    GoingBack_Movement();
+                    //GoingBack_Movement(); 
                     break;
                 default:
                     break;
@@ -104,6 +105,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
     {
         if (!isRoaming)
         {
+            isGoingBack = false;
             isRoaming = true;
             //x와 Z주변을 배회하는 몬스터
             //roam_Monster_co = StartCoroutine(Roam_Monster_co());
@@ -190,7 +192,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                     if (isFinding) //* State : Discorvery
                     {
                         isFinding = false;
-                        ChangeMonsterState(MonsterState.Attack);
+                        //ChangeMonsterState(MonsterState.Attack);
 
                     }
                 }
@@ -208,7 +210,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 if (isFinding) //* State : Discorvery
                 {
                     isFinding = false;
-                    ChangeMonsterState(MonsterState.Roaming);
+                    ChangeMonsterState(MonsterState.GoingBack);
                 }
             }
         }
@@ -222,8 +224,6 @@ public class MonsterPattern_Monster03 : MonsterPattern
         if (!isFinding)
         {
             isFinding = true;
-
-           
         }
         if (discovery_Monster_co != null)
         {
@@ -283,7 +283,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 curPlayerdirection.y = 0f;
 
                 targetAngle = Quaternion.LookRotation(curPlayerdirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 8.0f);
 
                 yield return null;
             }
@@ -370,7 +370,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
         float distanceToPlayer = Vector3.Distance(transform.position, playerTrans.position);
 
         float tracingDistance = 3.0f; //거리
-        float tracingSpeed = 1.5f;  //속도 
+        float tracingSpeed = 1.2f;  //속도 
 
 
         if (distanceToPlayer > tracingDistance)
@@ -395,6 +395,32 @@ public class MonsterPattern_Monster03 : MonsterPattern
         }
 
     }
+    // * ---------------------------------------------------------------------------------------------------------//
+    // * 몬스터 상태 =>> 다시 자기자리로
+    public override void GoingBack_Movement()
+    {
+        if (isTracing)
+        {
+            //isTracing = false;
+            StopCoroutine(discovery_Monster_co);
+            
+            isFinding = false;
+            SetPlayerAttackList(false);
+           // m_monster.RetrunHPBar();
+        }
+
+        //SetMove_AI(true);
+
+        //SetAnimation(MonsterAnimation.Move);
+
+        //navMeshAgent.SetDestination(originPosition);
+        CheckDistance();
+        if (!forcedReturnHome)
+        {
+            //계속 거리 체크
+            CheckPlayerCollider();
+        }
+    }
            
 
     public override void CheckDistance()
@@ -409,14 +435,11 @@ public class MonsterPattern_Monster03 : MonsterPattern
             case MonsterState.Tracing:
                 distance = Vector3.Distance(transform.position, playerTrans.position);
                 //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
-                if (distance >= findPlayerDistance)
+                if (distance > 25.0f)
                 {
-    
-                }
-
-                if (distance < findPlayerDistance)
-                {
-                  
+                    isGoingBack = true;
+                    ChangeMonsterState(MonsterState.Roaming);
+                    //ChangeMonsterState(MonsterState.Roaming);
                 }
 
                 break;
@@ -425,7 +448,18 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 break;
 
             case MonsterState.GoingBack:
-              
+                // distance = Vector3.Distance(transform.position, playerTrans.position);
+                // //만약 몬스터와 캐릭터의 거리가 멀어지면, 다시 원위치로.
+                // if (distance >= 15.0f)
+                // {
+                //     isGoingBack = false;
+                //     //m_monster.RetrunHPBar();
+                //     ChangeMonsterState(MonsterState.Roaming);
+                // }
+                // if(distance<10.0f)
+                // {
+                //    ChangeMonsterState(MonsterState.Discovery);
+                // }
                 break;
         }
     }
@@ -512,7 +546,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         isGettingHit = false;
 
-        ChangeMonsterState(MonsterState.Tracing);
+        ChangeMonsterState(MonsterState.Discovery);
         //Monster_Motion(MonsterMotion.Long_Range_Attack);
     }
 
@@ -546,7 +580,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
     }
 
 
-     public override void StopMonster()
+    public override void StopMonster()
     {
         //상태는 그대로.
         // 몬스터 is도 그대로.
@@ -595,6 +629,8 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 SetPlayerAttackList(false);
             }
         }
+
+       
 
     }
     public override void StartMonster()

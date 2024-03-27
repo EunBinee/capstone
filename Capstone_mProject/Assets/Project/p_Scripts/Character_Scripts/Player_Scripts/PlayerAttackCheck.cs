@@ -91,7 +91,7 @@ public class PlayerAttackCheck : MonoBehaviour
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
-        P_States.isShortArrow = false;
+        
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -104,10 +104,12 @@ public class PlayerAttackCheck : MonoBehaviour
             {
                 if (!P_States.isShortArrow)
                     dir = GameManager.Instance.gameData.cameraObj.transform.forward;
-                else dir = player.transform.forward;
+                else
+                    dir = player.transform.forward;
             }
             rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
             goShoot = true;
+            P_States.isShortArrow = false;
         }
         while (!(P_States.colliderHit == true || P_States.hadAttack == true || deltaShootTime >= 4.0f))
         {
@@ -134,9 +136,17 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Value.aimClickDown = 0;
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
+
         P_Arrows.AddArrowPool(this.gameObject);
         this.gameObject.SetActive(false);
+
     }
+    IEnumerator DelayAfterAction()
+{
+    yield return new WaitForSeconds(10.0f); // 1초의 딜레이 추가
+
+    // 여기에 1초 딜레이 이후에 실행할 코드를 넣으세요.
+}
 
     private void isBouncingToFalse()
     {
