@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PathDrawer : MonoBehaviour
@@ -20,7 +21,6 @@ public class PathDrawer : MonoBehaviour
     {
         // 오브젝트의 현재 위치 저장
         SavePosition(objectToTrack.position);
-
         // 저장된 위치로 경로 표시
         DrawPath();
     }

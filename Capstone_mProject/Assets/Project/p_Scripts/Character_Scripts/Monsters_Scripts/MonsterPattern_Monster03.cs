@@ -283,7 +283,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 curPlayerdirection.y = 0f;
 
                 targetAngle = Quaternion.LookRotation(curPlayerdirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 8.0f);
 
                 yield return null;
             }
@@ -546,7 +546,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         isGettingHit = false;
 
-        ChangeMonsterState(MonsterState.Tracing);
+        ChangeMonsterState(MonsterState.Discovery);
         //Monster_Motion(MonsterMotion.Long_Range_Attack);
     }
 

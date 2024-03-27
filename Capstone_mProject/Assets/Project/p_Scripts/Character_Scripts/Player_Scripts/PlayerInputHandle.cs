@@ -15,10 +15,11 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
-
+    bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
     void Awake()
     {
         _controller = GetComponent<PlayerController>();
+        endArrow = false;
     }
     public void MouseMoveInput()
     {
@@ -53,6 +54,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
     }
 
+
     public void MouseClickInput()
     {
         if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때 => 기본공격
@@ -76,8 +78,8 @@ public class PlayerInputHandle : MonoBehaviour
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
         }
 
-        else if (Input.GetMouseButtonUp(0) && P_States.isClickDown)
-        {
+        else if (Input.GetMouseButtonUp(0) && P_States.isClickDown&&!endArrow) //endArrow가 false이면 활 o, true이면 x
+        {     
             if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
             {
                 // 짧게 클릭 로직 실행
@@ -105,6 +107,7 @@ public class PlayerInputHandle : MonoBehaviour
                 transform.rotation = turnRot;
 
                 P_Skills.onArrow();
+                StartCoroutine(DelayAfterAction());
             }
             P_States.isClickDown = false;
             P_Value.aimClickDown = 0;
@@ -157,4 +160,12 @@ public class PlayerInputHandle : MonoBehaviour
             skillMotion('Q');
         }*/
     }
+
+    IEnumerator DelayAfterAction()
+    {
+        endArrow = true; //화살 쏘고 나서 true
+        yield return new WaitForSeconds(0.5f); // 딜레이
+        endArrow = false; //다시 화살 쏠 수 있게 false로 해줘야함. 
+    }
+
 }
