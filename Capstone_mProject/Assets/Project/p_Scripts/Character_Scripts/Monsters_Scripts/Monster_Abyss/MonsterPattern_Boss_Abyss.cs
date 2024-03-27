@@ -10,10 +10,17 @@ using UnityEditor.Rendering;
 using System.Threading;
 using UnityEditor;
 using Unity.VisualScripting.Dependencies.Sqlite;
+using UnityEngine.UIElements;
 
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
     //! 보스 몬스터 나락.
+
+
+
+
+
+
 
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;
@@ -55,7 +62,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool ing_skill04 = false;
 
     //보스 페이즈 체력 기준
-    //코루틴
+    //* 스킬 2번 코루틴
     Coroutine skill02_MoveMonster_Co = null;
     Coroutine skill02_Co = null;
     Coroutine changePhase02_Co = null;
@@ -155,6 +162,17 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void useUpdate()
     {
+        //* -----------------------------------------------------------------------------//
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (!ing_skill01)
+                StopMonster();
+        }
+        else if (Input.GetKeyDown(KeyCode.J))
+        {
+            StartMonster();
+        }
+        //* -----------------------------------------------------------------------------//
         if (isDodge)
         {
             Vector3 velocity = navMeshAgent.velocity;
@@ -208,50 +226,58 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void Monster_Motion(BossMonsterMotion monsterMotion)
     {
-        switch (monsterMotion)
+        if (!forcedReturnHome)
         {
-            case BossMonsterMotion.Skill01:
-                //*내려찍기
-                ing_skill01 = true;
-                Skill01();
-                break;
-            case BossMonsterMotion.Skill02:
-                //* 폭탄
-                ing_skill02 = true;
-                Skill02();
-                break;
-            case BossMonsterMotion.Skill03:
-                if (curBossPhase != BossMonsterPhase.Phase1)
-                {
-                    //* 총
-                    ing_skill03 = true;
-                    Skill03();
-                }
-                break;
-            case BossMonsterMotion.Skill04:
-                if (curBossPhase != BossMonsterPhase.Phase1)
-                {
-                    //* 전기
-                    ing_skill04 = true;
-                    Skill04();
-                }
-                break;
-            case BossMonsterMotion.GetHit:
-                //getHit
-                GetHit();
+            switch (monsterMotion)
+            {
+                case BossMonsterMotion.Skill01:
+                    //*내려찍기
+                    Debug.Log("다음 스킬 : 01");
+                    ing_skill01 = true;
+                    Skill01();
+                    break;
+                case BossMonsterMotion.Skill02:
+                    //* 폭탄
+                    Debug.Log("다음 스킬 : 02");
+                    ing_skill02 = true;
+                    Skill02();
+                    break;
+                case BossMonsterMotion.Skill03:
+                    if (curBossPhase != BossMonsterPhase.Phase1)
+                    {
+                        //* 총
+                        Debug.Log("다음 스킬 : 03");
+                        ing_skill03 = true;
+                        Skill03();
+                    }
+                    break;
+                case BossMonsterMotion.Skill04:
+                    if (curBossPhase != BossMonsterPhase.Phase1)
+                    {
+                        //* 전기
+                        Debug.Log("다음 스킬 : 04");
+                        ing_skill04 = true;
+                        Skill04();
+                    }
+                    break;
+                case BossMonsterMotion.GetHit:
+                    //getHit
+                    GetHit();
 
-                break;
-            case BossMonsterMotion.Death:
-                noAttack = true;
-                ChangeMonsterState(MonsterState.Death);
+                    break;
+                case BossMonsterMotion.Death:
+                    noAttack = true;
+                    ChangeMonsterState(MonsterState.Death);
 
-                StartCoroutine(DeathBossMonster());
+                    StartCoroutine(DeathBossMonster());
 
-                m_monster.RetrunHPBar();
-                break;
-            default:
-                break;
+                    m_monster.RetrunHPBar();
+                    break;
+                default:
+                    break;
+            }
         }
+
     }
 
     public override void SetAnimation(MonsterAnimation m_anim)
@@ -352,7 +378,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     //* 보스 연출
     //* 페이즈 02
-
     bool CheckPlayerPos = false;
     IEnumerator Phase02_Production()
     {
@@ -460,23 +485,19 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             bossText.SetActive(false);
             //* 타임 라인
             DirectTheBossWeakness();
-            //End_Phase02_Production(); //이것도 타임라인에서 사용
         }
     }
 
     public void End_Phase02_Production()
     {
-        //*s나중에 주석 풀기 !
+        //* 나중에 주석 풀기 !
 
         CheckPlayerPos = false;
         Base_Phase_HP(false);
-        //yield return new WaitForSeconds(1f);
         ChangeMonsterState(MonsterState.Tracing);
         changePhase02_Co = null;
         GameManager.Instance.cameraController.UndoAttention();
     }
-
-
 
     IEnumerator CheckPlayer_Production()
     {
@@ -544,8 +565,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (curMonsterState == MonsterState.Death)
                 break;
             Base_Phase_HP();
-            if (curBossPhase != curBossP)
+            if (curBossPhase != curBossP) //* 페이즈 넘어가면 break;
+            {
+                Debug.Log("rrr");
                 break;
+            }
+            if (forcedReturnHome)
+            {
+                Debug.Log("Eee");
+                break;
+            }
 
             if (curBossPhase == BossMonsterPhase.Phase1)
                 skill = UnityEngine.Random.Range(0, 2);
@@ -634,7 +663,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
             else
             {
-                //다시 뽑기
                 yield return null;
             }
         }
@@ -646,7 +674,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isTracing = false;
         }
     }
-
 
     //* 스킬 끝났을 때 무조건 실행해주는 함수. (변수 수정할때 사용.)
     public void EndSkill(BossMonsterMotion skill)
@@ -708,6 +735,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StartCoroutine(FollowPlayer_Effect_InSkill01(duration));
             yield return new WaitForSeconds(duration);
             Vector3 curPlayerPos = playerTrans.position;
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(curPlayerPos, out hit, 20f, NavMesh.AllAreas))
+            {
+                if (hit.position != curPlayerPos)
+                    curPlayerPos = hit.position;
+            }
 
             isJump = true;
             StartCoroutine(JumpDown(curPlayerPos));
@@ -780,7 +814,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator JumpDown(Vector3 curPlayerPos, bool getDamage = true)
     {
-        Debug.Log($"curPlayerPos   {curPlayerPos}");
         float speed;
         float time = 0;
         transform.position = new Vector3(curPlayerPos.x, transform.position.y, curPlayerPos.z);
@@ -797,7 +830,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 break;
             yield return null;
         }
-        Debug.Log($"curMonster 2  {transform.position}");
 
         transform.position = new Vector3(curPlayerPos.x, curPlayerPos.y, curPlayerPos.z);
 
@@ -1289,7 +1321,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         // 사라지게 하기
         yield return null;
         if (curMonsterState != MonsterState.Death)
-            Skill03();
+            Monster_Motion(BossMonsterMotion.Skill03);
 
         //잔해물 위치 다시 돌려두기
         //비활성화해서 나중에 재활용..
@@ -1302,23 +1334,25 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     // *---------------------------------------------------------------------------------------------------------//
     //* 스킬 03  총쏘기
     #region 스킬 03
-
+    Coroutine skill03_co = null;
     public void Skill03()
     {
-        StartCoroutine(BossAbyss_Skill03());
+        skill03_co = StartCoroutine(BossAbyss_Skill03());
     }
 
     float skillTime = 0;
     bool canFire = false;
-
+    List<Quaternion> muzzleL_OriginQ = null;
+    List<Quaternion> muzzleR_OriginQ = null;
+    Quaternion originChildWorldRot = Quaternion.identity;
     IEnumerator BossAbyss_Skill03()
     {
         canFire = CheckPlayerInMonster_skill03(skillRadius);
 
         yield return new WaitUntil(() => canFire == true);
         //* 총구들과 Neck 부분의 원래 Rotation 얻기
-        List<Quaternion> muzzleL_OriginQ = new List<Quaternion>();
-        List<Quaternion> muzzleR_OriginQ = new List<Quaternion>();
+        muzzleL_OriginQ = new List<Quaternion>();
+        muzzleR_OriginQ = new List<Quaternion>();
         for (int i = 0; i < muzzlesL.Length; i++)
             muzzleL_OriginQ.Add(GetWorldRotation(muzzlesL[i]));
         for (int i = 0; i < muzzlesR.Length; i++)
@@ -1334,7 +1368,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         m_animator.enabled = false;
         //--------------------------------------------------//
         Quaternion childWorldRotation = GetWorldRotation(bossNeck);
-        Quaternion originChildWorldRot = childWorldRotation;
+        originChildWorldRot = childWorldRotation;
         bossNeck.rotation = childWorldRotation;
         // 가져온 월드 회전값을 출력해보기
         Vector3 rayPos = new Vector3(bossNeck.position.x, playerTargetPos.position.y, bossNeck.position.z);
@@ -1392,20 +1426,40 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //--------------------------------------------------//
         //* 총구들원래 Rotation 로 바꿔주
-        for (int i = 0; i < muzzlesL.Length; i++)
-            muzzlesL[i].rotation = muzzleL_OriginQ[i];
-        for (int i = 0; i < muzzlesR.Length; i++)
-            muzzlesR[i].rotation = muzzleR_OriginQ[i];
-
-        m_animator.enabled = true;
-        SetAnimation(MonsterAnimation.Idle);
+        ResetSkill02Rotation();
 
         yield return new WaitForSeconds(1f);
         EndSkill(BossMonsterMotion.Skill03);
 
 
+
         //* 잔해물 치우기
         yield return new WaitForSeconds(1f);
+        ClearWreckage();
+
+        //NavMeshSurface_ReBuild();
+        skill03_co = null;
+        yield return null;
+    }
+
+    public void ResetSkill02Rotation()
+    {
+        bossNeck.rotation = originChildWorldRot;
+        originChildWorldRot = Quaternion.identity;
+
+        for (int i = 0; i < muzzlesL.Length; i++)
+            muzzlesL[i].rotation = muzzleL_OriginQ[i];
+        for (int i = 0; i < muzzlesR.Length; i++)
+            muzzlesR[i].rotation = muzzleR_OriginQ[i];
+        muzzleL_OriginQ = null;
+        muzzleR_OriginQ = null;
+        m_animator.enabled = true;
+
+        SetAnimation(MonsterAnimation.Idle);
+    }
+
+    public void ClearWreckage()
+    {
         for (int i = 0; i < wreckages.Count; ++i)
         {
             wreckages[i].DisappearWreckage();
@@ -1423,12 +1477,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     break;
                 }
             }
-            yield return null;
         }
         wreckage_obj.SetActive(false);
-        //NavMeshSurface_ReBuild();
-
-        yield return null;
     }
 
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos, bool findPlayer = false)
@@ -1601,6 +1651,21 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         else
             canFire = checkPlayer;
     }
+
+    public void Stop_MonsterSkill03()
+    {
+        if (skill03_co != null)
+        {
+            StopCoroutine(skill03_co);
+            skill03_co = null;
+
+            ResetSkill02Rotation();
+            EndSkill(BossMonsterMotion.Skill03);
+            ClearWreckage();
+        }
+    }
+
+
     #endregion
 
     // *---------------------------------------------------------------------------------------------------------//
@@ -1854,7 +1919,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         if (index == (createTargetMarker - 1))
         {
-            Debug.Log("끝ㅌ");
             stopSkillPattern = true;
         }
 
@@ -2062,7 +2126,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     //* 만약 플레이어가 indicator에 플레이어가 포함 되어있다면?
                     playerMovement.PlayerElectricShock(true);
                     float damage = 20 * count;
-                    Debug.Log($"count {count} ,   damage {damage}");
                     m_monster.OnHit(damage);
                 }
             }
@@ -2081,6 +2144,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             StopCoroutine(skill04_Pattern04_Co);
         if (stopSkillPattern == true)
             stopSkillPattern = false;
+        EndSkill(BossMonsterMotion.Skill04);
     }
 
 
@@ -2219,29 +2283,53 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void StopAtackCoroutine()
     {
+        forcedReturnHome = true;
+        Debug.Log("보스 몬스터 stop");
+        ChangeMonsterState(MonsterState.Stop);
+        isTracing = false;
         //Abyss 보스 몬스터의 경우 => 스킬 2번 4번만 멈추면 될 듯
         //*스킬 2
-        if (skill02_Co != null)
+        if (ing_skill02)
         {
-            StopCoroutine(skill02_Co);
-            skill02_Co = null;
+            if (skill02_Co != null)
+            {
+                StopCoroutine(skill02_Co);
+                skill02_Co = null;
 
-            if (!playerController._currentState.canGoForwardInAttack)
-                playerController._currentState.canGoForwardInAttack = true;
+                if (!playerController._currentState.canGoForwardInAttack)
+                    playerController._currentState.canGoForwardInAttack = true;
 
-            EndSkill(BossMonsterMotion.Skill02);
+                EndSkill(BossMonsterMotion.Skill02);
+            }
+            if (skill02_MoveMonster_Co != null)
+            {
+                StopCoroutine(skill02_MoveMonster_Co);
+                skill02_MoveMonster_Co = null;
+                SetMove_AI(false);
+                SetAnimation(MonsterAnimation.Idle);
+            }
         }
-        if (skill02_MoveMonster_Co != null)
+        //* 스킬 3번
+        if (ing_skill03)
         {
-            StopCoroutine(skill02_MoveMonster_Co);
-            skill02_MoveMonster_Co = null;
+            Stop_MonsterSkill03();
         }
         //* 스킬 4번
         if (ing_skill04)
             StopSkill04();
 
     }
+    public override void StopMonster()
+    {
+        StopAtackCoroutine();
+    }
+    public override void StartMonster()
+    {
+        Debug.Log("start");
+        forcedReturnHome = false;
 
+        ChangeMonsterState(MonsterState.Tracing);
+    }
     //*----------------------------------------------------------------------------------------------------------//
     //* --
 
@@ -2354,6 +2442,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 타임라인 => 보스 일반 약점
     public override void DirectTheBossWeakness()
     {
+        GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
         CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimLine");
@@ -2376,6 +2465,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void EndDirectTheBossWeakness()
     {
+        GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
         //
@@ -2385,6 +2475,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
+        GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
         CurSceneManager.instance.PlayTimeline("Abyss_LastWeakness_TimeLine");
@@ -2435,6 +2526,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public void EndDirectorMonsterLastWeakness()
     {
+        GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;

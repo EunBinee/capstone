@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
 
     public bool bossBattle = false;
     public bool isLoading = false;
+    public bool isCutScene = false; //컷씬 진행중인지 여부
     //* --------------------------------------------//
     void Awake()
     {
@@ -236,6 +237,7 @@ public class GameManager : MonoBehaviour
             m.monsterPattern.StopMonster();
         }
     }
+
     public void Start_AllMonster()
     {
         foreach (var m in monsters)
@@ -245,7 +247,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    //!---------------------------------------------------------------------------//
+    //*---------------------------------------------------------------------------//
     //* 사이 각 구하기 (0~180)
     public float GetAngleSeparation(Vector3 center, Vector3 point1, Vector3 point2)
     {
@@ -259,5 +261,18 @@ public class GameManager : MonoBehaviour
         return angleInDegrees;
     }
 
+    //*---------------------------------------------------------------------------//
+    public void CutSceneSetting(bool start)
+    {
+        if (start)
+        {
+            Stop_AllMonster();
+        }
+        else if (!start)
+        {
+            Start_AllMonster();
+        }
+
+    }
 }
 
