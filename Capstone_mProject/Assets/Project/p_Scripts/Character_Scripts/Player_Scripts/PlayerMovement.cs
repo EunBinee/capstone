@@ -149,7 +149,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Attacking_co(){
+    public void Attacking_co()
+    {
         StartCoroutine(Attacking());
     }
 
@@ -274,7 +275,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        if (P_States.isStop || P_States.isJumping)
+        else if (P_States.isStop || P_States.isJumping)
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
@@ -282,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
+        else if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
         {
             //if (!P_States.isCamOnAim)   //* 카메라가 바라보는 방향으로 플레이어 회전
             {
@@ -515,6 +516,7 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
+            P_Controller.AnimState(PlayerState.Move);
         }
 
     }

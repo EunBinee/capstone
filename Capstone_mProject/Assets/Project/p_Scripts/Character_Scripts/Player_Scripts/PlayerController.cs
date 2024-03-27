@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
 
     public List<NavMeshSurface> navMeshSurface;
 
-    private bool isGettingHit = false;
+    public bool isGettingHit = false;
     public Action OnHitPlayerEffect = null;
 
     public PlayerState curPlayerState;
@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
     float nowHitTime;
     public List<GameObject> hitMonsters;
     //public List<Collider> forwardHit;
+    private float hitStop = 0f;
 
     public GameObject bow;
     public GameObject sword;
@@ -282,6 +283,7 @@ public class PlayerController : MonoBehaviour
             case PlayerState.FinishComboAttack:
                 P_Com.animator.SetInteger("comboCount", index);
                 P_Com.animator.SetBool("p_Locomotion", true);
+                AnimState(PlayerState.Idle);
                 break;
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
@@ -363,7 +365,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(hitStop);
         P_States.isGettingHit = false;
 
     }
@@ -406,10 +408,12 @@ public class PlayerController : MonoBehaviour
 
         if (knockbackDistance > 1.5f)
         {
+            hitStop = 1.8f;
             P_Com.animator.SetTrigger("isKnockback");
         }
         else
         {
+            hitStop = 0.5f;
             P_Com.animator.Play("Get_Damage", 0);
         }
         P_Value.hits = 0;   //* 피격 시 히트 초기화
