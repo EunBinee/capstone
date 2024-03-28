@@ -109,6 +109,10 @@ public class MonsterPattern_Boss : MonsterPattern
                 break;
         }
     }
+    public BossMonsterPhase GetBossMonsterPhase()
+    {
+        return curBossPhase;
+    }
 
     protected void CheckBossHP()
     {
@@ -272,6 +276,11 @@ public class MonsterPattern_Boss : MonsterPattern
 
     //* 보스 마지막 약점 연출
     public virtual void DirectTheBossLastWeakness()
+    {
+
+    }
+    //* 보스 약점 연출
+    public virtual void DirectTheBossWeakness()
     {
 
     }
