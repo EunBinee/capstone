@@ -19,7 +19,6 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         playerTrans = GameManager.instance.gameData.GetPlayerTransform();
     }
 
-    #region 스킬 01
 
     public void Skill01()
     {
@@ -217,6 +216,5 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         effect.StopEffect();
     }
 
-    #endregion
 
 }

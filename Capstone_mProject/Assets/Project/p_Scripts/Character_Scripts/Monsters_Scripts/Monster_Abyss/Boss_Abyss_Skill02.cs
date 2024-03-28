@@ -26,8 +26,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         randomPos_skill02 = new List<Vector3>();
     }
 
-    #region 스킬 02
-
     public void Skill02()
     {
         skill02_Co = StartCoroutine(BossAbyss_Skill02());
@@ -343,5 +341,25 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
     }
 
 
-    #endregion
+    //* 스킬 02번 정지--------------------------------------------------------------//
+    public void Stop_MonsterSkill02()
+    {
+        if (skill02_Co != null)
+        {
+            StopCoroutine(skill02_Co);
+            skill02_Co = null;
+
+            if (!playerController._currentState.canGoForwardInAttack)
+                playerController._currentState.canGoForwardInAttack = true;
+
+            monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);
+        }
+        if (skill02_MonsterMovement_Co != null)
+        {
+            monsterPattern_Abyss.StopCoroutine(skill02_MonsterMovement_Co);
+            skill02_MonsterMovement_Co = null;
+            monsterPattern_Abyss.SetMove_AI(false);
+            monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Idle);
+        }
+    }
 }

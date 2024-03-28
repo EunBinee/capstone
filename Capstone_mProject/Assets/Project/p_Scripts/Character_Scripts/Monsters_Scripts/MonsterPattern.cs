@@ -406,7 +406,7 @@ public class MonsterPattern : MonoBehaviour
     }
 
     //* ----------------------------------------------------------------------------------------//
-    protected Effect GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
+    public Effect GetDamage_electricity(Vector3 randomPos, Transform parent = null, float angle = -1)
     {
         Effect effect;
         //* 전기 이펙트

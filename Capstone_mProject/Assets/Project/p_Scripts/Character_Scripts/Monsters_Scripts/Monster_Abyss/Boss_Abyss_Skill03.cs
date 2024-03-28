@@ -29,7 +29,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
     float skillTime = 0;
     bool canFire = false;
 
-
     List<Quaternion> muzzleL_OriginQ = null;
     List<Quaternion> muzzleR_OriginQ = null;
     Quaternion originChildWorldRot = Quaternion.identity;
@@ -510,6 +509,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
             canFire = checkPlayer;
     }
 
+    //* 스킬 03번 정지--------------------------------------------------------------//
     public void Stop_MonsterSkill03()
     {
         if (skill03_co != null)
@@ -521,20 +521,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
             monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
             ClearWreckage();
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        //몬스터 감지 범위 Draw
-        //크기는  monsterData.overlapRadius
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, rangeXZ);
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, skillRadius);
-        Gizmos.color = Color.black;
-        Gizmos.DrawWireSphere(transform.position, skillRadius + 5);
     }
 
 }
