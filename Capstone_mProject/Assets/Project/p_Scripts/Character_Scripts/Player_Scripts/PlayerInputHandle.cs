@@ -116,6 +116,8 @@ public class PlayerInputHandle : MonoBehaviour
                 P_States.startAim = false;
                 P_Skills.arrowSkillOff();
             }
+            P_Movement.StopIdleMotion();
+            P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
 
         else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
