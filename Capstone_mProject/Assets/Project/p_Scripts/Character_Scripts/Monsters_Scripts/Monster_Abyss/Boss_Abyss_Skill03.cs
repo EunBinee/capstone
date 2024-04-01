@@ -518,9 +518,10 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
             skill03_co = null;
 
             ResetSkill02Rotation();
-            monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
             ClearWreckage();
         }
+        monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
+
     }
 
 }

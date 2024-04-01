@@ -522,6 +522,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> Tracing (=> 발견 즉시 바로 스킬 시작)
+    Coroutine startMonsterSkill_co = null;
     public override void Tracing_Movement()
     {
         //*페이즈 마다 실행되도록.
@@ -535,7 +536,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case BossMonsterPhase.Phase2:
                 case BossMonsterPhase.Phase3:
                     //* 추적이 시작되면 몬스터 스킬 시작
-                    StartCoroutine(StartMonsterSkill());
+                    if (startMonsterSkill_co != null)
+                    {
+                        StopCoroutine(startMonsterSkill_co);
+                    }
+                    startMonsterSkill_co = StartCoroutine(StartMonsterSkill());
                     break;
                 default:
                     break;
@@ -560,12 +565,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Base_Phase_HP();
             if (curBossPhase != curBossP) //* 페이즈 넘어가면 break;
             {
-                Debug.Log("rrr");
                 break;
             }
             if (forcedReturnHome)
             {
-                Debug.Log("Eee");
                 break;
             }
 

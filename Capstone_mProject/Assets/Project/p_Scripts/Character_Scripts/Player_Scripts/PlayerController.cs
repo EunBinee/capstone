@@ -137,8 +137,13 @@ public class PlayerController : MonoBehaviour
         }
         else if (UIManager.gameIsPaused == false && !EnablePlayerUI)
         {
-            PlayerUI_SetActive(true);
+            if (!GameManager.instance.curCutScene_ing)
+                PlayerUI_SetActive(true);
         }
+
+        CheckHitTime();
+        CheckAnim();
+        CheckHP();
     }
 
     //* 플레이어 UI 활성화 비활성화
@@ -146,6 +151,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!activeSelf)
         {
+            Debug.Log("플레이어 UI 비활성화");
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
@@ -158,6 +164,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (activeSelf)
         {
+            Debug.Log("플레이어 UI 활성화");
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
@@ -165,9 +172,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_R.gameObject.transform.position = originRpos;
             EnablePlayerUI = true;
 
-            CheckHitTime();
-            CheckAnim();
-            CheckHP();
+
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Boss_Abyss_Skill04 : MonoBehaviour
@@ -26,6 +27,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     List<Skill_Indicator> curTargetMarker;
     Coroutine skill04_Co = null;
     Coroutine skill04_Pattern04_Co = null;
+    Coroutine CheckPlayerInMarker_co = null;
+
+    bool stopSkillPattern = false;
 
     public void Init(MonsterPattern_Boss_Abyss _monsterPattern_Boss_Abyss)
     {
@@ -378,7 +382,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 getBounds = true;
             randomPos = skill_Indicator.GetRandomPos(getBounds);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red", skill_Indicator.gameObject.transform);
-
             effect.transform.position = randomPos;
 
             if (!isTrigger_si)
@@ -403,7 +406,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
                 effect.transform.localPosition = rotation * effect.transform.localPosition;
             }
-            yield return null;
+
+            yield return new WaitUntil(() => UIManager.gameIsPaused == false);
         }
 
         time = 0;
@@ -418,13 +422,16 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                         getBounds = true;
                     randomPos = skill_Indicator.GetRandomPos(getBounds);
 
+                    Debug.Log("계속 실행중");
                     Effect effect = monsterPattern_Abyss.GetDamage_electricity(randomPos, skill_Indicator.gameObject.transform, angle);
                     effect.finishAction = () =>
                     {
                         skill_Indicator.electricity_Effects.Remove(effect);
                     };
                     skill_Indicator.electricity_Effects.Add(effect);
-                    yield return null;
+
+                    yield return new WaitUntil(() => UIManager.gameIsPaused == false);
+
                 }
                 else
                 {
@@ -447,12 +454,12 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         }
         if (CheckPlayerInMarker_co == null)
         {
+
             CheckPlayerInMarker_co = StartCoroutine(CheckPlayerInMarker());
         }
     }
 
-    Coroutine CheckPlayerInMarker_co = null;
-    bool stopSkillPattern = false;
+
     IEnumerator CheckPlayerInMarker()
     {
         LayerMask layerMask = LayerMask.GetMask("Monster");
@@ -461,6 +468,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         while (!stopSkillPattern)
         {
+
             if (!playerController._currentState.isElectricShock)
             {
                 count = 0;
@@ -498,13 +506,24 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     public void Stop_MonsterSkill04()
     {
         if (skill04_Co != null)
+        {
             StopCoroutine(skill04_Co);
+            skill04_Co = null;
+        }
         if (skill04_Pattern04_Co != null)
+        {
             StopCoroutine(skill04_Pattern04_Co);
+            skill04_Pattern04_Co = null;
+        }
+        if (CheckPlayerInMarker_co != null)
+        {
+            StopCoroutine(CheckPlayerInMarker_co);
+            CheckPlayerInMarker_co = null;
+        }
+
         if (stopSkillPattern == true)
             stopSkillPattern = false;
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill04);
     }
-
 
 }
