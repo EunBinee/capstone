@@ -126,7 +126,7 @@ public class PlayerMovement : MonoBehaviour
 
             P_InputHandle.MouseClickInput();
 
-            P_InputHandle.WASDInput();
+            P_InputHandle.Key2Movement();
 
             //* skills input
             P_InputHandle.SkillKeyInput();

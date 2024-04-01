@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     public PlayerInput _input = new PlayerInput();
     public CheckOption _checkOption = new CheckOption();
     public CurrentState _currentState = new CurrentState();
+    public KeyState _keyState = new KeyState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     public PlayerArrows _playerArrows = new PlayerArrows();
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
+    private KeyState P_KeyState => _keyState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerArrows P_Arrows => _playerArrows;
