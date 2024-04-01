@@ -149,6 +149,15 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         float time = 0;
         transform.position = new Vector3(curTargetPos.x, transform.position.y, curTargetPos.z);
 
+        Vector3 monsterPos = new Vector3(curTargetPos.x, 0, curTargetPos.z);
+        Vector3 playerPos = new Vector3(playerTrans.position.x, 0, playerTrans.position.z);
+
+        // 몬스터가 플레이어를 향하도록 하는 방향 벡터
+        Vector3 direction = (playerPos - monsterPos).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = lookRotation;
+        Debug.Log("회전완료!@");
+
         speed = 50f;
         monsterPattern_Abyss.SetBossAttackAnimation(MonsterPattern_Boss.BossMonsterAttackAnimation.Skill01, 1);
 
