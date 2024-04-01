@@ -28,8 +28,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public Vector3 centerPoint;
 
     public Transform bossNeck;
-    //bool findPlayer = false;
-    //public float skillRadius = 10;
+
     [Header("몬스터 총알이 나가는 위치")]
     public Transform[] muzzlesL;
     public Transform[] muzzlesR;
@@ -375,6 +374,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator Phase02_Production()
     {
         float time = 0;
+        noAttack = true;
         yield return new WaitUntil(() => startSkill == false);
 
         yield return new WaitForSeconds(0.5f);
@@ -488,6 +488,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Base_Phase_HP(false);
         ChangeMonsterState(MonsterState.Tracing);
         changePhase02_Co = null;
+        noAttack = false;
         GameManager.Instance.cameraController.UndoAttention();
     }
 
@@ -966,6 +967,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 일반 약점
     public override void DirectTheBossWeakness()
     {
+        noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
@@ -989,6 +991,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void EndDirectTheBossWeakness()
     {
+        noAttack = false;
         GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
@@ -998,6 +1001,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
+        noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
@@ -1049,6 +1053,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public void EndDirectorMonsterLastWeakness()
     {
+        noAttack = false;
         GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);

@@ -78,10 +78,20 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         StartCoroutine(JumpDown(landPoint, getDamage));
     }
 
+    bool originNoAttack = false;
+
     IEnumerator JumpUp()
     {
         //*네비메쉬 끄기
-        monsterPattern_Abyss.noAttack = true;
+        if (monsterPattern_Abyss.noAttack)
+        {
+            originNoAttack = true;
+        }
+        else
+        {
+            monsterPattern_Abyss.noAttack = true;
+            originNoAttack = false;
+        }
 
         monsterPattern_Abyss.NavMesh_Enable(false);
         Vector3 originPos = transform.position;
@@ -156,7 +166,6 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         Vector3 direction = (playerPos - monsterPos).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = lookRotation;
-        Debug.Log("회전완료!@");
 
         speed = 50f;
         monsterPattern_Abyss.SetBossAttackAnimation(MonsterPattern_Boss.BossMonsterAttackAnimation.Skill01, 1);
@@ -193,7 +202,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         //* 점프 끝!
         monsterPattern_Abyss.isJump = false;
         MonsterPattern.MonsterState monsterState = monsterPattern_Abyss.GetCurMonsterState();
-        if (monsterState != MonsterPattern.MonsterState.Death)
+        if (monsterState != MonsterPattern.MonsterState.Death && !originNoAttack)
             monsterPattern_Abyss.noAttack = false; //* 이제 공격 가능
 
         monsterPattern_Abyss.NavMesh_Enable(true);

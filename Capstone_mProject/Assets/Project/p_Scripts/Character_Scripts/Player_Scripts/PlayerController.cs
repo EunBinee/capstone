@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 originRpos;
 
     private Vector3 screenCenter;
+    public bool EnablePlayerUI = true;
 
     void Awake()
     {
@@ -108,6 +109,7 @@ public class PlayerController : MonoBehaviour
         _playerArrows.Init();
         // InitComponent();
     }
+
     public void SetUIVariable()
     {
         //* 필수 UI 가지고 오기
@@ -122,15 +124,27 @@ public class PlayerController : MonoBehaviour
         hitUI = playerUI_info.hitUI;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
-
     }
+
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();
+
+        //* 정지 상태
+        if (UIManager.gameIsPaused == true && EnablePlayerUI)
+        {
+            PlayerUI_SetActive(false);
+        }
+        else if (UIManager.gameIsPaused == false && !EnablePlayerUI)
+        {
+            PlayerUI_SetActive(true);
+        }
     }
-    void FixedUpdate()
+
+    //* 플레이어 UI 활성화 비활성화
+    public void PlayerUI_SetActive(bool activeSelf)
     {
-        if (UIManager.gameIsPaused == true)
+        if (!activeSelf)
         {
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
@@ -140,20 +154,23 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
+            EnablePlayerUI = false;
         }
-        else if (UIManager.gameIsPaused == false)
+        else if (activeSelf)
         {
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
+            EnablePlayerUI = true;
 
             CheckHitTime();
             CheckAnim();
             CheckHP();
         }
     }
+
     public void LateUpdate()
     {
         if (P_States.isAim)
@@ -233,20 +250,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void StopToFalse()
+    public void PlayerStop(bool isStop)
     {
-        if (DialogueManager.instance.isDialogue)
-        {
-
-            P_States.isStop = true;
-        }
-        else
-        {
-            P_States.isStop = false;
-        }
-        //stop = GameManager.Instance.dialogueManager.isDialogue;
-        //P_States.isStop = stop;
-        //Debug.Log(P_States.isStop);
+        P_States.isStop = isStop;
     }
 
     public void CheckHitTime()
