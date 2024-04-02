@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private PlayerComponents P_Com => P_Controller._playerComponents;
     private PlayerInput P_Input => P_Controller._input;
     private CurrentState P_States => P_Controller._currentState;
+    private KeyState P_KeyState => P_Controller._keyState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
@@ -132,11 +133,11 @@ public class PlayerMovement : MonoBehaviour
             P_InputHandle.SkillKeyInput();
 
             //* [미카 디버프 단축키]==================================================
-            if (Input.GetKeyUp(KeyCode.O))
+            if (P_KeyState.ODown)
             {
                 P_Value.HP = 10;
             }
-            if (Input.GetKeyUp(KeyCode.P))
+            if (P_KeyState.PDown)
             {
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;    //* 감전

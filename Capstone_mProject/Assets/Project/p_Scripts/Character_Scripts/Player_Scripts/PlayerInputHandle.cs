@@ -217,20 +217,23 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
+        if (P_KState.RDown)  //* Bow Mode & Sword Mode
         {
+            P_KState.RDown = false;
             if (P_States.startAim)   // 조준 중일때 전환 키 누르면
             {
                 P_Skills.arrowSkillOff();    // 조준 헤제
             }
             P_Skills.skillMotion('R');
         }
-        if (Input.GetKeyUp(KeyCode.E))  //*Heal
+        if (P_KState.EDown)  //*Heal
         {
+            P_KState.EDown = false;
             P_Skills.skillMotion('E');
         }
-        /*if (Input.GetKeyDown(KeyCode.Q))
+        /*if (P_KState.QDown)
         {
+            P_KState.QDown = false;
             if (P_States.isSkill)
             {
                 return;

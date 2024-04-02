@@ -39,12 +39,14 @@ public class Inventory : MonoBehaviour
     }
     private static readonly ItemComparer itemComparer = new ItemComparer();
 
+    PlayerController playerController;
 
     private void Awake()
     {
         items = new Item[maxCapacity];
         capacity = initalCapacity;
         inventory.SetActive(false);
+        playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
     }
 
     private void Start()
@@ -66,8 +68,9 @@ public class Inventory : MonoBehaviour
 
     public void OpenCloseInventory()
     {
-        if (!openInventory && Input.GetKeyDown(KeyCode.I))
+        if (!openInventory && playerController._keyState.IDown)
         {
+            playerController._keyState.IDown = false;
             GameManager.instance.cameraController.stopRotation = true;
 
             inventory.SetActive(true);
@@ -75,8 +78,9 @@ public class Inventory : MonoBehaviour
 
             UIManager.Instance.Pause();
         }
-        else if (openInventory && Input.GetKeyDown(KeyCode.I))
+        else if (openInventory && playerController._keyState.IDown)
         {
+            playerController._keyState.IDown = false;
             GameManager.instance.cameraController.stopRotation = false;
 
             inventory.SetActive(false);
