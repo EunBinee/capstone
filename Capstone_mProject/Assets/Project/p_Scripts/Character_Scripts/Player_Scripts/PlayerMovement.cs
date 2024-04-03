@@ -444,7 +444,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (P_States.isElectricShock)   //*감전
         {
-            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             if (P_States.isBowMode && P_States.startAim)
@@ -467,7 +467,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isAim)    //조준
         {
-            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
@@ -513,13 +513,15 @@ public class PlayerMovement : MonoBehaviour
             Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
 
         }
-        else if (P_States.isSprinting || P_States.isRunning)
+        else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
 
             if (P_States.isSprinting)    //전력질주
                 P_Value.finalSpeed = P_COption.sprintSpeed;
+            else if (P_States.isWalking) //걸을때
+                P_Value.finalSpeed = P_COption.walkingSpeed;
             else if (P_States.isRunning) //뛸때
                 P_Value.finalSpeed = P_COption.runningSpeed;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
@@ -649,9 +651,9 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                if (P_States.isAim)
+                if (P_States.isAim || P_States.isWalking)
                 {
-                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 3, 0.2f, Time.deltaTime);
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
                 }
                 if (P_States.isRunning)

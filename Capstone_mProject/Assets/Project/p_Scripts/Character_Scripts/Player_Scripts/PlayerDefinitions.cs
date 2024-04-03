@@ -53,10 +53,12 @@ public class CheckOption
     public float sprintSpeed = 15f;
 
     [Range(1f, 30f), Tooltip("달리는 속도")]
-    public float runningSpeed = 10f;
+    public float runningSpeed = 8f;
 
+    [Range(1f, 30f), Tooltip("감전/조준 속도")]
+    public float slowlySpeed = 2f;
     [Range(1f, 30f), Tooltip("걷는 속도")]
-    public float walkingSpeed = 2f;
+    public float walkingSpeed = 5f;
 
     [Range(1f, 30f), Tooltip("점프할때 속도")]
     public float jumpPower = 1f;

@@ -32,19 +32,19 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 switch (keyCode)
                 {
-                    case KeyCode.Q: P_KState.QDown = true; break;
-                    case KeyCode.W: P_KState.WDown = true; break;
-                    case KeyCode.E: P_KState.EDown = true; break;
-                    case KeyCode.R: P_KState.RDown = true; break;
+                    case KeyCode.Q: P_KState.QDown = true; break;   //궁
+                    case KeyCode.W: P_KState.WDown = true; break;   //앞
+                    case KeyCode.E: P_KState.EDown = true; break;   //힐
+                    case KeyCode.R: P_KState.RDown = true; break;   //조준
                     case KeyCode.T: P_KState.TDown = true; break;
                     case KeyCode.Y: P_KState.YDown = true; break;
                     case KeyCode.U: P_KState.UDown = true; break;
                     case KeyCode.I: P_KState.IDown = true; break;
                     case KeyCode.O: P_KState.ODown = true; break;
                     case KeyCode.P: P_KState.PDown = true; break;
-                    case KeyCode.A: P_KState.ADown = true; break;
-                    case KeyCode.S: P_KState.SDown = true; break;
-                    case KeyCode.D: P_KState.DDown = true; break;
+                    case KeyCode.A: P_KState.ADown = true; break;   //좌
+                    case KeyCode.S: P_KState.SDown = true; break;   //뒤
+                    case KeyCode.D: P_KState.DDown = true; break;   //우
                     case KeyCode.F: P_KState.FDown = true; break;
                     case KeyCode.G: P_KState.GDown = true; break;
                     case KeyCode.H: P_KState.HDown = true; break;
@@ -58,6 +58,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = true; break;
                     case KeyCode.N: P_KState.NDown = true; break;
                     case KeyCode.M: P_KState.MDown = true; break;
+                    case KeyCode.CapsLock: P_States.isWalking = true; break;
                     default: break;
                 }
             }
@@ -92,6 +93,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = false; break;
                     case KeyCode.N: P_KState.NDown = false; break;
                     case KeyCode.M: P_KState.MDown = false; break;
+                    case KeyCode.CapsLock: P_States.isWalking = false; break;
                     default: break;
                 }
             }
