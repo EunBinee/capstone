@@ -512,7 +512,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
 
-            ChangeBossPhase(BossMonsterPhase.Phase2);
+            //ChangeBossPhase(BossMonsterPhase.Phase2);
             //isRoaming = false;
             //boss_Abyss_Skill04.Skill04();
             //* 테스트 후 아래 주석 풀기
@@ -966,15 +966,60 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     //*-------------------------------------------------------------------------------------//
     #region 시네머신 컷씬 관련 함수 (타임라인)
+    //* 보스 첫등장 씬 
 
-    //* 보스 일반 약점
+    //* 타임라인에서 사용되는 이펙트 
+    public void DirectFirstAppearance_TimeLine()
+    {
+        noAttack = true;
+        GameManager.instance.CutSceneSetting(true);
+        GameManager.instance.cameraController.CinemachineSetting(true);
+        //* 모든 것 멈추기
+        CurSceneManager.instance.PlayTimeline("Abyss_FirstStart_TimeLine");
+    }
+    public void WalkPlayer()
+    {
+        playerController._playerComponents.rigidbody.MovePosition();
+    }
+    public void FirstAppearance_TimeLineEffect()
+    {
+        StartCoroutine(FirstAppearance_TimeLineEffect_co());
+    }
+    IEnumerator FirstAppearance_TimeLineEffect_co()
+    {
+        //* 연기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //* 연기 이펙트
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
+        effectPos = transform.position;
+        effectPos.y -= 2.5f;
+        effect.transform.position = effectPos;
+
+    }
+
+    public void EndDirectTheBossWeakness()
+    {
+        noAttack = false;
+        GameManager.instance.CutSceneSetting(false);
+        GameManager.instance.cameraController.CinemachineSetting(false);
+    }
+
+
+
+    //* 보스 일반 약점------------------------------------------------------------------------//
     public override void DirectTheBossWeakness()
     {
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
-        CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimLine");
+        CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimeLine");
     }
 
     public void ShowBossWeaknessEffect()
