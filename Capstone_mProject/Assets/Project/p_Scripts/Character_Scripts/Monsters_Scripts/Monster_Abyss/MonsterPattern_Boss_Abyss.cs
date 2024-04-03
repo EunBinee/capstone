@@ -28,8 +28,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public Vector3 centerPoint;
 
     public Transform bossNeck;
-    //bool findPlayer = false;
-    //public float skillRadius = 10;
+
     [Header("몬스터 총알이 나가는 위치")]
     public Transform[] muzzlesL;
     public Transform[] muzzlesR;
@@ -375,6 +374,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator Phase02_Production()
     {
         float time = 0;
+        noAttack = true;
         yield return new WaitUntil(() => startSkill == false);
 
         yield return new WaitForSeconds(0.5f);
@@ -488,6 +488,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Base_Phase_HP(false);
         ChangeMonsterState(MonsterState.Tracing);
         changePhase02_Co = null;
+        noAttack = false;
         GameManager.Instance.cameraController.UndoAttention();
     }
 
@@ -513,7 +514,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             ChangeBossPhase(BossMonsterPhase.Phase2);
             //isRoaming = false;
-            //Skill04();
+            //boss_Abyss_Skill04.Skill04();
             //* 테스트 후 아래 주석 풀기
             //ChangeBossPhase(BossMonsterPhase.Phase1);
             // ChangeMonsterState(MonsterState.Tracing);
@@ -521,6 +522,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     // *---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> Tracing (=> 발견 즉시 바로 스킬 시작)
+    Coroutine startMonsterSkill_co = null;
     public override void Tracing_Movement()
     {
         //*페이즈 마다 실행되도록.
@@ -534,7 +536,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case BossMonsterPhase.Phase2:
                 case BossMonsterPhase.Phase3:
                     //* 추적이 시작되면 몬스터 스킬 시작
-                    StartCoroutine(StartMonsterSkill());
+                    if (startMonsterSkill_co != null)
+                    {
+                        StopCoroutine(startMonsterSkill_co);
+                    }
+                    startMonsterSkill_co = StartCoroutine(StartMonsterSkill());
                     break;
                 default:
                     break;
@@ -559,12 +565,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Base_Phase_HP();
             if (curBossPhase != curBossP) //* 페이즈 넘어가면 break;
             {
-                Debug.Log("rrr");
                 break;
             }
             if (forcedReturnHome)
             {
-                Debug.Log("Eee");
                 break;
             }
 
@@ -966,6 +970,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 일반 약점
     public override void DirectTheBossWeakness()
     {
+        noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
@@ -989,6 +994,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void EndDirectTheBossWeakness()
     {
+        noAttack = false;
         GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
@@ -998,6 +1004,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
+        noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
@@ -1049,6 +1056,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public void EndDirectorMonsterLastWeakness()
     {
+        noAttack = false;
         GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);

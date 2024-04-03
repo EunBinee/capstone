@@ -66,7 +66,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
                 curMonsterPoint = monsterPattern_Abyss.GetGroundPos(playerTrans);
                 newRandomPos = monsterPattern_Abyss.GetRandomPos(3f, curMonsterPoint);
 
-
                 foreach (Vector3 randomPos in randomPos_skill02)
                 {
                     if (Vector3.Distance(newRandomPos, randomPos) <= 4f)
@@ -267,7 +266,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         skill02_MonsterMovement_Co = null;
     }
 
-
     //* 폭발
     IEnumerator SetBomb(Vector3 randomPos, bool usePhase01 = false, bool soundCancle = false)
     {
@@ -296,9 +294,9 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
                 monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
             }
         }
-        //* 페이즈 2의 폭발
         else
         {
+            //* 페이즈 2의 폭발
             effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_02");
             effect.transform.position = randomPos;
             yield return new WaitForSeconds(0.5f);
@@ -340,7 +338,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         }
     }
 
-
     //* 스킬 02번 정지--------------------------------------------------------------//
     public void Stop_MonsterSkill02()
     {
@@ -351,8 +348,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
 
             if (!playerController._currentState.canGoForwardInAttack)
                 playerController._currentState.canGoForwardInAttack = true;
-
-            monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);
         }
         if (skill02_MonsterMovement_Co != null)
         {
@@ -361,5 +356,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             monsterPattern_Abyss.SetMove_AI(false);
             monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Idle);
         }
+
+        monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);
     }
 }

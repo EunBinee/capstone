@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Boss_Abyss_Skill04 : MonoBehaviour
@@ -26,6 +28,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     List<Skill_Indicator> curTargetMarker;
     Coroutine skill04_Co = null;
     Coroutine skill04_Pattern04_Co = null;
+    Coroutine CheckPlayerInMarker_co = null;
+
+    bool stopSkillPattern = false;
 
     public void Init(MonsterPattern_Boss_Abyss _monsterPattern_Boss_Abyss)
     {
@@ -95,6 +100,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         int curIndex = -1;
         while (count < 4)
         {
+            //curRandomSkillPattern_num = 4;
+
             while (true)
             {
                 curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
@@ -157,30 +164,50 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         skill04_Pattern04_Co = StartCoroutine(CreateTargetMarker_4_co());
     }
 
+    GameObject firstMarker = null;
+
     IEnumerator CreateTargetMarker_4_co()
     {
+        bool playerMove_Direction = false;
+        firstMarker = null;
+        //* 오른쪽 왼쪽 체크
+        bool playerLocation = monsterPattern_Abyss.PlayerLocationCheck_LeftRight(monsterPattern_Abyss.playerTargetPos.position, transform);
+        float mAngle = 0;
+        float monsterY = transform.rotation.eulerAngles.y;
 
-        float mAngle = 180 + GameManager.instance.GetAngleSeparation(transform.position, transform.forward * 20, playerController.gameObject.transform.position);
-        Debug.Log($"angle {mAngle}");
-
-        bool isleftRight = monsterPattern_Abyss.PlayerLocationCheck_LeftRight();
-
-        if (isleftRight == false) //* 왼쪽일 경우,
+        if (playerLocation)
         {
-            mAngle *= -1;
+            //* 플레이어가 몬스터의 오른쪽
+            mAngle = monsterY - 20 + GameManager.instance.GetAngleSeparation(transform.position, transform.forward * 20, playerController.gameObject.transform.position);
+        }
+        else
+        {
+            //* 몬스터의 왼쪽
+            mAngle = monsterY + 160 + GameManager.instance.GetAngleSeparation(transform.position, -transform.forward * 20, playerController.gameObject.transform.position);
         }
 
-        //float mAngle = 0f;
         float time = 0;
         skillOver = false;
 
         for (int i = 0; i < createTargetMarker; i++)
         {
+
             if (i > 0)
             {
-                mAngle += angle;
+                if (i == 1)
+                {
+                    //플레이어 왼쪽 오른쪽 체크
+                    yield return new WaitUntil(() => firstMarker != null);
+                    //firstMarker를 기준으로 플레이어가 왼쪽에 있는지 오른쪽에 있는지 체크하고,
+                    // 플레이어의 위치를 기준으로 angle을 더하거나뺀다.
+                    playerMove_Direction = monsterPattern_Abyss.PlayerLocationCheck_LeftRight(monsterPattern_Abyss.playerTargetPos.position, firstMarker.transform);
+                }
+                if (playerMove_Direction)
+                    mAngle += angle;
+                else if (!playerMove_Direction)
+                    mAngle -= angle;
             }
-            StartCoroutine(SkillActivation(mAngle, i, false));
+            StartCoroutine(SkillActivation_04(mAngle, i, false));
 
             while (true)
             {
@@ -266,10 +293,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
 
-        yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-                                                       //* 스킬끝났음.----------------------------------------------//
-                                                       //전기 공격 끄기
-
+        yield return new WaitForSeconds(endSkillTime); //* 7초후 스킬 종료
         if (!skillOver)
             skillOver = true;
 
@@ -302,10 +326,91 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         }
 
     }
+    //*-----------------------------------------------------------------------------------------------------//
+    IEnumerator SkillActivation_04(float mAngle, int index = 0, bool simultaneous = true)
+    {
+        //스킬 targetMarkerList
+        //* 타임 세팅---------------------------//
+        float waitTime = 2;//빨간색 경고후 기다리는 시간
+        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
+
+        GameObject skillIndicator_obj;
+        float posY = monsterPattern_Abyss.GetGroundPos(transform).y;
+        //* 오브젝트 풀링 ---------------------------------------------------------------------------------//
+        if (targetMarkerList.Count == 0)
+        {
+            skillIndicator_obj = Instantiate(targetMarker_Prefabs, transform.position, Quaternion.identity);
+            skillIndicator_obj.transform.SetParent(transform);
+        }
+        else
+        {
+            skillIndicator_obj = targetMarkerList[0];
+            targetMarkerList.RemoveAt(0);
+            skillIndicator_obj.SetActive(true);
+        }
+
+        if (index == 0)
+        {
+            // 플레이어 위치 파악
+            firstMarker = skillIndicator_obj;
+        }
+        //* 세팅-------------------------------------------------------------------------------------------//
+        skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
+        Quaternion originRotate = skillIndicator_obj.transform.rotation;
+
+        Skill_Indicator skill_Indicator = skillIndicator_obj.GetComponent<Skill_Indicator>();
+        skill_Indicator.Init();
+        curTargetMarker.Add(skill_Indicator);
+
+        skill_Indicator.SetBounds();
+        skill_Indicator.SetAngle(mAngle);
+
+        Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
+        skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
+
+        //*------------------------------------------------------------------------------------------------//
+        yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
+
+        //* 번개, 파지직 번개
+        StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
+
+        yield return new WaitForSeconds(endSkillTime); //* 7초후 스킬 종료
+        if (!skillOver)
+            skillOver = true;
+
+        for (int i = 0; i < skill_Indicator.electricity_Effects.Count; ++i)
+        {
+            skill_Indicator.electricity_Effects[i].StopEffect();
+        }
+
+        yield return new WaitUntil(() => skill_Indicator.electricity_Effects.Count == 0);
+
+        skill_Indicator.CheckTrigger(false);
+
+        skill_Indicator.gameObject.transform.rotation = originRotate;
+
+        curTargetMarker.Remove(skill_Indicator);
+        //*------------------------------------------------------------//
+        if (targetMarkerList.Count > 8)
+        {
+            Destroy(skillIndicator_obj);
+        }
+        else
+        {
+            targetMarkerList.Add(skillIndicator_obj);
+            skillIndicator_obj.SetActive(false);
+        }
+
+        if (index == (createTargetMarker - 1))
+        {
+            stopSkillPattern = true;
+        }
+
+    }
+
     //*-------------------------------------------------------------------------------------------------------//
     //* ### 체크문양 패턴
-
-
     IEnumerator SkillActivation_Pattern05(float mAngle)
     {
         //스킬 targetMarkerList
@@ -378,7 +483,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 getBounds = true;
             randomPos = skill_Indicator.GetRandomPos(getBounds);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red", skill_Indicator.gameObject.transform);
-
             effect.transform.position = randomPos;
 
             if (!isTrigger_si)
@@ -403,7 +507,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
                 effect.transform.localPosition = rotation * effect.transform.localPosition;
             }
-            yield return null;
+
+            yield return new WaitUntil(() => UIManager.gameIsPaused == false);
         }
 
         time = 0;
@@ -424,7 +529,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                         skill_Indicator.electricity_Effects.Remove(effect);
                     };
                     skill_Indicator.electricity_Effects.Add(effect);
-                    yield return null;
+
+                    yield return new WaitUntil(() => UIManager.gameIsPaused == false);
+
                 }
                 else
                 {
@@ -447,12 +554,12 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         }
         if (CheckPlayerInMarker_co == null)
         {
+
             CheckPlayerInMarker_co = StartCoroutine(CheckPlayerInMarker());
         }
     }
 
-    Coroutine CheckPlayerInMarker_co = null;
-    bool stopSkillPattern = false;
+
     IEnumerator CheckPlayerInMarker()
     {
         LayerMask layerMask = LayerMask.GetMask("Monster");
@@ -461,6 +568,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         while (!stopSkillPattern)
         {
+
             if (!playerController._currentState.isElectricShock)
             {
                 count = 0;
@@ -498,13 +606,24 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     public void Stop_MonsterSkill04()
     {
         if (skill04_Co != null)
+        {
             StopCoroutine(skill04_Co);
+            skill04_Co = null;
+        }
         if (skill04_Pattern04_Co != null)
+        {
             StopCoroutine(skill04_Pattern04_Co);
+            skill04_Pattern04_Co = null;
+        }
+        if (CheckPlayerInMarker_co != null)
+        {
+            StopCoroutine(CheckPlayerInMarker_co);
+            CheckPlayerInMarker_co = null;
+        }
+
         if (stopSkillPattern == true)
             stopSkillPattern = false;
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill04);
     }
-
 
 }

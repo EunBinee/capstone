@@ -91,6 +91,7 @@ public class PlayerAttackCheck : MonoBehaviour
         incoArrow = true;
         dir = Vector3.zero;
         yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
+
         if (!goShoot)
         {
             _playerMovement.playerArrowList.Add(this);
@@ -157,7 +158,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
         if (isEnable)
         {
             if (other.gameObject.CompareTag("Monster"))
@@ -178,7 +178,6 @@ public class PlayerAttackCheck : MonoBehaviour
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
                     if (P_States.hadAttack == false || P_States.notSameMonster)
                     {
-                        // Debug.Log("[attack test]몬스터 피격");
                         // 충돌한 객체의 Transform을 얻기
                         Transform collidedTransform = other.transform;
                         // 충돌 지점의 좌표를 얻기
@@ -195,26 +194,10 @@ public class PlayerAttackCheck : MonoBehaviour
                         {
                             playerHitMonster(collisionPoint, otherQuaternion);
                         }
-                        //                        Debug.Log(isShield);
-                        // if(isShield)
-                        // {
-                        //     playerHitShield(collisionPoint, otherQuaternion);
-                        //     Debug.Log("실드");
-
-                        // }
-                        // else if(!isShield)
-                        // {
-                        //playerHitMonster(collisionPoint, otherQuaternion);
-                        //     Debug.Log("실드아님");
-                        // }
-
                         //사운드
                         SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
                     }
-                    //else
-                    //{
-                    //이미 한번 때린 상태
-                    //todo: 때리기 전 몬스터와 현재 때린 몬스터가 같은지 확인하기
+
                 }
                 else
                 {
@@ -238,7 +221,6 @@ public class PlayerAttackCheck : MonoBehaviour
             if (seenMonsters.Contains(curmon))
             {
                 //P_States.notSameMonster = false;
-                // 이미 처리된 몬스터이면 리스트에서 제거합니다.
                 _playerController.hitMonsters.RemoveAt(i);
             }
             else
@@ -251,56 +233,64 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-    private void playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
+    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
-
-        //TODO: 나중에 연산식 사용.
-        int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
-        if (isArrow)
+        if (!monster.monsterPattern.noAttack)
         {
-            if (P_States.isStrongArrow) //* 예스 차징
+            //TODO: 나중에 연산식 사용.
+            int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+            if (isArrow)
             {
-                damageValue = 550;
-                P_States.isStrongArrow = false;
+                if (P_States.isStrongArrow) //* 예스 차징
+                {
+                    damageValue = 550;
+                    P_States.isStrongArrow = false;
+                }
+                else                        //* 노 차징
+                {
+                    damageValue = 400;
+                }
             }
-            else                        //* 노 차징
+            else                            //* 검
             {
-                damageValue = 400;
+                damageValue = 350;
             }
-        }
-        else                            //* 검
-        {
-            damageValue = 350;
-        }
 
-        if (P_Value.hits % 5 != 0)
-        {
-            GameManager.instance.damageCalculator.damageExpression = "A+B";
-            GameManager.instance.damageCalculator.CalculateAndPrint();
-            damageValue = GameManager.instance.damageCalculator.result;
-        }
-        else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
-        {
-            GameManager.instance.damageCalculator.damageExpression = "A+C";
-            GameManager.instance.damageCalculator.CalculateAndPrint();
-            damageValue = GameManager.instance.damageCalculator.result;
-        }
-        monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
-        if (!P_States.isBowMode)
-        {
-            _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
-        }
+            if (P_Value.hits % 5 != 0)
+            {
+                GameManager.instance.damageCalculator.damageExpression = "A+B";
+                GameManager.instance.damageCalculator.CalculateAndPrint();
+                damageValue = GameManager.instance.damageCalculator.result;
+            }
+            else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
+            {
+                GameManager.instance.damageCalculator.damageExpression = "A+C";
+                GameManager.instance.damageCalculator.CalculateAndPrint();
+                damageValue = GameManager.instance.damageCalculator.result;
+            }
 
-        P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
-        P_Value.curHitTime = Time.time; //* 현재 시간 저장
+            monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
 
-        P_Controller.CheckHitTime();
-        P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
-        P_States.hadAttack = true;
-        P_States.notSameMonster = false;
+            if (!P_States.isBowMode)
+            {
+                _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+            }
 
-        P_States.isBouncing = true;     //* 히트 UI 출력효과
-        Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+            P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
+            P_Value.curHitTime = Time.time; //* 현재 시간 저장
+
+            P_Controller.CheckHitTime();
+            P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
+            P_States.hadAttack = true;
+            P_States.notSameMonster = false;
+
+            P_States.isBouncing = true;     //* 히트 UI 출력효과
+            Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+
+            return true;
+        }
+        else
+            return false;
     }
 
     public void playerHitShield(Vector3 collisionPoint, Quaternion otherQuaternion)
@@ -387,8 +377,21 @@ public class PlayerAttackCheck : MonoBehaviour
 <<<<<<< Updated upstream
                             Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                         }
+
                         if (!bossWeakness.destroy_BossWeakness)
-                            bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
+                        {
+                            P_States.hadAttack = true;
+
+                            Vector3 collisionPoint = hit.point;
+                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                            bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
+                            if (successfulAttack)
+                            {
+                                bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
+                            }
+                        }
+
                     }
                     else if (hit.collider.tag == "Monster")
                     {

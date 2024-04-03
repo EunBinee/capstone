@@ -145,7 +145,12 @@ public class DialogueManager : MonoBehaviour
     {
         isDialogue = true;
         GameManager.instance.cameraController.stopRotation = true;
-        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
+        if (isDialogue)
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(true);
+        else
+        {
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(false);
+        }
         //yield return new WaitForSecondsRealtime(0.35f);
         //텍스트를 보여주는 코루틴 
         DialogueUI_info.go_DialogueBar.SetActive(true); //텍스트 UI 활성화
@@ -435,7 +440,12 @@ public class DialogueManager : MonoBehaviour
 
         isDialogue = false;
         GameManager.instance.cameraController.stopRotation = false;
-        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
+        if (isDialogue)
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(true);
+        else
+        {
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(false);
+        }
     }
 
     //퀘스트 디테일에서 퀘스트 제목 ui 활성화
@@ -516,14 +526,26 @@ public class DialogueManager : MonoBehaviour
     {
         UIManager.Instance.Pause(false);
         GameManager.Instance.Stop_AllMonster();
-        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
+        if (isDialogue)
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(true);
+        else
+        {
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(false);
+        }
     }
 
     //멈춰있던 플레이어, 몬스터 등 원래대로 움직이도록 함. 
     public void player_InteractingFalse()
     {
         isDialogue = false;
-        GameManager.Instance.gameData.player.GetComponent<PlayerController>().StopToFalse();
+
+        if (isDialogue)
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(true);
+        else
+        {
+            GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerStop(false);
+        }
+
         UIManager.Instance.Resume();
 
         GameManager.Instance.Start_AllMonster();
