@@ -331,34 +331,60 @@ public class PlayerAttackCheck : MonoBehaviour
 
         RaycastHit shortHit = hits[0];
         //RaycastHit m_Hit;
-        foreach (RaycastHit hit in hits)
-        {
-            if (hit.collider.name != this.gameObject.name)
-            {
-                //자기 자신은 패스
-                float distance = hit.distance;
-                if (shortDist > distance)    //범위 내 라면
-                {
-                    shortHit = hit;
-                    shortDist = distance;
 
-                    if (hit.collider.CompareTag("SoundObject"))
+        //todo: hits 들어온 것들 중 제일 거리가 제일 짧은 것만 체크
+        float hitsDist = hits[0].distance;
+        int shortIndex = 0;
+        for (int i = 1; i < hits.Length; i++)
+        {
+            if (hits[i].distance < hitsDist)
+            {
+                hitsDist = hits[i].distance;
+                shortIndex = i;
+            }
+        }
+
+        if (hits[shortIndex].collider.name != this.gameObject.name)
+        {
+            RaycastHit hit = hits[shortIndex];
+            //자기 자신은 패스
+            //float distance = hitsDist;
+            if (shortDist > hitsDist)    //범위 내 라면
+            {
+                shortHit = hit;
+                shortDist = hitsDist;
+
+                if (hit.collider.CompareTag("SoundObject"))
+                {
+                    P_States.colliderHit = true;
+                    soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
+                    //Debug.Log(soundObject);
+                    soundObject.attackSoundObj = true;
+                    soundObject.collisionPos = hit.transform.position;
+                }
+
+                if (hit.collider.tag == "BossWeakness")
+                {
+                    P_States.colliderHit = true;
+                    //* 보스 약점
+                    BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
+                    monster = bossWeakness.m_monster;
+                    if (monster != null)
                     {
-                        P_States.colliderHit = true;
-                        soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
-                        //Debug.Log(soundObject);
-                        soundObject.attackSoundObj = true;
-                        soundObject.collisionPos = hit.transform.position;
+                        Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                     }
 
-                    if (hit.collider.tag == "BossWeakness")
+                    if (!bossWeakness.destroy_BossWeakness)
                     {
-                        P_States.colliderHit = true;
-                        //* 보스 약점
-                        BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
-                        monster = bossWeakness.m_monster;
-                        if (monster != null)
+                        P_States.hadAttack = true;
+
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
+                        if (successfulAttack)
                         {
+<<<<<<< Updated upstream
                             Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                         }
                         if (!bossWeakness.destroy_BossWeakness)
@@ -386,21 +412,49 @@ public class PlayerAttackCheck : MonoBehaviour
 
                             playerHitMonster(collisionPoint, otherQuaternion);
 
+=======
+                            bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
+>>>>>>> Stashed changes
                         }
                     }
-                    if (hit.collider.tag == "Shield")
+
+                }
+                else if (hit.collider.tag == "Monster")
+                {
+                    P_States.colliderHit = true;
+                    //Debug.Log("[arrow test] arrow hit");
+                    monster = hit.collider.GetComponentInParent<Monster>();
+                    if (monster == null)
                     {
-                        monster = hit.collider.GetComponentInParent<Monster>();
+                        Debug.LogError("몬스터 : null");
+                        return;
+                    }
+                    if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
+                        && P_States.hadAttack == false)
+                    {
+                        //attackEnemy = true;
+                        P_States.hadAttack = true;
+                        //m_Hit = hit;
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
-                        {
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                            monster.monsterPattern.isShield = false;
-                            playerHitShield(collisionPoint, otherQuaternion);
-                            //monster.monsterPattern.isShield = false;
-                        }
+                        playerHitMonster(collisionPoint, otherQuaternion);
+
+                    }
+                }
+                if (hit.collider.tag == "Shield")
+                {
+                    monster = hit.collider.GetComponentInParent<Monster>();
+
+                    if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
+                    {
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                        monster.monsterPattern.isShield = false;
+                        playerHitShield(collisionPoint, otherQuaternion);
+                        //monster.monsterPattern.isShield = false;
                     }
                 }
             }
