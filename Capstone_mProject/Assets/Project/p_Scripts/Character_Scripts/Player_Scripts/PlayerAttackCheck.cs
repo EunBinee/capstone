@@ -374,53 +374,9 @@ public class PlayerAttackCheck : MonoBehaviour
                         bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
                         if (successfulAttack)
                         {
-<<<<<<< Updated upstream
-                            Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
-                        }
-
-                        if (!bossWeakness.destroy_BossWeakness)
-                        {
-                            P_States.hadAttack = true;
-
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-                            bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
-                            if (successfulAttack)
-                            {
-                                bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
-                            }
-                        }
-
-                    }
-                    else if (hit.collider.tag == "Monster")
-                    {
-                        P_States.colliderHit = true;
-                        //Debug.Log("[arrow test] arrow hit");
-                        monster = hit.collider.GetComponentInParent<Monster>();
-                        if (monster == null)
-                        {
-                            Debug.LogError("몬스터 : null");
-                            return;
-                        }
-                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
-                            && P_States.hadAttack == false)
-                        {
-                            //attackEnemy = true;
-                            P_States.hadAttack = true;
-                            //m_Hit = hit;
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-
-                            playerHitMonster(collisionPoint, otherQuaternion);
-
-=======
                             bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
->>>>>>> Stashed changes
                         }
                     }
-
                 }
                 else if (hit.collider.tag == "Monster")
                 {
