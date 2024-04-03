@@ -100,8 +100,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         int curIndex = -1;
         while (count < 4)
         {
-            curRandomSkillPattern_num = 4;
-            /*
+            //curRandomSkillPattern_num = 4;
+
             while (true)
             {
                 curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
@@ -113,7 +113,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                     break;
                 }
                 yield return null;
-            }*/
+            }
 
             SettingSkill04Pattern(curRandomSkillPattern_num);
             if (curRandomSkillPattern_num < 4)
