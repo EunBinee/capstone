@@ -66,7 +66,6 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
                 curMonsterPoint = monsterPattern_Abyss.GetGroundPos(playerTrans);
                 newRandomPos = monsterPattern_Abyss.GetRandomPos(3f, curMonsterPoint);
 
-
                 foreach (Vector3 randomPos in randomPos_skill02)
                 {
                     if (Vector3.Distance(newRandomPos, randomPos) <= 4f)

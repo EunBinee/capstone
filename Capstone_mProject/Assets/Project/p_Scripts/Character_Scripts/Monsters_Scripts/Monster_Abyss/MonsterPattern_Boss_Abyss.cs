@@ -512,9 +512,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
 
-            ChangeBossPhase(BossMonsterPhase.Phase2);
+            // ChangeBossPhase(BossMonsterPhase.Phase2);
             //isRoaming = false;
-            //Skill04();
+            boss_Abyss_Skill04.Skill04();
             //* 테스트 후 아래 주석 풀기
             //ChangeBossPhase(BossMonsterPhase.Phase1);
             // ChangeMonsterState(MonsterState.Tracing);

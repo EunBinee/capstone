@@ -494,23 +494,32 @@ public class MonsterPattern : MonoBehaviour
         }
     }
     //* 좌우
-    public bool PlayerLocationCheck_LeftRight()
+    public bool PlayerLocationCheck_LeftRight(Vector3 targetPos, Transform reference)
     {
-        if (playerTargetPos.position.x < transform.position.x)
+        Vector3 toTarget = targetPos - reference.position;
+        toTarget.y = 0f;
+        Vector3 forward = reference.right;
+
+        float dotProduct = Vector3.Dot(toTarget.normalized, forward);
+
+        if (dotProduct > 0f)
         {
-            //* 왼쪽일 경우 true
+            //* 오른쪽
             return true;
         }
-        else if (playerTargetPos.position.x > transform.position.x)
+        else if (dotProduct < 0f)
         {
-            //* 오른 쪽일 경우 false;
+            //* 왼쪽
             return false;
         }
         else
         {
-            return false;
+            //* 몬스터와 플레이어 같은 위치
+            return true;
         }
     }
+
+
     //*------------------------------------------------------------------------------------------//
     public void SetPlayerAttackList(bool attackMonster)
     {
@@ -640,6 +649,7 @@ public class MonsterPattern : MonoBehaviour
             m_monster.RetrunHPBar();
 
     }
+
     public virtual void StartMonster()
     {
         forcedReturnHome = false;
