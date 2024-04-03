@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     public PlayerInput _input = new PlayerInput();
     public CheckOption _checkOption = new CheckOption();
     public CurrentState _currentState = new CurrentState();
+    public KeyState _keyState = new KeyState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     public PlayerArrows _playerArrows = new PlayerArrows();
@@ -36,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
     private CurrentState P_States => _currentState;
+    private KeyState P_KeyState => _keyState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerArrows P_Arrows => _playerArrows;
@@ -46,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
     public List<NavMeshSurface> navMeshSurface;
 
-    private bool isGettingHit = false;
+    public bool isGettingHit = false;
     public Action OnHitPlayerEffect = null;
 
     public PlayerState curPlayerState;
@@ -59,6 +61,7 @@ public class PlayerController : MonoBehaviour
     float nowHitTime;
     public List<GameObject> hitMonsters;
     //public List<Collider> forwardHit;
+    private float hitStop = 0f;
 
     public GameObject bow;
     public GameObject sword;
@@ -155,7 +158,7 @@ public class PlayerController : MonoBehaviour
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
-            if (P_States.isBowMode)
+            if (P_States.isBowMode && P_States.startAim)
                 P_Skills.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
@@ -293,12 +296,13 @@ public class PlayerController : MonoBehaviour
             case PlayerState.FinishComboAttack:
                 P_Com.animator.SetInteger("comboCount", index);
                 P_Com.animator.SetBool("p_Locomotion", true);
+                AnimState(PlayerState.Idle);
                 break;
             case PlayerState.GetHit_KnockBack:
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    if (P_States.isBowMode)
+                    if (P_States.isBowMode && P_States.startAim)
                         P_Skills.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
@@ -362,7 +366,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            if (P_States.isAim)    //* 조준 모드면 피격 시 조준 해제
+            if (P_States.isBowMode && P_States.startAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
                 P_Skills.arrowSkillOff();
@@ -374,7 +378,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(hitStop);
         P_States.isGettingHit = false;
 
     }
@@ -417,10 +421,12 @@ public class PlayerController : MonoBehaviour
 
         if (knockbackDistance > 1.5f)
         {
+            hitStop = 1.8f;
             P_Com.animator.SetTrigger("isKnockback");
         }
         else
         {
+            hitStop = 0.5f;
             P_Com.animator.Play("Get_Damage", 0);
         }
         P_Value.hits = 0;   //* 피격 시 히트 초기화

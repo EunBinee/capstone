@@ -108,6 +108,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     dir = player.transform.forward;
             }
             rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
+            P_States.isShortArrow = false;
             goShoot = true;
             P_States.isShortArrow = false;
         }

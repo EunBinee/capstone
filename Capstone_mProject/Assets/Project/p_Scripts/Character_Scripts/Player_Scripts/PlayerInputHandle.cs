@@ -11,6 +11,7 @@ public class PlayerInputHandle : MonoBehaviour
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerInput P_Input => P_Controller._input;
     private CurrentState P_States => P_Controller._currentState;
+    private KeyState P_KState => P_Controller._keyState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
@@ -21,18 +22,94 @@ public class PlayerInputHandle : MonoBehaviour
         _controller = GetComponent<PlayerController>();
         endArrow = false;
     }
+    void Update()
+    {
+        //WASDInput();
+        //KeyInput();
+        foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKeyDown(keyCode))
+            {
+                switch (keyCode)
+                {
+                    case KeyCode.Q: P_KState.QDown = true; break;
+                    case KeyCode.W: P_KState.WDown = true; break;
+                    case KeyCode.E: P_KState.EDown = true; break;
+                    case KeyCode.R: P_KState.RDown = true; break;
+                    case KeyCode.T: P_KState.TDown = true; break;
+                    case KeyCode.Y: P_KState.YDown = true; break;
+                    case KeyCode.U: P_KState.UDown = true; break;
+                    case KeyCode.I: P_KState.IDown = true; break;
+                    case KeyCode.O: P_KState.ODown = true; break;
+                    case KeyCode.P: P_KState.PDown = true; break;
+                    case KeyCode.A: P_KState.ADown = true; break;
+                    case KeyCode.S: P_KState.SDown = true; break;
+                    case KeyCode.D: P_KState.DDown = true; break;
+                    case KeyCode.F: P_KState.FDown = true; break;
+                    case KeyCode.G: P_KState.GDown = true; break;
+                    case KeyCode.H: P_KState.HDown = true; break;
+                    case KeyCode.J: P_KState.JDown = true; break;
+                    case KeyCode.K: P_KState.KDown = true; break;
+                    case KeyCode.L: P_KState.LDown = true; break;
+                    case KeyCode.Z: P_KState.ZDown = true; break;
+                    case KeyCode.X: P_KState.XDown = true; break;
+                    case KeyCode.C: P_KState.CDown = true; break;
+                    case KeyCode.V: P_KState.VDown = true; break;
+                    case KeyCode.B: P_KState.BDown = true; break;
+                    case KeyCode.N: P_KState.NDown = true; break;
+                    case KeyCode.M: P_KState.MDown = true; break;
+                    default: break;
+                }
+            }
+
+            if (Input.GetKeyUp(keyCode))
+            {
+                switch (keyCode)
+                {
+                    case KeyCode.Q: P_KState.QDown = false; break;
+                    case KeyCode.W: P_KState.WDown = false; break;
+                    case KeyCode.E: P_KState.EDown = false; break;
+                    case KeyCode.R: P_KState.RDown = false; break;
+                    case KeyCode.T: P_KState.TDown = false; break;
+                    case KeyCode.Y: P_KState.YDown = false; break;
+                    case KeyCode.U: P_KState.UDown = false; break;
+                    case KeyCode.I: P_KState.IDown = false; break;
+                    case KeyCode.O: P_KState.ODown = false; break;
+                    case KeyCode.P: P_KState.PDown = false; break;
+                    case KeyCode.A: P_KState.ADown = false; break;
+                    case KeyCode.S: P_KState.SDown = false; break;
+                    case KeyCode.D: P_KState.DDown = false; break;
+                    case KeyCode.F: P_KState.FDown = false; break;
+                    case KeyCode.G: P_KState.GDown = false; break;
+                    case KeyCode.H: P_KState.HDown = false; break;
+                    case KeyCode.J: P_KState.JDown = false; break;
+                    case KeyCode.K: P_KState.KDown = false; break;
+                    case KeyCode.L: P_KState.LDown = false; break;
+                    case KeyCode.Z: P_KState.ZDown = false; break;
+                    case KeyCode.X: P_KState.XDown = false; break;
+                    case KeyCode.C: P_KState.CDown = false; break;
+                    case KeyCode.V: P_KState.VDown = false; break;
+                    case KeyCode.B: P_KState.BDown = false; break;
+                    case KeyCode.N: P_KState.NDown = false; break;
+                    case KeyCode.M: P_KState.MDown = false; break;
+                    default: break;
+                }
+            }
+        }
+    }
     public void MouseMoveInput()
     {
         P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우
         P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
     }
-    public void WASDInput()
+
+    public void Key2Movement()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (P_KState.WDown)
         {
             P_Input.verticalMovement = 1;
         }
-        else if (Input.GetKey(KeyCode.S))
+        else if (P_KState.SDown)
         {
             P_Input.verticalMovement = -1;
         }
@@ -40,11 +117,11 @@ public class PlayerInputHandle : MonoBehaviour
         {
             P_Input.verticalMovement = 0;
         }
-        if (Input.GetKey(KeyCode.D))
+        if (P_KState.DDown)
         {
             P_Input.horizontalMovement = 1;
         }
-        else if (Input.GetKey(KeyCode.A))
+        else if (P_KState.ADown)
         {
             P_Input.horizontalMovement = -1;
         }
@@ -53,7 +130,6 @@ public class PlayerInputHandle : MonoBehaviour
             P_Input.horizontalMovement = 0;
         }
     }
-
 
     public void MouseClickInput()
     {
@@ -78,8 +154,8 @@ public class PlayerInputHandle : MonoBehaviour
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
         }
 
-        else if (Input.GetMouseButtonUp(0) && P_States.isClickDown&&!endArrow) //endArrow가 false이면 활 o, true이면 x
-        {     
+        else if (Input.GetMouseButtonUp(0) && P_States.isClickDown && !endArrow) //endArrow가 false이면 활 o, true이면 x
+        {
             if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
             {
                 // 짧게 클릭 로직 실행
@@ -116,6 +192,8 @@ public class PlayerInputHandle : MonoBehaviour
                 P_States.startAim = false;
                 P_Skills.arrowSkillOff();
             }
+            P_Movement.StopIdleMotion();
+            P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
 
         else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
@@ -139,20 +217,23 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.R))  //* Bow Mode & Sword Mode
+        if (P_KState.RDown)  //* Bow Mode & Sword Mode
         {
+            P_KState.RDown = false;
             if (P_States.startAim)   // 조준 중일때 전환 키 누르면
             {
                 P_Skills.arrowSkillOff();    // 조준 헤제
             }
             P_Skills.skillMotion('R');
         }
-        if (Input.GetKeyUp(KeyCode.E))  //*Heal
+        if (P_KState.EDown)  //*Heal
         {
+            P_KState.EDown = false;
             P_Skills.skillMotion('E');
         }
-        /*if (Input.GetKeyDown(KeyCode.Q))
+        /*if (P_KState.QDown)
         {
+            P_KState.QDown = false;
             if (P_States.isSkill)
             {
                 return;

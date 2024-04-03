@@ -124,6 +124,41 @@ public class CurrentState
 }
 
 [Serializable]
+public class KeyState
+{
+    public bool QDown;
+    public bool WDown;
+    public bool EDown;
+    public bool RDown;
+    public bool TDown;
+    public bool YDown;
+    public bool UDown;
+    public bool IDown;
+    public bool ODown;
+    public bool PDown;
+
+    [Space]
+    public bool ADown;
+    public bool SDown;
+    public bool DDown;
+    public bool FDown;
+    public bool GDown;
+    public bool HDown;
+    public bool JDown;
+    public bool KDown;
+    public bool LDown;
+
+    [Space]
+    public bool ZDown;
+    public bool XDown;
+    public bool CDown;
+    public bool VDown;
+    public bool BDown;
+    public bool NDown;
+    public bool MDown;
+}
+
+[Serializable]
 public class CurrentValue
 {
     public float moveAmount;        // 움직임. (0 움직이지않음, 1 움직임)

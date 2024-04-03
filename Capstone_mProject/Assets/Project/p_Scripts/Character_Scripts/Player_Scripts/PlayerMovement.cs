@@ -12,12 +12,15 @@ public class PlayerMovement : MonoBehaviour
     private PlayerComponents P_Com => P_Controller._playerComponents;
     private PlayerInput P_Input => P_Controller._input;
     private CurrentState P_States => P_Controller._currentState;
+    private KeyState P_KeyState => P_Controller._keyState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
     private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
     private PlayerInputHandle P_InputHandle;
+
+    Coroutine idleMotion_co;
 
     public SkillButton skill_E; //* HEAL
     public SkillButton skill_Q;
@@ -124,32 +127,41 @@ public class PlayerMovement : MonoBehaviour
 
             P_InputHandle.MouseClickInput();
 
-            P_InputHandle.WASDInput();
+            P_InputHandle.Key2Movement();
 
             //* skills input
             P_InputHandle.SkillKeyInput();
 
             //* [미카 디버프 단축키]==================================================
-            if (Input.GetKeyUp(KeyCode.O))
+            if (P_KeyState.ODown)
             {
                 P_Value.HP = 10;
             }
-            if (Input.GetKeyUp(KeyCode.P))
+            if (P_KeyState.PDown)
             {
                 //Debug.Log("Electric on");
                 P_States.isElectricShock = true;    //* 감전
             }
 
 
+            if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false
+                && (P_Controller.curPlayerState == PlayerState.Idle || P_Controller.curPlayerState == PlayerState.FinishComboAttack))
+            {
+                StartIdleMotion(0);  //일반 대기 모션으로 
+            }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
+            {
                 P_States.isNotMoving = true;
-            else P_States.isNotMoving = false;
+                P_Controller.AnimState(PlayerState.Idle);
+            }
+            else { P_States.isNotMoving = false; }
         }
     }
 
-    public void Attacking_co(){
+    public void Attacking_co()
+    {
         StartCoroutine(Attacking());
     }
 
@@ -274,7 +286,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        if (P_States.isStop || P_States.isJumping)
+        else if (P_States.isStop || P_States.isJumping)
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
@@ -282,7 +294,7 @@ public class PlayerMovement : MonoBehaviour
             }
             return;
         }
-        if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
+        else if (P_States.isAim && !P_States.isCamOnAim) // 조준모드 들어갔을 때 한번만 실행하도록
         {
             //if (!P_States.isCamOnAim)   //* 카메라가 바라보는 방향으로 플레이어 회전
             {
@@ -515,6 +527,7 @@ public class PlayerMovement : MonoBehaviour
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
             p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
             P_Com.rigidbody.velocity = p_velocity;
+            P_Controller.AnimState(PlayerState.Move);
         }
 
     }
@@ -659,6 +672,42 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void StartIdleMotion(float value)
+    {
+        idleMotion_co = StartCoroutine(IdleMotion(value));
+    }
+    public void StopIdleMotion()
+    {
+        if (idleMotion_co != null)
+        {
+            StopCoroutine(idleMotion_co);
+        }
+    }
+
+    IEnumerator IdleMotion(float value) // value = 1 쩍벌
+    {
+        if (value == 0) //가만히 두고 있다
+        {
+            float dTime = 0;
+            while (dTime < 5f)
+            {
+                dTime += Time.deltaTime;
+                yield return null;
+            }
+            //yield return new WaitForSeconds(5f);    //5초 뒤에 실행
+            while (P_Com.animator.GetFloat("Idle") > 0.0f && !P_States.isStartComboAttack && !P_States.startAim) //0.0f보다 값이 크고 공격을 하지 않았다면
+            {
+                P_Com.animator.SetFloat("Idle", value, 0.2f, Time.deltaTime);
+                yield return null;
+            }
+        }
+        else
+        {
+            P_Com.animator.SetFloat("Idle", value);
+        }
+        yield return null;
+    }
+
     IEnumerator Attacking() //클릭해서 들어오면
     {
         //Debug.Log("[attack test]플레이어 공격 코루틴 입장");
@@ -800,6 +849,8 @@ public class PlayerMovement : MonoBehaviour
 
             //* 공격 애니메이션 재생
             P_Com.animator.Play(P_Value.curAnimName);
+            StopIdleMotion();
+            StartIdleMotion(1);    //공격 대기 모션으로 
 
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
             yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
