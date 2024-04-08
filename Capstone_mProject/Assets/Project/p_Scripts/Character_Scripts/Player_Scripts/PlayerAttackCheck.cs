@@ -327,10 +327,13 @@ public class PlayerAttackCheck : MonoBehaviour
         int shortIndex = 0;
         for (int i = 1; i < hits.Length; i++)
         {
-            if (hits[i].distance < hitsDist)
+            if (hits[i].point != null)
             {
-                hitsDist = hits[i].distance;
-                shortIndex = i;
+                if (hits[i].distance < hitsDist)
+                {
+                    hitsDist = hits[i].distance;
+                    shortIndex = i;
+                }
             }
         }
 

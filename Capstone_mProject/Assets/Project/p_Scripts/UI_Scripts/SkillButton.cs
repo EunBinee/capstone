@@ -37,7 +37,6 @@ public class SkillButton : MonoBehaviour
         // Cool 이미지 초기 설정
         imgCool.fillAmount = 0;
         num = skill.cool;
-        skill.isFirsttime = true;
         coolNum.gameObject.SetActive(false);
         imgCool_dark.gameObject.SetActive(false);
     }

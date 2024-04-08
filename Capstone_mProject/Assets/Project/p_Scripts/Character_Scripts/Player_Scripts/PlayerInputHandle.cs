@@ -233,15 +233,15 @@ public class PlayerInputHandle : MonoBehaviour
             P_KState.EDown = false;
             P_Skills.skillMotion('E');
         }
-        /*if (P_KState.QDown)
+        if (P_KState.QDown)
         {
             P_KState.QDown = false;
             if (P_States.isSkill)
             {
                 return;
             }
-            skillMotion('Q');
-        }*/
+            P_Skills.skillMotion('Q');
+        }
     }
 
     IEnumerator DelayAfterAction()

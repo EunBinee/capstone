@@ -22,9 +22,9 @@ public class PlayerMovement : MonoBehaviour
 
     Coroutine idleMotion_co;
 
-    public SkillButton skill_E; //* HEAL
-    public SkillButton skill_Q;
-    public SkillButton skill_R; //* AIM
+    public SkillButton skill_E; // HEAL
+    public SkillButton skill_R; // AIM
+    public SkillButton skill_Q; // Ultimate
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -69,11 +69,13 @@ public class PlayerMovement : MonoBehaviour
         skill_E.gameObject.SetActive(true);
         _controller.originEpos = skill_E.gameObject.transform.position;
 
-        skill_Q = playerUI_info.skill_Q;
-
         skill_R = playerUI_info.skill_R;
         skill_R.gameObject.SetActive(true);
         _controller.originRpos = skill_R.gameObject.transform.position;
+
+        skill_Q = playerUI_info.skill_Q;
+        skill_Q.gameObject.SetActive(true);
+        _controller.originRpos = skill_Q.gameObject.transform.position;
     }
 
     // Update is called once per frame

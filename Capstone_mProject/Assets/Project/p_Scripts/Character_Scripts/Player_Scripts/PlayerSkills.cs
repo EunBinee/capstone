@@ -43,9 +43,7 @@ public class PlayerSkills : MonoBehaviour
     }
 
     //* skill
-    // UI 버튼에 의해 호출됩니다.
-    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
-    // damage 정보 만큼 피해를 입힙니다.
+    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이
     public void ActivateSkill(SOSkill skill)
     {
         if (skill.animationName != "Skill_Heal")
@@ -205,15 +203,6 @@ public class PlayerSkills : MonoBehaviour
                 }
                 break;
 
-            case 'Q':
-                if (skill_Q.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    Debug.Log("스킬Q");
-                }
-                skill_Q.OnClicked();
-                break;
-
             case 'E':   //* heal
                 if (skill_E.imgCool.fillAmount == 0)
                 {
@@ -221,6 +210,15 @@ public class PlayerSkills : MonoBehaviour
                     StartCoroutine(PlayerHeal_co());
                 }
                 skill_E.OnClicked();
+                break;
+
+            case 'Q':
+                if (skill_Q.imgCool.fillAmount == 0)
+                {
+                    P_States.isSkill = true;
+                    Debug.Log("스킬Q");
+                }
+                skill_Q.OnClicked();
                 break;
 
             default:
