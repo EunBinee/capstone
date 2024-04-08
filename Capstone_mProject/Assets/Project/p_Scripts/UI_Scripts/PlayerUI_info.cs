@@ -19,6 +19,9 @@ public class PlayerUI_info : MonoBehaviour
     public SkillButton skill_E;
     public SkillButton skill_Q;
     public SkillButton skill_R;
+
+    public ScrollRect skillScrollWindow;
+
     [Space]
     [Header("Player 조준 카메라 관련")]
     public TMP_Text crosshairImage; // 조준점 이미지

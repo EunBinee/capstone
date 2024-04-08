@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
     private PlayerInputHandle P_InputHandle;
 
@@ -36,6 +38,8 @@ public class PlayerMovement : MonoBehaviour
     bool showElec = false;
 
     public Vector3 camForward;
+
+    public ScrollRect skillScrollWindow;
 
     void Start()
     {
@@ -75,10 +79,12 @@ public class PlayerMovement : MonoBehaviour
 
         skill_Q = playerUI_info.skill_Q;
         skill_Q.gameObject.SetActive(true);
-        _controller.originRpos = skill_Q.gameObject.transform.position;
+        _controller.originQpos = skill_Q.gameObject.transform.position;
+
+        skillScrollWindow = playerUI_info.skillScrollWindow;
+        skillScrollWindow.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!UIManager.gameIsPaused)

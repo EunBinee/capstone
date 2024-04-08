@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
     public PlayerArrows _playerArrows = new PlayerArrows();
+    public SkillInfo _skillInfo = new SkillInfo();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
     private CheckOption P_COption => _checkOption;
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
     private PlayerArrows P_Arrows => _playerArrows;
+    private SkillInfo P_SkillInfo => _skillInfo;
     public PlayerInputHandle P_InputHandle;
     public PlayerMovement P_Movement;
     public PlayerPhysicsCheck P_PhysicsCheck;
@@ -73,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     public Vector3 originEpos;
     public Vector3 originRpos;
+    public Vector3 originQpos;
 
     private Vector3 screenCenter;
     public bool EnablePlayerUI = true;
@@ -157,6 +160,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("플레이어 UI 비활성화");
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_Q.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
             if (P_States.isBowMode && P_States.startAim)
                 P_Skills.arrowSkillOff();
@@ -173,6 +177,7 @@ public class PlayerController : MonoBehaviour
             hitNum.gameObject.SetActive(true);
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
+            P_Movement.skill_Q.gameObject.transform.position = originQpos;
             EnablePlayerUI = true;
 
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PlayerSkills : MonoBehaviour
 {
@@ -10,24 +11,45 @@ public class PlayerSkills : MonoBehaviour
     private PlayerComponents P_Com => P_Controller._playerComponents;
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
+    private KeyState P_KState => P_Controller._keyState;
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
+    private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerAttackCheck playerAttackCheck;
 
     private GameObject arrow;// => P_Controller.arrow;
 
-    private SkillButton skill_E => P_Controller.P_Movement.skill_E; //* HEAL
+    private SkillButton skill_E;// => P_Controller.P_Movement.skill_E;
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     private string R_StrongName = "ChargingArrowLaunch";
-    private SkillButton skill_Q => P_Controller.P_Movement.skill_Q;
-    private SkillButton skill_R => P_Controller.P_Movement.skill_R; //* AIM
+    private SkillButton skill_R;// => P_Controller.P_Movement.skill_R;
+    private SkillButton skill_Q;// => P_Controller.P_Movement.skill_Q;
+
+    private Dictionary<string, SOSkill> skillMap;
+    private List<SOSkill> selectSkill;
+    private int selectSize = 3;
+
+    public ScrollRect skillScrollWindow;
 
     void Awake()
     {
+        skillMap = new Dictionary<string, SOSkill>();
+        skillMap.Clear();
+        selectSkill = new List<SOSkill>();
+        selectSkill.Clear();
         arrow = P_Controller.arrow;
         //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
-
+    void Start()
+    {
+        SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본 제공?
+        SkillMapAdd("Heal", P_SkillInfo.heal);
+        SkillMapAdd("Ultimate", P_SkillInfo.ultimate);
+        Invoke("Setting",1f);
+    }
+    void Setting(){
+        skillScrollWindow = P_Controller.P_Movement.skillScrollWindow;
+    }
     void FixedUpdate()
     {
         if (P_Value.aimClickDown > 1.8f)
@@ -40,9 +62,25 @@ public class PlayerSkills : MonoBehaviour
         {
             P_States.isStrongArrow = false;
         }
+        SkillPreset();
     }
 
     //* skill
+    public void SkillMapAdd(string name, SOSkill skill){
+        if(skillMap.ContainsKey(name)){ // 이미 등록된 스킬 이름?
+            Debug.Log("이미 등록된 스킬 이름!");
+            return;
+        } 
+        else
+        {
+            skillMap.Add(name, skill);  // 스킬 등록
+            if (selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
+            {
+                selectSkill.Add(skill); // 자동 추가
+            }
+        }
+    }
+
     // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이
     public void ActivateSkill(SOSkill skill)
     {
@@ -224,5 +262,27 @@ public class PlayerSkills : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    bool isOn = false;
+    public void SkillPreset(){
+        //todo: K 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
+        //todo  창 뜨면 마우스 움직일 수 있도록(플레이어 멈추기?)
+        if (P_KState.KDown)
+        {
+            P_KState.KDown = false;
+            if (!isOn) isOn = true; // 창 켜짐
+            else isOn = false;
+            skillScrollWindow.gameObject.SetActive(isOn);
+            P_Controller.PlayerUI_SetActive(!isOn);
+            UIManager.gameIsPaused = isOn;
+            P_States.isStop = isOn;
+            P_Com.animator.SetBool("p_Locomotion", true);
+            P_Com.animator.Rebind();
+            Cursor.visible = isOn;     //마우스 커서
+            if (!isOn) Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+            else Cursor.lockState = CursorLockMode.None;
+        }
+
     }
 }

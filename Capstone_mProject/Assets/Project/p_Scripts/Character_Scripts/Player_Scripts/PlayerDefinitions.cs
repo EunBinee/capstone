@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using JetBrains.Annotations;
 
 //Player캐릭터 정의의 모든 것
 
@@ -195,6 +196,21 @@ public class CurrentValue
 
     [Space]
     public float gravity = 0f; // 직접 제어하는 중력값
+}
+
+[Serializable]
+public class SkillInfo{
+    [Header("bool")]
+    public bool haveBowmode;    // 활 모드 스킬 얻음?
+    public bool haveHeal;       // 힐 스킬 얻음?
+    public bool haveUltimate;   // 궁 스킬 얻음?
+
+    [Space]
+    [Header("skill")]
+    public SOSkill bowmode;
+    public SOSkill heal;
+    public SOSkill ultimate;
+
 }
 
 [Serializable]
