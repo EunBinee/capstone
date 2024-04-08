@@ -58,7 +58,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
                 Debug.Log("보스가 못가는 곳입니다..");
                 curPlayerPos = originPos;
             }
-
+            yield return new WaitForSeconds(1f);
             monsterPattern_Abyss.isJump = true;
             BossAbyss_JumpDown(curPlayerPos);
             StartCoroutine(JumpDown(curPlayerPos));
