@@ -15,6 +15,13 @@ public class DialogueUI_info : MonoBehaviour
     public TMP_Text Text_Btn01; //선택지 1번 text
     public GameObject ObjectTextBox_Button02; //선택지 2번 UI
     public TMP_Text Text_Btn02; //선택지 2번 text
+    public GameObject ObjectTextBox_Button03; //선택지 3번 UI
+    public TMP_Text Text_Btn03; //선택지 3번 text
+    public GameObject ObjectTextBox_Button04; //선택지 4번 UI
+    public TMP_Text Text_Btn04; //선택지 4번 text
+    public GameObject ObjectTextBox_Button05; //선택지 5번 UI
+    public TMP_Text Text_Btn05; //선택지 5번 text
+
     public GameObject dialogueArrow; //대사 끝났을 경우 화살표ui
     public Image portrait;
 

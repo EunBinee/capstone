@@ -169,6 +169,8 @@ public class DialogueManager : MonoBehaviour
         bool choiceSettingF = false; //선택지 가지고 있으면 선택지 버튼들의 텍스트 변환등 세팅을 끝냈는지
         bool ClickChoiceBtn = true; //선택지를 눌렀을 경우, 바로 Enter키 없이 바로 다음 대사로 넘어가도록 설정하는 bool값
 
+        bool isReasoning = false; //추리 시스템을 가지고 있는지
+
 
         int curlineContextLen;  //현재 dialogue.line[curline]의 line안의 context의 길이
 
@@ -253,6 +255,9 @@ public class DialogueManager : MonoBehaviour
 
                 isChoice = dialogue.lines[curPart][curLine].isChoice;
                 isFinish = dialogue.lines[curPart][curLine].isFinishLine;
+
+                isReasoning = dialogue.lines[curPart][curLine].isReasoning;
+                
 
                 if (isChoice)
                 {

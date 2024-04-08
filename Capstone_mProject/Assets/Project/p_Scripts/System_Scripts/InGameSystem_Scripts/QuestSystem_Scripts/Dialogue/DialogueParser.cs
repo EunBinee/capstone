@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design.Serialization;
 using System.Data;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 
 [Serializable]
 public class DialogueParser
@@ -14,6 +16,7 @@ public class DialogueParser
     public int dialogueNum_in = 0;  //E
     int endingNum_in = 0;
     int questNum_in = 0;
+    int reasoningNum_in = 0;
     //int lineNum_in = 0;
 
     //Line.cs에 쓰임
@@ -21,6 +24,7 @@ public class DialogueParser
     int choice_OneTwo = 0;
     bool startChoice = false;
     bool finishBreak = false;
+    bool startReasoning = false; //추리
     //bool doQuest = false;
 
     //csv 
@@ -31,12 +35,13 @@ public class DialogueParser
     int csv_Name = 5;
     int csv_Line = 6;//대사
     int csv_Portrait = 7; //초상화
-    int csv_Choice = 8;//7;
-    int csv_ChoiceLine = 9;//8; //선택지대사
-    int csv_SkipLine = 10;//9;
-    int csv_Quest = 11;//10;
-    int csv_Ending = 12;//11;
-    int csv_AfterEnding = 13;//12;
+    int csv_Choice = 8;
+    int csv_ChoiceLine = 9; //선택지대사
+    int csv_SkipLine = 10;
+    int csv_Quest = 11;
+    int csv_Reasoning = 12;
+    int csv_Ending = 13; //12;
+    int csv_AfterEnding = 14;//13;
 
 
     void Initialization() //초기화
@@ -66,8 +71,9 @@ public class DialogueParser
         csv_ChoiceLine = 9; //선택지대사
         csv_SkipLine = 10;
         csv_Quest = 11;
-        csv_Ending = 12;
-        csv_AfterEnding = 13;
+        csv_Reasoning = 12;
+        csv_Ending = 13;
+        csv_AfterEnding = 14;
     }
     public Dialogue[] DialogueParse(string csvFileName)
     {
@@ -91,11 +97,11 @@ public class DialogueParser
                 dialogue.npcNum = npcNum_in;     //Npcid
                 dialogue.endingNum = endingNum_in;  //endingid
                 dialogue.questNum = questNum_in;
+                dialogue.reasoningNum = reasoningNum_in;
                 //dialogue.lineNum = lineNum_in;
             }
             else
             {
-
                 eventNum_in = int.Parse(row[csv_Event].ToString());
                 npcNum_in = int.Parse(row[csv_Npc].ToString());
                 if (row[csv_Ending] == "")
@@ -115,10 +121,16 @@ public class DialogueParser
                 {
                     //dialogue.
                 }
+                if(row[csv_Reasoning]!="")
+                {
+                    //reasoningNum_in = reasoningNum_in;
+                    reasoningNum_in = int.Parse(row[csv_Reasoning].ToString());
+                }
                 dialogue.eventNum = eventNum_in;   //이벤트 id
                 dialogue.npcNum = npcNum_in;     //Npc id
                 dialogue.endingNum = endingNum_in;  //ending id
                 dialogue.questNum = questNum_in;
+                dialogue.reasoningNum = reasoningNum_in;
                 //dialogue.lineNum = lineNum_in;
 
 
@@ -165,6 +177,7 @@ public class DialogueParser
                     line.isChoice = false;
                     line.isFinishLine = false;  //대화 끝났는지 여부
                     line.nextDialogueNum = dialogueNum_in;
+                    line.isReasoning = false;
                     //line.DoQuest = false;
                     //line.nextLineNum = lineNum_in;
 
@@ -187,6 +200,7 @@ public class DialogueParser
                             choice_OneTwo++;
 
                             line.isChoice = true;
+
                             if (choice_OneTwo == 1)
                             {
                                 //첫번째 질문인지
@@ -204,6 +218,19 @@ public class DialogueParser
                                 choice_OneTwo = 0;
                                 startChoice = false;
                             }
+
+                        }
+
+
+                        if(startReasoning)
+                        {
+                            line.isReasoning = true; 
+                        }
+
+                        if(row[csv_Reasoning].ToString()!="")
+                        {
+                            startReasoning = true;
+                            line.isReasoning = true;
                         }
 
                         if (row[csv_Choice].ToString() != "")
@@ -380,5 +407,58 @@ public class DialogueParser
             quests.Add(quest);
         }
         return quests.ToArray();
+    }
+
+    public Reasoning[] ReasoningParse(string csvFileName)
+    {
+        List<Reasoning> reasonings = new List<Reasoning>();
+
+        TextAsset csvData = Resources.Load<TextAsset>("Dialogues/" + csvFileName);
+        string[] data = csvData.text.Split(new char[] { '\n' });
+
+        for (int i = 1; i < data.Length;)
+        {
+            string[] row = data[i].Split(new char[] { ',' });
+            Reasoning reasoning = new Reasoning();
+
+            reasoning.reasoningID = int.Parse(row[0].ToString());
+            reasoning.question = row[1].ToString();
+            reasoning.answer = row[4].ToString();
+
+            reasoning.reasoningChoice = new List<string>();
+            reasoning.reasoningDialogue = new List<string>();
+            do
+            {
+                if(row[2].ToString()!="")
+                {
+                    reasoning.reasoningChoice.Add(row[2].ToString());
+                    reasoning.reasoningDialogue.Add(row[3].ToString());
+                }
+               
+
+                
+                if(startReasoning)
+                {
+
+                    //! 여기서 부터 추리 시스템 하면됨.. 언젠가... csv지옥이야아ㅏ아아
+                    //Debug.Log(reasoning.reasoningChoice.Count);
+                    
+                    
+                }
+
+                 if (++i < data.Length)
+                {
+                    row = data[i].Split(new char[] { ',' });
+                }
+                else
+                {
+                    finishBreak = true;
+                    break;
+                }
+
+            } while (row[0].ToString() == "");
+            reasonings.Add(reasoning);
+        }
+        return reasonings.ToArray();
     }
 }

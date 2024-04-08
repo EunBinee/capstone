@@ -11,6 +11,8 @@ public class Line
     public bool isChoice;//선택지 여부
     public Choice choice;
 
+    public bool isReasoning; //추리 시스템 여부
+
     public bool isFinishLine;  //대화 끝났는지 여부
     public int nextDialogueNum; //대화가 끝나고 다음 대사 단락의 번호
 
@@ -44,6 +46,8 @@ public class Dialogue
     public int dialogueNum; //D��
     //퀘스트 번호
     public int questNum;
+    //추리시스템 번호
+    public int reasoningNum;
     //대사번호
     //ublic int lineNum;
     public string[] portrait;
@@ -56,8 +60,15 @@ public class Choice
 {
     public string firstOption; //1번 선택지 Text
     public string secondOption; //2번 선택지 Text
+    // public string thirdOption; //3번 선택지 Text
+    // public string fourthOption; //4번 선택지 Text
+    // public string fifthOption; //5번 선택지 Text
+
 
     public int firstOptDialogNum; //1번째 선택지를 선택했을 경우, 그다음 대사 단락 번호
     public int secondOptDialogNum;//2번째 선택지를 선택했을 경우, 그다음 대사 단락 번호
+    // public int thirdOptDialogNum;//3번째 선택지를 선택했을 경우, 그다음 대사 단락 번호
+    // public int fourthOptDialogNum;//4번째 선택지를 선택했을 경우, 그다음 대사 단락 번호
+    // public int fifthOptDialogNum;//5번째 선택지를 선택했을 경우, 그다음 대사 단락 번호
 
 }
