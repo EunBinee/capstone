@@ -101,13 +101,6 @@ public class Popup_Setting : UIBase
             dialogue.currentQuestValue = DialogueManager.Instance.questManager.currentQuestValue_;
             dialogue.nickname = GameManager.Instance.gameInfo.Nickname;
 
-            // GameManager.Instance.gameInfo.eventNum = dialogue.eventNum;
-            // GameManager.Instance.gameInfo.EndingNum = dialogue.endingNum;
-            // GameManager.Instance.gameInfo.QuestNum = dialogue.questNum;
-            // GameManager.Instance.dialogueManager.DoQuest = dialogue.doQuest;
-            // GameManager.Instance.gameInfo.DialogueNum = dialogue.dialogueNum;
-            // GameManager.Instance.questManager.currentQuestValue_ = dialogue.currentQuestValue;
-
             SaveSystem.Save(dialogue, "GameData");
 
         });
