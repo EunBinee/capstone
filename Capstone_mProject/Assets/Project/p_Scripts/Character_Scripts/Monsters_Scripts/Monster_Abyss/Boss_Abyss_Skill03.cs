@@ -133,7 +133,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
                     }
                 }
             }
-
             yield return null;
         }
 

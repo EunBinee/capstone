@@ -528,7 +528,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
 
             //ChangeBossPhase(BossMonsterPhase.Phase2);
-            //boss_Abyss_Skill04.Skill04();
+            // boss_Abyss_Skill04.Skill04();
+
             //* 테스트 후 아래 주석 풀기
             ChangeBossPhase(BossMonsterPhase.Phase1);
             ChangeMonsterState(MonsterState.Tracing);
@@ -720,14 +721,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     #region 피격
     private void GetHit()
     {
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_S");
-        effect.gameObject.transform.position = curHitPos;
-        effect.gameObject.transform.rotation = curHitQuaternion;
-
-        effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
-        effect.gameObject.transform.position = curHitPos;
-        effect.gameObject.transform.rotation = curHitQuaternion;
-
         StartCoroutine(electricity_Damage(2f, curHitPos));
     }
 
@@ -961,7 +954,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             Vector3 pos = new Vector3(x, targetPos.y, z);
             posList.Add(pos);
-
         }
 
         return posList;
