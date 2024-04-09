@@ -24,8 +24,10 @@ public class PlayerMovement : MonoBehaviour
 
     Coroutine idleMotion_co;
 
-    public SkillButton skill_E; // HEAL
-    public SkillButton skill_R; // AIM
+    public SkillButton skill_T; // weapon change
+    public SkillButton skill_E;
+    public SkillButton skill_R;
+    public SkillButton skill_F;
     public SkillButton skill_Q; // Ultimate
 
     public float comboClickTime = 0.5f;
@@ -69,6 +71,11 @@ public class PlayerMovement : MonoBehaviour
                 return;
         }
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+
+        skill_T = playerUI_info.skill_T;
+        skill_T.gameObject.SetActive(true);
+        _controller.originTpos = skill_T.gameObject.transform.position;
+
         skill_E = playerUI_info.skill_E;
         skill_E.gameObject.SetActive(true);
         _controller.originEpos = skill_E.gameObject.transform.position;
@@ -76,6 +83,10 @@ public class PlayerMovement : MonoBehaviour
         skill_R = playerUI_info.skill_R;
         skill_R.gameObject.SetActive(true);
         _controller.originRpos = skill_R.gameObject.transform.position;
+
+        skill_F = playerUI_info.skill_F;
+        skill_F.gameObject.SetActive(true);
+        _controller.originFpos = skill_F.gameObject.transform.position;
 
         skill_Q = playerUI_info.skill_Q;
         skill_Q.gameObject.SetActive(true);

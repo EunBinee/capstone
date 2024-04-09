@@ -17,10 +17,27 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerSkills P_Skills => P_Controller.P_Skills;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
+
+    private SkillButton skill_E;
+    private SkillButton skill_R;
+    private SkillButton skill_F;
+    private SkillButton skill_Q;
+
     void Awake()
     {
         _controller = GetComponent<PlayerController>();
         endArrow = false;
+    }
+    void Start()
+    {
+        Invoke("Setting", 0.2f);
+    }
+    void Setting()
+    {
+        skill_E = P_Movement.skill_E;
+        skill_R = P_Movement.skill_R;
+        skill_F = P_Movement.skill_F;
+        skill_Q = P_Movement.skill_Q;
     }
     void Update()
     {
@@ -219,19 +236,35 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.RDown)  //* Bow Mode & Sword Mode
+        if (P_KState.TDown)  //* Bow Mode & Sword Mode
         {
-            P_KState.RDown = false;
+            P_KState.TDown = false;
             if (P_States.startAim)   // 조준 중일때 전환 키 누르면
             {
                 P_Skills.arrowSkillOff();    // 조준 헤제
             }
-            P_Skills.skillMotion('R');
+            P_Skills.skillMotion("ChangeWeapon");
         }
-        if (P_KState.EDown)  //*Heal
+        if (P_KState.EDown)
         {
             P_KState.EDown = false;
-            P_Skills.skillMotion('E');
+            //P_Skills.skillMotion("Heal");
+            if (skill_E.imgCool.fillAmount == 0)
+                skill_E.OnClicked();
+        }
+        if (P_KState.RDown)
+        {
+            P_KState.RDown = false;
+            //P_Skills.skillMotion("Heal");
+            if (skill_R.imgCool.fillAmount == 0)
+                skill_R.OnClicked();
+        }
+        if (P_KState.FDown)
+        {
+            P_KState.FDown = false;
+            //P_Skills.skillMotion("Heal");
+            if (skill_F.imgCool.fillAmount == 0)
+                skill_F.OnClicked();
         }
         if (P_KState.QDown)
         {
@@ -240,7 +273,9 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 return;
             }
-            P_Skills.skillMotion('Q');
+            if (skill_Q.imgCool.fillAmount == 0)
+                skill_Q.OnClicked();
+            P_Skills.skillMotion("Ultimate");
         }
     }
 

@@ -73,8 +73,10 @@ public class PlayerController : MonoBehaviour
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
     public Transform spine;     // 아바타 모델링
 
+    public Vector3 originTpos;
     public Vector3 originEpos;
     public Vector3 originRpos;
+    public Vector3 originFpos;
     public Vector3 originQpos;
 
     private Vector3 screenCenter;
@@ -158,8 +160,10 @@ public class PlayerController : MonoBehaviour
         if (!activeSelf)
         {
             Debug.Log("플레이어 UI 비활성화");
+            P_Movement.skill_T.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_E.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_R.gameObject.transform.position += new Vector3(1000, -1000, 0);
+            P_Movement.skill_F.gameObject.transform.position += new Vector3(1000, -1000, 0);
             P_Movement.skill_Q.gameObject.transform.position += new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
             if (P_States.isBowMode && P_States.startAim)
@@ -175,8 +179,10 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
+            P_Movement.skill_T.gameObject.transform.position = originTpos;
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
+            P_Movement.skill_F.gameObject.transform.position = originFpos;
             P_Movement.skill_Q.gameObject.transform.position = originQpos;
             EnablePlayerUI = true;
 

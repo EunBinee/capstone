@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEditor.AnimatedValues;
 
 public class PlayerSkills : MonoBehaviour
 {
@@ -18,18 +19,19 @@ public class PlayerSkills : MonoBehaviour
 
     private GameObject arrow;// => P_Controller.arrow;
 
-    private SkillButton skill_E;// => P_Controller.P_Movement.skill_E;
+    private SkillButton skill_T;
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     private string R_StrongName = "ChargingArrowLaunch";
-    private SkillButton skill_R;// => P_Controller.P_Movement.skill_R;
-    private SkillButton skill_Q;// => P_Controller.P_Movement.skill_Q;
 
-    private Dictionary<string, SOSkill> skillMap;
-    private List<SOSkill> selectSkill;
+    [SerializeField]
+    public Dictionary<string, SOSkill> skillMap;
+    public List<SOSkill> selectSkill;
     private int selectSize = 3;
 
     public ScrollRect skillScrollWindow;
+    public bool presetWin;
+    public bool once = false;
 
     void Awake()
     {
@@ -42,14 +44,20 @@ public class PlayerSkills : MonoBehaviour
     }
     void Start()
     {
-        SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본 제공?
-        SkillMapAdd("Heal", P_SkillInfo.heal);
-        SkillMapAdd("Ultimate", P_SkillInfo.ultimate);
-        Invoke("Setting",1f);
+        Invoke("Setting", 0.2f);
     }
-    void Setting(){
+    void Setting()
+    {
         skillScrollWindow = P_Controller.P_Movement.skillScrollWindow;
+        skill_T = P_Controller.P_Movement.skill_T;
+        SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본 제공?
+        P_SkillInfo.haveBowmode = true;
+        SkillMapAdd("Heal", P_SkillInfo.heal);
+        P_SkillInfo.haveHeal = true;
+        SkillMapAdd("Ultimate", P_SkillInfo.ultimate);
+        P_SkillInfo.haveUltimate = true;
     }
+
     void FixedUpdate()
     {
         if (P_Value.aimClickDown > 1.8f)
@@ -65,18 +73,33 @@ public class PlayerSkills : MonoBehaviour
         SkillPreset();
     }
 
+    List<string> callName = new List<string>();
+    public List<string> getskillMap()
+    {
+        callName.Clear();
+        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        {
+            callName.Add(i.Key);
+        }
+        return callName;
+    }
+
     //* skill
-    public void SkillMapAdd(string name, SOSkill skill){
-        if(skillMap.ContainsKey(name)){ // 이미 등록된 스킬 이름?
+    public void SkillMapAdd(string name, SOSkill skill)
+    {
+        if (skillMap.ContainsKey(name))
+        {
             Debug.Log("이미 등록된 스킬 이름!");
             return;
-        } 
+        }
         else
         {
             skillMap.Add(name, skill);  // 스킬 등록
+            Debug.Log("skillMap.Add(name, skill);");
             if (selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
                 selectSkill.Add(skill); // 자동 추가
+                Debug.Log("if (selectSkill.Count < selectSize)");
             }
         }
     }
@@ -215,12 +238,34 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    public void skillMotion(char a)
+    public void skillKeyPresetting(char key)
     {
-        switch (a)
+        switch (key)
         {
-            case 'R':   //* weapon change
-                if (skill_R.imgCool.fillAmount == 0)
+            case 'e':
+            case 'E':
+                P_Controller.P_Movement.skill_E.skill = selectSkill[0];
+                break;
+            case 'r':
+            case 'R':
+                P_Controller.P_Movement.skill_R.skill = selectSkill[1];
+                break;
+            case 'f':
+            case 'F':
+                P_Controller.P_Movement.skill_F.skill = selectSkill[2];
+                break;
+            case 'q':
+            case 'Q':
+                break;
+            default: break;
+        }
+    }
+    public void skillMotion(string skillName)
+    {
+        switch (skillName)
+        {
+            case "ChangeWeapon":   //* weapon change
+                if (skill_T.imgCool.fillAmount == 0)
                 {
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
@@ -237,26 +282,18 @@ public class PlayerSkills : MonoBehaviour
                         P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
                     }
-                    skill_R.OnClicked();
                 }
+                skill_T.OnClicked();
                 break;
 
-            case 'E':   //* heal
-                if (skill_E.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    StartCoroutine(PlayerHeal_co());
-                }
-                skill_E.OnClicked();
+            case "Heal":
+                P_States.isSkill = true;
+                StartCoroutine(PlayerHeal_co());
                 break;
 
-            case 'Q':
-                if (skill_Q.imgCool.fillAmount == 0)
-                {
-                    P_States.isSkill = true;
-                    Debug.Log("스킬Q");
-                }
-                skill_Q.OnClicked();
+            case "Ultimate":
+                P_States.isSkill = true;
+                Debug.Log("스킬Q");
                 break;
 
             default:
@@ -265,15 +302,16 @@ public class PlayerSkills : MonoBehaviour
     }
 
     bool isOn = false;
-    public void SkillPreset(){
+    public void SkillPreset()
+    {
         //todo: K 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
-        //todo  창 뜨면 마우스 움직일 수 있도록(플레이어 멈추기?)
-        if (P_KState.KDown)
+        if (P_KState.KDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
             P_KState.KDown = false;
             if (!isOn) isOn = true; // 창 켜짐
-            else isOn = false;
+            else { isOn = false; once = false; } // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
+            presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
             UIManager.gameIsPaused = isOn;
             P_States.isStop = isOn;
