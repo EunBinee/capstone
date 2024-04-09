@@ -130,7 +130,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (bossWeakness.m_monster == null)
                 bossWeakness.SetMonster(m_monster);
         }
+
         //*----------------------------------------------------------------------//
+
+        // 스타트 컷씬 
+        DirectFirstAppearance_TimeLine();
 
     }
 
