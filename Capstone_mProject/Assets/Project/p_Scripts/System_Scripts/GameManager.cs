@@ -273,6 +273,7 @@ public class GameManager : MonoBehaviour
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(false);
             Stop_AllMonster();
+            gameData.GetPlayerController().PlayerStop(false);
         }
         else if (!start)
         {
@@ -280,6 +281,7 @@ public class GameManager : MonoBehaviour
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(true);
             Start_AllMonster();
+            gameData.GetPlayerController().PlayerStop(true);
         }
 
     }
