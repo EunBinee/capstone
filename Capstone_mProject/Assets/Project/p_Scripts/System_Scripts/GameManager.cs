@@ -273,6 +273,8 @@ public class GameManager : MonoBehaviour
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(false);
             Stop_AllMonster();
+
+            UIManager.gameIsPaused = true;
         }
         else if (!start)
         {
@@ -280,6 +282,8 @@ public class GameManager : MonoBehaviour
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(true);
             Start_AllMonster();
+
+            UIManager.gameIsPaused = false;
         }
 
     }
