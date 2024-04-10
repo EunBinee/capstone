@@ -18,6 +18,7 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
 
+    private SkillButton skill_T;
     private SkillButton skill_E;
     private SkillButton skill_R;
     private SkillButton skill_F;
@@ -34,10 +35,15 @@ public class PlayerInputHandle : MonoBehaviour
     }
     void Setting()
     {
+        skill_T = P_Movement.skill_T;
         skill_E = P_Movement.skill_E;
         skill_R = P_Movement.skill_R;
         skill_F = P_Movement.skill_F;
         skill_Q = P_Movement.skill_Q;
+
+        skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
+        skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
+        skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
     }
     void Update()
     {
@@ -239,40 +245,45 @@ public class PlayerInputHandle : MonoBehaviour
         if (P_KState.TDown)  //* Bow Mode & Sword Mode
         {
             P_KState.TDown = false;
-            if (P_States.startAim)   // 조준 중일때 전환 키 누르면
+            if (skill_T.imgCool.fillAmount == 0)
             {
-                P_Skills.arrowSkillOff();    // 조준 헤제
+                if (P_States.startAim)   // 조준 중일때 전환 키 누르면
+                {
+                    P_Skills.arrowSkillOff();    // 조준 헤제
+                }
+                P_Skills.skillMotion("ChangeWeapon");
             }
-            P_Skills.skillMotion("ChangeWeapon");
         }
         if (P_KState.EDown)
         {
             P_KState.EDown = false;
-            //P_Skills.skillMotion("Heal");
             if (skill_E.imgCool.fillAmount == 0)
             {
-                //todo: 아이콘이 안바뀜;;
                 skill_E.skill = P_Skills.selectSkill[0];    //test 중 : aim
+                skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[0]));
                 skill_E.OnClicked();
             }
         }
         if (P_KState.RDown)
         {
             P_KState.RDown = false;
-            //P_Skills.skillMotion("Heal");
             if (skill_R.imgCool.fillAmount == 0)
             {
                 skill_R.skill = P_Skills.selectSkill[1];    //test 중 : heal
+                skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[1]));
                 skill_R.OnClicked();
             }
         }
         if (P_KState.FDown)
         {
             P_KState.FDown = false;
-            //P_Skills.skillMotion("Heal");
             if (skill_F.imgCool.fillAmount == 0)
             {
                 skill_F.skill = P_Skills.selectSkill[2];    //test 중 : ultimate
+                skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[2]));
                 skill_F.OnClicked();
             }
         }
@@ -287,6 +298,16 @@ public class PlayerInputHandle : MonoBehaviour
                 skill_Q.OnClicked();
             P_Skills.skillMotion("Ultimate");
         }
+    }
+    public string mapValueReturnKey(SOSkill skill){
+        foreach (KeyValuePair<string,SOSkill> item in P_Skills.skillMap)
+        {
+            if (item.Value == skill)
+            {
+                return item.Key;
+            }
+        }
+        return null;
     }
 
     IEnumerator DelayAfterAction()

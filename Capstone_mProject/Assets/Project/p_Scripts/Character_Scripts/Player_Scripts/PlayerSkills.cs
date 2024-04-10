@@ -99,11 +99,9 @@ public class PlayerSkills : MonoBehaviour
         else
         {
             skillMap.Add(name, skill);  // 스킬 등록
-            Debug.Log("skillMap.Add(name, skill);");
             if (selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
                 selectSkill.Add(skill); // 자동 추가
-                Debug.Log("if (selectSkill.Count < selectSize)");
             }
         }
     }
@@ -242,28 +240,6 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    public void skillKeyPresetting(char key)
-    {
-        switch (key)
-        {
-            case 'e':
-            case 'E':
-                P_Controller.P_Movement.skill_E.skill = selectSkill[0];
-                break;
-            case 'r':
-            case 'R':
-                P_Controller.P_Movement.skill_R.skill = selectSkill[1];
-                break;
-            case 'f':
-            case 'F':
-                P_Controller.P_Movement.skill_F.skill = selectSkill[2];
-                break;
-            case 'q':
-            case 'Q':
-                break;
-            default: break;
-        }
-    }
     public void skillMotion(string skillName)
     {
         switch (skillName)

@@ -68,7 +68,7 @@ public class PlayerUI_info : MonoBehaviour
                 {
                     GameObject curObj = Instantiate(skillUIPrefab);
                     curObj.transform.SetParent(content);
-                    curObj.transform.localPosition = new Vector3(0, -100 - (i * 150), 0);
+                    curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
 
                     PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>();
                     curSkillName.m_Index = i;
