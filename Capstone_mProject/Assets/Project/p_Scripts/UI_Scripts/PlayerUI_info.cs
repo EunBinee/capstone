@@ -33,11 +33,12 @@ public class PlayerUI_info : MonoBehaviour
     [SerializeField]
     private List<string> SkillNameList;
     List<PlayerSkillName> playerSkillList;
+    private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     Color selectColor;
+    Color unselectColor;
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
 
-    //todo: 선택된 스킬 버튼 색 변경
     int curSceneIndex;
     public string curSelectSkillName = "";
 
@@ -45,7 +46,9 @@ public class PlayerUI_info : MonoBehaviour
     {
         SkillNameList = new List<string>();
         playerSkillList = new List<PlayerSkillName>();
+        selectedSkillsIndex = new List<int>();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
+        unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
     }
     void Update()
@@ -78,9 +81,30 @@ public class PlayerUI_info : MonoBehaviour
                     curSkillName.InputButton.onClick.AddListener(() =>
                     {
                         int curIndex = curSkillName.m_Index;
-                        playerSkillList[curIndex].InputButton.image.color = selectColor;
-                        playerSkillList[curSceneIndex].InputButton.image.color = Color.white;
-                        curSceneIndex = curSkillName.m_Index;
+                        
+                        if (selectedSkillsIndex.Contains(curIndex)) // 이미 선택된 경우, 선택 해제
+                        {
+                            playerSkillList[curIndex].InputButton.image.color = unselectColor;
+                            playerSkillList[curIndex].isSelect = false;
+                            selectedSkillsIndex.Remove(curIndex);
+                        }
+                        else
+                        {
+                            // 선택된 스킬이 이미 3개인 경우
+                            if (selectedSkillsIndex.Count >= 3)
+                            {
+                                // FIFO 방식으로 첫 번째 선택된 스킬 해제
+                                int firstSelectedIndex = selectedSkillsIndex[0];
+                                playerSkillList[firstSelectedIndex].InputButton.image.color = unselectColor;
+                                playerSkillList[firstSelectedIndex].isSelect = false;
+                                selectedSkillsIndex.RemoveAt(0); // 리스트에서 첫 번째 요소 제거
+                            }
+
+                            // 새로운 스킬 선택
+                            playerSkillList[curIndex].InputButton.image.color = selectColor;
+                            playerSkillList[curIndex].isSelect = true;
+                            selectedSkillsIndex.Add(curIndex); // 새로운 선택 추가
+                        }
                     });
                 }
             }

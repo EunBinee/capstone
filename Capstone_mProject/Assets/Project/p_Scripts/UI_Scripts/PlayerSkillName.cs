@@ -11,4 +11,5 @@ public class PlayerSkillName : MonoBehaviour
     public TMP_Text skillName;
     public Button InputButton;
     public int m_Index;
+    public bool isSelect;
 }

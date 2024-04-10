@@ -56,6 +56,10 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveHeal = true;
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);
         P_SkillInfo.haveUltimate = true;
+        SkillMapAdd("Sample1", P_SkillInfo.sample1);
+        P_SkillInfo.haveSample1 = true;
+        SkillMapAdd("Sample2", P_SkillInfo.sample2);
+        P_SkillInfo.haveSample2 = true;
     }
 
     void FixedUpdate()

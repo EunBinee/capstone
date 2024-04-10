@@ -204,12 +204,16 @@ public class SkillInfo{
     public bool haveBowmode;    // 활 모드 스킬 얻음?
     public bool haveHeal;       // 힐 스킬 얻음?
     public bool haveUltimate;   // 궁 스킬 얻음?
+    public bool haveSample1;
+    public bool haveSample2;
 
     [Space]
     [Header("skill")]
     public SOSkill bowmode;
     public SOSkill heal;
     public SOSkill ultimate;
+    public SOSkill sample1;
+    public SOSkill sample2;
 
 }
 

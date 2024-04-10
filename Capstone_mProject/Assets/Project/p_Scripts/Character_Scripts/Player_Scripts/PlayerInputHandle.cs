@@ -250,21 +250,31 @@ public class PlayerInputHandle : MonoBehaviour
             P_KState.EDown = false;
             //P_Skills.skillMotion("Heal");
             if (skill_E.imgCool.fillAmount == 0)
+            {
+                //todo: 아이콘이 안바뀜;;
+                skill_E.skill = P_Skills.selectSkill[0];    //test 중 : aim
                 skill_E.OnClicked();
+            }
         }
         if (P_KState.RDown)
         {
             P_KState.RDown = false;
             //P_Skills.skillMotion("Heal");
             if (skill_R.imgCool.fillAmount == 0)
+            {
+                skill_R.skill = P_Skills.selectSkill[1];    //test 중 : heal
                 skill_R.OnClicked();
+            }
         }
         if (P_KState.FDown)
         {
             P_KState.FDown = false;
             //P_Skills.skillMotion("Heal");
             if (skill_F.imgCool.fillAmount == 0)
+            {
+                skill_F.skill = P_Skills.selectSkill[2];    //test 중 : ultimate
                 skill_F.OnClicked();
+            }
         }
         if (P_KState.QDown)
         {
