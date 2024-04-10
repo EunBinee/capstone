@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,14 +18,17 @@ public class PlayerMovement : MonoBehaviour
     private CheckOption P_COption => P_Controller._checkOption;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
     private PlayerInputHandle P_InputHandle;
 
     Coroutine idleMotion_co;
 
-    public SkillButton skill_E; //* HEAL
-    public SkillButton skill_Q;
-    public SkillButton skill_R; //* AIM
+    public SkillButton skill_T; // weapon change
+    public SkillButton skill_E;
+    public SkillButton skill_R;
+    public SkillButton skill_F;
+    public SkillButton skill_Q; // Ultimate
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -36,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     bool showElec = false;
 
     public Vector3 camForward;
+
+    public ScrollRect skillScrollWindow;
 
     void Start()
     {
@@ -65,18 +71,31 @@ public class PlayerMovement : MonoBehaviour
                 return;
         }
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
+
+        skill_T = playerUI_info.skill_T;
+        skill_T.gameObject.SetActive(true);
+        _controller.originTpos = skill_T.gameObject.transform.position;
+
         skill_E = playerUI_info.skill_E;
         skill_E.gameObject.SetActive(true);
         _controller.originEpos = skill_E.gameObject.transform.position;
 
-        skill_Q = playerUI_info.skill_Q;
-
         skill_R = playerUI_info.skill_R;
         skill_R.gameObject.SetActive(true);
         _controller.originRpos = skill_R.gameObject.transform.position;
+
+        skill_F = playerUI_info.skill_F;
+        skill_F.gameObject.SetActive(true);
+        _controller.originFpos = skill_F.gameObject.transform.position;
+
+        skill_Q = playerUI_info.skill_Q;
+        skill_Q.gameObject.SetActive(true);
+        _controller.originQpos = skill_Q.gameObject.transform.position;
+
+        skillScrollWindow = playerUI_info.skillScrollWindow;
+        skillScrollWindow.gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!UIManager.gameIsPaused)
@@ -444,7 +463,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (P_States.isElectricShock)   //*감전
         {
-            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             if (P_States.isBowMode && P_States.startAim)
@@ -467,7 +486,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isAim)    //조준
         {
-            P_Value.finalSpeed = P_COption.walkingSpeed;
+            P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
@@ -513,13 +532,15 @@ public class PlayerMovement : MonoBehaviour
             Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
 
         }
-        else if (P_States.isSprinting || P_States.isRunning)
+        else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {
             //Time.timeScale = 1f;
             P_Value.moveDirection.y = 0;
 
             if (P_States.isSprinting)    //전력질주
                 P_Value.finalSpeed = P_COption.sprintSpeed;
+            else if (P_States.isWalking) //걸을때
+                P_Value.finalSpeed = P_COption.walkingSpeed;
             else if (P_States.isRunning) //뛸때
                 P_Value.finalSpeed = P_COption.runningSpeed;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
@@ -649,9 +670,9 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                if (P_States.isAim)
+                if (P_States.isAim || P_States.isWalking)
                 {
-                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 2, 0.2f, Time.deltaTime);
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 3, 0.2f, Time.deltaTime);
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
                 }
                 if (P_States.isRunning)

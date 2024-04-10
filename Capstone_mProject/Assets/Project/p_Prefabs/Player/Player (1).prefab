@@ -131,6 +131,7 @@ MonoBehaviour:
     rotSpeed: 20
     sprintSpeed: 9
     runningSpeed: 6
+    slowlySpeed: 2
     walkingSpeed: 2
     jumpPower: 10
     jumpGravity: 3
@@ -172,6 +173,33 @@ MonoBehaviour:
     isBackwardBlocked: 0
     isGround: 0
     isOnSteepSlop: 0
+  _keyState:
+    QDown: 0
+    WDown: 0
+    EDown: 0
+    RDown: 0
+    TDown: 0
+    YDown: 0
+    UDown: 0
+    IDown: 0
+    ODown: 0
+    PDown: 0
+    ADown: 0
+    SDown: 0
+    DDown: 0
+    FDown: 0
+    GDown: 0
+    HDown: 0
+    JDown: 0
+    KDown: 0
+    LDown: 0
+    ZDown: 0
+    XDown: 0
+    CDown: 0
+    VDown: 0
+    BDown: 0
+    NDown: 0
+    MDown: 0
   _currentValue:
     moveAmount: 0
     moveDirection: {x: 0, y: 0, z: 0}
@@ -205,14 +233,23 @@ MonoBehaviour:
     playerCameraPivot: {fileID: 0}
     cameraObj: {fileID: 0}
   _playerArrows:
-    arrowPrefabName: Arrow
+    arrowName: Arrow
     poolSize: 5
+    arrowsPoolCount: 50
+  _skillInfo:
+    haveBowmode: 0
+    haveHeal: 0
+    haveUltimate: 0
+    bowmode: {fileID: 11400000, guid: 873915f231220f24bbad58ac07101e31, type: 2}
+    heal: {fileID: 11400000, guid: 074394ad8d1b3384390f5bbfc66090e3, type: 2}
+    ultimate: {fileID: 11400000, guid: 4f2f0e3ecafe0bb4ebc0bc3a3dbf3dee, type: 2}
   P_InputHandle: {fileID: 0}
   P_Movement: {fileID: 1404091125779623576}
   P_PhysicsCheck: {fileID: 393605679751660245}
   P_Skills: {fileID: 6504819662934625591}
   navMeshSurface:
   - {fileID: 0}
+  isGettingHit: 0
   curPlayerState: 0
   hitNum: {fileID: 0}
   hitUI: {fileID: 0}
@@ -226,6 +263,7 @@ MonoBehaviour:
   spine: {fileID: 0}
   originEpos: {x: 0, y: 0, z: 0}
   originRpos: {x: 0, y: 0, z: 0}
+  EnablePlayerUI: 1
 --- !u!114 &1404091125779623576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,8 +277,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill_E: {fileID: 0}
-  skill_Q: {fileID: 0}
   skill_R: {fileID: 0}
+  skill_Q: {fileID: 0}
   comboClickTime: 0.5
   attackColliders:
   - {fileID: 1861370307325144441}
@@ -249,6 +287,7 @@ MonoBehaviour:
   - {fileID: 5043616183923541767, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
   playerArrowList: []
   camForward: {x: 0, y: 0, z: 0}
+  skillScrollWindow: {fileID: 0}
 --- !u!114 &6504819662934625591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
-  playerAttackCheck: {fileID: 0}
+  skillScrollView: {fileID: 0}
 --- !u!114 &393605679751660245
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -721,6 +760,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraInfo: {fileID: 0}
+  cinemachineBrain: {fileID: 0}
+  signalReceiver: {fileID: 0}
   cameraShake: {fileID: 0}
   playerController: {fileID: 7195301709572235706}
   playerHeadPos: {fileID: 0}
