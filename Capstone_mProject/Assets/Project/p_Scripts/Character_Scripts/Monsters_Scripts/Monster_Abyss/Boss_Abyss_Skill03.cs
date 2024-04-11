@@ -161,6 +161,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
             muzzlesL[i].rotation = muzzleL_OriginQ[i];
         for (int i = 0; i < muzzlesR.Length; i++)
             muzzlesR[i].rotation = muzzleR_OriginQ[i];
+
         muzzleL_OriginQ = null;
         muzzleR_OriginQ = null;
         monsterPattern_Abyss.m_animator.enabled = true;

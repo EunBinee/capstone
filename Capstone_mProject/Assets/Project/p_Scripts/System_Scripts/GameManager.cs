@@ -37,8 +37,6 @@ public class GameManager : MonoBehaviour
     //! Awake 나 start에서 GameManager의 CameraController를 쓰고 싶을 때 아래 Action 사용. 
     public Action<CameraController> startActionCam = null; //
     public CameraController cameraController;
-
-    public bool curCutScene_ing = false;
     //* 현재 몬스터 --------------------------------//
     public List<Monster> monsterUnderAttackList; //*현재 공격중인 몬스터들 리스트
                                                  //TODO: 나중에 몬스터 스폰 될때 자동으로 넣고 빼도록.
@@ -47,7 +45,7 @@ public class GameManager : MonoBehaviour
 
     public bool bossBattle = false;
     public bool isLoading = false;
-    public bool isCutScene = false; //컷씬 진행중인지 여부
+    public bool curCutScene_ing = false;
     //* --------------------------------------------//
     void Awake()
     {
@@ -279,6 +277,7 @@ public class GameManager : MonoBehaviour
         else if (!start)
         {
             curCutScene_ing = false;
+
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(true);
             Start_AllMonster();
