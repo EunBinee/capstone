@@ -233,17 +233,22 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
+    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, bool HitWeakness = false)
     {
         if (!monster.monsterPattern.noAttack)
         {
             //TODO: 나중에 연산식 사용.
-            int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+            double damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
             if (isArrow)
             {
                 if (P_States.isStrongArrow) //* 예스 차징
                 {
-                    damageValue = 550;
+                    if (HitWeakness && monster.monsterData.useWeakness)
+                    {
+                        damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+                    }
+                    else
+                        damageValue = 550;
                     P_States.isStrongArrow = false;
                 }
                 else                        //* 노 차징
@@ -269,7 +274,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 damageValue = GameManager.instance.damageCalculator.result;
             }
 
-            monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
+            monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
             if (!P_States.isBowMode)
             {
@@ -305,9 +310,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
         _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
-                                                                //monster.monsterPattern.isShield = false;
-
-
     }
 
     private void ArrowRay()
@@ -374,7 +376,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         Vector3 collisionPoint = hit.point;
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
+                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, true);
                         if (successfulAttack)
                         {
                             bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);

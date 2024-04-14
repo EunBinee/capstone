@@ -15,6 +15,9 @@ public class HPBarUI_Info : MonoBehaviour
 
     public bool isReset = false;
 
+    //*---------------------------------------------------------------------------------//
+    public int useWeaknessNum = 0;
+    //-------------------------------------------------------------------------------------//
 
 
     public void Reset(double _monsterMaxHP, Monster _monster, bool isBoss = false)
@@ -48,6 +51,23 @@ public class HPBarUI_Info : MonoBehaviour
     {
         float monsterHP_Value = (float)(m_Monster.monsterData.HP / m_Monster.monsterData.MaxHP);
         m_slider.value = monsterHP_Value;
+
+        useWeaknessNum = 0;
+        if (m_Monster.monsterData.useWeakness)
+        {
+            for (int i = 0; i < m_Monster.monsterData.weaknessList.Count; i++)
+            {
+                useWeaknessNum++;
+            }
+
+            if (m_Monster.monsterData.haveLastWeakness)
+            {
+                for (int i = 0; i < m_Monster.monsterData.lastWeaknessList.Count; i++)
+                {
+                    useWeaknessNum++;
+                }
+            }
+        }
     }
 
     public void UpdateHP()

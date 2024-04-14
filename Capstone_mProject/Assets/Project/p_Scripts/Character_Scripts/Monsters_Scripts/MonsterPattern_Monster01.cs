@@ -56,7 +56,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
-        ChangeMonsterState(MonsterState.Roaming);
+        //  ChangeMonsterState(MonsterState.Roaming);
         originPosition = transform.position;
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
@@ -487,7 +487,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 long_Range_Attack_co = StartCoroutine(Long_Range_Attack_Monster01());
                 break;
             case MonsterMotion.GetHit_KnockBack:
-                //피격=>>넉백
+                //피격=>>넉백   t
                 GetHit();
                 if (!isGettingHit) //넉백
                 {

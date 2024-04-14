@@ -44,7 +44,7 @@ public class PlayerSkills : MonoBehaviour
     }
     void Start()
     {
-        Invoke("Setting", 0.2f);
+        Invoke("Setting", 0.1f);
     }
     void Setting()
     {
