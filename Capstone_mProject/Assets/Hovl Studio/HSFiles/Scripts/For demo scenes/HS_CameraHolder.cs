@@ -26,7 +26,7 @@ public class HS_CameraHolder : MonoBehaviour
     private float StartColor;
     private float HueColor;
     public Texture HueTexture;
-    public bool disableHue = false; 
+    public bool disableHue = false;
 
     void Start()
     {

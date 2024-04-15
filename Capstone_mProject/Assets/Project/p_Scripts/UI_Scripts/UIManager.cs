@@ -91,6 +91,7 @@ public class UIManager : MonoBehaviour
         //왼쪽Alt키를 누르고 있는동안 마우스 커서 활성화
         if (Input.GetKey(KeyCode.LeftAlt))
         {
+
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None; //마우스 커서 위치 고정
         }
@@ -185,6 +186,7 @@ public class UIManager : MonoBehaviour
 
         return prefab;
     }
+
     public void GoBossField(bool changeP = false)
     {
         GameManager.instance.isLoading = true;

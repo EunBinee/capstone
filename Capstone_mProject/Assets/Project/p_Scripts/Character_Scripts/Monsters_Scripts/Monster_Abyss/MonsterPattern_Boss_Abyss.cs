@@ -80,7 +80,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
-        ChangeMonsterState(MonsterState.Roaming);
+        ChangeMonsterState(MonsterState.Stop);
         originPosition = transform.position;
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
@@ -109,12 +109,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             };
         }
 
-        if (m_monster.HPBar_CheckNull() == false)
-        {
-            if (!m_monster.resetHP)
-                m_monster.ResetHP();
-            m_monster.GetHPBar();
-        }
+
 
         centerPoint = GetGroundPos(transform);
 
@@ -135,7 +130,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (bossWeakness.m_monster == null)
                 bossWeakness.SetMonster(m_monster);
         }
+
         //*----------------------------------------------------------------------//
+
+        // 스타트 컷씬 
+        DirectFirstAppearance_TimeLine();
 
     }
 
@@ -348,17 +347,33 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             switch (curBossPhase)
             {
                 case BossMonsterPhase.Phase1:
+                    //* 보스 약점 전부 끄기
+                    if (m_monster.monsterData.useWeakness)
+                    {
+                        for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
+                        {
+                            m_monster.monsterData.weaknessList[i].gameObject.SetActive(false);
+                        }
+                    }
                     break;
                 case BossMonsterPhase.Phase2:
                     // 2페이지 시작 연출
                     //! 연출후, Tracing으로 변환
                     if (changePhase02_Co == null)
+                    {
                         changePhase02_Co = StartCoroutine(Phase02_Production());
+                        //* 보스 약점 전부 키기
+                        if (m_monster.monsterData.useWeakness)
+                        {
+                            for (int i = 0; i < m_monster.monsterData.weaknessList.Count; ++i)
+                            {
+                                m_monster.monsterData.weaknessList[i].gameObject.SetActive(true);
+                            }
+                        }
+                    }
                     break;
                 case BossMonsterPhase.Phase3:
-                    // 3페이지 시작 연출
-                    if (changePhase02_Co == null)
-                        changePhase02_Co = StartCoroutine(Phase02_Production());
+                    //나락은 3페이즈 없음.
                     break;
                 case BossMonsterPhase.Death:
                     break;
@@ -511,13 +526,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
+            //boss_Abyss_Skill03.SettingWreckage();
+            //ChangeBossPhase(BossMonsterPhase.Phase2);
+            // boss_Abyss_Skill04.Skill04();
 
-            ChangeBossPhase(BossMonsterPhase.Phase2);
-            //isRoaming = false;
-            //boss_Abyss_Skill04.Skill04();
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            // ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -651,11 +666,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (!pickAgain)
             {
                 startSkill = true;
-
+                Debug.Log($"breakTime {breakTime}");
                 //* 스킬이 끝날 때까지 기다림.
                 yield return new WaitUntil(() => startSkill == false);
+                Debug.Log("startSkill false");
                 //* 쉬는 시간 (플레이어 공격 시간)
                 yield return new WaitForSeconds(breakTime);
+                Debug.Log("break 끝");
             }
             else
             {
@@ -706,14 +723,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     #region 피격
     private void GetHit()
     {
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_S");
-        effect.gameObject.transform.position = curHitPos;
-        effect.gameObject.transform.rotation = curHitQuaternion;
-
-        effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_04_hit");
-        effect.gameObject.transform.position = curHitPos;
-        effect.gameObject.transform.rotation = curHitQuaternion;
-
         StartCoroutine(electricity_Damage(2f, curHitPos));
     }
 
@@ -947,7 +956,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             Vector3 pos = new Vector3(x, targetPos.y, z);
             posList.Add(pos);
-
         }
 
         return posList;
@@ -966,15 +974,100 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     //*-------------------------------------------------------------------------------------//
     #region 시네머신 컷씬 관련 함수 (타임라인)
+    //* 보스 첫등장 씬 
 
-    //* 보스 일반 약점
-    public override void DirectTheBossWeakness()
+    //* 타임라인에서 사용되는 이펙트 
+    bool playerWalk = false;
+    public void DirectFirstAppearance_TimeLine()
     {
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
-        CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimLine");
+        CurSceneManager.instance.PlayTimeline("Abyss_FirstStart_TimeLine");
+    }
+    public void WalkPlayer()
+    {
+        playerWalk = true;
+        StartCoroutine(WalkPlayer_co());
+    }
+    public void StopWalkPlayer()
+    {
+        playerWalk = false;
+    }
+
+    IEnumerator WalkPlayer_co()
+    {
+        Debug.Log("플레이어 움직임");
+        float duration = 4f;
+        float initialMoveSpeed = 3;
+        float elapsedTime = 0;
+
+        while (playerWalk)
+        {
+            float moveSpeed = Mathf.Lerp(initialMoveSpeed, 0f, elapsedTime / duration);
+            playerTrans.Translate(playerTrans.forward * moveSpeed * Time.deltaTime);
+
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= duration)
+                break;
+
+            yield return null;
+        }
+        Debug.Log("플레이어 멈춤");
+    }
+
+    public void FirstAppearance_TimeLineEffect()
+    {
+        StartCoroutine(FirstAppearance_TimeLineEffect_co());
+    }
+    IEnumerator FirstAppearance_TimeLineEffect_co()
+    {
+        //* 연기 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
+        Vector3 effectPos = transform.position;
+        effectPos.y -= 1.5f;
+        effect.transform.position = effectPos;
+
+        yield return new WaitForSeconds(0.5f);
+
+        //* 연기 이펙트
+        effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
+        effectPos = transform.position;
+        effectPos.y -= 2.5f;
+        effect.transform.position = effectPos;
+
+    }
+
+    public void EndDirectFirstAppearance()
+    {
+        noAttack = false;
+        GameManager.instance.CutSceneSetting(false);
+        GameManager.instance.cameraController.CinemachineSetting(false);
+
+        ChangeMonsterState(MonsterState.Roaming);
+    }
+
+    public void ShowBosHPBar()
+    {
+        if (m_monster.HPBar_CheckNull() == false)
+        {
+            if (!m_monster.resetHP)
+                m_monster.ResetHP();
+            m_monster.GetHPBar();
+        }
+    }
+
+    //* 보스 일반 약점------------------------------------------------------------------------//
+    public override void DirectTheBossWeakness()
+    {
+        ChangeMonsterState(MonsterState.Stop);
+        noAttack = true;
+        GameManager.instance.CutSceneSetting(true);
+        GameManager.instance.cameraController.CinemachineSetting(true);
+        //* 모든 것 멈추기
+        CurSceneManager.instance.PlayTimeline("Abyss_Weakness_TimeLine");
     }
 
     public void ShowBossWeaknessEffect()
@@ -998,6 +1091,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.CutSceneSetting(false);
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
+
     }
 
     //*-------------------------------------------------------------------------------------//

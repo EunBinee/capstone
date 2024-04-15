@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using JetBrains.Annotations;
 
 //Player캐릭터 정의의 모든 것
 
@@ -53,10 +54,12 @@ public class CheckOption
     public float sprintSpeed = 15f;
 
     [Range(1f, 30f), Tooltip("달리는 속도")]
-    public float runningSpeed = 10f;
+    public float runningSpeed = 8f;
 
+    [Range(1f, 30f), Tooltip("감전/조준 속도")]
+    public float slowlySpeed = 2f;
     [Range(1f, 30f), Tooltip("걷는 속도")]
-    public float walkingSpeed = 2f;
+    public float walkingSpeed = 5f;
 
     [Range(1f, 30f), Tooltip("점프할때 속도")]
     public float jumpPower = 1f;
@@ -193,6 +196,25 @@ public class CurrentValue
 
     [Space]
     public float gravity = 0f; // 직접 제어하는 중력값
+}
+
+[Serializable]
+public class SkillInfo{
+    [Header("bool")]
+    public bool haveBowmode;    // 활 모드 스킬 얻음?
+    public bool haveHeal;       // 힐 스킬 얻음?
+    public bool haveUltimate;   // 궁 스킬 얻음?
+    public bool haveSample1;
+    public bool haveSample2;
+
+    [Space]
+    [Header("skill")]
+    public SOSkill bowmode;
+    public SOSkill heal;
+    public SOSkill ultimate;
+    public SOSkill sample1;
+    public SOSkill sample2;
+
 }
 
 [Serializable]

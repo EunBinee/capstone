@@ -46,12 +46,13 @@ public class Inventory : MonoBehaviour
         items = new Item[maxCapacity];
         capacity = initalCapacity;
         inventory.SetActive(false);
-        playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+
     }
 
     private void Start()
     {
         UpdateAccessAll();
+        playerController = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
     }
 
     public void UpdateAccessAll()

@@ -256,8 +256,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
         float waitTime = 2;//빨간색 경고후 기다리는 시간
-        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
-        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
+        float electricity_DurationTime = 4;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 3 + electricity_DurationTime; //스킬이 끝나는 시간
                                                            //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = monsterPattern_Abyss.GetGroundPos(transform).y;
@@ -332,8 +332,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
         float waitTime = 2;//빨간색 경고후 기다리는 시간
-        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
-        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
+        float electricity_DurationTime = 4;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 3 + electricity_DurationTime; //스킬이 끝나는 시간
 
         GameObject skillIndicator_obj;
         float posY = monsterPattern_Abyss.GetGroundPos(transform).y;
@@ -370,12 +370,12 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
 
         //*------------------------------------------------------------------------------------------------//
-        yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
+        yield return new WaitForSeconds(waitTime);
 
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
 
-        yield return new WaitForSeconds(endSkillTime); //* 7초후 스킬 종료
+        yield return new WaitForSeconds(endSkillTime);
         if (!skillOver)
             skillOver = true;
 
@@ -416,8 +416,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         //스킬 targetMarkerList
         //* 타임 세팅---------------------------//
         float waitTime = 2;//빨간색 경고후 기다리는 시간
-        float electricity_DurationTime = 5;//빨간색 경고후, 번개 친 후 지속 시간
-        float endSkillTime = 2 + electricity_DurationTime; //스킬이 끝나는 시간
+        float electricity_DurationTime = 4;//빨간색 경고후, 번개 친 후 지속 시간
+        float endSkillTime = 3 + electricity_DurationTime; //스킬이 끝나는 시간
                                                            //---------------------------------------//
         GameObject skillIndicator_obj;
         float posY = monsterPattern_Abyss.GetGroundPos(transform).y;
@@ -531,7 +531,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                     skill_Indicator.electricity_Effects.Add(effect);
 
                     yield return new WaitUntil(() => UIManager.gameIsPaused == false);
-
                 }
                 else
                 {

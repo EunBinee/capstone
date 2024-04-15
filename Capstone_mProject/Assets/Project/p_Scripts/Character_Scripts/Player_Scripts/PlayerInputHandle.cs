@@ -17,10 +17,33 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerSkills P_Skills => P_Controller.P_Skills;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
+
+    private SkillButton skill_T;
+    private SkillButton skill_E;
+    private SkillButton skill_R;
+    private SkillButton skill_F;
+    private SkillButton skill_Q;
+
     void Awake()
     {
         _controller = GetComponent<PlayerController>();
         endArrow = false;
+    }
+    void Start()
+    {
+        Invoke("Setting", 0.2f);
+    }
+    void Setting()
+    {
+        skill_T = P_Movement.skill_T;
+        skill_E = P_Movement.skill_E;
+        skill_R = P_Movement.skill_R;
+        skill_F = P_Movement.skill_F;
+        skill_Q = P_Movement.skill_Q;
+
+        skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
+        skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
+        skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
     }
     void Update()
     {
@@ -32,19 +55,19 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 switch (keyCode)
                 {
-                    case KeyCode.Q: P_KState.QDown = true; break;
-                    case KeyCode.W: P_KState.WDown = true; break;
-                    case KeyCode.E: P_KState.EDown = true; break;
-                    case KeyCode.R: P_KState.RDown = true; break;
+                    case KeyCode.Q: P_KState.QDown = true; break;   //궁
+                    case KeyCode.W: P_KState.WDown = true; break;   //앞
+                    case KeyCode.E: P_KState.EDown = true; break;   //힐
+                    case KeyCode.R: P_KState.RDown = true; break;   //조준
                     case KeyCode.T: P_KState.TDown = true; break;
                     case KeyCode.Y: P_KState.YDown = true; break;
                     case KeyCode.U: P_KState.UDown = true; break;
                     case KeyCode.I: P_KState.IDown = true; break;
                     case KeyCode.O: P_KState.ODown = true; break;
                     case KeyCode.P: P_KState.PDown = true; break;
-                    case KeyCode.A: P_KState.ADown = true; break;
-                    case KeyCode.S: P_KState.SDown = true; break;
-                    case KeyCode.D: P_KState.DDown = true; break;
+                    case KeyCode.A: P_KState.ADown = true; break;   //좌
+                    case KeyCode.S: P_KState.SDown = true; break;   //뒤
+                    case KeyCode.D: P_KState.DDown = true; break;   //우
                     case KeyCode.F: P_KState.FDown = true; break;
                     case KeyCode.G: P_KState.GDown = true; break;
                     case KeyCode.H: P_KState.HDown = true; break;
@@ -58,6 +81,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = true; break;
                     case KeyCode.N: P_KState.NDown = true; break;
                     case KeyCode.M: P_KState.MDown = true; break;
+                    case KeyCode.CapsLock: P_States.isWalking = true; break;
                     default: break;
                 }
             }
@@ -92,6 +116,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = false; break;
                     case KeyCode.N: P_KState.NDown = false; break;
                     case KeyCode.M: P_KState.MDown = false; break;
+                    case KeyCode.CapsLock: P_States.isWalking = false; break;
                     default: break;
                 }
             }
@@ -217,29 +242,72 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.RDown)  //* Bow Mode & Sword Mode
+        if (P_KState.TDown)  //* Bow Mode & Sword Mode
         {
-            P_KState.RDown = false;
-            if (P_States.startAim)   // 조준 중일때 전환 키 누르면
+            P_KState.TDown = false;
+            if (skill_T.imgCool.fillAmount == 0)
             {
-                P_Skills.arrowSkillOff();    // 조준 헤제
+                if (P_States.startAim)   // 조준 중일때 전환 키 누르면
+                {
+                    P_Skills.arrowSkillOff();    // 조준 헤제
+                }
+                P_Skills.skillMotion("ChangeWeapon");
             }
-            P_Skills.skillMotion('R');
         }
-        if (P_KState.EDown)  //*Heal
+        if (P_KState.EDown)
         {
             P_KState.EDown = false;
-            P_Skills.skillMotion('E');
+            if (skill_E.imgCool.fillAmount == 0)
+            {
+                skill_E.skill = P_Skills.selectSkill[0];    //test 중 : aim
+                skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[0]));
+                skill_E.OnClicked();
+            }
         }
-        /*if (P_KState.QDown)
+        if (P_KState.RDown)
+        {
+            P_KState.RDown = false;
+            if (skill_R.imgCool.fillAmount == 0)
+            {
+                skill_R.skill = P_Skills.selectSkill[1];    //test 중 : heal
+                skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[1]));
+                skill_R.OnClicked();
+            }
+        }
+        if (P_KState.FDown)
+        {
+            P_KState.FDown = false;
+            if (skill_F.imgCool.fillAmount == 0)
+            {
+                skill_F.skill = P_Skills.selectSkill[2];    //test 중 : ultimate
+                skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[2]));
+                skill_F.OnClicked();
+            }
+        }
+        if (P_KState.QDown)
         {
             P_KState.QDown = false;
             if (P_States.isSkill)
             {
                 return;
             }
-            skillMotion('Q');
-        }*/
+            if (skill_Q.imgCool.fillAmount == 0)
+                skill_Q.OnClicked();
+            P_Skills.skillMotion("Ultimate");
+        }
+    }
+    public string mapValueReturnKey(SOSkill skill){
+        foreach (KeyValuePair<string,SOSkill> item in P_Skills.skillMap)
+        {
+            if (item.Value == skill)
+            {
+                return item.Key;
+            }
+        }
+        return null;
     }
 
     IEnumerator DelayAfterAction()

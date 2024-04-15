@@ -233,17 +233,22 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion)
+    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, bool HitWeakness = false)
     {
         if (!monster.monsterPattern.noAttack)
         {
             //TODO: 나중에 연산식 사용.
-            int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+            double damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
             if (isArrow)
             {
                 if (P_States.isStrongArrow) //* 예스 차징
                 {
-                    damageValue = 550;
+                    if (HitWeakness && monster.monsterData.useWeakness)
+                    {
+                        damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+                    }
+                    else
+                        damageValue = 550;
                     P_States.isStrongArrow = false;
                 }
                 else                        //* 노 차징
@@ -269,7 +274,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 damageValue = GameManager.instance.damageCalculator.result;
             }
 
-            monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
+            monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
             if (!P_States.isBowMode)
             {
@@ -305,9 +310,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
         _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
-                                                                //monster.monsterPattern.isShield = false;
-
-
     }
 
     private void ArrowRay()
@@ -321,89 +323,102 @@ public class PlayerAttackCheck : MonoBehaviour
 
         RaycastHit shortHit = hits[0];
         //RaycastHit m_Hit;
-        foreach (RaycastHit hit in hits)
+
+        //todo: hits 들어온 것들 중 제일 거리가 제일 짧은 것만 체크
+        float hitsDist = hits[0].distance;
+        int shortIndex = 0;
+        for (int i = 1; i < hits.Length; i++)
         {
-            if (hit.collider.name != this.gameObject.name)
+            if (hits[i].point != null)
             {
-                //자기 자신은 패스
-                float distance = hit.distance;
-                if (shortDist > distance)    //범위 내 라면
+                if (hits[i].distance < hitsDist)
                 {
-                    shortHit = hit;
-                    shortDist = distance;
+                    hitsDist = hits[i].distance;
+                    shortIndex = i;
+                }
+            }
+        }
 
-                    if (hit.collider.CompareTag("SoundObject"))
+        if (hits[shortIndex].collider.name != this.gameObject.name)
+        {
+            RaycastHit hit = hits[shortIndex];
+            //자기 자신은 패스
+            //float distance = hitsDist;
+            if (shortDist > hitsDist)    //범위 내 라면
+            {
+                shortHit = hit;
+                shortDist = hitsDist;
+
+                if (hit.collider.CompareTag("SoundObject"))
+                {
+                    P_States.colliderHit = true;
+                    soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
+                    //Debug.Log(soundObject);
+                    soundObject.attackSoundObj = true;
+                    soundObject.collisionPos = hit.transform.position;
+                }
+
+                if (hit.collider.tag == "BossWeakness")
+                {
+                    P_States.colliderHit = true;
+                    //* 보스 약점
+                    BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
+                    monster = bossWeakness.m_monster;
+                    if (monster != null)
                     {
-                        P_States.colliderHit = true;
-                        soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
-                        //Debug.Log(soundObject);
-                        soundObject.attackSoundObj = true;
-                        soundObject.collisionPos = hit.transform.position;
+                        Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                     }
 
-                    if (hit.collider.tag == "BossWeakness")
+                    if (!bossWeakness.destroy_BossWeakness)
                     {
-                        P_States.colliderHit = true;
-                        //* 보스 약점
-                        BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
-                        monster = bossWeakness.m_monster;
-                        if (monster != null)
+                        P_States.hadAttack = true;
+
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, true);
+                        if (successfulAttack)
                         {
-                            Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
-                        }
-
-                        if (!bossWeakness.destroy_BossWeakness)
-                        {
-                            P_States.hadAttack = true;
-
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-                            bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion);
-                            if (successfulAttack)
-                            {
-                                bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
-                            }
-                        }
-
-                    }
-                    else if (hit.collider.tag == "Monster")
-                    {
-                        P_States.colliderHit = true;
-                        //Debug.Log("[arrow test] arrow hit");
-                        monster = hit.collider.GetComponentInParent<Monster>();
-                        if (monster == null)
-                        {
-                            Debug.LogError("몬스터 : null");
-                            return;
-                        }
-                        if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
-                            && P_States.hadAttack == false)
-                        {
-                            //attackEnemy = true;
-                            P_States.hadAttack = true;
-                            //m_Hit = hit;
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-
-                            playerHitMonster(collisionPoint, otherQuaternion);
-
+                            bossWeakness.WeaknessGetDamage(shortHit.normal, shortHit.point);
                         }
                     }
-                    if (hit.collider.tag == "Shield")
+                }
+                else if (hit.collider.tag == "Monster")
+                {
+                    P_States.colliderHit = true;
+                    //Debug.Log("[arrow test] arrow hit");
+                    monster = hit.collider.GetComponentInParent<Monster>();
+                    if (monster == null)
                     {
-                        monster = hit.collider.GetComponentInParent<Monster>();
+                        Debug.LogError("몬스터 : null");
+                        return;
+                    }
+                    if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
+                        && P_States.hadAttack == false)
+                    {
+                        //attackEnemy = true;
+                        P_States.hadAttack = true;
+                        //m_Hit = hit;
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
-                        {
-                            Vector3 collisionPoint = hit.point;
-                            Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                            monster.monsterPattern.isShield = false;
-                            playerHitShield(collisionPoint, otherQuaternion);
-                            //monster.monsterPattern.isShield = false;
-                        }
+                        playerHitMonster(collisionPoint, otherQuaternion);
+
+                    }
+                }
+                if (hit.collider.tag == "Shield")
+                {
+                    monster = hit.collider.GetComponentInParent<Monster>();
+
+                    if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
+                    {
+                        Vector3 collisionPoint = hit.point;
+                        Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                        monster.monsterPattern.isShield = false;
+                        playerHitShield(collisionPoint, otherQuaternion);
+                        //monster.monsterPattern.isShield = false;
                     }
                 }
             }

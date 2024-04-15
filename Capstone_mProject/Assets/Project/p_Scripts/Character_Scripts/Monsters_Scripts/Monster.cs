@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Unity.PlasticSCM.Editor.WebApi;
 
 public class Monster : MonoBehaviour
 {
@@ -16,7 +17,8 @@ public class Monster : MonoBehaviour
 
     [SerializeField] private HPBarUI_Info m_hPBar;
     public bool resetHP = false;
-
+    double normalHP = 0f;
+    double weaknessHP = 0f;
     public enum monsterSound
     {
         Hit_Close,
@@ -66,6 +68,29 @@ public class Monster : MonoBehaviour
         //* 처음 시작햇을때 HP 
         resetHP = true;
         monsterData.HP = monsterData.MaxHP;
+
+        if (monsterData.useWeakness)
+        {
+            int monsterWeaknessNum = 0;
+            if (monsterData.useWeakness)
+            {
+                for (int i = 0; i < monsterData.weaknessList.Count; i++)
+                {
+                    monsterWeaknessNum++;
+                }
+
+                if (monsterData.haveLastWeakness)
+                {
+                    for (int i = 0; i < monsterData.lastWeaknessList.Count; i++)
+                    {
+                        monsterWeaknessNum++;
+                    }
+                }
+            }
+
+            weaknessHP = monsterData.MaxHP * monsterData.weaknessDamageRate * monsterWeaknessNum;
+            normalHP = monsterData.MaxHP - weaknessHP;
+        }
     }
 
     //*------------------------------------------------------------------------------------------//
@@ -93,14 +118,60 @@ public class Monster : MonoBehaviour
             playerController.GetHit_FallDown(this, damage, distance);
         }
     }
+    //*------------------------------------------------------------------------------------------//
+    //*몬스터가 플레이어에게 공격 당함.
 
-    public virtual void GetDamage(double damage, Vector3 attackPos, Quaternion atteckRot)//플레이어에게 공격 당함.
+    public virtual void GetDamage(double damage, Vector3 attackPos, Quaternion atteckRot, bool HitWeakness = false)
     {
         if (monsterData.HP > 0)
         {
             if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
             {
+                //*----------------------------------------------------------------------------//
+                if (monsterData.useWeakness)
+                {
+                    //* 만약 약점이 있다면, 약점 HP와 그냥 HP를 구분하기
+                    if (!HitWeakness)
+                    {
+                        if (normalHP > 0)
+                        {
+                            if (normalHP - damage <= 0)
+                            {
+                                damage = normalHP;
+                                normalHP = 0;
+                            }
+                            else
+                            {
+                                normalHP -= damage;
+                            }
+                        }
+                        else
+                        {
+                            damage = 0;
+                        }
+                    }
+                    else if (HitWeakness)
+                    {
+                        if (weaknessHP != 0)
+                        {
+                            if (weaknessHP - damage < 0)
+                            {
+                                damage = weaknessHP;
+                                weaknessHP = 0;
+                            }
+                            else
+                            {
+                                weaknessHP -= damage;
+                            }
+                        }
+                        else
+                        {
+                            damage = 0;
+                        }
+                    }
+                }
                 //* 데미지 UI 처리---------------------------------------------------------------//
+
                 Get_DamageUI(damage);
 
                 //* HP 와 HPBar처리---------------------------------------------------------------//
@@ -109,9 +180,6 @@ public class Monster : MonoBehaviour
 
                 monsterData.HP -= damage;
                 m_hPBar.UpdateHP();
-                //*-------------------------------------------------------------------------------//
-
-
                 //*-------------------------------------------------------------------------------//
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)
@@ -251,14 +319,14 @@ public class Monster : MonoBehaviour
             randomRangeMin = -0.5f;
             randdomRangeMax = 0.5f;
         }
-           
+
         DamageUI_Info damageUI = UIManager.Instance.damageManager.Get_DamageUI();
 
         float x = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         float y = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
-        float z = UnityEngine.Random.Range(randomRangeMin,randdomRangeMax);
+        float z = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         Vector3 randomPos = new Vector3(x, y, z);
-        randomPos = GameManager.Instance.gameData.playerHeadPos.position+randomPos;//monsterData.effectTrans.position + randomPos;
+        randomPos = GameManager.Instance.gameData.playerHeadPos.position + randomPos;//monsterData.effectTrans.position + randomPos;
 
         damageUI.Reset(this, randomPos, damage);
     }

@@ -133,7 +133,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
                     }
                 }
             }
-
             yield return null;
         }
 
@@ -143,7 +142,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
-
         //* 잔해물 치우기
         yield return new WaitForSeconds(1f);
         ClearWreckage();
@@ -159,12 +157,18 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         originChildWorldRot = Quaternion.identity;
 
         for (int i = 0; i < muzzlesL.Length; i++)
+        {
             muzzlesL[i].rotation = muzzleL_OriginQ[i];
+        }
         for (int i = 0; i < muzzlesR.Length; i++)
+        {
             muzzlesR[i].rotation = muzzleR_OriginQ[i];
-        muzzleL_OriginQ = null;
-        muzzleR_OriginQ = null;
+        }
+        muzzleL_OriginQ.Clear();
+        muzzleR_OriginQ.Clear();
+
         monsterPattern_Abyss.m_animator.enabled = true;
+
 
         monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Idle);
     }
@@ -320,17 +324,24 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         }
         bool wreckageActive = false;
 
+        //* 잔해물 전부 비활성화 됐는지 확인. => 무한 루프 문제 있음. 나중에 이펙트 넣을 때 주의
         while (!wreckageActive)
         {
             wreckageActive = true;
-            for (int i = 0; i < wreckages.Count; ++i)
+            if (wreckages.Count > 0)
             {
-                if (wreckages[i].gameObject.activeSelf)
+                Debug.Log("hh");
+                for (int i = 0; i < wreckages.Count; ++i)
                 {
-                    wreckageActive = false;
-                    break;
+                    if (wreckages[i].gameObject.activeSelf)
+                    {
+                        wreckageActive = false;
+                        break;
+                    }
                 }
             }
+            else
+                break;
         }
 
         wreckage_obj.SetActive(false);

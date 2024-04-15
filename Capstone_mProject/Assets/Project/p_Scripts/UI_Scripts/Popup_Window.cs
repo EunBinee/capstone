@@ -19,15 +19,6 @@ public class Popup_Window : UIBase
     {
         //TODO: title과 내용을 지금은 직접 받지만 나중에는 동적으로 파일을 읽어와서 하는 형식으로 변경해야함.
         //* 사용법   
-        /*
-        SetWindowBtn(() =>
-        {
-            Debug.Log("HI");
-        }, () =>
-        {
-            Debug.Log("HI");
-        });
-        */
 
         windowUI_Info.txt_title.text = _title;
         windowUI_Info.txt_content.text = _content;

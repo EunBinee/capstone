@@ -69,19 +69,21 @@ public class Wreckage : MonoBehaviour
     public void DisappearWreckage()
     {
         //이펙트 나타나고 사라지도록.
-        StartCoroutine(Disappear_Wreckage());
+        ResetPos();
+        this.gameObject.SetActive(false);
+        //StartCoroutine(Disappear_Wreckage());
     }
 
     IEnumerator Disappear_Wreckage()
     {
         //* 큐브 이펙트 생성 : randomPos에
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Voxels_Recorlor__FacesDark___GlowRainbow_WiresWhite");
-        effect.gameObject.transform.position = randomPos;
+        //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Voxels_Recorlor__FacesDark___GlowRainbow_WiresWhite");
+        //  effect.gameObject.transform.position = randomPos;
 
         yield return new WaitForSeconds(3f);
         //그리고 없애기
-        ResetPos();
-        this.gameObject.SetActive(false);
+        //ResetPos();
+        // this.gameObject.SetActive(false);
 
     }
 }
