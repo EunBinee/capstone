@@ -73,7 +73,7 @@ public class UIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (!gameIsPaused)
+            if (!gameIsPaused && !GameManager.instance.isLoading)
             {
                 GetUIPrefab(UI.SettingMenu);
                 Pause();
