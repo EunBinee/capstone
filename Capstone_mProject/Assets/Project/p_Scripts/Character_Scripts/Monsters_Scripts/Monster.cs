@@ -135,10 +135,14 @@ public class Monster : MonoBehaviour
                     {
                         if (normalHP > 0)
                         {
-                            if (normalHP - damage < 0)
+                            if (normalHP - damage <= 0)
                             {
                                 damage = normalHP;
                                 normalHP = 0;
+                            }
+                            else
+                            {
+                                normalHP -= damage;
                             }
                         }
                         else
@@ -155,6 +159,10 @@ public class Monster : MonoBehaviour
                                 damage = weaknessHP;
                                 weaknessHP = 0;
                             }
+                            else
+                            {
+                                weaknessHP -= damage;
+                            }
                         }
                         else
                         {
@@ -162,8 +170,8 @@ public class Monster : MonoBehaviour
                         }
                     }
                 }
-
                 //* 데미지 UI 처리---------------------------------------------------------------//
+
                 Get_DamageUI(damage);
 
                 //* HP 와 HPBar처리---------------------------------------------------------------//
@@ -172,9 +180,6 @@ public class Monster : MonoBehaviour
 
                 monsterData.HP -= damage;
                 m_hPBar.UpdateHP();
-                //*-------------------------------------------------------------------------------//
-
-
                 //*-------------------------------------------------------------------------------//
                 //플레이어의 반대 방향으로 넉백
                 if (monsterData.HP <= 0)

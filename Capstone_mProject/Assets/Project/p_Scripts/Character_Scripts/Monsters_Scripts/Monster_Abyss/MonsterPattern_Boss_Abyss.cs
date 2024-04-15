@@ -526,7 +526,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
-
+            //boss_Abyss_Skill03.SettingWreckage();
             //ChangeBossPhase(BossMonsterPhase.Phase2);
             // boss_Abyss_Skill04.Skill04();
 
@@ -666,11 +666,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (!pickAgain)
             {
                 startSkill = true;
-
+                Debug.Log($"breakTime {breakTime}");
                 //* 스킬이 끝날 때까지 기다림.
                 yield return new WaitUntil(() => startSkill == false);
+                Debug.Log("startSkill false");
                 //* 쉬는 시간 (플레이어 공격 시간)
                 yield return new WaitForSeconds(breakTime);
+                Debug.Log("break 끝");
             }
             else
             {
