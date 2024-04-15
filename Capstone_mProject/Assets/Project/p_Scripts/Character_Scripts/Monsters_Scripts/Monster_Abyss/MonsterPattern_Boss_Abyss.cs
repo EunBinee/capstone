@@ -11,6 +11,8 @@ using System.Threading;
 using UnityEditor;
 using Unity.VisualScripting.Dependencies.Sqlite;
 using UnityEngine.UIElements;
+using UnityEngine.Playables;
+using UnityEngine.Timeline;
 
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
@@ -978,9 +980,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     //* 타임라인에서 사용되는 이펙트 
     bool playerWalk = false;
+
+    public void FirstTimeLineSetting()
+    {
+
+    }
     public void DirectFirstAppearance_TimeLine()
     {
-        Debug.Log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
@@ -1007,16 +1013,21 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         while (playerWalk)
         {
+            playerController._playerComponents.animator.SetFloat("Vertical", 0.5f, 0.05f, Time.deltaTime);   //상
+            playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);  //하
+
             float moveSpeed = Mathf.Lerp(initialMoveSpeed, 0f, elapsedTime / duration);
             playerTrans.Translate(playerTrans.forward * moveSpeed * Time.deltaTime);
 
             elapsedTime += Time.deltaTime;
 
             if (elapsedTime >= duration)
-                break;
+            { break; }
 
             yield return null;
         }
+        playerController._playerComponents.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
+        playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);  //하
         Debug.Log("플레이어 멈춤");
     }
 

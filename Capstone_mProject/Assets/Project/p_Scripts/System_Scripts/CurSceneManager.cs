@@ -72,5 +72,9 @@ public class CurSceneManager : MonoBehaviour
     {
         timelineDic[timelineName].Play();
     }
+    public PlayableDirector GetTimeLine(string timelineName)
+    {
+        return timelineDic[timelineName];
+    }
 
 }
