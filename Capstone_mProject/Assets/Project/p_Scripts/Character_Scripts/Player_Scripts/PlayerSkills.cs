@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEditor.AnimatedValues;
 using System.Security.Claims;
+using System;
 
 public class PlayerSkills : MonoBehaviour
 {
@@ -33,6 +34,8 @@ public class PlayerSkills : MonoBehaviour
     public ScrollRect skillScrollWindow;
     public bool presetWin;
     public bool once = false;
+    // 스킬 맵 업데이트 시 발동할 이벤트
+    public event Action OnSkillMapUpdated;
 
     void Awake()
     {
@@ -51,11 +54,11 @@ public class PlayerSkills : MonoBehaviour
     {
         skillScrollWindow = P_Controller.P_Movement.skillScrollWindow;
         skill_T = P_Controller.P_Movement.skill_T;
-        SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본 제공?
+        SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
         SkillMapAdd("Heal", P_SkillInfo.heal);
         P_SkillInfo.haveHeal = true;
-        SkillMapAdd("Ultimate", P_SkillInfo.ultimate);
+        SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
         P_SkillInfo.haveSample1 = true;
@@ -84,7 +87,12 @@ public class PlayerSkills : MonoBehaviour
         callName.Clear();
         foreach (KeyValuePair<string, SOSkill> i in skillMap)
         {
-            callName.Add(i.Key);
+            if(i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+            {}
+            else
+            {
+                callName.Add(i.Key);
+            }
         }
         return callName;
     }
@@ -100,6 +108,8 @@ public class PlayerSkills : MonoBehaviour
         else
         {
             skillMap.Add(name, skill);  // 스킬 등록
+            // 스킬 맵이 업데이트되면 이벤트 발동
+            OnSkillMapUpdated?.Invoke();
             if (selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
                 selectSkill.Add(skill); // 자동 추가
@@ -292,7 +302,6 @@ public class PlayerSkills : MonoBehaviour
             if (!isOn) {isOn = true; once = false;} // 창 켜짐
             else { isOn = false; } // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
-            //P_Controller.P_Movement.playerUI_info.skillWinSetting();
             presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
             UIManager.gameIsPaused = isOn;

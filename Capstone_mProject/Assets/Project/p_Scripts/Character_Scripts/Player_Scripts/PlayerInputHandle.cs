@@ -127,7 +127,7 @@ public class PlayerInputHandle : MonoBehaviour
         Debug.Log("KeyRebind()");
         P_States.isWalking = false;
         P_States.isRunning = false;
-        P_States.isNotMoving = true;
+        //P_States.isNotMoving = true;
         P_Com.animator.Rebind();
 
         {P_KState.QDown = false;
