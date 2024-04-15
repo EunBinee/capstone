@@ -995,7 +995,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void WalkPlayer()
     {
-
         playerWalk = true;
         StartCoroutine(WalkPlayer_co());
     }
@@ -1007,6 +1006,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator WalkPlayer_co()
     {
         Debug.Log("플레이어 움직임");
+        playerController._currentState.doNotRotate = true;
         float duration = 4f;
         float initialMoveSpeed = 3;
         float elapsedTime = 0;
@@ -1028,6 +1028,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         playerController._playerComponents.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
         playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);  //하
+        playerController._currentState.doNotRotate = false;
         Debug.Log("플레이어 멈춤");
     }
 

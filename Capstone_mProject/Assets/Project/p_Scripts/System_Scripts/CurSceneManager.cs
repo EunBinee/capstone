@@ -49,6 +49,7 @@ public class CurSceneManager : MonoBehaviour
         SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
         // GameManager.instance.cameraController.cameraInfo.ResetCamera();
 
+        GameManager.instance.gameData.player.GetComponent<PlayerInputHandle>().KeyRebind();
         SetPlayerPos();
 
         GameManager.instance.GetGameInfo();

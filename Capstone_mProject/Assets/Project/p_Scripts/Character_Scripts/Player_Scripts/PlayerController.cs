@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
     Vector3 ChestDir = new Vector3();
 
     Quaternion lastRotation; // 마지막 회전값을 저장할 변수
-    float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
+    //float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
     void Operation_boneRotation()
     {
         //Transform camTrans = Camera.main.transform;

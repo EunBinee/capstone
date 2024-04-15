@@ -305,7 +305,7 @@ public class PlayerMovement : MonoBehaviour
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
             transform.rotation = targetRotation;
         }
-        else if (P_States.isStop || P_States.isJumping)
+        else if (P_States.isStop || P_States.isJumping || P_States.doNotRotate)
         {
             if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
             {
