@@ -3186,6 +3186,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 347121153}
+  - component: {fileID: 347121154}
   m_Layer: 0
   m_Name: CinemachineCameras
   m_TagString: Untagged
@@ -3211,6 +3212,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &347121154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347121152}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32e3ce685ec97704dbf1202058234086, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endSetting: 0
+  useCMInfo:
+  - {fileID: 1623539538}
+  - {fileID: 1014618118}
+  - {fileID: 658559471}
+  - {fileID: 1287221335}
 --- !u!1001 &348472684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5635,7 +5654,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 658559468}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e3ce685ec97704dbf1202058234086, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bd5037053ef05e4bad8f56cfd8b92c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   followSomething: 2
@@ -6911,6 +6930,7 @@ MonoBehaviour:
   - Abyss_FirstStart_TimeLine
   - Abyss_Weakness_TimeLine
   - Abyss_LastWeakness_TimeLine
+  curCMSetting: {fileID: 347121154}
   timelines:
   - {fileID: 887866828}
   - {fileID: 392046869}
@@ -10110,7 +10130,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1014618115}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e3ce685ec97704dbf1202058234086, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bd5037053ef05e4bad8f56cfd8b92c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   followSomething: 2
@@ -13413,7 +13433,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1287221332}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e3ce685ec97704dbf1202058234086, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bd5037053ef05e4bad8f56cfd8b92c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   followSomething: 2
@@ -16706,7 +16726,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1623539535}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32e3ce685ec97704dbf1202058234086, type: 3}
+  m_Script: {fileID: 11500000, guid: 2bd5037053ef05e4bad8f56cfd8b92c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   followSomething: 2

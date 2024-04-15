@@ -11,6 +11,8 @@ public class CurSceneManager : MonoBehaviour
 
     public List<Transform> spawnPoints;
     public List<string> timelinesName;
+
+    public CMSetting curCMSetting;
     public List<PlayableDirector> timelines;
     Dictionary<string, PlayableDirector> timelineDic;
 

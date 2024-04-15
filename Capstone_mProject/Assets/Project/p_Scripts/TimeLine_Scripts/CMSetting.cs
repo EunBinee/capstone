@@ -6,64 +6,27 @@ using Cinemachine;
 
 public class CMSetting : MonoBehaviour
 {
-    CinemachineVirtualCameraBase m_Cam;
-    public enum FollowSomething
-    {
-        None,
-        playerTrans,
-        playerHead
-    }
-    public enum LookAtSomething
-    {
-        None
-    }
+    public bool endSetting = false;
+    public List<CMInfo> useCMInfo;
 
-    public FollowSomething followSomething;
-    public LookAtSomething lookAtSomething;
-
-    void Awake()
-    {
-        m_Cam = GetComponent<CinemachineVirtualCameraBase>();
-        SettingCM();
-    }
-
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
 
     }
-
-    void SettingCM()
+    public void Init()
     {
-        SettingFollowSomeThing();
-        SettingLookAtSomeThing();
-    }
-
-    void SettingFollowSomeThing()
-    {
-        switch (followSomething)
+        endSetting = true;
+        if (useCMInfo.Count > 0)
         {
-            case FollowSomething.None:
-                break;
-            case FollowSomething.playerTrans:
-                m_Cam.Follow = GameManager.instance.gameData.GetPlayerTransform();
-                break;
-            case FollowSomething.playerHead:
-                Debug.Log("ddddddddddddddddddddddddddddd");
-                m_Cam.Follow = GameManager.instance.gameData.playerHeadPos;
-                break;
-            default:
-                break;
-        }
-    }
-    void SettingLookAtSomeThing()
-    {
-        switch (lookAtSomething)
-        {
-            case LookAtSomething.None:
-                break;
-            default:
-                break;
+            GameManager.instance.cameraController.CinemachineSetting(true);
+            foreach (CMInfo cmInfo in useCMInfo)
+            {
+                cmInfo.gameObject.SetActive(true);
+                cmInfo.Init();
+                cmInfo.gameObject.SetActive(false);
+            }
+            GameManager.instance.cameraController.CinemachineSetting(false);
+            GameManager.instance.cameraController.CameraRecovery();
         }
     }
 
