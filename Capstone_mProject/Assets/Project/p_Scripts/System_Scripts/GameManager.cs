@@ -267,6 +267,13 @@ public class GameManager : MonoBehaviour
     {
         if (start)
         {
+            if (CurSceneManager.instance.curCMSetting != null)
+            {
+                if (!CurSceneManager.instance.curCMSetting.endSetting)
+                {
+                    CurSceneManager.instance.curCMSetting.Init();
+                }
+            }
             curCutScene_ing = true;
             PlayerController playerController = gameData.GetPlayerController();
             playerController.PlayerUI_SetActive(false);
