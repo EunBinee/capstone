@@ -22,7 +22,10 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Impact01_AB
   m_Shader: {fileID: -6465566751694194690, guid: 5f9a46d55dd947a49b8c2fa188ab2ad1, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _BUILTIN_ALPHATEST_ON
+  - _BUILTIN_AlphaClip
+  - _BUILTIN_SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _ALPHATEST_ON
   - _SURFACE_TYPE_TRANSPARENT
@@ -41,6 +44,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: d7c5a47140b613e42a38360e631f78c2, type: 3}
         m_Scale: {x: 3, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -58,6 +65,17 @@ Material:
     - AlphaClip_: 0.104
     - Vector1_AE769210: 1
     - _AlphaClip: 1
+    - _BUILTIN_AlphaClip: 1
+    - _BUILTIN_Blend: 2
+    - _BUILTIN_CullMode: 0
+    - _BUILTIN_DstBlend: 1
+    - _BUILTIN_QueueControl: 0
+    - _BUILTIN_QueueOffset: 0
+    - _BUILTIN_SrcBlend: 5
+    - _BUILTIN_Surface: 1
+    - _BUILTIN_ZTest: 4
+    - _BUILTIN_ZWrite: 0
+    - _BUILTIN_ZWriteControl: 0
     - _Blend: 0
     - _CastShadows: 1
     - _Cull: 0

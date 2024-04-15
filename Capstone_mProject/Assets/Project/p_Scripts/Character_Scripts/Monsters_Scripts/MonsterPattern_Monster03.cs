@@ -192,7 +192,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                     if (isFinding) //* State : Discorvery
                     {
                         isFinding = false;
-                        //ChangeMonsterState(MonsterState.Attack);
+                        ChangeMonsterState(MonsterState.Discovery);
 
                     }
                 }
@@ -244,6 +244,8 @@ public class MonsterPattern_Monster03 : MonsterPattern
         while (true)
         {
             Debug.DrawRay(transform.position, playerTargetPos.position - transform.position , Color.yellow);
+            yield return new WaitUntil(() =>isRestraint ==false );
+
 
             if(Physics.Raycast(transform.position, playerTargetPos.position - transform.position, out raycastHit))
             {
@@ -360,7 +362,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         //SetAnimation(MonsterAnimation.Move);
         //몬스터와 플레이어 사이의 거리 체크
-        //CheckDistance();
+        CheckDistance();
     
     }
 
@@ -381,7 +383,6 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
             if (!soundObject.attackSoundObj)
             {
-       
                 transform.position += directionToPlayer * tracingSpeed * Time.deltaTime;
             }
             else if (soundObject.attackSoundObj)
@@ -392,6 +393,9 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 // 움직임을 다시 시작
                 tracingSpeed = 1.0f;
             }
+ //yield return new WaitUntil(() =>isFreeze ==false );
+
+
         }
 
     }
