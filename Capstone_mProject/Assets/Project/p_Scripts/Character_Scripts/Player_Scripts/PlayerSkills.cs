@@ -68,6 +68,8 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveSample1 = true;
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
+        SkillMapAdd("Restraint", P_SkillInfo.restraint);
+        P_SkillInfo.haveRestraint = true;
     }
 
     void FixedUpdate()
@@ -272,7 +274,6 @@ public class PlayerSkills : MonoBehaviour
             StartCoroutine(Skill_RestraintCo());
         }
     }
-    Effect effect =null;
     IEnumerator Skill_RestraintCo()
     {
         P_States.isSkill = true;
@@ -320,17 +321,12 @@ public class PlayerSkills : MonoBehaviour
     
     private void OnDrawGizmosSelected()
     {
-        // 스킬 속박 범위 
+        // 스킬 속박 범위 그리기
         // Gizmos.color = Color.blue;
         // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
         // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
         // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
         // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
-    }
-
-    private void Update() {
-        //스킬 속박 테스트
-        Skill_Restraint();
     }
 
     public void skillMotion(string skillName)
@@ -367,6 +363,11 @@ public class PlayerSkills : MonoBehaviour
             case "Ultimate":
                 P_States.isSkill = true;
                 Debug.Log("스킬Q");
+                break;
+
+            case "Restraint":
+                Skill_Restraint();
+                Debug.Log("속박스킬");
                 break;
 
             default:
