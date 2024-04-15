@@ -980,6 +980,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool playerWalk = false;
     public void DirectFirstAppearance_TimeLine()
     {
+        Debug.Log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
@@ -988,6 +989,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void WalkPlayer()
     {
+
         playerWalk = true;
         StartCoroutine(WalkPlayer_co());
     }

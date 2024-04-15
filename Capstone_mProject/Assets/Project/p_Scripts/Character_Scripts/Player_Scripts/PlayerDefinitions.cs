@@ -16,6 +16,7 @@ public class PlayerComponents
     public Transform playerTargetPos;
     public Transform playerHeadPos;
     public Transform playerBackPos;
+
 }
 
 [Serializable]
@@ -199,7 +200,8 @@ public class CurrentValue
 }
 
 [Serializable]
-public class SkillInfo{
+public class SkillInfo
+{
     [Header("bool")]
     public bool haveBowmode;    // 활 모드 스킬 얻음?
     public bool haveHeal;       // 힐 스킬 얻음?

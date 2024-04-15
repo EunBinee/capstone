@@ -82,6 +82,7 @@ public class StartMainSetting : MonoBehaviour
         GameManager.instance.gameInfo = GameManager.instance.gameObject.GetComponent<GameInfo>();
         GameManager.instance.m_canvas = canvasObj.GetComponent<Canvas>();
         GameManager.instance.startInit();
+
         //* Player
         //playerObj.SetActive(false);
     }
