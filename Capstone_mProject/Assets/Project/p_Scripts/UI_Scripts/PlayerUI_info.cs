@@ -50,9 +50,16 @@ public class PlayerUI_info : MonoBehaviour
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
         unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+
+        //skillWinSetting();
+        //StartCoroutine(detectListChange());
     }
-    void Update()
-    {
+
+    void Update() {
+        skillWinSetting();
+    }
+
+    public void skillWinSetting(){
         if (p_controller.P_Skills.presetWin && !p_controller.P_Skills.once)
         {
             p_controller.P_Skills.once = true;
@@ -109,5 +116,29 @@ public class PlayerUI_info : MonoBehaviour
                 }
             }
         }
+    }
+
+    IEnumerator detectListChange()
+    {
+        while (playerSkillList.Count < SkillNameList.Count)
+        {// UI 오브젝트보다 스킬 이름 리스트가 더 많은 경우
+            //todo: 추가된 스킬들 새로 생성
+            for (int i = playerSkillList.Count-1; i < SkillNameList.Count-1; i++)
+            {
+                GameObject curObj = Instantiate(skillUIPrefab);
+                curObj.transform.SetParent(content);
+                curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
+
+                PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>();
+                curSkillName.m_Index = i;
+                curSkillName.skillName.text = SkillNameList[i];
+                string name = curSkillName.skillName.text;
+                curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[name].icon;
+
+                playerSkillList.Add(curSkillName);
+            }
+            yield return null;
+        }
+        yield return null;
     }
 }

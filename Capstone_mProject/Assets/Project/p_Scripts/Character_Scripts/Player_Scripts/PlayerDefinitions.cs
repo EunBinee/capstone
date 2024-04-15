@@ -92,6 +92,7 @@ public class CurrentState
     public bool isJumping;  //점프
     public bool isDodgeing;  //닷지
     public bool isSkill;
+    public bool doNotRotate;
 
     [Header("Timing Check")]
     public bool isPerformingAction; //액션을 수행 중인지 여부

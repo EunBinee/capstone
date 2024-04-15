@@ -122,6 +122,42 @@ public class PlayerInputHandle : MonoBehaviour
             }
         }
     }
+
+    public void KeyRebind(){
+        Debug.Log("KeyRebind()");
+        P_States.isWalking = false;
+        P_States.isRunning = false;
+        P_States.isNotMoving = true;
+        P_Com.animator.Rebind();
+
+        {P_KState.QDown = false;
+        P_KState.WDown = false;
+        P_KState.EDown = false;
+        P_KState.RDown = false;
+        P_KState.TDown = false;
+        P_KState.YDown = false;
+        P_KState.UDown = false;
+        P_KState.IDown = false;
+        P_KState.ODown = false;
+        P_KState.PDown = false;
+        P_KState.ADown = false;
+        P_KState.SDown = false;
+        P_KState.DDown = false;
+        P_KState.FDown = false;
+        P_KState.GDown = false;
+        P_KState.HDown = false;
+        P_KState.JDown = false;
+        P_KState.KDown = false;
+        P_KState.LDown = false;
+        P_KState.ZDown = false;
+        P_KState.XDown = false;
+        P_KState.CDown = false;
+        P_KState.VDown = false;
+        P_KState.BDown = false;
+        P_KState.NDown = false;
+        P_KState.MDown = false;}
+    }
+
     public void MouseMoveInput()
     {
         P_Input.mouseX = Input.GetAxis("Mouse X");  //마우스 좌우

@@ -980,7 +980,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     bool playerWalk = false;
     public void DirectFirstAppearance_TimeLine()
     {
-        Debug.Log("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
@@ -989,7 +988,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public void WalkPlayer()
     {
-
         playerWalk = true;
         StartCoroutine(WalkPlayer_co());
     }
@@ -1001,6 +999,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator WalkPlayer_co()
     {
         Debug.Log("플레이어 움직임");
+        playerController._currentState.doNotRotate = true;
         float duration = 4f;
         float initialMoveSpeed = 3;
         float elapsedTime = 0;
@@ -1017,6 +1016,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             yield return null;
         }
+        playerController._currentState.doNotRotate = false;
         Debug.Log("플레이어 멈춤");
     }
 

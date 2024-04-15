@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEditor.AnimatedValues;
+using System.Security.Claims;
 
 public class PlayerSkills : MonoBehaviour
 {
@@ -222,7 +223,7 @@ public class PlayerSkills : MonoBehaviour
     {
         //Debug.Log("Player Heal");
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
-        P_Value.HP += P_Value.MaxHP * 0.5f;
+        P_Value.HP = Mathf.Clamp(P_Value.HP + P_Value.MaxHP * 0.5f,P_Value.HP + P_Value.MaxHP * 0.5f,P_Value.MaxHP);
 
         bool stopHeal = false;
 
@@ -288,9 +289,10 @@ public class PlayerSkills : MonoBehaviour
         if (P_KState.KDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
             P_KState.KDown = false;
-            if (!isOn) isOn = true; // 창 켜짐
-            else { isOn = false; once = false; } // 창 꺼짐
+            if (!isOn) {isOn = true; once = false;} // 창 켜짐
+            else { isOn = false; } // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
+            //P_Controller.P_Movement.playerUI_info.skillWinSetting();
             presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
             UIManager.gameIsPaused = isOn;
