@@ -11,4 +11,7 @@ public class SOSkill : ScriptableObject
 
     public string animationName;
     public Sprite icon;
+
+    public string skillName; //스킬 이름
+    public string skillDetail; //스킬 설명 
 }
