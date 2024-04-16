@@ -250,6 +250,7 @@ MonoBehaviour:
     sample1: {fileID: 11400000, guid: f78847a2d158b5f489f3f3884f983e19, type: 2}
     sample2: {fileID: 11400000, guid: f2e73e0df475fe34daa699ad73e46c47, type: 2}
     restraint: {fileID: 11400000, guid: 6b14ea14f91a89d4e88a4ffba0910f8a, type: 2}
+    selectSkill: []
   P_InputHandle: {fileID: 4604493400107018182}
   P_Movement: {fileID: 1404091125779623576}
   P_PhysicsCheck: {fileID: 1667498000}
@@ -259,6 +260,7 @@ MonoBehaviour:
   curPlayerState: 0
   hitNum: {fileID: 0}
   hitUI: {fileID: 0}
+  hitUiGuide: {fileID: 0}
   chargingImg: {fileID: 0}
   HPgauge: {fileID: 0}
   hitMonsters: []
@@ -328,7 +330,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
-  selectSkill: []
   skillScrollWindow: {fileID: 0}
   presetWin: 0
   once: 0
@@ -3908,7 +3909,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.399258
+      value: 48.399265
       objectReference: {fileID: 0}
     - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationAtRest.y

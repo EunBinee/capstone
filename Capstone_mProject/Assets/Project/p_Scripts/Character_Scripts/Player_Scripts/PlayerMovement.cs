@@ -73,8 +73,9 @@ public class PlayerMovement : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
 
         skill_T = playerUI_info.skill_T;
-        skill_T.gameObject.SetActive(false);
-        _controller.originTpos = skill_T.gameObject.transform.position;
+        skill_T.gameObject.SetActive(true);
+        //_controller.originTpos = skill_T.gameObject.transform.position;
+        _controller.originTpos = new Vector3(1000, -1000, 0);
 
         skill_E = playerUI_info.skill_E;
         skill_E.gameObject.SetActive(true);
