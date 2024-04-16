@@ -19,6 +19,7 @@ public class PlayerSkills : MonoBehaviour
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerAttackCheck playerAttackCheck;
+    private PlayerInputHandle P_InputHandle;
 
     private GameObject arrow;// => P_Controller.arrow;
 
@@ -29,7 +30,7 @@ public class PlayerSkills : MonoBehaviour
 
     [SerializeField]
     public Dictionary<string, SOSkill> skillMap;
-    public List<SOSkill> selectSkill;
+    //public List<SOSkill> selectSkill;
     private int selectSize = 3;
 
     public ScrollRect skillScrollWindow;
@@ -52,13 +53,14 @@ public class PlayerSkills : MonoBehaviour
     {
         skillMap = new Dictionary<string, SOSkill>();
         skillMap.Clear();
-        selectSkill = new List<SOSkill>();
-        selectSkill.Clear();
+        P_SkillInfo.selectSkill = new List<SOSkill>();
+        P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
         //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
     void Start()
     {
+        P_InputHandle = GetComponent<PlayerInputHandle>();
         Invoke("Setting", 0.1f);
     }
     void Setting()
@@ -91,7 +93,7 @@ public class PlayerSkills : MonoBehaviour
         {
             P_States.isStrongArrow = false;
         }
-        SkillPreset();
+        SkillWindow();
     }
 
     List<string> callName = new List<string>();
@@ -100,8 +102,8 @@ public class PlayerSkills : MonoBehaviour
         callName.Clear();
         foreach (KeyValuePair<string, SOSkill> i in skillMap)
         {
-            if(i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
-            {}
+            if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+            { }
             else
             {
                 callName.Add(i.Key);
@@ -123,9 +125,9 @@ public class PlayerSkills : MonoBehaviour
             skillMap.Add(name, skill);  // 스킬 등록
             // 스킬 맵이 업데이트되면 이벤트 발동
             OnSkillMapUpdated?.Invoke();
-            if (selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
+            if (P_SkillInfo.selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
-                selectSkill.Add(skill); // 자동 추가
+                P_SkillInfo.selectSkill.Add(skill); // 자동 추가
             }
         }
     }
@@ -246,7 +248,7 @@ public class PlayerSkills : MonoBehaviour
     {
         //Debug.Log("Player Heal");
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Player_Heal");
-        P_Value.HP = Mathf.Clamp(P_Value.HP + P_Value.MaxHP * 0.5f,P_Value.HP + P_Value.MaxHP * 0.5f,P_Value.MaxHP);
+        P_Value.HP = Mathf.Clamp(P_Value.HP + P_Value.MaxHP * 0.5f, P_Value.HP + P_Value.MaxHP * 0.5f, P_Value.MaxHP);
 
         bool stopHeal = false;
 
@@ -265,23 +267,23 @@ public class PlayerSkills : MonoBehaviour
     }
     private void Skill_Restraint()
     {
-        if(Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             isPressed = true;
             skillRangeIndicator.SetActive(true);
         }
 
-        if(isPressed)
+        if (isPressed)
         {
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
             Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
-            Vector3 targetPosition =playerCamera1.ScreenToWorldPoint(mousePosition);
+            Vector3 targetPosition = playerCamera1.ScreenToWorldPoint(mousePosition);
             targetPosition.y = 0.2f;
             skillRangeIndicator.transform.position = targetPosition;
         }
 
-        if(Input.GetKeyUp(KeyCode.Z))
+        if (Input.GetKeyUp(KeyCode.Q))
         {
             isPressed = false;
             skillRangeIndicator.SetActive(false);
@@ -302,7 +304,7 @@ public class PlayerSkills : MonoBehaviour
             if (collider.CompareTag("Monster"))
             {
                 MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
-                if(monsterPattern != null)
+                if (monsterPattern != null)
                 {
                     monsterPattern.isRestraint = true;
                     effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
@@ -312,7 +314,7 @@ public class PlayerSkills : MonoBehaviour
                 }
             }
         }
-        
+
         // 일정 시간 후에 스킬 비활성화
         yield return new WaitForSeconds(skillDuration);
 
@@ -323,7 +325,7 @@ public class PlayerSkills : MonoBehaviour
             {
                 MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
                 if (monsterPattern != null)
-                { 
+                {
                     monsterPattern.isRestraint = false;
                     if (monsterEffects.ContainsKey(monsterPattern))
                     {
@@ -336,18 +338,18 @@ public class PlayerSkills : MonoBehaviour
             }
         }
         P_States.isSkill = false;
+
     }
-    // private void Update() {
-    //     Skill_Restraint();
-    // }
+
+
     private void OnDrawGizmosSelected()
     {
         // 스킬 속박 범위 그리기
-        // Gizmos.color = Color.blue;
-        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
-        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
-        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
-        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
+        //Gizmos.color = Color.blue;
+        //Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        //Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        //Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
+        //Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
     }
 
     public void skillMotion(string skillName)
@@ -397,14 +399,14 @@ public class PlayerSkills : MonoBehaviour
     }
 
     bool isOn = false;
-    public void SkillPreset()
+    public void SkillWindow()
     {
-        //todo: K 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
-        if (P_KState.KDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
+        //todo: P 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
+        if (P_KState.PDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
-            P_KState.KDown = false;
-            if (!isOn) {isOn = true; once = false;} // 창 켜짐
-            else { isOn = false; } // 창 꺼짐
+            P_KState.PDown = false;
+            if (!isOn) { isOn = true; once = false; } // 창 켜짐
+            else { isOn = false; P_InputHandle.skillIconApply();} // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
             presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
@@ -416,6 +418,10 @@ public class PlayerSkills : MonoBehaviour
             if (!isOn) Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
             else Cursor.lockState = CursorLockMode.None;
         }
-
+        //if (P_KState.MDown && !P_SkillInfo.haveSample2)
+        //{
+        //    SkillMapAdd("Sample2", P_SkillInfo.sample2);
+        //    P_SkillInfo.haveSample2 = true;
+        //}
     }
 }

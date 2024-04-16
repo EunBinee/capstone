@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
 
     public TMP_Text hitNum;
     public GameObject hitUI;
+    public GameObject hitUiGuide;
     public GameObject chargingImg;
     public Slider HPgauge;
     float nowHitTime;
@@ -131,6 +132,7 @@ public class PlayerController : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
         hitNum = playerUI_info.hitNum;
         hitUI = playerUI_info.hitUI;
+        hitUiGuide = playerUI_info.hitUiGuide;
         chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
@@ -172,6 +174,7 @@ public class PlayerController : MonoBehaviour
                 P_Skills.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
+            hitUiGuide.SetActive(false);
             hitNum.gameObject.SetActive(false);
             chargingImg.SetActive(false);
             EnablePlayerUI = false;
@@ -181,6 +184,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("플레이어 UI 활성화");
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
+            hitUiGuide.SetActive(true);
             hitNum.gameObject.SetActive(true);
             chargingImg.SetActive(true);
             P_Movement.skill_T.gameObject.transform.position = originTpos;

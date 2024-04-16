@@ -152,15 +152,15 @@ public class PlayerMovement : MonoBehaviour
             P_InputHandle.SkillKeyInput();
 
             //* [미카 디버프 단축키]==================================================
-            if (P_KeyState.ODown)
-            {
-                P_Value.HP = 10;
-            }
-            if (P_KeyState.PDown)
-            {
-                //Debug.Log("Electric on");
-                P_States.isElectricShock = true;    //* 감전
-            }
+            //if (P_KeyState.ODown)
+            //{
+            //    P_Value.HP = 10;
+            //}
+            //if (P_KeyState.PDown)
+            //{
+            //    //Debug.Log("Electric on");
+            //    P_States.isElectricShock = true;    // 감전
+            //}
 
 
             if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false
@@ -435,7 +435,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if ((P_States.isStartComboAttack
+        if (P_States.doNotRotate || (P_States.isStartComboAttack
                 && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
