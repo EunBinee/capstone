@@ -304,7 +304,7 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 skill_E.skill = P_SkillInfo.selectSkill[0];    //test 중 : aim
                 skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]));
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'E');
                 skill_E.OnClicked();
             }
         }
@@ -315,7 +315,7 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 skill_R.skill = P_SkillInfo.selectSkill[1];    //test 중 : heal
                 skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]));
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'R');
                 skill_R.OnClicked();
             }
         }
@@ -326,7 +326,7 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
                 skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]));
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
                 skill_F.OnClicked();
             }
         }
