@@ -22,6 +22,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public Boss_Abyss_Skill03 boss_Abyss_Skill03;
     public Boss_Abyss_Skill04 boss_Abyss_Skill04;
 
+    public Vector3 bossForward; // 스킬 4번에 쓰임.
+
     [Header("연출에 쓰이는 Obj들")]
     public GameObject redImage;
     public GameObject bossText;
@@ -84,6 +86,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         ChangeMonsterState(MonsterState.Stop);
         originPosition = transform.position;
+        bossForward = transform.forward;
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
         roaming_RangeX = m_monster.monsterData.roaming_RangeX; //로밍 범위 x;
@@ -530,7 +533,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
             //boss_Abyss_Skill03.SettingWreckage();
             //ChangeBossPhase(BossMonsterPhase.Phase2);
-            // boss_Abyss_Skill04.Skill04();
+            //boss_Abyss_Skill04.Skill04();
 
             //* 테스트 후 아래 주석 풀기
             ChangeBossPhase(BossMonsterPhase.Phase1);

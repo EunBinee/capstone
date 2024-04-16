@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Boss_Abyss_Skill04 : MonoBehaviour
 {
@@ -25,7 +26,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     bool skillOver = false;
     int curRandomSkillPattern_num = 0;
 
+    bool stopBoss = false;
     List<Skill_Indicator> curTargetMarker;
+    Coroutine moveMonster_co = null;
     Coroutine skill04_Co = null;
     Coroutine skill04_Pattern04_Co = null;
     Coroutine CheckPlayerInMarker_co = null;
@@ -75,11 +78,76 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 break;
         }
     }
+    IEnumerator BossMove()
+    {
+        //Vector3 randomPos = monsterPattern_Abyss.GetRandomPos(10f, monsterPattern_Abyss.GetGroundPos(transform));
+        Vector3 originPos = monsterPattern_Abyss.GetOriginPosition();
+        NavMeshHit hit;
 
+        float time = 0;
+        bool moveMonster = false;
+        while (time < 1)
+        {
+            time += Time.deltaTime;
+            if (NavMesh.SamplePosition(originPos, out hit, 20f, NavMesh.AllAreas))
+            {
+                if (originPos != hit.position)
+                {
+                    originPos = hit.position;
+                }
+                moveMonster = true;
+                break;
+            }
+            yield return null;
+        }
 
+        time = 0;
 
+        if (moveMonster)
+        {
+            monsterPattern_Abyss.SetMove_AI(true);
+            monsterPattern_Abyss.navMeshAgent.SetDestination(originPos);
+            monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Move);
+            while (time < 5) //* 3초간 이동하거나 이미 도착한 경우 끝
+            {
+                time += Time.deltaTime;
+                if (Vector3.Distance(originPos, transform.position) <= 2f)
+                    break;
+                yield return null;
+            }
+
+        }
+
+        time = 0;
+        monsterPattern_Abyss.SetMove_AI(false);
+        monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Move);
+
+        //몬스터 방향 플레이어 쪽으로 돌리기
+        Vector3 direction = monsterPattern_Abyss.bossForward;
+        Quaternion targetAngle = Quaternion.LookRotation(direction);
+
+        while (time < 4)
+        {
+            time += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 1f);
+
+            if (Quaternion.Angle(transform.rotation, targetAngle) < 1.5f)
+                break;
+
+            yield return null;
+        }
+        transform.rotation = targetAngle;
+        monsterPattern_Abyss.SetAnimation(MonsterPattern.MonsterAnimation.Idle);
+
+        stopBoss = true;
+        moveMonster_co = null;
+    }
     IEnumerator BossAbyss_Skill04()
     {
+        stopBoss = false;
+        moveMonster_co = StartCoroutine(BossMove());
+        yield return new WaitUntil(() => stopBoss == true);
+
         //* 5개의 패턴중 하나 랜덤으로 고름
 
         //보스 움직임 멈춤.
@@ -604,6 +672,13 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     //* 스킬 04번 정지--------------------------------------------------------------//
     public void Stop_MonsterSkill04()
     {
+
+        if (moveMonster_co != null)
+        {
+            StopCoroutine(moveMonster_co);
+            moveMonster_co = null;
+        }
+        stopBoss = false;
         if (skill04_Co != null)
         {
             StopCoroutine(skill04_Co);
