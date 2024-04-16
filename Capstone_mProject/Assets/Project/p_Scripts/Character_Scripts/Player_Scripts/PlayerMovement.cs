@@ -152,15 +152,15 @@ public class PlayerMovement : MonoBehaviour
             P_InputHandle.SkillKeyInput();
 
             //* [미카 디버프 단축키]==================================================
-            if (P_KeyState.ODown)
-            {
-                P_Value.HP = 10;
-            }
-            if (P_KeyState.PDown)
-            {
-                //Debug.Log("Electric on");
-                P_States.isElectricShock = true;    //* 감전
-            }
+            //if (P_KeyState.ODown)
+            //{
+            //    P_Value.HP = 10;
+            //}
+            //if (P_KeyState.PDown)
+            //{
+            //    //Debug.Log("Electric on");
+            //    P_States.isElectricShock = true;    // 감전
+            //}
 
 
             if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false

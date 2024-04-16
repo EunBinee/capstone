@@ -220,6 +220,7 @@ public class SkillInfo
     public SOSkill sample2;
     public SOSkill restraint; //속박스킬
 
+    public List<SOSkill> selectSkill;
 }
 
 [Serializable]
