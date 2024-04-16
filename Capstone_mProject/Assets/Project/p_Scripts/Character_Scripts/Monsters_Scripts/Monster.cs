@@ -19,6 +19,7 @@ public class Monster : MonoBehaviour
     public bool resetHP = false;
     double normalHP = 0f;
     double weaknessHP = 0f;
+
     public enum monsterSound
     {
         Hit_Close,
@@ -88,8 +89,11 @@ public class Monster : MonoBehaviour
                 }
             }
 
+
             weaknessHP = monsterData.MaxHP * monsterData.weaknessDamageRate * monsterWeaknessNum;
+            Debug.Log($"weaknessHP   {weaknessHP}");
             normalHP = monsterData.MaxHP - weaknessHP;
+            Debug.Log($"normalHP   {normalHP}");
         }
     }
 
@@ -154,7 +158,7 @@ public class Monster : MonoBehaviour
                     {
                         if (weaknessHP != 0)
                         {
-                            if (weaknessHP - damage < 0)
+                            if (weaknessHP - damage <= 0)
                             {
                                 damage = weaknessHP;
                                 weaknessHP = 0;
@@ -170,6 +174,7 @@ public class Monster : MonoBehaviour
                         }
                     }
                 }
+
                 //* 데미지 UI 처리---------------------------------------------------------------//
 
                 Get_DamageUI(damage);

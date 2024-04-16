@@ -83,7 +83,7 @@ public class MonsterPattern : MonoBehaviour
     public bool isGettingHit = false;
     public bool isShield = false; //몬스터와 플레이어사이에 방패있는지 여부 
     public bool isRestraint = false;
-    public float RestraintDuration = 5.0f; 
+    public float RestraintDuration = 5.0f;
 
     public enum MonsterMotion
     {
@@ -140,19 +140,19 @@ public class MonsterPattern : MonoBehaviour
 
     public void Update()
     {
-        if(!isRestraint)
+        if (!isRestraint)
         {
             Monster_Pattern();
             useUpdate();
         }
-        else 
+        else
         {
             SetAnimation(MonsterAnimation.Idle);
-            if(navMeshAgent)
+            if (navMeshAgent)
                 SetMove_AI(false);
             //StartCoroutine(RestraintMonsters());
         }
-       
+
 
         if (m_monster.monsterData.movingMonster)
         {

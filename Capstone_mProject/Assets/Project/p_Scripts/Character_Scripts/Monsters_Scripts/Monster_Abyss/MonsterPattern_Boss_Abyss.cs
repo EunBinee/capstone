@@ -828,7 +828,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 2f, 2f);
 
 
-            Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonsterDeath");
+            Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_M");
             effect.transform.position = randomPos;
             //! 사운드
 
