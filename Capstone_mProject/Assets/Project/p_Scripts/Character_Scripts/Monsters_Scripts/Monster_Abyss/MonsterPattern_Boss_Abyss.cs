@@ -1009,7 +1009,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     IEnumerator WalkPlayer_co()
     {
         Debug.Log("플레이어 움직임");
-        playerController._currentState.doNotRotate = true;
+        playerController._currentState.doNotRotate = true;  // 플레이어 움직임 막음
         float duration = 4f;
         float initialMoveSpeed = 3;
         float elapsedTime = 0;
@@ -1031,7 +1031,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         playerController._playerComponents.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
         playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);  //하
-        playerController._currentState.doNotRotate = false;
+        
         Debug.Log("플레이어 멈춤");
     }
 
@@ -1041,6 +1041,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     IEnumerator FirstAppearance_TimeLineEffect_co()
     {
+        playerController._currentState.doNotRotate = false; // 플레이어 움직임 풀음
         //* 연기 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_03");
         Vector3 effectPos = transform.position;

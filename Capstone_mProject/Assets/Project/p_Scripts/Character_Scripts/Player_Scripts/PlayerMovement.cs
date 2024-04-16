@@ -435,7 +435,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if ((P_States.isStartComboAttack
+        if (P_States.doNotRotate || (P_States.isStartComboAttack
                 && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
                 && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
