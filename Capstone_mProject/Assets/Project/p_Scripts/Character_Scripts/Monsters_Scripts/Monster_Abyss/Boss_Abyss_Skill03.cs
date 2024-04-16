@@ -141,10 +141,11 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         ResetSkill02Rotation();
 
         yield return new WaitForSeconds(1f);
-        monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
+
         //* 잔해물 치우기
-        yield return new WaitForSeconds(1f);
         ClearWreckage();
+        yield return new WaitForSeconds(1f);
+        monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
 
         skill03_co = null;
         yield return null;

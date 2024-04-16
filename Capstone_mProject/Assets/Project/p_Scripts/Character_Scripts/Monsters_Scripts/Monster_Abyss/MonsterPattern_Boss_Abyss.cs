@@ -984,12 +984,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 타임라인에서 사용되는 이펙트 
     bool playerWalk = false;
 
-    public void FirstTimeLineSetting()
-    {
-
-    }
     public void DirectFirstAppearance_TimeLine()
     {
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
@@ -1031,7 +1030,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
         playerController._playerComponents.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
         playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);  //하
-        
+
         Debug.Log("플레이어 멈춤");
     }
 
@@ -1080,6 +1079,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 일반 약점------------------------------------------------------------------------//
     public override void DirectTheBossWeakness()
     {
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
         ChangeMonsterState(MonsterState.Stop);
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
@@ -1116,6 +1118,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //* 보스 마지막 약점 연출
     public override void DirectTheBossLastWeakness()
     {
+        SetMove_AI(false);
+        SetAnimation(MonsterAnimation.Idle);
+
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
