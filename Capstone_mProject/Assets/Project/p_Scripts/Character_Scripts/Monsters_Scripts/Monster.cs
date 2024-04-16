@@ -17,6 +17,8 @@ public class Monster : MonoBehaviour
 
     [SerializeField] private HPBarUI_Info m_hPBar;
     public bool resetHP = false;
+    public int monsterWeaknessNum;
+    public int curMonsterWeaknessNum;
     double normalHP = 0f;
     double weaknessHP = 0f;
 
@@ -72,7 +74,7 @@ public class Monster : MonoBehaviour
 
         if (monsterData.useWeakness)
         {
-            int monsterWeaknessNum = 0;
+            monsterWeaknessNum = 0;
             if (monsterData.useWeakness)
             {
                 for (int i = 0; i < monsterData.weaknessList.Count; i++)
@@ -94,6 +96,8 @@ public class Monster : MonoBehaviour
             Debug.Log($"weaknessHP   {weaknessHP}");
             normalHP = monsterData.MaxHP - weaknessHP;
             Debug.Log($"normalHP   {normalHP}");
+
+            monsterWeaknessNum = curMonsterWeaknessNum;
         }
     }
 
@@ -158,7 +162,7 @@ public class Monster : MonoBehaviour
                     {
                         if (weaknessHP != 0)
                         {
-                            if (weaknessHP - damage <= 0)
+                            if (weaknessHP - damage <= 0 || (curMonsterWeaknessNum == 0 && normalHP == 0))
                             {
                                 damage = weaknessHP;
                                 weaknessHP = 0;

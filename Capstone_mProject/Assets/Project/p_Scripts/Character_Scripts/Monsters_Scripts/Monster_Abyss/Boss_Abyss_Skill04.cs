@@ -142,6 +142,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         stopBoss = true;
         moveMonster_co = null;
     }
+
     IEnumerator BossAbyss_Skill04()
     {
         stopBoss = false;

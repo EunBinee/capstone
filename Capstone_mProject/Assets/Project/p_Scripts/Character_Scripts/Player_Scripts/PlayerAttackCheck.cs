@@ -376,6 +376,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         Vector3 collisionPoint = hit.point;
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
+                        monster.curMonsterWeaknessNum--;
                         bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, true);
                         if (successfulAttack)
                         {
