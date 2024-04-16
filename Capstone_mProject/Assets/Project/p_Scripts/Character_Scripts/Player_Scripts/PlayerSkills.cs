@@ -265,12 +265,31 @@ public class PlayerSkills : MonoBehaviour
             yield return null;
         }
     }
-    private void Skill_Restraint()
+    private void Skill_Restraint(char whatKey)
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (whatKey =='E')
         {
-            isPressed = true;
-            skillRangeIndicator.SetActive(true);
+            if (P_KState.EDown)
+            {
+                isPressed = true;
+                skillRangeIndicator.SetActive(true);
+            }
+        }
+        else if (whatKey =='R')
+        {
+            if (P_KState.RDown)
+            {
+                isPressed = true;
+                skillRangeIndicator.SetActive(true);
+            }
+        }
+        else if (whatKey =='F')
+        {
+            if (P_KState.FDown)
+            {
+                isPressed = true;
+                skillRangeIndicator.SetActive(true);
+            }
         }
 
         if (isPressed)
@@ -283,11 +302,38 @@ public class PlayerSkills : MonoBehaviour
             skillRangeIndicator.transform.position = targetPosition;
         }
 
-        if (Input.GetKeyUp(KeyCode.Q))
+        //if (Input.GetKeyUp(KeyCode.Q))
+        //{
+        //    isPressed = false;
+        //    skillRangeIndicator.SetActive(false);
+        //    StartCoroutine(Skill_RestraintCo());
+        //}
+        if (whatKey =='E')
         {
-            isPressed = false;
-            skillRangeIndicator.SetActive(false);
-            StartCoroutine(Skill_RestraintCo());
+            if (!P_KState.EDown)
+            {
+                isPressed = false;
+                skillRangeIndicator.SetActive(false);
+                StartCoroutine(Skill_RestraintCo());
+            }
+        }
+        else if (whatKey =='R')
+        {
+            if (!P_KState.RDown)
+            {
+                isPressed = false;
+                skillRangeIndicator.SetActive(false);
+                StartCoroutine(Skill_RestraintCo());
+            }
+        }
+        else if (whatKey =='F')
+        {
+            if (!P_KState.FDown)
+            {
+                isPressed = false;
+                skillRangeIndicator.SetActive(false);
+                StartCoroutine(Skill_RestraintCo());
+            }
         }
     }
 
@@ -351,7 +397,7 @@ public class PlayerSkills : MonoBehaviour
         //Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
     }
 
-    public void skillMotion(string skillName)
+    public void skillMotion(string skillName, char whatKey = 'a')
     {
         switch (skillName)
         {
@@ -388,7 +434,7 @@ public class PlayerSkills : MonoBehaviour
                 break;
 
             case "Restraint":
-                Skill_Restraint();
+                Skill_Restraint(whatKey);
                 Debug.Log("속박스킬");
                 break;
 

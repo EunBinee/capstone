@@ -73,7 +73,7 @@ public class PlayerMovement : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
 
         skill_T = playerUI_info.skill_T;
-        skill_T.gameObject.SetActive(true);
+        skill_T.gameObject.SetActive(false);
         _controller.originTpos = skill_T.gameObject.transform.position;
 
         skill_E = playerUI_info.skill_E;
@@ -89,7 +89,7 @@ public class PlayerMovement : MonoBehaviour
         _controller.originFpos = skill_F.gameObject.transform.position;
 
         skill_Q = playerUI_info.skill_Q;
-        skill_Q.gameObject.SetActive(true);
+        skill_Q.gameObject.SetActive(false);
         _controller.originQpos = skill_Q.gameObject.transform.position;
 
         skillScrollWindow = playerUI_info.skillScrollWindow;
