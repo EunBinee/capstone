@@ -609,23 +609,7 @@ public class CameraController : MonoBehaviour
         cameraObj.gameObject.transform.localRotation = Quaternion.identity;
         cameraObj.fieldOfView = default_FieldOfView;
     }
-    void CamReset_Lerp()
-    {
-        float resetZ = WallInFrontOfCamera(minZ, maxZ);
-        // cameraObj.gameObject.transform.localPosition = new Vector3(0, 0, resetZ);
-        Vector3 resetVector = new Vector3(0, 0, resetZ);
-        cameraObj.gameObject.transform.localRotation = Quaternion.identity;
-        cameraObj.fieldOfView = default_FieldOfView;
-        while (cameraObj.gameObject.transform.localPosition != resetVector)
-        {
-            cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, resetVector, 2 * Time.deltaTime);
-            if (resetVector == cameraObj.gameObject.transform.localPosition)
-            {
-                break;
-            }
-        }
 
-    }
 
     //* 보스전 끝난 후 주목 풀기.
     public void BossCameraReset(float stopTime)
@@ -714,12 +698,6 @@ public class CameraController : MonoBehaviour
     {
         Check_Z();
         CamReset(); //rotation, position 변경
-    }
-
-    public void CameraRecovery_Lerp()
-    {
-        Check_Z();
-        CamReset_Lerp();
     }
 
     public void CinemachineSetting(bool _value)
