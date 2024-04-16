@@ -15,6 +15,7 @@ public class PlayerInputHandle : MonoBehaviour
     private CurrentValue P_Value => P_Controller._currentValue;
     private PlayerFollowCamera P_Camera => P_Controller._playerFollowCamera;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
+    private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
 
@@ -41,9 +42,9 @@ public class PlayerInputHandle : MonoBehaviour
         skill_F = P_Movement.skill_F;
         skill_Q = P_Movement.skill_Q;
 
-        skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
-        skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
-        skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
+        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
+        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
+        skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
     }
     void Update()
     {
@@ -123,39 +124,42 @@ public class PlayerInputHandle : MonoBehaviour
         }
     }
 
-    public void KeyRebind(){
+    public void KeyRebind()
+    {
         Debug.Log("KeyRebind()");
         P_States.isWalking = false;
         P_States.isRunning = false;
         //P_States.isNotMoving = true;
         P_Com.animator.Rebind();
 
-        {P_KState.QDown = false;
-        P_KState.WDown = false;
-        P_KState.EDown = false;
-        P_KState.RDown = false;
-        P_KState.TDown = false;
-        P_KState.YDown = false;
-        P_KState.UDown = false;
-        P_KState.IDown = false;
-        P_KState.ODown = false;
-        P_KState.PDown = false;
-        P_KState.ADown = false;
-        P_KState.SDown = false;
-        P_KState.DDown = false;
-        P_KState.FDown = false;
-        P_KState.GDown = false;
-        P_KState.HDown = false;
-        P_KState.JDown = false;
-        P_KState.KDown = false;
-        P_KState.LDown = false;
-        P_KState.ZDown = false;
-        P_KState.XDown = false;
-        P_KState.CDown = false;
-        P_KState.VDown = false;
-        P_KState.BDown = false;
-        P_KState.NDown = false;
-        P_KState.MDown = false;}
+        {
+            P_KState.QDown = false;
+            P_KState.WDown = false;
+            P_KState.EDown = false;
+            P_KState.RDown = false;
+            P_KState.TDown = false;
+            P_KState.YDown = false;
+            P_KState.UDown = false;
+            P_KState.IDown = false;
+            P_KState.ODown = false;
+            P_KState.PDown = false;
+            P_KState.ADown = false;
+            P_KState.SDown = false;
+            P_KState.DDown = false;
+            P_KState.FDown = false;
+            P_KState.GDown = false;
+            P_KState.HDown = false;
+            P_KState.JDown = false;
+            P_KState.KDown = false;
+            P_KState.LDown = false;
+            P_KState.ZDown = false;
+            P_KState.XDown = false;
+            P_KState.CDown = false;
+            P_KState.VDown = false;
+            P_KState.BDown = false;
+            P_KState.NDown = false;
+            P_KState.MDown = false;
+        }
     }
 
     public void MouseMoveInput()
@@ -295,9 +299,9 @@ public class PlayerInputHandle : MonoBehaviour
             P_KState.EDown = false;
             if (skill_E.imgCool.fillAmount == 0)
             {
-                skill_E.skill = P_Skills.selectSkill[0];    //test 중 : aim
-                skill_E.imgIcon.sprite = P_Skills.selectSkill[0].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[0]));
+                skill_E.skill = P_SkillInfo.selectSkill[0];    //test 중 : aim
+                skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]));
                 skill_E.OnClicked();
             }
         }
@@ -306,9 +310,9 @@ public class PlayerInputHandle : MonoBehaviour
             P_KState.RDown = false;
             if (skill_R.imgCool.fillAmount == 0)
             {
-                skill_R.skill = P_Skills.selectSkill[1];    //test 중 : heal
-                skill_R.imgIcon.sprite = P_Skills.selectSkill[1].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[1]));
+                skill_R.skill = P_SkillInfo.selectSkill[1];    //test 중 : heal
+                skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]));
                 skill_R.OnClicked();
             }
         }
@@ -317,9 +321,9 @@ public class PlayerInputHandle : MonoBehaviour
             P_KState.FDown = false;
             if (skill_F.imgCool.fillAmount == 0)
             {
-                skill_F.skill = P_Skills.selectSkill[2];    //test 중 : ultimate
-                skill_F.imgIcon.sprite = P_Skills.selectSkill[2].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_Skills.selectSkill[2]));
+                skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
+                skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]));
                 skill_F.OnClicked();
             }
         }
@@ -335,8 +339,9 @@ public class PlayerInputHandle : MonoBehaviour
             P_Skills.skillMotion("Ultimate");
         }
     }
-    public string mapValueReturnKey(SOSkill skill){
-        foreach (KeyValuePair<string,SOSkill> item in P_Skills.skillMap)
+    public string mapValueReturnKey(SOSkill skill)
+    {
+        foreach (KeyValuePair<string, SOSkill> item in P_Skills.skillMap)
         {
             if (item.Value == skill)
             {

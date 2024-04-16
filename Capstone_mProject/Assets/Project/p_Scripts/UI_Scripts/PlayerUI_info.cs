@@ -35,6 +35,8 @@ public class PlayerUI_info : MonoBehaviour
     private List<string> SkillNameList;
     List<PlayerSkillName> playerSkillList;
     private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
+    [SerializeField] List<SOSkill> sskill;
+
     Color selectColor;
     Color unselectColor;
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
@@ -63,9 +65,14 @@ public class PlayerUI_info : MonoBehaviour
         {
             for (int i = SkillNameList.Count; i < updatedSkills.Count; i++) // 새 스킬만큼 UI 요소 생성
             {
-                GameObject curObj = Instantiate(skillUIPrefab);
-                curObj.transform.SetParent(content);
-                curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
+                //GameObject curObj = Instantiate(skillUIPrefab);
+                //curObj.transform.SetParent(content);
+                //curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
+
+                GameObject curObj = Instantiate(skillUIPrefab, Vector3.zero, Quaternion.identity, content); // 스킬 UI 프리팹 인스턴스화
+                curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0); // 위치 설정을 localPosition으로 변경
+                curObj.transform.localScale = Vector3.one; // 스케일이 변하지 않도록 설정
+
                 PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
                 curSkillName.m_Index = i; // 인덱스 설정
                 curSkillName.skillName.text = updatedSkills[i]; // 스킬 이름 설정
@@ -99,11 +106,36 @@ public class PlayerUI_info : MonoBehaviour
             curSkillName.isSelect = true; // 선택 상태로 변경
             selectedSkillsIndex.Add(curIndex); // 새로운 선택 추가
         }
+        skillPresetting();
     }
 
     void OnDestroy()
     {
         // 메모리 누수 방지를 위해 이벤트 구독 해제
         p_controller.P_Skills.OnSkillMapUpdated -= SkillMapUpdated;
+    }
+
+    public void skillPresetting()
+    {
+        sskill = new List<SOSkill>();
+        foreach (PlayerSkillName i in playerSkillList)
+        {
+            if (i.isSelect)
+            {
+                sskill.Add(nameToSkill(i.skillName.text));
+            }
+        }
+        p_controller._skillInfo.selectSkill = sskill;
+    }
+    private SOSkill nameToSkill(string namee)
+    {
+        foreach (KeyValuePair<string, SOSkill> i in p_controller.P_Skills.skillMap)
+        {
+            if (namee == i.Key)
+            {
+                return i.Value;
+            }
+        }
+        return null;
     }
 }
