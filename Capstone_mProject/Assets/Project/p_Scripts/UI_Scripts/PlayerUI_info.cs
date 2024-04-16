@@ -65,13 +65,12 @@ public class PlayerUI_info : MonoBehaviour
         {
             for (int i = SkillNameList.Count; i < updatedSkills.Count; i++) // 새 스킬만큼 UI 요소 생성
             {
-                //GameObject curObj = Instantiate(skillUIPrefab);
-                //curObj.transform.SetParent(content);
+                GameObject curObj = Instantiate(skillUIPrefab);
+                curObj.transform.SetParent(content);
                 //curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
-
-                GameObject curObj = Instantiate(skillUIPrefab, Vector3.zero, Quaternion.identity, content); // 스킬 UI 프리팹 인스턴스화
-                curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0); // 위치 설정을 localPosition으로 변경
-                curObj.transform.localScale = Vector3.one; // 스케일이 변하지 않도록 설정
+                //curObj.transform.position = new Vector3(350+(i * 100), i / 6, 0);
+                curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 100), -180 + (i / 6), 0);
+                curObj.transform.localScale = Vector3.one;
 
                 PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
                 curSkillName.m_Index = i; // 인덱스 설정

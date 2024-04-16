@@ -19,6 +19,7 @@ public class PlayerSkills : MonoBehaviour
     private PlayerArrows P_Arrows => P_Controller._playerArrows;
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerAttackCheck playerAttackCheck;
+    private PlayerInputHandle P_InputHandle;
 
     private GameObject arrow;// => P_Controller.arrow;
 
@@ -56,6 +57,7 @@ public class PlayerSkills : MonoBehaviour
     }
     void Start()
     {
+        P_InputHandle = GetComponent<PlayerInputHandle>();
         Invoke("Setting", 0.1f);
     }
     void Setting()
@@ -70,8 +72,8 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
         P_SkillInfo.haveSample1 = true;
-        //SkillMapAdd("Sample2", P_SkillInfo.sample2);
-        //P_SkillInfo.haveSample2 = true;
+        SkillMapAdd("Sample2", P_SkillInfo.sample2);
+        P_SkillInfo.haveSample2 = true;
         SkillMapAdd("Restraint", P_SkillInfo.restraint);
         P_SkillInfo.haveRestraint = true;
     }
@@ -387,7 +389,6 @@ public class PlayerSkills : MonoBehaviour
     }
 
     bool isOn = false;
-    bool a = false;
     public void SkillWindow()
     {
         //todo: P 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
@@ -395,7 +396,7 @@ public class PlayerSkills : MonoBehaviour
         {
             P_KState.PDown = false;
             if (!isOn) { isOn = true; once = false; } // 창 켜짐
-            else { isOn = false; } // 창 꺼짐
+            else { isOn = false; P_InputHandle.skillIconApply();} // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
             presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
@@ -407,11 +408,10 @@ public class PlayerSkills : MonoBehaviour
             if (!isOn) Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
             else Cursor.lockState = CursorLockMode.None;
         }
-        if (P_KState.MDown && !a)
-        {
-            a = true;
-            SkillMapAdd("Sample2", P_SkillInfo.sample2);
-            P_SkillInfo.haveSample2 = true;
-        }
+        //if (P_KState.MDown && !P_SkillInfo.haveSample2)
+        //{
+        //    SkillMapAdd("Sample2", P_SkillInfo.sample2);
+        //    P_SkillInfo.haveSample2 = true;
+        //}
     }
 }

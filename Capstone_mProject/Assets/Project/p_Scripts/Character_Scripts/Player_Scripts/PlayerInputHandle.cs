@@ -42,6 +42,9 @@ public class PlayerInputHandle : MonoBehaviour
         skill_F = P_Movement.skill_F;
         skill_Q = P_Movement.skill_Q;
 
+        skillIconApply();
+    }
+    public void skillIconApply(){
         skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
         skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
         skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
