@@ -616,15 +616,15 @@ public class CameraController : MonoBehaviour
         Vector3 resetVector = new Vector3(0, 0, resetZ);
         cameraObj.gameObject.transform.localRotation = Quaternion.identity;
         cameraObj.fieldOfView = default_FieldOfView;
-        while (cameraObj.gameObject.transform.localPosition != resetVector)
-        {
-            cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, resetVector, 2 * Time.deltaTime);
-            if (resetVector == cameraObj.gameObject.transform.localPosition)
-            {
-                break;
-            }
-        }
-
+        cameraObj.gameObject.transform.localPosition = resetVector;
+        //while (cameraObj.gameObject.transform.localPosition != resetVector)
+        //{
+        //    cameraObj.gameObject.transform.localPosition = Vector3.Lerp(cameraObj.gameObject.transform.localPosition, resetVector, 2 * Time.deltaTime);
+        //    if (resetVector == cameraObj.gameObject.transform.localPosition)
+        //    {
+        //        break;
+        //    }
+        //}
     }
 
     //* 보스전 끝난 후 주목 풀기.

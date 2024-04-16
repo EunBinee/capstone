@@ -37,6 +37,8 @@ public class PlayerSkills : MonoBehaviour
     public bool once = false;
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
+    Effect effect; //스킬 이펙트
+    Dictionary<MonsterPattern, Effect> monsterEffects = new Dictionary<MonsterPattern, Effect>(); // 몬스터와 이펙트의 매핑을 위한 딕셔너리
 
     //*스킬 속박 
     private float skillDuration = 5f; // 스킬의 지속 시간
@@ -44,6 +46,7 @@ public class PlayerSkills : MonoBehaviour
     public GameObject skillRangeIndicator; // 원 범위를 나타낼 오브젝트
     public float cylinderRadius = 5f; // 스킬 속박범위 원기둥 반지름
     public float cylinderHeight = 5f; // 스킬 속박범위 원기둥 높이
+
 
     void Awake()
     {
@@ -262,7 +265,7 @@ public class PlayerSkills : MonoBehaviour
     }
     private void Skill_Restraint()
     {
-        if(Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.Z))
         {
             isPressed = true;
             skillRangeIndicator.SetActive(true);
@@ -278,30 +281,33 @@ public class PlayerSkills : MonoBehaviour
             skillRangeIndicator.transform.position = targetPosition;
         }
 
-        if(Input.GetKeyUp(KeyCode.Q))
+        if(Input.GetKeyUp(KeyCode.Z))
         {
             isPressed = false;
             skillRangeIndicator.SetActive(false);
             StartCoroutine(Skill_RestraintCo());
         }
     }
+
     IEnumerator Skill_RestraintCo()
     {
         P_States.isSkill = true;
-        
+
         Collider[] colliders = Physics.OverlapCapsule(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f,
                                                         skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f,
                                                         cylinderRadius); //범위 원기둥으로 만듦
+
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Monster"))
             {
                 MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
-                if(monsterPattern!=null)
+                if(monsterPattern != null)
                 {
                     monsterPattern.isRestraint = true;
-                    //effect = GameManager.Instance.objectPooling.ShowEffect("Spatial section");
-                    //effect.transform.position = skillRangeIndicator.transform.position;
+                    effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
+                    effect.transform.position = monsterPattern.transform.position;
+                    monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
                     Debug.Log("속박");
                 }
             }
@@ -315,29 +321,33 @@ public class PlayerSkills : MonoBehaviour
         {
             if (collider.CompareTag("Monster"))
             {
-                // 오브젝트 다시 움직이게 하기 (예를 들어 Rigidbody가 있는 경우)
-                //Rigidbody rb = collider.GetComponent<Rigidbody>();
                 MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
                 if (monsterPattern != null)
                 { 
                     monsterPattern.isRestraint = false;
-                    //effect.StopEffect();
+                    if (monsterEffects.ContainsKey(monsterPattern))
+                    {
+                        Effect monsterEffect = monsterEffects[monsterPattern];
+                        monsterEffect.StopEffect(); //이펙트 멈춤
+                        monsterEffects.Remove(monsterPattern); // 이펙트를 딕셔너리에서 제거 
+                    }
                     Debug.Log("속박풀림");
                 }
             }
         }
         P_States.isSkill = false;
-       
     }
-    
+    private void Update() {
+        Skill_Restraint();
+    }
     private void OnDrawGizmosSelected()
     {
         // 스킬 속박 범위 그리기
-        // Gizmos.color = Color.blue;
-        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
-        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
-        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
-        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
+        Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
     }
 
     public void skillMotion(string skillName)
