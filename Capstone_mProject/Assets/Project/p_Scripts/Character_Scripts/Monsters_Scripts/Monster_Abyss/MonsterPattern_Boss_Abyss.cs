@@ -1009,7 +1009,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         Debug.Log("플레이어 움직임");
         playerController._currentState.doNotRotate = true;  // 플레이어 움직임 막음
-        float duration = 4f;
+        float duration = 7f;
         float initialMoveSpeed = 3;
         float elapsedTime = 0;
 
