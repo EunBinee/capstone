@@ -148,6 +148,7 @@ MonoBehaviour:
     isJumping: 0
     isDodgeing: 0
     isSkill: 0
+    doNotRotate: 0
     isPerformingAction: 0
     isStop: 0
     previousDodgeKeyPress: 0
@@ -258,6 +259,7 @@ MonoBehaviour:
   curPlayerState: 0
   hitNum: {fileID: 0}
   hitUI: {fileID: 0}
+  chargingImg: {fileID: 0}
   HPgauge: {fileID: 0}
   hitMonsters: []
   bow: {fileID: 8890993529786064295}
@@ -330,8 +332,8 @@ MonoBehaviour:
   skillScrollWindow: {fileID: 0}
   presetWin: 0
   once: 0
-  skillRangeIndicator: {fileID: 0}
-  cylinderRadius: 5
+  skillRangeIndicator: {fileID: 3461343800245115971, guid: a19d33afeeff490479e334657600395c, type: 3}
+  cylinderRadius: 3
   cylinderHeight: 5
 --- !u!114 &4604493400107018182
 MonoBehaviour:
