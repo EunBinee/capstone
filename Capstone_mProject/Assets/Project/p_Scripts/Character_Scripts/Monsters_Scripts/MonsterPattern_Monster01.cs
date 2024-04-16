@@ -608,6 +608,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     //*원거리 공격 01
     IEnumerator Long_Range_Attack_Monster01()
     {
+        yield return new WaitUntil(() =>isRestraint ==false );
         float defaultSpeed = navMeshAgent.speed;
         float defaultAcceleration = navMeshAgent.acceleration;
         SetMove_AI(false);

@@ -329,7 +329,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             else
             {
                 time += Time.deltaTime;
-                yield return null;
+                 yield return new WaitUntil(() =>isRestraint ==false );
+                //yield return null;
             }
         }
 

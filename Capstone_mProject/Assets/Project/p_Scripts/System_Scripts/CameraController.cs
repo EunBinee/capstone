@@ -610,7 +610,6 @@ public class CameraController : MonoBehaviour
         cameraObj.fieldOfView = default_FieldOfView;
     }
 
-
     //* 보스전 끝난 후 주목 풀기.
     public void BossCameraReset(float stopTime)
     {
