@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
 
     public TMP_Text hitNum;
     public GameObject hitUI;
+    public GameObject chargingImg;
     public Slider HPgauge;
     float nowHitTime;
     public List<GameObject> hitMonsters;
@@ -130,6 +131,7 @@ public class PlayerController : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
         hitNum = playerUI_info.hitNum;
         hitUI = playerUI_info.hitUI;
+        chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
     }
@@ -171,6 +173,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitNum.gameObject.SetActive(false);
+            chargingImg.SetActive(false);
             EnablePlayerUI = false;
         }
         else if (activeSelf)
@@ -179,6 +182,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitNum.gameObject.SetActive(true);
+            chargingImg.SetActive(true);
             P_Movement.skill_T.gameObject.transform.position = originTpos;
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;
