@@ -102,9 +102,9 @@ public class PlayerSkills : MonoBehaviour
         callName.Clear();
         foreach (KeyValuePair<string, SOSkill> i in skillMap)
         {
-            //if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
-            //{ }
-            //else
+            if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+            { }
+            else
             {
                 callName.Add(i.Key);
             }

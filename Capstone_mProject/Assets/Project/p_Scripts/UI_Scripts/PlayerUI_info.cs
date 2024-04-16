@@ -8,6 +8,7 @@ public class PlayerUI_info : MonoBehaviour
 {
     [Header("Player Hit")]
     public TMP_Text hitNum;
+    public GameObject hitUiGuide;
     public GameObject hitUI;
     public GameObject chargingImg;
 
