@@ -297,37 +297,37 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.skillMotion("ChangeWeapon");
             }
         }
-        if (P_KState.EDown)
+        if (P_KState.EDown && !P_States.isSkill)
         {
-            P_KState.EDown = false;
+            //P_KState.EDown = false;
             if (skill_E.imgCool.fillAmount == 0)
             {
                 skill_E.skill = P_SkillInfo.selectSkill[0];    //test 중 : aim
                 skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'E');
-                skill_E.OnClicked();
+                //skill_E.OnClicked();
             }
         }
-        if (P_KState.RDown)
+        if (P_KState.RDown && !P_States.isSkill)
         {
-            P_KState.RDown = false;
+            //P_KState.RDown = false;
             if (skill_R.imgCool.fillAmount == 0)
             {
                 skill_R.skill = P_SkillInfo.selectSkill[1];    //test 중 : heal
                 skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'R');
-                skill_R.OnClicked();
+                //skill_R.OnClicked();
             }
         }
-        if (P_KState.FDown)
+        if (P_KState.FDown && !P_States.isSkill)
         {
-            P_KState.FDown = false;
+            //P_KState.FDown = false;
             if (skill_F.imgCool.fillAmount == 0)
             {
                 skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
                 skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
-                skill_F.OnClicked();
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]),'F');
+                //skill_F.OnClicked();
             }
         }
         if (P_KState.QDown)
@@ -338,10 +338,34 @@ public class PlayerInputHandle : MonoBehaviour
                 return;
             }
             if (skill_Q.imgCool.fillAmount == 0)
-                skill_Q.OnClicked();
-            P_Skills.skillMotion("Ultimate");
+                P_Skills.skillMotion("Ultimate", 'Q');
+                //skill_Q.OnClicked();
         }
     }
+
+    public void skillBtnOnclick(char key){
+        switch (key)
+        {
+            case 'E':
+                P_KState.EDown = false;
+                skill_E.OnClicked();
+                break;
+            case 'R':
+                P_KState.RDown = false;
+                skill_R.OnClicked();
+                break;
+            case 'F':
+                P_KState.FDown = false;
+                skill_F.OnClicked();
+                break;
+            case 'Q':
+                P_KState.QDown = false;
+                skill_Q.OnClicked();
+                break;
+            default: break;
+        }
+    }
+
     public string mapValueReturnKey(SOSkill skill)
     {
         foreach (KeyValuePair<string, SOSkill> item in P_Skills.skillMap)

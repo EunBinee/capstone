@@ -38,7 +38,7 @@ public class PlayerSkills : MonoBehaviour
     public bool once = false;
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
-    Effect effect; //스킬 이펙트
+    //Effect effect; //스킬 이펙트
     Dictionary<MonsterPattern, Effect> monsterEffects = new Dictionary<MonsterPattern, Effect>(); // 몬스터와 이펙트의 매핑을 위한 딕셔너리
 
     //*스킬 속박 
@@ -56,6 +56,8 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.selectSkill = new List<SOSkill>();
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
+        skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
+        skillRangeIndicator.SetActive(false);
         //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
     void Start()
@@ -265,82 +267,74 @@ public class PlayerSkills : MonoBehaviour
             yield return null;
         }
     }
-    private void Skill_Restraint(char whatKey)
-    {
-        if (whatKey =='E')
-        {
-            if (P_KState.EDown)
-            {
-                isPressed = true;
-                skillRangeIndicator.SetActive(true);
-            }
-        }
-        else if (whatKey =='R')
-        {
-            if (P_KState.RDown)
-            {
-                isPressed = true;
-                skillRangeIndicator.SetActive(true);
-            }
-        }
-        else if (whatKey =='F')
-        {
-            if (P_KState.FDown)
-            {
-                isPressed = true;
-                skillRangeIndicator.SetActive(true);
-            }
-        }
 
-        if (isPressed)
+    IEnumerator isPressedCode()
+    {
+        while (isPressed)
         {
+            Debug.Log("if (isPressed)");
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
             Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
             Vector3 targetPosition = playerCamera1.ScreenToWorldPoint(mousePosition);
             targetPosition.y = 0.2f;
             skillRangeIndicator.transform.position = targetPosition;
+            Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
+            yield return null;
+        }
+    }
+
+    IEnumerator Skill_Restraint(char whatKey)
+    {
+        yield return new WaitUntil(() => (P_KState.EDown||P_KState.RDown||P_KState.FDown));
+        if (!isPressed)
+        {
+            switch (whatKey)
+            {
+                case 'E':
+                case 'R':
+                case 'F':
+                    Debug.Log("switch true");
+                    isPressed = true; P_States.isSkill = true;
+                    skillRangeIndicator.SetActive(true);
+                    break;
+                default: break;
+            }
         }
 
-        //if (Input.GetKeyUp(KeyCode.Q))
-        //{
-        //    isPressed = false;
-        //    skillRangeIndicator.SetActive(false);
-        //    StartCoroutine(Skill_RestraintCo());
-        //}
-        if (whatKey =='E')
+        //if (isPressed)
         {
-            if (!P_KState.EDown)
-            {
-                isPressed = false;
-                skillRangeIndicator.SetActive(false);
-                StartCoroutine(Skill_RestraintCo());
-            }
+            StartCoroutine(isPressedCode());
+            //Vector3 mousePosition = Input.mousePosition;
+            //mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
+            //Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
+            //Vector3 targetPosition = playerCamera1.ScreenToWorldPoint(mousePosition);
+            //targetPosition.y = 0.2f;
+            //skillRangeIndicator.transform.position = targetPosition;
         }
-        else if (whatKey =='R')
+
+        yield return new WaitUntil(() => (!P_KState.EDown && !P_KState.RDown && !P_KState.FDown));
+        if (isPressed)
         {
-            if (!P_KState.RDown)
+            switch (whatKey)
             {
-                isPressed = false;
-                skillRangeIndicator.SetActive(false);
-                StartCoroutine(Skill_RestraintCo());
-            }
-        }
-        else if (whatKey =='F')
-        {
-            if (!P_KState.FDown)
-            {
-                isPressed = false;
-                skillRangeIndicator.SetActive(false);
-                StartCoroutine(Skill_RestraintCo());
+                case 'E':
+                case 'R':
+                case 'F':
+                    Debug.Log("switch false");
+                    isPressed = false; P_States.isSkill = false;
+                    P_InputHandle.skillBtnOnclick(whatKey);
+                    skillRangeIndicator.SetActive(false);
+                    StopCoroutine(isPressedCode());
+                    StartCoroutine(Skill_RestraintCo());
+                    break;
+                default: break;
             }
         }
     }
 
     IEnumerator Skill_RestraintCo()
     {
-        P_States.isSkill = true;
-
         Collider[] colliders = Physics.OverlapCapsule(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f,
                                                         skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f,
                                                         cylinderRadius); //범위 원기둥으로 만듦
@@ -353,9 +347,13 @@ public class PlayerSkills : MonoBehaviour
                 if (monsterPattern != null)
                 {
                     monsterPattern.isRestraint = true;
-                    effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
                     effect.transform.position = monsterPattern.transform.position;
-                    monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
+                    if (monsterEffects.ContainsKey(monsterPattern))
+                    {
+                        Debug.Log("이미 있는 키값");
+                    }
+                    else monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
                     Debug.Log("속박");
                 }
             }
@@ -375,6 +373,7 @@ public class PlayerSkills : MonoBehaviour
                     monsterPattern.isRestraint = false;
                     if (monsterEffects.ContainsKey(monsterPattern))
                     {
+                        Debug.Log("effect off");
                         Effect monsterEffect = monsterEffects[monsterPattern];
                         monsterEffect.StopEffect(); //이펙트 멈춤
                         monsterEffects.Remove(monsterPattern); // 이펙트를 딕셔너리에서 제거 
@@ -383,8 +382,6 @@ public class PlayerSkills : MonoBehaviour
                 }
             }
         }
-        P_States.isSkill = false;
-
     }
 
 
@@ -426,16 +423,18 @@ public class PlayerSkills : MonoBehaviour
 
             case "Heal":
                 P_States.isSkill = true;
+                P_InputHandle.skillBtnOnclick(whatKey);
                 StartCoroutine(PlayerHeal_co());
                 break;
 
             case "Ultimate":
                 P_States.isSkill = true;
+                P_InputHandle.skillBtnOnclick(whatKey);
                 Debug.Log("스킬Q");
                 break;
 
             case "Restraint":
-                Skill_Restraint(whatKey);
+                StartCoroutine(Skill_Restraint(whatKey));
                 Debug.Log("속박스킬");
                 break;
 
