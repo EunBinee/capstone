@@ -97,7 +97,7 @@ public class Monster : MonoBehaviour
             normalHP = monsterData.MaxHP - weaknessHP;
             Debug.Log($"normalHP   {normalHP}");
 
-            monsterWeaknessNum = curMonsterWeaknessNum;
+            curMonsterWeaknessNum = monsterWeaknessNum;
         }
     }
 
@@ -160,11 +160,13 @@ public class Monster : MonoBehaviour
                     }
                     else if (HitWeakness)
                     {
+                        curMonsterWeaknessNum--;
                         if (weaknessHP != 0)
                         {
+                            Debug.Log($" curMonsterWeaknessNum    {curMonsterWeaknessNum},   normalHP {normalHP}");
                             if (weaknessHP - damage <= 0 || (curMonsterWeaknessNum == 0 && normalHP == 0))
                             {
-                                damage = weaknessHP;
+                                damage = monsterData.HP;
                                 weaknessHP = 0;
                             }
                             else
