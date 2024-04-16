@@ -394,7 +394,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //움직임.
         if (navMeshAgent.isStopped == true)
             SetMove_AI(true);
-        navMeshAgent.SetDestination(playerTrans.position);
+
+        navMeshAgent.SetDestination(playerTrans.position); 
         SetAnimation(MonsterAnimation.Move);
         //몬스터와 플레이어 사이의 거리 체크
         CheckDistance();
@@ -451,8 +452,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 {
                     ChangeMonsterState(MonsterState.Attack);
                     Monster_Motion(MonsterMotion.Long_Range_Attack);
-                }
-
+                }                
                 break;
 
             case MonsterState.Attack:
@@ -555,6 +555,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
         int attackCount = 0;
         while (attackCount < 3) // 공격을 3번 반복
         {
+            yield return new WaitUntil(() =>isRestraint ==false );
+
             int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
             EnabledWeaponsCollider(true);
             SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);

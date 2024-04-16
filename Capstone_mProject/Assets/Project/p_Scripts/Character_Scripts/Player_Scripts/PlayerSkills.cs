@@ -7,6 +7,7 @@ using UnityEditor.AnimatedValues;
 using System.Security.Claims;
 using System;
 
+
 public class PlayerSkills : MonoBehaviour
 {
     public PlayerController _controller;// = new PlayerController();
@@ -37,6 +38,13 @@ public class PlayerSkills : MonoBehaviour
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
 
+    //*스킬 속박 
+    private float skillDuration = 5f; // 스킬의 지속 시간
+    private bool isPressed = false;
+    public GameObject skillRangeIndicator; // 원 범위를 나타낼 오브젝트
+    public float cylinderRadius = 5f; // 스킬 속박범위 원기둥 반지름
+    public float cylinderHeight = 5f; // 스킬 속박범위 원기둥 높이
+
     void Awake()
     {
         skillMap = new Dictionary<string, SOSkill>();
@@ -64,6 +72,8 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveSample1 = true;
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
+        SkillMapAdd("Restraint", P_SkillInfo.restraint);
+        P_SkillInfo.haveRestraint = true;
     }
 
     void FixedUpdate()
@@ -250,6 +260,85 @@ public class PlayerSkills : MonoBehaviour
             yield return null;
         }
     }
+    private void Skill_Restraint()
+    {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            isPressed = true;
+            skillRangeIndicator.SetActive(true);
+        }
+
+        if(isPressed)
+        {
+            Vector3 mousePosition = Input.mousePosition;
+            mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
+            Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
+            Vector3 targetPosition =playerCamera1.ScreenToWorldPoint(mousePosition);
+            targetPosition.y = 0.2f;
+            skillRangeIndicator.transform.position = targetPosition;
+        }
+
+        if(Input.GetKeyUp(KeyCode.Q))
+        {
+            isPressed = false;
+            skillRangeIndicator.SetActive(false);
+            StartCoroutine(Skill_RestraintCo());
+        }
+    }
+    IEnumerator Skill_RestraintCo()
+    {
+        P_States.isSkill = true;
+        
+        Collider[] colliders = Physics.OverlapCapsule(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f,
+                                                        skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f,
+                                                        cylinderRadius); //범위 원기둥으로 만듦
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Monster"))
+            {
+                MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
+                if(monsterPattern!=null)
+                {
+                    monsterPattern.isRestraint = true;
+                    //effect = GameManager.Instance.objectPooling.ShowEffect("Spatial section");
+                    //effect.transform.position = skillRangeIndicator.transform.position;
+                    Debug.Log("속박");
+                }
+            }
+        }
+        
+        // 일정 시간 후에 스킬 비활성화
+        yield return new WaitForSeconds(skillDuration);
+
+        // 스킬 비활성화
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Monster"))
+            {
+                // 오브젝트 다시 움직이게 하기 (예를 들어 Rigidbody가 있는 경우)
+                //Rigidbody rb = collider.GetComponent<Rigidbody>();
+                MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
+                if (monsterPattern != null)
+                { 
+                    monsterPattern.isRestraint = false;
+                    //effect.StopEffect();
+                    Debug.Log("속박풀림");
+                }
+            }
+        }
+        P_States.isSkill = false;
+       
+    }
+    
+    private void OnDrawGizmosSelected()
+    {
+        // 스킬 속박 범위 그리기
+        // Gizmos.color = Color.blue;
+        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        // Gizmos.DrawWireSphere(skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f, cylinderRadius);
+        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.left * cylinderRadius);
+        // Gizmos.DrawLine(skillRangeIndicator.transform.position - Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius, skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f + Vector3.right * cylinderRadius);
+    }
 
     public void skillMotion(string skillName)
     {
@@ -285,6 +374,11 @@ public class PlayerSkills : MonoBehaviour
             case "Ultimate":
                 P_States.isSkill = true;
                 Debug.Log("스킬Q");
+                break;
+
+            case "Restraint":
+                Skill_Restraint();
+                Debug.Log("속박스킬");
                 break;
 
             default:

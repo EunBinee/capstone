@@ -35,8 +35,6 @@ public class MonsterPattern : MonoBehaviour
     protected Vector3 curHitPos;
     protected Quaternion curHitQuaternion;
 
-
-
     public enum MonsterState
     {
         Roaming,
@@ -84,6 +82,8 @@ public class MonsterPattern : MonoBehaviour
     public bool isGoingBack = false;
     public bool isGettingHit = false;
     public bool isShield = false; //몬스터와 플레이어사이에 방패있는지 여부 
+    public bool isRestraint = false;
+    public float RestraintDuration = 5.0f; 
 
     public enum MonsterMotion
     {
@@ -132,12 +132,27 @@ public class MonsterPattern : MonoBehaviour
         capsuleCollider.enabled = true;
 
         playerHide = false;
+
+        isRestraint = false;
+        RestraintDuration = 5.0f;
+
     }
 
     public void Update()
     {
-        Monster_Pattern();
-        useUpdate();
+        if(!isRestraint)
+        {
+            Monster_Pattern();
+            useUpdate();
+        }
+        else 
+        {
+            SetAnimation(MonsterAnimation.Idle);
+            if(navMeshAgent)
+                SetMove_AI(false);
+            //StartCoroutine(RestraintMonsters());
+        }
+       
 
         if (m_monster.monsterData.movingMonster)
         {
@@ -425,6 +440,19 @@ public class MonsterPattern : MonoBehaviour
         return effect;
     }
 
+    public Effect GetRestraint(Vector3 randomPos, Transform parent = null, float angle = -1)
+    {
+        Effect effect;
+        //* 전기 이펙트
+        if (parent != null)
+            effect = GameManager.Instance.objectPooling.ShowEffect("Spatial section", parent);
+        else
+            effect = GameManager.Instance.objectPooling.ShowEffect("Spatial section");
+        effect.transform.position = randomPos;
+
+        return effect;
+    }
+
     // * ---------------------------------------------------------------------------------------//
     //! 발사체 쏘는 공격시, 플레이어 앞에 물체가 있는지 확인
     public virtual bool HidePlayer(Vector3 curOriginPos, Vector3 targetDir)
@@ -655,6 +683,11 @@ public class MonsterPattern : MonoBehaviour
         forcedReturnHome = false;
     }
 
+    IEnumerator RestraintMonsters()
+    {
+        yield return new WaitForSeconds(RestraintDuration);
+        isRestraint = false;
+    }
     //*-------------------------------------------------------------------------------------//
     //현재 객체의 아래로 레이를 쏴서 아래에 있는 객체의 접점 point를 가지고와줌
     public Vector3 GetGroundPos(Transform raySelf)

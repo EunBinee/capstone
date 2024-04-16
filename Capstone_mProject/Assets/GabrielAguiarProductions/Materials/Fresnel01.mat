@@ -35,7 +35,9 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: Fresnel01
   m_Shader: {fileID: -6465566751694194690, guid: e4f71812cbcc40b47bb3530d6f3cf7ef, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _BUILTIN_ALPHATEST_ON
+  - _BUILTIN_AlphaClip
   m_InvalidKeywords:
   - _ALPHATEST_ON
   - _SURFACE_TYPE_TRANSPARENT
@@ -44,7 +46,7 @@ Material:
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 3000
   stringTagMap:
-    RenderType: Transparent
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - DepthOnly
   m_SavedProperties:
@@ -65,6 +67,17 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 1
+    - _BUILTIN_AlphaClip: 1
+    - _BUILTIN_Blend: 0
+    - _BUILTIN_CullMode: 2
+    - _BUILTIN_DstBlend: 0
+    - _BUILTIN_QueueControl: 1
+    - _BUILTIN_QueueOffset: 0
+    - _BUILTIN_SrcBlend: 1
+    - _BUILTIN_Surface: 0
+    - _BUILTIN_ZTest: 4
+    - _BUILTIN_ZWrite: 1
+    - _BUILTIN_ZWriteControl: 0
     - _Blend: 0
     - _CastShadows: 1
     - _Cull: 2

@@ -222,6 +222,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
                 yield return null;
             }
+
+            yield return new WaitUntil(() =>isRestraint ==false );
         }
     }
 
@@ -319,6 +321,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         while (time < 1.5f)
         {
+            yield return new WaitUntil(() =>isRestraint ==false );
             transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
 
             if (transform.rotation == targetAngle)
@@ -388,6 +391,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
+        yield return new WaitUntil(() =>isRestraint ==false );
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
@@ -542,6 +546,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos)
     {
+        yield return new WaitUntil(() =>isRestraint ==false );
         //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
         Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
         playerHide = HidePlayer(muzzlePos.position, curDirection.normalized);
