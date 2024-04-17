@@ -143,10 +143,19 @@ public class Monster : MonoBehaviour
                     {
                         if (normalHP > 0)
                         {
+
                             if (normalHP - damage <= 0)
                             {
-                                damage = normalHP;
-                                normalHP = 0;
+                                if (curMonsterWeaknessNum == 0)
+                                {
+                                    damage = monsterData.HP;
+                                    normalHP = 0;
+                                }
+                                else
+                                {
+                                    damage = normalHP;
+                                    normalHP = 0;
+                                }
                             }
                             else
                             {
@@ -164,9 +173,15 @@ public class Monster : MonoBehaviour
                         if (weaknessHP != 0)
                         {
                             Debug.Log($" curMonsterWeaknessNum    {curMonsterWeaknessNum},   normalHP {normalHP}");
-                            if (weaknessHP - damage <= 0 || (curMonsterWeaknessNum == 0 && normalHP == 0))
+
+                            if (curMonsterWeaknessNum == 0 && normalHP == 0)
                             {
                                 damage = monsterData.HP;
+                                weaknessHP = 0;
+                            }
+                            else if (weaknessHP - damage <= 0 || curMonsterWeaknessNum == 0)
+                            {
+                                damage = weaknessHP;
                                 weaknessHP = 0;
                             }
                             else
