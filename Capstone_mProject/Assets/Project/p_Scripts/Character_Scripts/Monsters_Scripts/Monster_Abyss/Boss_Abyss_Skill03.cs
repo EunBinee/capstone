@@ -396,8 +396,8 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         effect.gameObject.transform.rotation = muzzlePos.rotation;
 
         //* 사운드
-        monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
-
+        // monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill03", false);
         yield return null;
     }
 

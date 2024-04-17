@@ -223,7 +223,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 yield return null;
             }
 
-            yield return new WaitUntil(() =>isRestraint ==false );
+            yield return new WaitUntil(() => isRestraint == false);
         }
     }
 
@@ -321,7 +321,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         while (time < 1.5f)
         {
-            yield return new WaitUntil(() =>isRestraint ==false );
+            yield return new WaitUntil(() => isRestraint == false);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
 
             if (transform.rotation == targetAngle)
@@ -329,7 +329,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             else
             {
                 time += Time.deltaTime;
-                 yield return new WaitUntil(() =>isRestraint ==false );
+                yield return new WaitUntil(() => isRestraint == false);
                 //yield return null;
             }
         }
@@ -392,12 +392,13 @@ public class MonsterPattern_Monster02 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
-        yield return new WaitUntil(() =>isRestraint ==false );
+        yield return new WaitUntil(() => isRestraint == false);
         Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
         //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
+        //m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
+        m_monster.SoundPlay("Monster02_Alarm", false);
 
         yield return new WaitForSeconds(1.2f);
 
@@ -405,7 +406,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
         //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
+        // m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
+        m_monster.SoundPlay("Monster02_ShortAttack", false);
 
         yield return new WaitForSeconds(0.2f);
 
@@ -547,7 +549,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     IEnumerator Fire(Vector3 targetPos, Transform muzzlePos)
     {
-        yield return new WaitUntil(() =>isRestraint ==false );
+        yield return new WaitUntil(() => isRestraint == false);
         //* 발사체가 나가가는 부분 (총구)에서 플레이어로 향하는 방향 벡터
         Vector3 curDirection = GetDirection(targetPos, muzzlePos.position);
         playerHide = HidePlayer(muzzlePos.position, curDirection.normalized);
@@ -587,8 +589,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             effect.transform.rotation = targetAngle;
 
             //! 사운드 
-            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-
+            // m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            m_monster.SoundPlay("Monster02_LongAttack", false);
             //몬스터 몸 흔들리는 연출//
             if (shake_co == null)
                 shake_co = StartCoroutine(Shake(0.1f));
@@ -742,7 +744,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
             m_monster.gameObject.SetActive(false);
         };
         //! 사운드 => 터지는 소리
-        m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        // m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        m_monster.SoundPlay("Monster02_Death", false);
 
         //yield return new WaitForSeconds(5f);
 

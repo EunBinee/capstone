@@ -395,7 +395,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         if (navMeshAgent.isStopped == true)
             SetMove_AI(true);
 
-        navMeshAgent.SetDestination(playerTrans.position); 
+        navMeshAgent.SetDestination(playerTrans.position);
         SetAnimation(MonsterAnimation.Move);
         //몬스터와 플레이어 사이의 거리 체크
         CheckDistance();
@@ -452,7 +452,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 {
                     ChangeMonsterState(MonsterState.Attack);
                     Monster_Motion(MonsterMotion.Long_Range_Attack);
-                }                
+                }
                 break;
 
             case MonsterState.Attack:
@@ -555,7 +555,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         int attackCount = 0;
         while (attackCount < 3) // 공격을 3번 반복
         {
-            yield return new WaitUntil(() =>isRestraint ==false );
+            yield return new WaitUntil(() => isRestraint == false);
 
             int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
             EnabledWeaponsCollider(true);
@@ -575,7 +575,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
             effect.transform.position = attackEffectPos.position;
 
             //!!!!!---사운드
-            m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            // m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            m_monster.SoundPlay("Monster01_ShortAttack", false);
 
             yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
             EnabledWeaponsCollider(false);
@@ -608,7 +609,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     //*원거리 공격 01
     IEnumerator Long_Range_Attack_Monster01()
     {
-        yield return new WaitUntil(() =>isRestraint ==false );
+        yield return new WaitUntil(() => isRestraint == false);
         float defaultSpeed = navMeshAgent.speed;
         float defaultAcceleration = navMeshAgent.acceleration;
         SetMove_AI(false);
@@ -682,7 +683,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     capsuleCollider.enabled = false;
 
                     //! 사운드
-                    m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
+                    //m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
+                    m_monster.SoundPlay("Monster01_LongAttack", false);
                     while (true)
                     {
                         //공격
@@ -867,7 +869,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         yield return new WaitForSeconds(0.5f);
         //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        // m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        m_monster.SoundPlay("Monster01_Death", false);
         m_monster.RetrunHPBar();
         SetAnimation(MonsterAnimation.Death);
 

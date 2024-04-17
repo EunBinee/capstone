@@ -53,7 +53,7 @@ public class Wreckage : MonoBehaviour
         }
 
         //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
+        m_monster.SoundPlay("Boss_Skill01", false); //쿵떨어지는 소리
     }
 
     public void StartDropWreckage(Vector3 wreckageRandomPos)

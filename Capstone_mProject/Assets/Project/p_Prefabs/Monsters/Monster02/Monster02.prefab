@@ -403,8 +403,12 @@ MonoBehaviour:
     monsterType: 2
     isBottomlessMonster: 0
     bottomlessMonsterLegs: []
+    isShieldMonster: 0
     useWeakness: 0
-    weakness: []
+    weaknessList: []
+    haveLastWeakness: 0
+    lastWeaknessList: []
+    weaknessDamageRate: 0.05
     HPBarPos: {fileID: 1270242291857488139}
     MaxHP: 4000
     HP: 0
@@ -418,14 +422,21 @@ MonoBehaviour:
     effectTrans: {fileID: 4500452724142811108}
   monsterPattern: {fileID: 0}
   bossMonsterPattern: {fileID: 0}
+  soundName:
+  - Monster02_ShortAttack
+  - Monster02_LongAttack
+  - Monster02_Alarm
+  - Monster02_Death
   monsterSoundClips:
-  - {fileID: 8300000, guid: b14b1a950b77335479071f7d00e56c23, type: 3}
   - {fileID: 8300000, guid: ae63ffcf0740a934994848dfb78f261b, type: 3}
+  - {fileID: 8300000, guid: b14b1a950b77335479071f7d00e56c23, type: 3}
   - {fileID: 8300000, guid: 321c075fade503f419d9559cc6da58e2, type: 3}
   - {fileID: 8300000, guid: 341a244ac4938284280f82e31de3544c, type: 3}
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
   resetHP: 0
+  monsterWeaknessNum: 0
+  curMonsterWeaknessNum: 0
 --- !u!1 &925202071775191787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1613,8 +1624,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cabe5edb6da7bc4c8747fdf2e223ff2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_monster: {fileID: 0}
+  m_animator: {fileID: 0}
   rigid: {fileID: 0}
+  playerlayerMask: 0
   playerTargetPos: {fileID: 0}
+  navMeshAgent: {fileID: 0}
   playerHide: 0
   noAttack: 0
   canAttack: 0
@@ -1624,6 +1639,9 @@ MonoBehaviour:
   isTracing: 0
   isGoingBack: 0
   isGettingHit: 0
+  isShield: 0
+  isRestraint: 0
+  RestraintDuration: 5
   buttomGameObject: {fileID: 2711203802099165355}
   bulletPrefabsName: Monster02_Bullet
   bulletsParent: {fileID: 112552631435362069}

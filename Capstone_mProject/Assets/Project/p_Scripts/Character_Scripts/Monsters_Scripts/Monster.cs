@@ -11,7 +11,12 @@ public class Monster : MonoBehaviour
     public MonsterData monsterData;
     public MonsterPattern monsterPattern;
     public MonsterPattern_Boss bossMonsterPattern;
+
+    //* 사운드
+    public List<string> soundName;
     public AudioClip[] monsterSoundClips;
+    public Dictionary<string, AudioClip> monsterSoundDic;
+
     public PlayerController playerController;
     private Transform playerTrans;
 
@@ -21,16 +26,6 @@ public class Monster : MonoBehaviour
     public int curMonsterWeaknessNum;
     double normalHP = 0f;
     double weaknessHP = 0f;
-
-    public enum monsterSound
-    {
-        Hit_Close,
-        Hit_Long,
-        Alarm,
-        Death,
-        Phase,
-        Hit_Long2
-    }
 
     private void Awake()
     {
@@ -59,6 +54,25 @@ public class Monster : MonoBehaviour
         //GetHPBar();
         if (!resetHP)
             ResetHP();
+
+        SoundSetting();
+    }
+
+    private void SoundSetting()
+    {
+        if (monsterSoundClips.Length > 0)
+        {
+            monsterSoundDic = new Dictionary<string, AudioClip>();
+            for (int i = 0; i < monsterSoundClips.Length; i++)
+            {
+                monsterSoundDic.Add(soundName[i], monsterSoundClips[i]);
+            }
+        }
+        /*
+            public List<string> soundName;
+            public AudioClip[] monsterSoundClips;
+            public Dictionary<string, AudioClip> monsterSoundDic;
+        */
     }
 
     private void Reset()
@@ -265,13 +279,14 @@ public class Monster : MonoBehaviour
     }
     //*------------------------------------------------------------------------------------------//
     //* 사운드 //
-    public void SoundPlay(monsterSound m_sound, bool useLoop = false)
+
+    public void SoundPlay(string m_sound, bool useLoop = false)
     {
-        SoundManager.Instance.Play_MonsterSound(monsterSoundClips[(int)m_sound], useLoop);
+        SoundManager.Instance.Play_MonsterSound(monsterSoundDic[m_sound], useLoop);
     }
-    public void SoundPlayStop(monsterSound m_sound)
+    public void SoundPlayStop(string m_sound)
     {
-        SoundManager.Instance.Stop_MonsterSound(monsterSoundClips[(int)m_sound]);
+        SoundManager.Instance.Stop_MonsterSound(monsterSoundDic[m_sound]);
     }
     //*------------------------------------------------------------------------------------------//
     //* HP바 //

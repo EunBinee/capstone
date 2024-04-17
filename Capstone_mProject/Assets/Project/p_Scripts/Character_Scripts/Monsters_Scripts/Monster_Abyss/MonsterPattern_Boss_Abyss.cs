@@ -478,13 +478,14 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //- 대화 시스템 ON
 
             //! 사운드
-            m_monster.SoundPlay(Monster.monsterSound.Phase, true);
+            // m_monster.SoundPlay(Monster.monsterSound.Phase, true);
+            m_monster.SoundPlay("Boss_ChangePhase", true);
 
             yield return new WaitForSeconds(10f);
 
             //! 사운드 멈춤
-            m_monster.SoundPlayStop(Monster.monsterSound.Phase);
-
+            //  m_monster.SoundPlayStop(Monster.monsterSound.Phase);
+            m_monster.SoundPlayStop("Boss_ChangePhase");
             GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3f, 3f);
             //* 연기 이펙트
             effect = GameManager.Instance.objectPooling.ShowEffect("Smoke_Effect_04");
@@ -837,11 +838,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
 
             if (!useOneSound)
-                m_monster.SoundPlay(Monster.monsterSound.Death, false);
+            {
+                // m_monster.SoundPlay(Monster.monsterSound.Death, false);
+                m_monster.SoundPlay("Boss_Death", false);
+
+            }
             else if (useOneSound && !useExplosionSound)
             {
                 useExplosionSound = true;
-                m_monster.SoundPlay(Monster.monsterSound.Death, false);
+                //m_monster.SoundPlay(Monster.monsterSound.Death, false);
+                m_monster.SoundPlay("Boss_Death", false);
             }
         }
     }

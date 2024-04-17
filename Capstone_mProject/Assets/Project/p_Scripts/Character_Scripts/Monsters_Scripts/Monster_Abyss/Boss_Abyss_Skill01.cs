@@ -183,8 +183,8 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         transform.position = new Vector3(curTargetPos.x, curTargetPos.y, curTargetPos.z);
 
         //* 사운드
-        monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
-
+        //monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill01", false);
         //* 데미지 체크
         if (getDamage)
             monsterPattern_Abyss.CheckPlayerDamage(6.5f, transform.position, 20, true);

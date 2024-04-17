@@ -575,7 +575,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
 
         yield return new WaitForSeconds(0.5f);
         //! 사운드
-        m_monster.SoundPlay(Monster.monsterSound.Death, false);
+        //m_monster.SoundPlay("Monster01_Death", false);
         m_monster.RetrunHPBar();
         //SetAnimation(MonsterAnimation.Death);
 

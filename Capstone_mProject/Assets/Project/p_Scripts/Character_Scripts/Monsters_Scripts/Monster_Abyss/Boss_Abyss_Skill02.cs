@@ -287,11 +287,16 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
 
             //! 사운드
             if (!soundCancle)
-                monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+            {
+                //monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+                monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill02_phase01", false);
+            }
+
             else if (soundCancle && !monsterPattern_Abyss.useExplosionSound)
             {
                 monsterPattern_Abyss.useExplosionSound = true;
-                monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+                //monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
+                monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill02_phase01", false);
             }
         }
         else
@@ -310,11 +315,15 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             yield return new WaitForSeconds(1f);
             //! 사운드
             if (!soundCancle)
-                monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+            {
+                // monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+                monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill02_phase02", false);
+            }
             else if (soundCancle && !monsterPattern_Abyss.useExplosionSound)
             {
                 monsterPattern_Abyss.useExplosionSound = true;
-                monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+                //monsterPattern_Abyss.m_monster.SoundPlay(Monster.monsterSound.Hit_Long2, false);
+                monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill02_phase02", false);
             }
         }
 

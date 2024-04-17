@@ -8514,6 +8514,58 @@ PrefabInstance:
       propertyPath: monsterData.MaxHP
       value: 10000
       objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[0]
+      value: Boss_Skill01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[1]
+      value: Boss_Skill02_phase01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[2]
+      value: Boss_Skill02_phase02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[3]
+      value: Boss_Skill03
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[4]
+      value: Boss_ChangePhase
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[5]
+      value: Boss_Death
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 6d162bc6330041b489812a0a1db8fe15, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 605c7659dc4cacb42ac95a2ea24d6530, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[2]
+      value: 
+      objectReference: {fileID: 8300000, guid: 252f36719f593564baa08f238472096f, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[3]
+      value: 
+      objectReference: {fileID: 8300000, guid: 8761483c18ce217449a03235844ac74d, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: e89e84fddf1b42341bc54ed80547dba3, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9824b97870715c44b9b2911e7de8f00c, type: 3}
     - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: bossText
       value: 
@@ -9789,7 +9841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6289568037670363905, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.399258
+      value: 48.399265
       objectReference: {fileID: 0}
     - target: {fileID: 6289568037670363905, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationOffset.x
