@@ -38,6 +38,7 @@ public class PlayerUI_info : MonoBehaviour
     List<PlayerSkillName> playerSkillList;
     private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     [SerializeField] List<SOSkill> sskill;
+    [SerializeField] List<SOSkill> non_sskill;
 
     Color selectColor;
     Color unselectColor;
@@ -119,14 +120,34 @@ public class PlayerUI_info : MonoBehaviour
     public void skillPresetting()
     {
         sskill = new List<SOSkill>();
+        non_sskill = new List<SOSkill>();
         foreach (PlayerSkillName i in playerSkillList)
         {
             if (i.isSelect)
             {
                 sskill.Add(nameToSkill(i.skillName.text));
             }
+            else
+            {
+                non_sskill.Add(nameToSkill(i.skillName.text));
+            }
         }
-        p_controller._skillInfo.selectSkill = sskill;
+        if (sskill.Count < 3)   // 3개 미만 선택 했다면
+        {
+            int needSkillCnt = 3 - sskill.Count;
+            for (int i = 0; i < sskill.Count; i++)
+            {
+                p_controller._skillInfo.selectSkill[i] = sskill[i];
+            }
+            //* 나머지 넣기(skillMap 앞에서부터)
+            int j = 0;
+            for (int i = sskill.Count; i < 3; i++)
+            {
+                p_controller._skillInfo.selectSkill[i] = non_sskill[j++];
+            }
+            //p_controller._skillInfo.selectSkill = sskill;
+        }
+        else p_controller._skillInfo.selectSkill = sskill;
     }
     private SOSkill nameToSkill(string namee)
     {
