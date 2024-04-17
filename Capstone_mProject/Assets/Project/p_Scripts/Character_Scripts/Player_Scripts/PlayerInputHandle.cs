@@ -44,7 +44,9 @@ public class PlayerInputHandle : MonoBehaviour
 
         skillIconApply();
     }
-    public void skillIconApply(){
+    public void skillIconApply()
+    {
+        //todo: 선택스킬이 null이면 자동으로 리스트 앞에서부터 넣기
         skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
         skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
         skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
@@ -326,7 +328,7 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
                 skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]),'F');
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
                 //skill_F.OnClicked();
             }
         }
@@ -339,11 +341,12 @@ public class PlayerInputHandle : MonoBehaviour
             }
             if (skill_Q.imgCool.fillAmount == 0)
                 P_Skills.skillMotion("Ultimate", 'Q');
-                //skill_Q.OnClicked();
+            //skill_Q.OnClicked();
         }
     }
 
-    public void skillBtnOnclick(char key){
+    public void skillBtnOnclick(char key)
+    {
         switch (key)
         {
             case 'E':
