@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text hitNum;
     public GameObject hitUI;
     public GameObject hitUiGuide;
+    public GameObject portrait;
     public GameObject chargingImg;
     public Slider HPgauge;
     float nowHitTime;
@@ -133,6 +134,7 @@ public class PlayerController : MonoBehaviour
         hitNum = playerUI_info.hitNum;
         hitUI = playerUI_info.hitUI;
         hitUiGuide = playerUI_info.hitUiGuide;
+        portrait = playerUI_info.portrait;
         chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
@@ -175,6 +177,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitUiGuide.SetActive(false);
+            portrait.SetActive(false);
             hitNum.gameObject.SetActive(false);
             chargingImg.SetActive(false);
             EnablePlayerUI = false;
@@ -185,6 +188,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(true);
             hitUI.SetActive(true);
             hitUiGuide.SetActive(true);
+            portrait.SetActive(true);
             hitNum.gameObject.SetActive(true);
             chargingImg.SetActive(true);
             P_Movement.skill_T.gameObject.transform.position = originTpos;

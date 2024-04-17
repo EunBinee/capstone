@@ -14,6 +14,7 @@ public class PlayerUI_info : MonoBehaviour
 
     [Space]
     [Header("Player HP")]
+    public GameObject portrait;
     public Slider HPgauge;
 
     [Space]
