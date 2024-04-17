@@ -33,7 +33,7 @@ public class PlayerSkills : MonoBehaviour
     //public List<SOSkill> selectSkill;
     private int selectSize = 3;
 
-    public ScrollRect skillScrollWindow;
+    public GameObject skillScrollWindow;
     public bool presetWin;
     public bool once = false;
     // 스킬 맵 업데이트 시 발동할 이벤트

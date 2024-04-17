@@ -41,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 camForward;
 
-    public ScrollRect skillScrollWindow;
+    public GameObject skillScrollWindow;
 
     void Start()
     {
@@ -224,9 +224,10 @@ public class PlayerMovement : MonoBehaviour
 
     private bool HandleJump()
     {
-        if (Input.GetKey(KeyCode.Space) && !P_States.isJumping && !P_States.isElectricShock)
+        if (Input.GetKey(KeyCode.Space)
+            && !P_States.isJumping
+            && !P_States.isElectricShock)
         {
-            //Debug.Log(P_Value.hitDistance);
             P_Input.jumpMovement = 1;
             return true;
         }
@@ -265,17 +266,24 @@ public class PlayerMovement : MonoBehaviour
     private void HandleDodge()
     {
         P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
-        if (P_States.previousDodgeKeyPress && P_States.currentDodgeKeyPress && P_States.isDodgeing
+
+        if (P_States.previousDodgeKeyPress
+            && P_States.currentDodgeKeyPress
+            && P_States.isDodgeing
             && returnDodgeAnim())
         {
             //Debug.Log("이전 프레임에도 누름!");
             return;
         }
         else if (!returnDodgeAnim()
-        && P_States.currentDodgeKeyPress && !P_States.isDodgeing && P_Value.moveAmount > 0 && !P_States.isStartComboAttack)
+            && P_States.currentDodgeKeyPress
+            && !P_States.isDodgeing
+            && P_Value.moveAmount > 0
+            && !P_States.isStartComboAttack)
         {
             P_States.isDodgeing = true;
         }
+
         P_States.previousDodgeKeyPress = P_States.currentDodgeKeyPress;
     }
     private void dodgeOut()
@@ -531,7 +539,6 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 
             Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
-
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {

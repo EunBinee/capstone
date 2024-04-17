@@ -367,6 +367,7 @@ public class PlayerInputHandle : MonoBehaviour
                 break;
             default: break;
         }
+        P_States.isSkill = false;
     }
 
     public string mapValueReturnKey(SOSkill skill)
