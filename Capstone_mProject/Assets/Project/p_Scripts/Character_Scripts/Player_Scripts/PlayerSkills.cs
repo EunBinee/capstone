@@ -129,7 +129,10 @@ public class PlayerSkills : MonoBehaviour
             OnSkillMapUpdated?.Invoke();
             if (P_SkillInfo.selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
-                P_SkillInfo.selectSkill.Add(skill); // 자동 추가
+                if (name == "Bowmode" || name == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+                { }
+                else
+                    P_SkillInfo.selectSkill.Add(skill); // 자동 추가
             }
         }
     }
@@ -286,7 +289,7 @@ public class PlayerSkills : MonoBehaviour
 
     IEnumerator Skill_Restraint(char whatKey)
     {
-        yield return new WaitUntil(() => (P_KState.EDown||P_KState.RDown||P_KState.FDown));
+        yield return new WaitUntil(() => (P_KState.EDown || P_KState.RDown || P_KState.FDown));
         if (!isPressed)
         {
             switch (whatKey)
@@ -451,7 +454,7 @@ public class PlayerSkills : MonoBehaviour
         {
             P_KState.PDown = false;
             if (!isOn) { isOn = true; once = false; } // 창 켜짐
-            else { isOn = false; P_InputHandle.skillIconApply();} // 창 꺼짐
+            else { isOn = false; P_InputHandle.skillIconApply(); } // 창 꺼짐
             skillScrollWindow.gameObject.SetActive(isOn);
             presetWin = isOn;
             P_Controller.PlayerUI_SetActive(!isOn);
