@@ -754,8 +754,6 @@ public class PlayerMovement : MonoBehaviour
         while (true)
         {
             P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
-                                        //P_Controller.ChangePlayerState(PlayerState.ComboAttack);
-                                        //AnimState(PlayerState.ComboAttack, index);
             switch (P_Value.index)
             {
                 case 1:
@@ -837,32 +835,37 @@ public class PlayerMovement : MonoBehaviour
 
             //* 공격 시 앞으로 찔끔찔끔 가도록
             Vector3 dir;
-            //앞이 막혀있지 않고 적이 있다면 //* 전진
-            if (P_Value.nowEnemy != null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
+            //앞이 막혀있지 않고
+            if (P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
             {
-                Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
-
-                if (nowEnemy_Monster.monsterData.isBottomlessMonster)
+                //적이 있다면 //* 전진
+                if (P_Value.nowEnemy != null)
                 {
-                    int curW_index = nowEnemy_Monster.GetIndex_NearestLegs(this.transform);
+                    Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
-                    Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x, 0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
-                    dir = (monster_ - this.transform.position).normalized;
+                    if (nowEnemy_Monster.monsterData.isBottomlessMonster)
+                    {
+                        int curW_index = nowEnemy_Monster.GetIndex_NearestLegs(this.transform);
+
+                        Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x,
+                                                            0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
+                        dir = (monster_ - this.transform.position).normalized;
+                    }
+                    else
+                    {
+                        dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                    }
+
+                    Vector3 pos = transform.position + dir * 4f;
+                    transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
                 }
-                else
+                //적이 없다면 //* 전진
+                else if (P_Value.nowEnemy == null)
                 {
-                    dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                    dir = this.gameObject.transform.forward.normalized;
+                    Vector3 pos = transform.position + dir * 2f;
+                    transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
                 }
-
-                Vector3 pos = transform.position + dir * 4f;
-                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
-            }
-            //앞이 막혀있지 않고 적이 없다면 //* 전진
-            else if (P_Value.nowEnemy == null && P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
-            {
-                dir = this.gameObject.transform.forward.normalized;
-                Vector3 pos = transform.position + dir * 2f;
-                transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
             }
             //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
             else if (P_PhysicsCheck.forwardHit != null || !P_States.canGoForwardInAttack)

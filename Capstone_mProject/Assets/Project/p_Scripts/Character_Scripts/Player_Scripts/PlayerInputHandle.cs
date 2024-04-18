@@ -53,8 +53,6 @@ public class PlayerInputHandle : MonoBehaviour
     }
     void Update()
     {
-        //WASDInput();
-        //KeyInput();
         foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
         {
             if (Input.GetKeyDown(keyCode))
@@ -63,9 +61,9 @@ public class PlayerInputHandle : MonoBehaviour
                 {
                     case KeyCode.Q: P_KState.QDown = true; break;   //궁
                     case KeyCode.W: P_KState.WDown = true; break;   //앞
-                    case KeyCode.E: P_KState.EDown = true; break;   //힐
-                    case KeyCode.R: P_KState.RDown = true; break;   //조준
-                    case KeyCode.T: P_KState.TDown = true; break;
+                    case KeyCode.E: P_KState.EDown = true; break;   //스킬1
+                    case KeyCode.R: P_KState.RDown = true; break;   //스킬2
+                    case KeyCode.T: P_KState.TDown = true; break;   //조준
                     case KeyCode.Y: P_KState.YDown = true; break;
                     case KeyCode.U: P_KState.UDown = true; break;
                     case KeyCode.I: P_KState.IDown = true; break;
@@ -74,7 +72,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.A: P_KState.ADown = true; break;   //좌
                     case KeyCode.S: P_KState.SDown = true; break;   //뒤
                     case KeyCode.D: P_KState.DDown = true; break;   //우
-                    case KeyCode.F: P_KState.FDown = true; break;
+                    case KeyCode.F: P_KState.FDown = true; break;   //스킬3
                     case KeyCode.G: P_KState.GDown = true; break;
                     case KeyCode.H: P_KState.HDown = true; break;
                     case KeyCode.J: P_KState.JDown = true; break;
@@ -87,7 +85,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = true; break;
                     case KeyCode.N: P_KState.NDown = true; break;
                     case KeyCode.M: P_KState.MDown = true; break;
-                    case KeyCode.CapsLock: P_States.isWalking = true; break;
+                    case KeyCode.CapsLock: P_States.isWalking = true; break;    //걷기 on
                     default: break;
                 }
             }
@@ -96,20 +94,20 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 switch (keyCode)
                 {
-                    case KeyCode.Q: P_KState.QDown = false; break;
-                    case KeyCode.W: P_KState.WDown = false; break;
-                    case KeyCode.E: P_KState.EDown = false; break;
-                    case KeyCode.R: P_KState.RDown = false; break;
-                    case KeyCode.T: P_KState.TDown = false; break;
+                    case KeyCode.Q: P_KState.QDown = false; break;  //궁
+                    case KeyCode.W: P_KState.WDown = false; break;  //앞
+                    case KeyCode.E: P_KState.EDown = false; break;  //스킬1
+                    case KeyCode.R: P_KState.RDown = false; break;  //스킬2
+                    case KeyCode.T: P_KState.TDown = false; break;  //조준
                     case KeyCode.Y: P_KState.YDown = false; break;
                     case KeyCode.U: P_KState.UDown = false; break;
                     case KeyCode.I: P_KState.IDown = false; break;
                     case KeyCode.O: P_KState.ODown = false; break;
                     case KeyCode.P: P_KState.PDown = false; break;
-                    case KeyCode.A: P_KState.ADown = false; break;
-                    case KeyCode.S: P_KState.SDown = false; break;
-                    case KeyCode.D: P_KState.DDown = false; break;
-                    case KeyCode.F: P_KState.FDown = false; break;
+                    case KeyCode.A: P_KState.ADown = false; break;  //좌
+                    case KeyCode.S: P_KState.SDown = false; break;  //뒤
+                    case KeyCode.D: P_KState.DDown = false; break;  //우
+                    case KeyCode.F: P_KState.FDown = false; break;  //스킬3
                     case KeyCode.G: P_KState.GDown = false; break;
                     case KeyCode.H: P_KState.HDown = false; break;
                     case KeyCode.J: P_KState.JDown = false; break;
@@ -122,7 +120,7 @@ public class PlayerInputHandle : MonoBehaviour
                     case KeyCode.B: P_KState.BDown = false; break;
                     case KeyCode.N: P_KState.NDown = false; break;
                     case KeyCode.M: P_KState.MDown = false; break;
-                    case KeyCode.CapsLock: P_States.isWalking = false; break;
+                    case KeyCode.CapsLock: P_States.isWalking = false; break;   //걷기 off
                     default: break;
                 }
             }
@@ -301,47 +299,36 @@ public class PlayerInputHandle : MonoBehaviour
         }
         if (P_KState.EDown && !P_States.isSkill)
         {
-            //P_KState.EDown = false;
             if (skill_E.imgCool.fillAmount == 0)
             {
                 skill_E.skill = P_SkillInfo.selectSkill[0];    //test 중 : aim
                 skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'E');
-                //skill_E.OnClicked();
             }
         }
         if (P_KState.RDown && !P_States.isSkill)
         {
-            //P_KState.RDown = false;
             if (skill_R.imgCool.fillAmount == 0)
             {
                 skill_R.skill = P_SkillInfo.selectSkill[1];    //test 중 : heal
                 skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'R');
-                //skill_R.OnClicked();
             }
         }
         if (P_KState.FDown && !P_States.isSkill)
         {
-            //P_KState.FDown = false;
             if (skill_F.imgCool.fillAmount == 0)
             {
                 skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
                 skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
-                //skill_F.OnClicked();
             }
         }
-        if (P_KState.QDown)
+        if (P_KState.QDown && !P_States.isSkill)
         {
             P_KState.QDown = false;
-            if (P_States.isSkill)
-            {
-                return;
-            }
             if (skill_Q.imgCool.fillAmount == 0)
                 P_Skills.skillMotion("Ultimate", 'Q');
-            //skill_Q.OnClicked();
         }
     }
 
