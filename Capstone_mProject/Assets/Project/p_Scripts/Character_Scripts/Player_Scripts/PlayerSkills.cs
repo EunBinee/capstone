@@ -278,11 +278,14 @@ public class PlayerSkills : MonoBehaviour
             Debug.Log("if (isPressed)");
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
+
             Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
             Vector3 targetPosition = playerCamera1.ScreenToWorldPoint(mousePosition);
             targetPosition.y = 0.2f;
+
             skillRangeIndicator.transform.position = targetPosition;
             Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
+            
             yield return null;
         }
     }

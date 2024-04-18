@@ -49,6 +49,10 @@ public class PlayerUI_info : MonoBehaviour
     Color unselectColor;
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
+    // private bool isAccessSlot = true; // 슬롯 접근가능 여부
+    // private bool isAccessSkill= true; // 스킬 접근가능 여부
+    // public bool IsAccess => isAccessSlot && isAccessSkill;
+    [SerializeField] private PlayerSkillTooltip skillTooltip; //아이템 정보 보여줄 툴팁 UI
 
     void Start()
     {
@@ -177,4 +181,5 @@ public class PlayerUI_info : MonoBehaviour
         }
         return null;
     }
+
 }

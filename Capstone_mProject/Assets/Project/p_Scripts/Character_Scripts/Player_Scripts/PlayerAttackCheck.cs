@@ -188,7 +188,6 @@ public class PlayerAttackCheck : MonoBehaviour
                         {
                             monster.monsterPattern.isShield = false;
                             playerHitShield(collisionPoint, otherQuaternion);
-                            //monster.monsterPattern.isShield = false;
                         }
                         else
                         {
@@ -300,9 +299,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
     public void playerHitShield(Vector3 collisionPoint, Quaternion otherQuaternion)
     {
-
-        //TODO: 나중에 연산식 사용.
-        int damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
+        int damageValue;
 
         GameManager.instance.damageCalculator.damageExpression = "A+B";
         GameManager.instance.damageCalculator.CalculateAndPrint();
