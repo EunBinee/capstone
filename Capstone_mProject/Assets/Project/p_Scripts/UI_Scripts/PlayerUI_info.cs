@@ -30,7 +30,7 @@ public class PlayerUI_info : MonoBehaviour
     public Image slot1Img;
     public Image slot2Img;
     public Image slot3Img;
-    public List<Image> slotImg;
+    //public List<Image> slotImg;
 
     [Space]
     [Header("Player 조준 카메라 관련")]
@@ -56,8 +56,8 @@ public class PlayerUI_info : MonoBehaviour
         SkillNameList.Clear();
         playerSkillList = new List<PlayerSkillName>();
         selectedSkillsIndex = new List<int>();
-        slotImg = new List<Image>();
-        slotImg.Clear();
+        //slotImg = new List<Image>();
+        //slotImg.Clear();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
         unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
@@ -88,13 +88,13 @@ public class PlayerUI_info : MonoBehaviour
                 curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[updatedSkills[i]].icon; // 스킬 아이콘 설정
                 playerSkillList.Add(curSkillName); // 리스트에 추가
                 curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
-                slotImg[i] = curSkillName.iconImg;
+                //slotImg[i] = curSkillName.iconImg;
             }
             SkillNameList = new List<string>(updatedSkills); // 스킬 목록 업데이트
 
-            slot1Img.sprite = slotImg[0].sprite;
-            slot2Img.sprite = slotImg[1].sprite;
-            slot3Img.sprite = slotImg[2].sprite;
+            //slot1Img.sprite = slotImg[0].sprite;
+            //slot2Img.sprite = slotImg[1].sprite;
+            //slot3Img.sprite = slotImg[2].sprite;
         }
     }
 
