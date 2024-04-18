@@ -53,19 +53,6 @@ public class DialogueController : MonoBehaviour
         StartCoroutine(ObjectChat(sentence));
     }
 
-    public static IEnumerator WaitForRealTime(float delay)
-    {
-        while (true)
-        {
-            float pauseEndTime = Time.realtimeSinceStartup + delay;
-            while (Time.realtimeSinceStartup < pauseEndTime)
-            {
-                yield return 0;
-            }
-            break;
-        }
-    }
-
     IEnumerator ObjectChat(string sentence)
     {
         string writerText = "";
@@ -123,7 +110,6 @@ public class DialogueController : MonoBehaviour
         dialogueManager.endChat_inController = true;
         startChat = false;
         stopChat = false;
-
     }
 
     //화살표 애니메이션 
@@ -146,4 +132,17 @@ public class DialogueController : MonoBehaviour
             yield return null;
         }
     }
+
+    // public static IEnumerator WaitForRealTime(float delay)
+    // {
+    //     while (true)
+    //     {
+    //         float pauseEndTime = Time.realtimeSinceStartup + delay;
+    //         while (Time.realtimeSinceStartup < pauseEndTime)
+    //         {
+    //             yield return 0;
+    //         }
+    //         break;
+    //     }
+    // }
 }

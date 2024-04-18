@@ -74,10 +74,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                     }
                     break;
                 case MonsterState.Discovery:
-                    // if (m_monster.HPBar_CheckNull() == false)
-                    //     m_monster.GetHPBar();
                     Discovery_Player();
-
                     break;
                 case MonsterState.Tracing:
                     Tracing_Movement();
@@ -221,7 +218,6 @@ public class MonsterPattern_Monster03 : MonsterPattern
     // * 몬스터 상태 =>> 발견
     public override void Discovery_Player()
     {
-
         if (!isFinding)
         {
             isFinding = true;
@@ -254,15 +250,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 if (raycastHit.collider.CompareTag("Shield"))
                 {
                     //실드가 앞에 있으면 true, 없으면 false
-                    //GameManager.Instance.gameData.player.GetComponentInChildren<PlayerAttackCheck>().isShield = true; 
-                    //Debug.Log(GameManager.Instance.gameData.player.GetComponentInChildren<PlayerAttackCheck>().isShield);
                     isShield = true;
-
-
-                }
-                else
-                {
-                    //isShield = false;
                 }
                 yield return null;
             }
@@ -296,11 +284,9 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 Vector3 curSoundObjPos = soundObject.collisionPos;
                 Vector3 curSoundObjdirection = curSoundObjPos - transform.position;
 
-                //curPlayerdirection.y = 0f;
-
                 targetAngle = Quaternion.LookRotation(curSoundObjdirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 5.0f);
-                //soundObject.attackSoundObj = false;
+
                 yield return new WaitForSeconds(coolTime);
                 soundObject.attackSoundObj = false;
             }

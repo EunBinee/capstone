@@ -439,11 +439,9 @@ public class DialogueParser
                 
                 if(startReasoning)
                 {
-
                     //! 여기서 부터 추리 시스템 하면됨.. 언젠가... csv지옥이야아ㅏ아아
                     //Debug.Log(reasoning.reasoningChoice.Count);
-                    
-                    
+                
                 }
 
                  if (++i < data.Length)

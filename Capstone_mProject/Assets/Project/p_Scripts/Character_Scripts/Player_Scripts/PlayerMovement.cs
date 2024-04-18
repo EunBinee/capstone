@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public ScrollRect skillScrollWindow;
 
+    [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
     void Start()
     {
         _controller = GetComponent<PlayerController>();
@@ -96,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
         skillScrollWindow = playerUI_info.skillScrollWindow;
         skillScrollWindow.gameObject.SetActive(false);
     }
-
+    
     void Update()
     {
         if (!UIManager.gameIsPaused)
