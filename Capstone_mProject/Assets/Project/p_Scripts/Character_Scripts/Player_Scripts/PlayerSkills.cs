@@ -270,24 +270,34 @@ public class PlayerSkills : MonoBehaviour
             yield return null;
         }
     }
-
     IEnumerator isPressedCode()
     {
+        //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Time cast");
+
         while (isPressed)
         {
-            Debug.Log("if (isPressed)");
+            //Debug.Log("if (isPressed)");
             Vector3 mousePosition = Input.mousePosition;
             mousePosition.z = 12f; // 원이 카메라에서 멀리 표시되도록 z 좌표 조정
 
             Camera playerCamera1 = GameManager.Instance.cameraController.playerCamera.GetComponentInChildren<Camera>();
             Vector3 targetPosition = playerCamera1.ScreenToWorldPoint(mousePosition);
-            targetPosition.y = 0.2f;
+            targetPosition.y = 0.1f;
 
             skillRangeIndicator.transform.position = targetPosition;
-            Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
-            
+            //Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
+
+            // 플레이어의 위치를 기준으로 skillRangeIndicator의 위치를 향하는 벡터
+            Vector3 direction = skillRangeIndicator.transform.position - this.transform.position;
+            // 해당 방향 벡터를 이용하여 플레이어의 회전값 계산
+            Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
+            // 플레이어 회전 
+            this.transform.rotation = targetRotation;
+
             yield return null;
         }
+
+
     }
 
     IEnumerator Skill_Restraint(char whatKey)
@@ -302,7 +312,7 @@ public class PlayerSkills : MonoBehaviour
                 case 'F':
                     Debug.Log("switch true");
                     isPressed = true; P_States.isSkill = true;
-                    skillRangeIndicator.SetActive(true);
+                    skillRangeIndicator.SetActive(true);     
                     break;
                 default: break;
             }
@@ -345,14 +355,29 @@ public class PlayerSkills : MonoBehaviour
                                                         skillRangeIndicator.transform.position + Vector3.up * cylinderHeight / 2f,
                                                         cylinderRadius); //범위 원기둥으로 만듦
 
+        //스킬 이펙트
+        Effect skillEffect = GameManager.Instance.objectPooling.ShowEffect("Temporary explosion");
+        skillEffect.transform.position = skillRangeIndicator.transform.position;
+        Effect skillEffectCast = GameManager.Instance.objectPooling.ShowEffect("Time cast");
+        Vector3 playerPos = this.transform.position;
+        playerPos.y = 0.1f;
+        skillEffectCast.transform.position = playerPos;
+        skillEffectCast.transform.rotation = this.transform.rotation;
+
+        P_States.isStop = true;
+        
+
         foreach (Collider collider in colliders)
         {
             if (collider.CompareTag("Monster"))
             {
                 MonsterPattern monsterPattern = collider.GetComponent<MonsterPattern>();
+
                 if (monsterPattern != null)
                 {
                     monsterPattern.isRestraint = true;
+
+                    yield return new WaitForSeconds(0.3f);
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
                     effect.transform.position = monsterPattern.transform.position;
                     if (monsterEffects.ContainsKey(monsterPattern))
@@ -362,12 +387,15 @@ public class PlayerSkills : MonoBehaviour
                     else monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
                     Debug.Log("속박");
                 }
-            }
+            }            
         }
+        yield return new WaitForSeconds(1.6f);
+        skillEffect.StopEffect();
+        skillEffectCast.StopEffect();
+        P_States.isStop = false;
 
         // 일정 시간 후에 스킬 비활성화
         yield return new WaitForSeconds(skillDuration);
-
         // 스킬 비활성화
         foreach (Collider collider in colliders)
         {
