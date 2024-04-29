@@ -757,14 +757,14 @@ public class MonsterPattern_Monster01 : MonsterPattern
     private void GetHit()
     {
         //? 피격 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01", attackEffectPos);
+        //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01", attackEffectPos);
         //TODO: 나중에 플레이어 방향쪽으로 변경.
-        float x = UnityEngine.Random.Range(-1.0f, 1.0f);
-        float y = UnityEngine.Random.Range(-1.0f, 1.0f);
-        float z = UnityEngine.Random.Range(-1.0f, 1.0f);
-        Vector3 randomPos = new Vector3(x, y, z);
+        // float x = UnityEngine.Random.Range(-1.0f, 1.0f);
+        // float y = UnityEngine.Random.Range(-1.0f, 1.0f);
+        // float z = UnityEngine.Random.Range(-1.0f, 1.0f);
+        // Vector3 randomPos = new Vector3(x, y, z);
 
-        effect.transform.position = attackEffectPos.position + randomPos;
+        // effect.transform.position = attackEffectPos.position + randomPos;
         StartCoroutine(electricity_Damage(0.8f));
     }
 
@@ -866,6 +866,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         boxCollider.enabled = true;
         capsuleCollider.enabled = false;
+
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_s");
+        effect.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
 
         yield return new WaitForSeconds(0.5f);
         //! 사운드

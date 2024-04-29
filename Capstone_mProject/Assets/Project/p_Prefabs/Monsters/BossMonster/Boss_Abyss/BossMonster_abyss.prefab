@@ -3908,6 +3908,7 @@ MonoBehaviour:
     haveLastWeakness: 1
     lastWeaknessList:
     - {fileID: 2836291601694631459}
+    weaknessDamageRate: 0.05
     HPBarPos: {fileID: 0}
     MaxHP: 20000
     HP: 0
@@ -3921,6 +3922,7 @@ MonoBehaviour:
     effectTrans: {fileID: 2755003018275303168}
   monsterPattern: {fileID: 2755003020157360586}
   bossMonsterPattern: {fileID: 2755003020157360586}
+  soundName: []
   monsterSoundClips:
   - {fileID: 8300000, guid: 605c7659dc4cacb42ac95a2ea24d6530, type: 3}
   - {fileID: 8300000, guid: 8761483c18ce217449a03235844ac74d, type: 3}
@@ -3931,6 +3933,8 @@ MonoBehaviour:
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
   resetHP: 0
+  monsterWeaknessNum: 0
+  curMonsterWeaknessNum: 0
 --- !u!114 &2755003020157360586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3959,11 +3963,14 @@ MonoBehaviour:
   isGoingBack: 0
   isGettingHit: 0
   isShield: 0
+  isRestraint: 0
+  RestraintDuration: 5
   curRemainWeaknessesNum: 0
   boss_Abyss_Skill01: {fileID: 0}
   boss_Abyss_Skill02: {fileID: 0}
   boss_Abyss_Skill03: {fileID: 0}
   boss_Abyss_Skill04: {fileID: 0}
+  bossForward: {x: 0, y: 0, z: 0}
   redImage: {fileID: 0}
   bossText: {fileID: 0}
   prefabPos: {fileID: 2755003018568943496}
@@ -5130,7 +5137,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 1, g: 0.13650973, b: 0.04150939, a: 1}
   m_Intensity: 10
-  m_Range: 4.28
+  m_Range: 5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
