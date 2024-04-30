@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using UnityEditor.AnimatedValues;
 using System.Security.Claims;
 using System;
+using Unity.VisualScripting;
 
 
 public class PlayerSkills : MonoBehaviour
@@ -358,6 +359,7 @@ public class PlayerSkills : MonoBehaviour
         //스킬 이펙트
         Effect skillEffect = GameManager.Instance.objectPooling.ShowEffect("Temporary explosion");
         skillEffect.transform.position = skillRangeIndicator.transform.position;
+        
         Effect skillEffectCast = GameManager.Instance.objectPooling.ShowEffect("Time cast");
         Vector3 playerPos = this.transform.position;
         playerPos.y = 0.1f;
@@ -365,7 +367,6 @@ public class PlayerSkills : MonoBehaviour
         skillEffectCast.transform.rotation = this.transform.rotation;
 
         P_States.isStop = true;
-        
 
         foreach (Collider collider in colliders)
         {
@@ -378,8 +379,13 @@ public class PlayerSkills : MonoBehaviour
                     monsterPattern.isRestraint = true;
 
                     yield return new WaitForSeconds(0.3f);
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("Lightning aura");
-                    effect.transform.position = monsterPattern.transform.position;
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("Magic shield loop yellow");
+                    effect.transform.position = monsterPattern.transform.position+Vector3.up;
+                    float smallestMonsterSize, largestMonsterSize;
+
+                    // GetMonsterSizeRange 함수를 호출하여 몬스터의 크기 범위를 가져옵니다.
+                    GetMonsterSizeRange(colliders, out smallestMonsterSize, out largestMonsterSize);
+                    AdjustEffectSize(effect, smallestMonsterSize, largestMonsterSize);
                     if (monsterEffects.ContainsKey(monsterPattern))
                     {
                         Debug.Log("이미 있는 키값");
@@ -389,6 +395,7 @@ public class PlayerSkills : MonoBehaviour
                 }
             }            
         }
+
         yield return new WaitForSeconds(1.6f);
         skillEffect.StopEffect();
         skillEffectCast.StopEffect();
@@ -416,6 +423,33 @@ public class PlayerSkills : MonoBehaviour
                 }
             }
         }
+    }
+    // 몬스터의 크기 범위를 계산하는 함수
+    void GetMonsterSizeRange(Collider[] colliders, out float smallestMonsterSize, out float largestMonsterSize)
+    {
+        smallestMonsterSize = Mathf.Infinity;
+        largestMonsterSize = 0f;
+
+        foreach (Collider collider in colliders)
+        {
+            if (collider.CompareTag("Monster"))
+            {
+                // 각 몬스터의 크기를 계산합니다.
+                Vector3 monsterScale = collider.transform.localScale;
+                float monsterSize = Mathf.Max(Mathf.Max(monsterScale.x, monsterScale.y), monsterScale.z);
+
+                // 가장 작은 크기와 가장 큰 크기를 업데이트합니다.
+                smallestMonsterSize = Mathf.Min(smallestMonsterSize, monsterSize);
+                largestMonsterSize = Mathf.Max(largestMonsterSize, monsterSize);
+            }
+        }
+    }
+
+    /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
+    void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
+    {
+        float effectSizeMultiplier = Mathf.Lerp(0.5f, 1.5f, (largestMonsterSize - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
+        skillEffect.transform.localScale *= effectSizeMultiplier;
     }
 
 
