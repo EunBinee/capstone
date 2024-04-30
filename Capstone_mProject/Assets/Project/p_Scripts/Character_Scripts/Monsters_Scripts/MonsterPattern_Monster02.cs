@@ -327,9 +327,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
             if (transform.rotation == targetAngle)
                 break;
             else
-            {
+            { yield return new WaitUntil(() => isRestraint == false);
                 time += Time.deltaTime;
-                yield return new WaitUntil(() => isRestraint == false);
+               
                 //yield return null;
             }
         }
