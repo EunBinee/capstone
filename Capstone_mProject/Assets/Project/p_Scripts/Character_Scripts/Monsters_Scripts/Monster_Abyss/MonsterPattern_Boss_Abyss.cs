@@ -998,8 +998,27 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
         GameManager.instance.cameraController.CinemachineSetting(true);
+
+        //*--------------------------------------------------------------------//
+        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
+        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        {
+            if (playerWalk)
+            {
+                playerWalk = false;
+            }
+
+            EndDirectFirstAppearance();
+
+            ShowBosHPBar();
+            GameManager.instance.cameraController.CameraRecovery();
+        });
+        //---------------------------------------------------------------------//
+
         //* 모든 것 멈추기
         CurSceneManager.instance.PlayTimeline("Abyss_FirstStart_TimeLine");
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+
     }
     public void WalkPlayer()
     {
@@ -1060,7 +1079,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effectPos = transform.position;
         effectPos.y -= 2.5f;
         effect.transform.position = effectPos;
-
     }
 
     public void EndDirectFirstAppearance()
@@ -1070,6 +1088,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(false);
 
         ChangeMonsterState(MonsterState.Roaming);
+
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
     }
 
     public void ShowBosHPBar()
