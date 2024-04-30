@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class PlayerSkillName : MonoBehaviour
 {
     public Image iconImg;
-    //public Image bgImg;
+    public SOSkill skillData;
     public TMP_Text skillName;
     public Button InputButton;
     public int m_Index;

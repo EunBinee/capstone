@@ -409,6 +409,7 @@ GameObject:
   - component: {fileID: 7808458044968990763}
   - component: {fileID: 5527570125249532527}
   - component: {fileID: 2300850063647169159}
+  - component: {fileID: 8875123488633808382}
   m_Layer: 5
   m_Name: PlayerSkillSetting
   m_TagString: Untagged
@@ -507,6 +508,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8875123488633808382
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5139212577698935820}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae934af10ae7a874786174ed1cd3dcde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showTooltip: 1
+  skillTooltip: {fileID: 4030160469264240178}
 --- !u!1 &5206389982194190335
 GameObject:
   m_ObjectHideFlags: 0
@@ -916,7 +931,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00015758078}
+  m_AnchoredPosition: {x: 0, y: 0.000089471905}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &5551922199027206241

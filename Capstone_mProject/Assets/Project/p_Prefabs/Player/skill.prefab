@@ -85,7 +85,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1587538553804718578}
-  - component: {fileID: 8543641660210068640}
+  - component: {fileID: 817801566311968182}
   m_Layer: 5
   m_Name: skill
   m_TagString: Untagged
@@ -115,7 +115,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8543641660210068640
+--- !u!114 &817801566311968182
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconImg: {fileID: 6867914783657755775}
+  skillData: {fileID: 0}
   skillName: {fileID: 2471801627097568049}
   InputButton: {fileID: 4543354791615577162}
   m_Index: 0
