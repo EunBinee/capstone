@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 screenCenter;
     public bool EnablePlayerUI = true;
+    public Player_AttackCheck player_AttackCheck;
 
     void Awake()
     {
@@ -264,6 +265,8 @@ public class PlayerController : MonoBehaviour
 
         spine = P_Com.animator.GetBoneTransform(HumanBodyBones.UpperChest); // 값 가져오기 
 
+        player_AttackCheck = GetComponent<Player_AttackCheck>();
+        player_AttackCheck.Init();
     }
     private void InitComponent()
     {

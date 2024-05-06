@@ -22,6 +22,7 @@ public class GameData
     {
         return player.gameObject.GetComponent<PlayerMovement>();
     }
+    public LayerMask monsterLayer;
     public GameObject playerCamera;      //카메라 오브젝트
     public GameObject playerCameraPivot; //카메라 피봇
     public Camera cameraObj;             //카메라.

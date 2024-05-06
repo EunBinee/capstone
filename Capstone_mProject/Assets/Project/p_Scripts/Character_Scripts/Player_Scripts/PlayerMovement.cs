@@ -34,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
     public Collider[] attackColliders;
     private List<PlayerAttackCheck> playerAttackChecks;
+    public List<PlayerWeapon> playerWeapons;
     public List<PlayerAttackCheck> playerArrowList; //* 현재 사용중인 화살
 
     float ElecTime = 0;
@@ -46,6 +47,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
     void Start()
     {
+        for (int i = 0; i < playerWeapons.Count; i++)
+            playerWeapons[i].Init();
         _controller = GetComponent<PlayerController>();
         playerAttackChecks = new List<PlayerAttackCheck>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
@@ -97,7 +100,7 @@ public class PlayerMovement : MonoBehaviour
         skillScrollWindow = playerUI_info.skillScrollWindow;
         skillScrollWindow.gameObject.SetActive(false);
     }
-    
+
     void Update()
     {
         if (!UIManager.gameIsPaused)
@@ -751,7 +754,7 @@ public class PlayerMovement : MonoBehaviour
 
         List<Collider> playerColliderList = new List<Collider>();
         List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
-
+        List<PlayerWeapon> playerWeaponsList = new List<PlayerWeapon>();
         while (true)
         {
             P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
@@ -760,6 +763,7 @@ public class PlayerMovement : MonoBehaviour
                 case 1:
                     //검
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검1");
+                    /*
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -768,26 +772,41 @@ public class PlayerMovement : MonoBehaviour
                         playerColliderList[i].enabled = true;
                         playerAttackCheckList[i].isEnable = true;
                     }
+                    */
+
+                    playerWeaponsList.Add(playerWeapons[0]);
+                    for (int i = 0; i < playerWeaponsList.Count; ++i)
+                    {
+                        playerWeaponsList[i].checkAttackCheck = true;
+                    }
+
 
                     P_Value.curAnimName = comboName01;
                     break;
                 case 2:
                     //검
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검2");
+                    /*
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
-
                     for (int i = 0; i < playerColliderList.Count; ++i)
                     {
                         playerColliderList[i].enabled = true;
                         playerAttackCheckList[i].isEnable = true;
                     }
+                    */
 
+                    playerWeaponsList.Add(playerWeapons[0]);
+                    for (int i = 0; i < playerWeaponsList.Count; ++i)
+                    {
+                        playerWeaponsList[i].checkAttackCheck = true;
+                    }
                     P_Value.curAnimName = comboName02;
                     break;
                 case 3:
                     //오른쪽 다리
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
+                    /*
                     playerColliderList.Add(attackColliders[2]);
                     playerAttackCheckList.Add(playerAttackChecks[2]);
 
@@ -796,28 +815,40 @@ public class PlayerMovement : MonoBehaviour
                         playerColliderList[i].enabled = true;
                         playerAttackCheckList[i].isEnable = true;
                     }
-
+                    */
+                    playerWeaponsList.Add(playerWeapons[2]);
+                    for (int i = 0; i < playerWeaponsList.Count; ++i)
+                    {
+                        playerWeaponsList[i].checkAttackCheck = true;
+                    }
                     P_Value.curAnimName = comboName03;
                     break;
                 case 4:
                     //양발 다
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 양발 다4");
+                    /*
                     playerColliderList.Add(attackColliders[1]);
                     playerAttackCheckList.Add(playerAttackChecks[1]);
                     playerColliderList.Add(attackColliders[2]);
                     playerAttackCheckList.Add(playerAttackChecks[2]);
-
                     for (int i = 0; i < playerColliderList.Count; ++i)
                     {
                         playerColliderList[i].enabled = true;
                         playerAttackCheckList[i].isEnable = true;
                     }
-
+                    */
+                    playerWeaponsList.Add(playerWeapons[1]);
+                    playerWeaponsList.Add(playerWeapons[2]);
+                    for (int i = 0; i < playerWeaponsList.Count; ++i)
+                    {
+                        playerWeaponsList[i].checkAttackCheck = true;
+                    }
                     P_Value.curAnimName = comboName04;
                     break;
                 case 5:
                     //검
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검5");
+                    /*
                     playerColliderList.Add(attackColliders[0]);
                     playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -825,6 +856,12 @@ public class PlayerMovement : MonoBehaviour
                     {
                         playerColliderList[i].enabled = true;
                         playerAttackCheckList[i].isEnable = true;
+                    }
+                    */
+                    playerWeaponsList.Add(playerWeapons[0]);
+                    for (int i = 0; i < playerWeaponsList.Count; ++i)
+                    {
+                        playerWeaponsList[i].checkAttackCheck = true;
                     }
 
                     P_Value.curAnimName = comboName05;
@@ -901,6 +938,16 @@ public class PlayerMovement : MonoBehaviour
                 playerAttackCheckList.Clear();
             }
 
+            if (playerWeaponsList.Count != 0)
+            {
+
+                for (int i = 0; i < playerWeaponsList.Count; ++i)
+                {
+                    playerWeaponsList[i].checkAttackCheck = false;
+                    playerWeaponsList[i].ResetAttackMonsterList();
+                }
+                playerWeaponsList.Clear();
+            }
             //P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
             P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
 

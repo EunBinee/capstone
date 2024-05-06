@@ -156,12 +156,14 @@ public class PlayerAttackCheck : MonoBehaviour
         P_Value.minHitScale = 1f;
     }
 
+    /*
     private void OnTriggerEnter(Collider other)
     {
         if (isEnable)
         {
             if (other.gameObject.CompareTag("Monster"))
             {
+
                 monster = other.GetComponentInParent<Monster>();
 
                 if (monster == null)
@@ -169,6 +171,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     Debug.LogError("몬스터 : null");
                     return;
                 }
+                Debug.Log($"monster {monster.name}");
 
                 if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
                 {
@@ -210,6 +213,8 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
     // private bool isShield = false;
+
+*/
     public void checkMon()
     {
         // 리스트를 거꾸로 순회합니다. 이렇게 하는 이유는 리스트를 순회하면서 항목을 제거할 때 문제가 발생하지 않도록 하기 위함입니다.
