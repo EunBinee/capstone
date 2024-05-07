@@ -52,6 +52,11 @@ public class CanvasManager : MonoBehaviour
     public string inventoryUIName;
     public GameObject inventoryUI;
 
+    [Space]
+    [Header("버튼 UI 모음")]
+    public string btnsUIName;
+    public GameObject btnsUI;
+
 
     void Awake()
     {
@@ -98,6 +103,12 @@ public class CanvasManager : MonoBehaviour
         if (inventoryUI == null)
         {
             inventoryUI = GetCanvasUI(inventoryUIName);
+        }
+
+        //* 버튼 UI
+        if (btnsUI == null)
+        {
+            btnsUI = GetCanvasUI(btnsUIName);
         }
     }
 

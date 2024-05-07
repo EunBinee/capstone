@@ -68,11 +68,6 @@ public class Monster : MonoBehaviour
                 monsterSoundDic.Add(soundName[i], monsterSoundClips[i]);
             }
         }
-        /*
-            public List<string> soundName;
-            public AudioClip[] monsterSoundClips;
-            public Dictionary<string, AudioClip> monsterSoundDic;
-        */
     }
 
     private void Reset()
