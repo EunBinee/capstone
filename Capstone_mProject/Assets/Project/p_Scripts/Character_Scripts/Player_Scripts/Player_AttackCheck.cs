@@ -24,7 +24,7 @@ public class Player_AttackCheck : MonoBehaviour
         if (!monster.monsterPattern.noAttack)
         {
             double damageValue;
-
+            Debug.Log("어텍체크");
             if (playerWeapon == PlayerWeapons.Arrow)//isArrow)
             {
                 if (playerController._currentState.isStrongArrow) //* 예스 차징

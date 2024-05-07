@@ -60,16 +60,20 @@ public class PlayerWeapon : MonoBehaviour
 
     public void ComboBasicAttack_RayCheck()
     {
-
         rayDirect = (endPoint.position - startPoint.position).normalized;
 
         Ray weaponRay = new Ray(rayPoint.position, rayDirect);
         Debug.DrawRay(rayPoint.position, rayDirect * 3f, Color.red);
         RaycastHit hitInfo;
-        if (Physics.Raycast(weaponRay, out hitInfo, 3f, monsterLayer))
+        
+        int monsterLayerIndex = LayerMask.NameToLayer("Monster");
+        int monsterLayerMask = 1 << monsterLayerIndex;
+        
+        if (Physics.Raycast(weaponRay, out hitInfo, 3f, monsterLayerMask))
         {
             // 충돌한 물체가 몬스터인지 확인
-            if (hitInfo.collider.CompareTag("Monster"))
+            //if (hitInfo.collider.CompareTag("Monster"))
+            if((1 << hitInfo.collider.gameObject.layer) == monsterLayerMask)
             {
                 // 몬스터와 충돌한 경우
                 Monster monster = hitInfo.collider.gameObject.GetComponent<Monster>();
@@ -103,6 +107,7 @@ public class PlayerWeapon : MonoBehaviour
                         {
                             Quaternion hitInfoRot = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
                             playerController.player_AttackCheck.playerHitMonster(monster, hitInfo.point, hitInfoRot, Player_AttackCheck.PlayerWeapons.None, false);
+                            Debug.Log("hit");
                         }
                         //사운드
                         SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
