@@ -140,7 +140,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         // 스타트 컷씬 
         DirectFirstAppearance_TimeLine();
-
+        // DirectTheBossLastWeakness();
     }
 
     public override void UpdateRotation()
@@ -496,21 +496,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             yield return new WaitForSeconds(2f);
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
             bossText.SetActive(false);
+            CheckPlayerPos = false;
             //* 타임 라인
             DirectTheBossWeakness();
         }
-    }
-
-    public void End_Phase02_Production()
-    {
-        //* 나중에 주석 풀기 !
-
-        CheckPlayerPos = false;
-        Base_Phase_HP(false);
-        ChangeMonsterState(MonsterState.Tracing);
-        changePhase02_Co = null;
-        noAttack = false;
-        GameManager.Instance.cameraController.UndoAttention();
     }
 
     IEnumerator CheckPlayer_Production()
@@ -1000,24 +989,30 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(true);
 
         //*--------------------------------------------------------------------//
+        //* 스킵 버튼
         ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
         ButtonManager.instance.skipBtn.onClick.AddListener(() =>
         {
+            PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_FirstStart_TimeLine");
+            director.Stop();
+
             if (playerWalk)
             {
                 playerWalk = false;
             }
-
+            playerController._currentState.doNotRotate = false;
             EndDirectFirstAppearance();
-
             ShowBosHPBar();
             GameManager.instance.cameraController.CameraRecovery();
+
         });
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+
         //---------------------------------------------------------------------//
 
         //* 모든 것 멈추기
         CurSceneManager.instance.PlayTimeline("Abyss_FirstStart_TimeLine");
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+
 
     }
     public void WalkPlayer()
@@ -1103,8 +1098,30 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     //* 보스 일반 약점------------------------------------------------------------------------//
+
     public override void DirectTheBossWeakness()
     {
+        //*--------------------------------------------------------------------//
+        //* 스킵 버튼
+        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
+        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        {
+            PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_Weakness_TimeLine");
+            director.Stop();
+
+            if (boss_Abyss_Skill03.Shield_Effect_skill03 != null)
+            {
+                boss_Abyss_Skill03.Shield_Effect_skill03.StopEffect();
+                boss_Abyss_Skill03.Shield_Effect_skill03 = null;
+            }
+
+            EndDirectTheBossWeakness();
+            GameManager.instance.cameraController.CameraRecovery();
+        });
+
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+        //---------------------------------------------------------------------//
+
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
 
@@ -1138,14 +1155,45 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
 
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
     }
 
     //*-------------------------------------------------------------------------------------//
     //* 보스 마지막 약점 연출
+    Effect auraEffect = null;
+    //Coroutine monsterLastWeakness_co = null;
     public override void DirectTheBossLastWeakness()
     {
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
+
+        //*--------------------------------------------------------------------//
+        //* 스킵 버튼
+        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
+        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        {
+            Debug.Log("1");
+            PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_LastWeakness_TimeLine");
+            director.Stop();
+
+            EndDirectorMonsterLastWeakness();
+            GameManager.instance.cameraController.CameraRecovery();
+
+            // if (monsterLastWeakness_co != null)
+            // {
+            //     StopCoroutine(monsterLastWeakness_co);
+            //     monsterLastWeakness_co = null;
+
+            //     if (auraEffect != null)
+            //     {
+            //         auraEffect.gameObject.SetActive(false);
+            //         Destroy(auraEffect);
+            //     }
+            // }
+        });
+
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+        //---------------------------------------------------------------------//
 
         noAttack = true;
         GameManager.instance.CutSceneSetting(true);
@@ -1155,9 +1203,16 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     //* 타임라인에서 사용되는 이펙트 
+
     public void MonsterLastWeakness_TimeLineEffect()
     {
-        StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
+        Coroutine monsterLastWeakness_co = StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
+        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        {
+            Debug.Log("2");
+            StopCoroutine(monsterLastWeakness_co);
+            monsterLastWeakness_co = null;
+        });
     }
 
     IEnumerator MonsterLastWeakness_TimeLineEffect_co()
@@ -1177,9 +1232,27 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         effect.transform.position = effectPos;
 
         Vector3 originPos = transform.position;
-        effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+        auraEffect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
         originPos.y += 1.1f;
-        effect.transform.position = originPos;
+        auraEffect.transform.position = originPos;
+
+        auraEffect.finishAction = () =>
+        {
+            auraEffect = null;
+        };
+
+        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        {
+            Debug.Log("3");
+            if (auraEffect != null)
+            {
+                Debug.Log("4");
+                auraEffect.gameObject.SetActive(false);
+                Destroy(auraEffect);
+                auraEffect = null;
+            }
+        });
+
 
         yield return new WaitForSeconds(8f);
 
@@ -1204,6 +1277,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
+
+        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
     }
 
     # endregion
