@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: P05_hair_B
-  m_Shader: {fileID: 4800000, guid: aebd33b74ef849a4882b4a8d55f0f0c9, type: 3}
+  m_Shader: {fileID: 4800000, guid: 766736548846cdf459a9766614dcccab, type: 3}
   m_ValidKeywords:
   - _EMISSIVE_SIMPLE
   - _OUTLINE_NML
@@ -28,6 +28,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _2nd_ShadeMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AngelRing_Sampler:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -138,9 +142,14 @@ Material:
     - _1st_ShadeColor_Step: 0.6
     - _2nd_ShadeColor_Feather: 0.15
     - _2nd_ShadeColor_Step: 0.4
+    - _ARSampler_AlphaOn: 0
+    - _AR_OffsetU: 0
+    - _AR_OffsetV: 0.3
     - _Add_Antipodean_RimLight: 1
+    - _AngelRing: 0
     - _Ap_RimLight_FeatherOff: 0
     - _Ap_RimLight_Power: 1
+    - _AutoRenderQueue: 1
     - _BaseColor_Step: 0.6
     - _BaseShade_Feather: 0.035
     - _Base_Speed: 0
@@ -149,6 +158,7 @@ Material:
     - _BumpScale: 1
     - _BumpScaleMatcap: 1
     - _CameraRolling_Stabilizer: 0
+    - _ClippingMode: 0
     - _Clipping_Level: 0
     - _ColorShift_Speed: 0
     - _CullMode: 0
@@ -176,6 +186,7 @@ Material:
     - _Is_Filter_LightColor: 0
     - _Is_LightColor_1st_Shade: 1
     - _Is_LightColor_2nd_Shade: 1
+    - _Is_LightColor_AR: 1
     - _Is_LightColor_Ap_RimLight: 1
     - _Is_LightColor_Base: 1
     - _Is_LightColor_HighColor: 1
@@ -213,15 +224,23 @@ Material:
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
+    - _SPRDefaultUnlitColorMask: 15
+    - _SRPDefaultUnlitColMode: 1
     - _Scroll_EmissiveU: 0
     - _Scroll_EmissiveV: 0
     - _Set_SystemShadowsToBase: 1
     - _ShadeColor_Step: 0.4
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _StencilComp: 8
+    - _StencilMode: 0
     - _StencilNo: 1
+    - _StencilOpFail: 0
+    - _StencilOpPass: 0
     - _StepOffset: -0.5
+    - _TransparentEnabled: 0
     - _TweakHighColorOnShadow: 0.85
     - _TweakMatCapOnShadow: 0
     - _Tweak_HighColorMaskLevel: 0
@@ -236,13 +255,20 @@ Material:
     - _Unlit_Intensity: 1
     - _Use_1stAs2nd: 1
     - _Use_BaseAs1st: 1
+    - _ZOverDrawMode: 0
     - _ZWrite: 1
+    - _ZWriteMode: 1
+    - _isUnityToonshader: 1
     - _simpleUI: 0
     - _utsTechnique: 1
     - _utsVersion: 2.075
+    - _utsVersionX: 0
+    - _utsVersionY: 5
+    - _utsVersionZ: 0
     m_Colors:
     - _1st_ShadeColor: {r: 0.39215687, g: 0.8666667, b: 1, a: 1}
     - _2nd_ShadeColor: {r: 0.3529412, g: 0.61960787, b: 0.7735849, a: 1}
+    - _AngelRing_Color: {r: 1, g: 1, b: 1, a: 1}
     - _Ap_RimLightColor: {r: 0.20883766, g: 0.19321822, b: 0.24528301, a: 1}
     - _BaseColor: {r: 0.5803922, g: 0.9372549, b: 1, a: 1}
     - _Color: {r: 0.5803922, g: 0.9372549, b: 1, a: 1}
@@ -253,5 +279,6 @@ Material:
     - _MatCapColor: {r: 0.3679245, g: 0.3679245, b: 0.3679245, a: 1}
     - _Outline_Color: {r: 0.5526218, g: 0.53746885, b: 0.6226415, a: 1}
     - _RimLightColor: {r: 0.5065928, g: 0.4717871, b: 0.5849056, a: 1}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

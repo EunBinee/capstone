@@ -769,7 +769,7 @@
     },
     "m_ActiveTargets": [
         {
-            "m_Id": "940ae75f32574fafaa47a113d7fd52de"
+            "m_Id": "ca2fc15c7b3c4c8486275a6158c80990"
         }
     ]
 }
@@ -947,6 +947,12 @@
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalUnlitSubTarget",
+    "m_ObjectId": "07c1667c529143b78b326d817ca1943a"
 }
 
 {
@@ -3487,23 +3493,6 @@
 }
 
 {
-    "m_SGVersion": 2,
-    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInTarget",
-    "m_ObjectId": "940ae75f32574fafaa47a113d7fd52de",
-    "m_ActiveSubTarget": {
-        "m_Id": "f92bfdeed8304b4a9658fe567695cc56"
-    },
-    "m_AllowMaterialOverride": true,
-    "m_SurfaceType": 1,
-    "m_ZWriteControl": 0,
-    "m_ZTestMode": 4,
-    "m_AlphaMode": 2,
-    "m_RenderFace": 0,
-    "m_AlphaClip": true,
-    "m_CustomEditorGUI": ""
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "96244d981a6e4bad952a1936a492cfbe",
@@ -4617,6 +4606,26 @@
 }
 
 {
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
+    "m_ObjectId": "ca2fc15c7b3c4c8486275a6158c80990",
+    "m_ActiveSubTarget": {
+        "m_Id": "07c1667c529143b78b326d817ca1943a"
+    },
+    "m_AllowMaterialOverride": true,
+    "m_SurfaceType": 1,
+    "m_ZTestMode": 4,
+    "m_ZWriteControl": 0,
+    "m_AlphaMode": 2,
+    "m_RenderFace": 0,
+    "m_AlphaClip": true,
+    "m_CastShadows": true,
+    "m_ReceiveShadows": true,
+    "m_CustomEditorGUI": "",
+    "m_SupportVFX": false
+}
+
+{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.BlockNode",
     "m_ObjectId": "caf921ddf15f4a16b6c6f44cf48c720c",
@@ -5428,12 +5437,6 @@
         "y": 0.0
     },
     "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInUnlitSubTarget",
-    "m_ObjectId": "f92bfdeed8304b4a9658fe567695cc56"
 }
 
 {
