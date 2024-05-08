@@ -242,7 +242,8 @@ public class MonsterPattern_Monster03 : MonsterPattern
         {
             Debug.DrawRay(transform.position, playerTargetPos.position - transform.position, Color.yellow);
             yield return new WaitUntil(() => isRestraint == false);
-
+            
+            SetAnimation(MonsterAnimation.Move);
 
             if (Physics.Raycast(transform.position, playerTargetPos.position - transform.position, out raycastHit))
             {
@@ -358,7 +359,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
         // 플레이어와 몬스터 사이의 거리 계산
         float distanceToPlayer = Vector3.Distance(transform.position, playerTrans.position);
 
-        float tracingDistance = 3.0f; //거리
+        float tracingDistance = 5.0f; //거리
         float tracingSpeed = 1.2f;  //속도 
 
 
@@ -380,6 +381,7 @@ public class MonsterPattern_Monster03 : MonsterPattern
                 // 움직임을 다시 시작
                 tracingSpeed = 1.0f;
             }
+            
             //yield return new WaitUntil(() =>isFreeze ==false );
 
 
@@ -541,6 +543,25 @@ public class MonsterPattern_Monster03 : MonsterPattern
         //Monster_Motion(MonsterMotion.Long_Range_Attack);
     }
 
+    public override void SetAnimation(MonsterAnimation m_anim)
+    {
+        switch (m_anim)
+        {
+            case MonsterAnimation.Idle:
+                break;
+            case MonsterAnimation.Move:
+                m_animator.Play("GoAheadLoop");
+                break;
+            case MonsterAnimation.GetHit:
+                break;
+            case MonsterAnimation.Death:
+                m_animator.SetBool("m_Death", true);
+                break;
+            default:
+                break;
+        }
+    }
+
     // * 죽음 모션
     IEnumerator Death_co()
     {
@@ -559,11 +580,14 @@ public class MonsterPattern_Monster03 : MonsterPattern
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         boxCollider.enabled = true;
 
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_s");
+        effect.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z);
+
         yield return new WaitForSeconds(0.5f);
         //! 사운드
         //m_monster.SoundPlay("Monster01_Death", false);
         m_monster.RetrunHPBar();
-        //SetAnimation(MonsterAnimation.Death);
+        SetAnimation(MonsterAnimation.Death);
 
         yield return new WaitForSeconds(5f);
 
