@@ -291,7 +291,9 @@ public class PlayerMovement : MonoBehaviour
     {
         P_States.isDodgeing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
-        P_Com.rigidbody.velocity = Vector3.zero;
+        //P_Com.rigidbody.velocity = Vector3.zero;
+        P_Com.rigidbody.velocity = Vector3.Lerp(P_Com.rigidbody.velocity, Vector3.zero, 0.4f);
+        P_Controller.AnimState(PlayerState.Idle);
     }
 
     private void AllPlayerLocomotion()
@@ -536,9 +538,19 @@ public class PlayerMovement : MonoBehaviour
             {
                 P_Com.animator.Play("Front", 1);
             }
-            P_Value.moveDirection.y = 0;
-            P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
 
+            //P_Value.moveDirection += P_Value.moveDirection * P_COption.dodgingSpeed;
+            //P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
+            //Debug.Log($"P_Com.rigidbody.velocity {P_Com.rigidbody.velocity}");
+            //Debug.Log($"P_Value.groundDistance {P_Value.groundDistance}");
+            //todo: 바닥과 거리 체크 해서 플레이어 y 값 지정해주기
+            P_Value.moveDirection.y = 0f;
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection * P_COption.dodgingSpeed, P_Value.groundNormal);
+            //p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            p_velocity.y = 0f;
+            P_Com.rigidbody.velocity += p_velocity;
+
+            P_Controller.AnimState(PlayerState.Dodge);
             Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
