@@ -327,9 +327,9 @@ public class MonsterPattern_Monster02 : MonsterPattern
             if (transform.rotation == targetAngle)
                 break;
             else
-            {
+            { yield return new WaitUntil(() => isRestraint == false);
                 time += Time.deltaTime;
-                yield return new WaitUntil(() => isRestraint == false);
+               
                 //yield return null;
             }
         }
@@ -736,20 +736,17 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //SetAnimation(MonsterAnimation.Death);
 
         //TODO: 죽었을때 수정.(애니메이터 문제)
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Eff_Burst_1_oneShot");
-
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v1_M");
         effect.transform.position = transform.position;
-        effect.finishAction = () =>
-        {
-            m_monster.gameObject.SetActive(false);
-        };
         //! 사운드 => 터지는 소리
-        // m_monster.SoundPlay(Monster.monsterSound.Death, false);
         m_monster.SoundPlay("Monster02_Death", false);
+        yield return new WaitForSeconds(0.4f);
+        effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v2_L");
+        effect.transform.position = transform.position;
 
-        //yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
 
-        //m_monster.gameObject.SetActive(false);
+        m_monster.gameObject.SetActive(false);
     }
     public override void StopAtackCoroutine()
     {

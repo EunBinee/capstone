@@ -445,7 +445,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         return angle;
     }
 
-    Effect Shield_Effect_skill03 = null;
+    public Effect Shield_Effect_skill03 = null;
 
 
     //* 총 쏘기전 플레이어가 몬스터의 아래에 있는지 체크하는 함수.
