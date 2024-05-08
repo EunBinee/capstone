@@ -32,5 +32,7 @@ public class GameData
     public float midDamage = 300;
     public float bigDamage = 600;
     public float criticalAdditionalMultiples = 2f;
+    public Material hitMaterial;
+
 
 }

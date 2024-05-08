@@ -12,6 +12,12 @@ public class Monster : MonoBehaviour
     public MonsterPattern monsterPattern;
     public MonsterPattern_Boss bossMonsterPattern;
 
+    //몬스터 피격시 매테리얼 바뀌도록
+    public SkinnedMeshRenderer skinnedMeshRenderer;
+    public Material hitMaterial;
+    public Material m_material;
+    Coroutine monsterChangeMaterial_co = null;
+
     //* 사운드
     public List<string> soundName;
     public AudioClip[] monsterSoundClips;
@@ -56,6 +62,11 @@ public class Monster : MonoBehaviour
             ResetHP();
 
         SoundSetting();
+
+        //*skinnedMeshRenderer Material 설정---------------------//
+        if (skinnedMeshRenderer.materials.Length > 0)
+            m_material = skinnedMeshRenderer.materials[0];
+        hitMaterial = GameManager.instance.gameData.hitMaterial;
     }
 
     private void SoundSetting()
@@ -145,6 +156,11 @@ public class Monster : MonoBehaviour
             if (!monsterPattern.noAttack || monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death)
             {
                 //*----------------------------------------------------------------------------//
+                if (monsterChangeMaterial_co == null && skinnedMeshRenderer != null)
+                {
+                    monsterChangeMaterial_co = StartCoroutine(MonsterChangeMaterial());
+                }
+
                 if (monsterData.useWeakness)
                 {
                     //* 만약 약점이 있다면, 약점 HP와 그냥 HP를 구분하기
@@ -238,6 +254,32 @@ public class Monster : MonoBehaviour
 
             }
         }
+    }
+
+    IEnumerator MonsterChangeMaterial()
+    {
+        // Skinned Mesh Renderer의 모든 Materials를 새로운 Material로 변경합니다.
+        Material[] materials = skinnedMeshRenderer.materials;
+        for (int i = 0; i < materials.Length; i++)
+        {
+            if (i == 0)
+                materials[i] = hitMaterial;
+            else
+                materials[i] = skinnedMeshRenderer.materials[i];
+        }
+        skinnedMeshRenderer.materials = materials;
+
+        yield return new WaitForSeconds(0.15f);
+        for (int i = 0; i < materials.Length; i++)
+        {
+            if (i == 0)
+                materials[i] = m_material;
+            else
+                materials[i] = skinnedMeshRenderer.materials[i];
+        }
+        skinnedMeshRenderer.materials = materials;
+
+        monsterChangeMaterial_co = null;
     }
 
     public virtual void Death()

@@ -422,6 +422,9 @@ MonoBehaviour:
     effectTrans: {fileID: 4500452724142811108}
   monsterPattern: {fileID: 0}
   bossMonsterPattern: {fileID: 0}
+  skinnedMeshRenderer: {fileID: 7473351375116339653}
+  hitMaterial: {fileID: 0}
+  m_material: {fileID: 0}
   soundName:
   - Monster02_ShortAttack
   - Monster02_LongAttack
@@ -1768,8 +1771,8 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 414c2c7a78fb9d74c8634a4cd6a07589, type: 2}
   - {fileID: 2100000, guid: e56507dc19627cf4284c0f1b963e16ac, type: 2}
+  - {fileID: 2100000, guid: 414c2c7a78fb9d74c8634a4cd6a07589, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
