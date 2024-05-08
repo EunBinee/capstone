@@ -97,7 +97,7 @@ public class PlayerMovement : MonoBehaviour
         skillScrollWindow = playerUI_info.skillScrollWindow;
         skillScrollWindow.gameObject.SetActive(false);
     }
-    
+
     void Update()
     {
         if (!UIManager.gameIsPaused)
@@ -738,19 +738,21 @@ public class PlayerMovement : MonoBehaviour
         yield return null;
     }
 
+    string comboName01 = "Attack_Combo_1";
+    string comboName02 = "Attack_Combo_2";
+    string comboName03 = "Attack_Combo_3";
+    string comboName04 = "Attack_Combo_4";
+    string comboName05 = "Attack_Combo_5";
+
+    List<Collider> playerColliderList = new List<Collider>();
+    List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
+
     IEnumerator Attacking() //클릭해서 들어오면
     {
         //Debug.Log("[attack test]플레이어 공격 코루틴 입장");
         P_Com.animator.SetInteger("comboCount", 0);
-
-        string comboName01 = "Attack_Combo_1";
-        string comboName02 = "Attack_Combo_2";
-        string comboName03 = "Attack_Combo_3";
-        string comboName04 = "Attack_Combo_4";
-        string comboName05 = "Attack_Combo_5";
-
-        List<Collider> playerColliderList = new List<Collider>();
-        List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
+        P_States.hadAttack = false; //* 공격 여부 비활성화
+        P_States.isStartComboAttack = true;
 
         while (true)
         {
@@ -804,8 +806,8 @@ public class PlayerMovement : MonoBehaviour
                     //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 양발 다4");
                     playerColliderList.Add(attackColliders[1]);
                     playerAttackCheckList.Add(playerAttackChecks[1]);
-                    playerColliderList.Add(attackColliders[2]);
-                    playerAttackCheckList.Add(playerAttackChecks[2]);
+                    //playerColliderList.Add(attackColliders[2]);
+                    //playerAttackCheckList.Add(playerAttackChecks[2]);
 
                     for (int i = 0; i < playerColliderList.Count; ++i)
                     {
@@ -874,14 +876,10 @@ public class PlayerMovement : MonoBehaviour
                 //dir = this.gameObject.transform.forward.normalized;
             }
 
-            if (!P_States.isGettingHit)
-            {
-                //* 이펙트
-                P_Controller.playAttackEffect(P_Value.curAnimName);
-            }
-
             //* 공격 애니메이션 재생
             P_Com.animator.Play(P_Value.curAnimName);
+            //* 이펙트
+            P_Controller.playAttackEffect(P_Value.curAnimName);
             StopIdleMotion();
             StartIdleMotion(1);    //공격 대기 모션으로 
 
@@ -899,45 +897,43 @@ public class PlayerMovement : MonoBehaviour
                 }
                 playerColliderList.Clear();
                 playerAttackCheckList.Clear();
+                P_States.hadAttack = false; //* 공격 여부 비활성화
             }
 
-            //P_Controller.ChangePlayerState(PlayerState.FinishComboAttack);
             P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
 
             int curIndex = P_Value.index;
             P_Value.time = 0;
 
-            while (P_Value.time <= comboClickTime)  //* 콤보 클릭 시간 전까지
+            while (P_Value.time <= P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime)  //* 콤보 클릭 시간 전까지
             {
                 P_Value.time += Time.deltaTime; //* 시간 누적
-                                                //* 애니메이션 70퍼센트 진행까지 대기
+                //* 애니메이션 70퍼센트 진행까지 대기
                 yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
-                //P_States.isStartComboAttack = false;
+                P_States.hadAttack = false; //* 공격 여부 비활성화
 
-                if (Input.GetMouseButton(0) && curIndex == P_Value.index/**/)   //* 마우스 입력 받음
+                if (Input.GetMouseButton(0) && curIndex == P_Value.index)   //* 마우스 입력 받음
                 {
-                    //P_States.isStartComboAttack = true; //* 공격 시작
+                    P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
                     if (P_Value.index >= 5) //* 5타 이상이면
                     {
-                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
                         P_Value.index = 1;  //* 인덱스 초기화
                         P_Value.time = 0;   //* 시간 초기화
-                                            //P_States.isStartComboAttack = false;    //* 공격 끝
+                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
+                        break;
                     }
                     else
                     {
                         P_Value.index = P_Value.index + 1;    //* 인덱스 추가
-                                                              //P_Value.isCombo = true; //* 이전 공격 여부 활성화
-                                                              //P_States.hadAttack = false; //* 공격 여부 비활성화
+                        P_Value.time = 0;   //* 시간 초기화
+                        P_Value.isCombo = true; //* 이전 공격 여부 활성화
                     }
-                    P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
-                    P_States.hadAttack = false; //* 공격 여부 비활성화
                     P_States.hasAttackSameMonster = false;
                     P_States.notSameMonster = false;
                     break;  // ...1
                 }
             }   // ...1 (while (P_Value.time <= comboClickTime))
-            if (P_Value.isCombo == false)   //* 5타 이상이었다면(이후 공격 안한다면)
+            if (P_Value.isCombo == false || !P_States.isStartComboAttack)   //* 5타 이상이었다면(이후 공격 안한다면)
             {
                 //* 원래대로
                 P_Com.animator.SetInteger("comboCount", P_Value.index);
@@ -948,6 +944,8 @@ public class PlayerMovement : MonoBehaviour
         }   // ...2 (while (true))
 
         P_States.isStartComboAttack = false;    //* 공격 끝
+        P_Value.index = 1;  //* 인덱스 초기화
+        P_Value.time = 0;   //* 시간 초기화
     }
 
     public void StopPlayer() //연출쪽에서 Player멈추도록.
