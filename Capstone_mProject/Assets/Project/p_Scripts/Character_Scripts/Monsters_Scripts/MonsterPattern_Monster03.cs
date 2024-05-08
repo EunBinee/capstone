@@ -494,14 +494,14 @@ public class MonsterPattern_Monster03 : MonsterPattern
     private void GetHit()
     {
         //? 피격 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
+        //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
         //TODO: 나중에 플레이어 방향쪽으로 변경.
         float x = UnityEngine.Random.Range(-1.5f, 1.5f);
         float y = UnityEngine.Random.Range(-1.5f, 1.5f);
         float z = UnityEngine.Random.Range(-1.5f, 1.5f);
         Vector3 randomPos = new Vector3(x, y, z);
 
-        effect.transform.position = transform.position + randomPos;
+        //effect.transform.position = transform.position + randomPos;
 
         StartCoroutine(electricity_Damage(0.8f));
     }
