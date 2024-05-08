@@ -34,8 +34,6 @@ public class PlayerSkills : MonoBehaviour
     private int selectSize = 3;
 
     public GameObject skillScrollWindow;
-    public bool presetWin;
-    public bool once = false;
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
     //Effect effect; //스킬 이펙트
@@ -96,6 +94,15 @@ public class PlayerSkills : MonoBehaviour
             P_States.isStrongArrow = false;
         }
         SkillWindow();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        SkillSettingPC obj = other.GetComponent<SkillSettingPC>();
+        if (obj != null)
+        {
+            SkillWindow();
+        }
     }
 
     List<string> callName = new List<string>();
@@ -285,7 +292,7 @@ public class PlayerSkills : MonoBehaviour
 
             skillRangeIndicator.transform.position = targetPosition;
             Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
-            
+
             yield return null;
         }
     }
@@ -456,18 +463,31 @@ public class PlayerSkills : MonoBehaviour
         if (P_KState.PDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
             P_KState.PDown = false;
-            if (!isOn) { isOn = true; once = false; } // 창 켜짐
-            else { isOn = false; P_InputHandle.skillIconApply(); } // 창 꺼짐
-            skillScrollWindow.gameObject.SetActive(isOn);
-            presetWin = isOn;
-            P_Controller.PlayerUI_SetActive(!isOn);
-            UIManager.gameIsPaused = isOn;
-            P_States.isStop = isOn;
+            if (isOn == false)  // 켜져있지 않다면 -> 켜기
+            {
+                isOn = true;
+                skillScrollWindow.gameObject.SetActive(true);
+                P_Controller.PlayerUI_SetActive(false);
+                UIManager.gameIsPaused = true;
+                P_States.isStop = true;
+
+                Cursor.visible = true;     //마우스 커서
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else if (isOn == true)  //켜져있다면 -> 끄기
+            {
+                isOn = false;
+                P_InputHandle.skillIconApply();
+                skillScrollWindow.gameObject.SetActive(false);
+                P_Controller.PlayerUI_SetActive(true);
+                UIManager.gameIsPaused = false;
+                P_States.isStop = false;
+
+                Cursor.visible = false;     //마우스 커서
+                Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+            }
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
-            Cursor.visible = isOn;     //마우스 커서
-            if (!isOn) Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-            else Cursor.lockState = CursorLockMode.None;
         }
         //if (P_KState.MDown && !P_SkillInfo.haveSample2)
         //{
