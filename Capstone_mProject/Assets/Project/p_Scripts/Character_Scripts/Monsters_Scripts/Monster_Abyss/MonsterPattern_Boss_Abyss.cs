@@ -526,8 +526,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //boss_Abyss_Skill04.Skill04();
 
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
