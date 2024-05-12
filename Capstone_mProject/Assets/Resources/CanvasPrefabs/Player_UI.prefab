@@ -1,5 +1,23 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &8048569458138994725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 4295729266023462081, guid: 99059aff872b2f9408f82207396f3758, type: 3}
+  m_PrefabInstance: {fileID: 6066133496969899236}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 937d7d8ee61276b47be04c80f6cd22ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconImg: {fileID: 0}
+  skillData: {fileID: 0}
+  skillName: {fileID: 0}
+  InputButton: {fileID: 0}
+  m_Index: 0
+  isSelect: 0
 --- !u!1 &2676815203345324461
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +328,6 @@ MonoBehaviour:
   non_sskill: []
   skillUIPrefab: {fileID: 1681760049594525386, guid: 02a49c1c8eaf7824e91385994ce60450, type: 3}
   content: {fileID: 6997304737663273924}
-  skillTooltip: {fileID: 0}
 --- !u!1001 &911808959
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1159,7 +1176,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1521602439967211282, guid: 99059aff872b2f9408f82207396f3758, type: 3}
       propertyPath: m_Size
-      value: 0.9999977
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2825364131434563350, guid: 99059aff872b2f9408f82207396f3758, type: 3}
       propertyPath: m_IsActive
@@ -1263,7 +1280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3833785748686825248, guid: 99059aff872b2f9408f82207396f3758, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000014944654
+      value: -0.000029802322
       objectReference: {fileID: 0}
     - target: {fileID: 5139212577698935820, guid: 99059aff872b2f9408f82207396f3758, type: 3}
       propertyPath: m_Name
@@ -1305,7 +1322,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 729994066729490949, guid: 02a49c1c8eaf7824e91385994ce60450, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 99059aff872b2f9408f82207396f3758, type: 3}
 --- !u!1 &1404308185636657384 stripped
 GameObject:

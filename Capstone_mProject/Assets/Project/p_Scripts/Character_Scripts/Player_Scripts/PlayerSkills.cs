@@ -35,8 +35,6 @@ public class PlayerSkills : MonoBehaviour
     private int selectSize = 3;
 
     public GameObject skillScrollWindow;
-    public bool presetWin;
-    public bool once = false;
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
     //Effect effect; //스킬 이펙트
@@ -97,6 +95,15 @@ public class PlayerSkills : MonoBehaviour
             P_States.isStrongArrow = false;
         }
         SkillWindow();
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        SkillSettingPC obj = other.GetComponent<SkillSettingPC>();
+        if (obj != null)
+        {
+            SkillWindow();
+        }
     }
 
     List<string> callName = new List<string>();
@@ -286,6 +293,7 @@ public class PlayerSkills : MonoBehaviour
             targetPosition.y = 0.1f;
 
             skillRangeIndicator.transform.position = targetPosition;
+            Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
             //Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
 
             // 플레이어의 위치를 기준으로 skillRangeIndicator의 위치를 향하는 벡터
@@ -313,7 +321,7 @@ public class PlayerSkills : MonoBehaviour
                 case 'F':
                     Debug.Log("switch true");
                     isPressed = true; P_States.isSkill = true;
-                    skillRangeIndicator.SetActive(true);     
+                    skillRangeIndicator.SetActive(true);
                     break;
                 default: break;
             }
@@ -359,7 +367,7 @@ public class PlayerSkills : MonoBehaviour
         //스킬 이펙트
         Effect skillEffect = GameManager.Instance.objectPooling.ShowEffect("Temporary explosion");
         skillEffect.transform.position = skillRangeIndicator.transform.position;
-        
+
         Effect skillEffectCast = GameManager.Instance.objectPooling.ShowEffect("Time cast");
         Vector3 playerPos = this.transform.position;
         playerPos.y = 0.1f;
@@ -380,7 +388,7 @@ public class PlayerSkills : MonoBehaviour
 
                     yield return new WaitForSeconds(0.3f);
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("Magic shield loop yellow");
-                    effect.transform.position = monsterPattern.transform.position+Vector3.up;
+                    effect.transform.position = monsterPattern.transform.position + Vector3.up;
                     float smallestMonsterSize, largestMonsterSize;
 
                     // GetMonsterSizeRange 함수를 호출하여 몬스터의 크기 범위를 가져옵니다.
@@ -393,7 +401,7 @@ public class PlayerSkills : MonoBehaviour
                     else monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
                     Debug.Log("속박");
                 }
-            }            
+            }
         }
 
         yield return new WaitForSeconds(1.6f);
@@ -518,18 +526,31 @@ public class PlayerSkills : MonoBehaviour
         if (P_KState.PDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
             P_KState.PDown = false;
-            if (!isOn) { isOn = true; once = false; } // 창 켜짐
-            else { isOn = false; P_InputHandle.skillIconApply(); } // 창 꺼짐
-            skillScrollWindow.gameObject.SetActive(isOn);
-            presetWin = isOn;
-            P_Controller.PlayerUI_SetActive(!isOn);
-            UIManager.gameIsPaused = isOn;
-            P_States.isStop = isOn;
+            if (isOn == false)  // 켜져있지 않다면 -> 켜기
+            {
+                isOn = true;
+                skillScrollWindow.gameObject.SetActive(true);
+                P_Controller.PlayerUI_SetActive(false);
+                UIManager.gameIsPaused = true;
+                P_States.isStop = true;
+
+                Cursor.visible = true;     //마우스 커서
+                Cursor.lockState = CursorLockMode.None;
+            }
+            else if (isOn == true)  //켜져있다면 -> 끄기
+            {
+                isOn = false;
+                P_InputHandle.skillIconApply();
+                skillScrollWindow.gameObject.SetActive(false);
+                P_Controller.PlayerUI_SetActive(true);
+                UIManager.gameIsPaused = false;
+                P_States.isStop = false;
+
+                Cursor.visible = false;     //마우스 커서
+                Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
+            }
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
-            Cursor.visible = isOn;     //마우스 커서
-            if (!isOn) Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-            else Cursor.lockState = CursorLockMode.None;
         }
         //if (P_KState.MDown && !P_SkillInfo.haveSample2)
         //{

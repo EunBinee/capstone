@@ -49,10 +49,7 @@ public class PlayerUI_info : MonoBehaviour
     Color unselectColor;
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
-    // private bool isAccessSlot = true; // 슬롯 접근가능 여부
-    // private bool isAccessSkill= true; // 스킬 접근가능 여부
-    // public bool IsAccess => isAccessSlot && isAccessSkill;
-    [SerializeField] private PlayerSkillTooltip skillTooltip; //아이템 정보 보여줄 툴팁 UI
+
 
     void Start()
     {
@@ -90,6 +87,7 @@ public class PlayerUI_info : MonoBehaviour
                 curSkillName.m_Index = i; // 인덱스 설정
                 curSkillName.skillName.text = updatedSkills[i]; // 스킬 이름 설정
                 curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[updatedSkills[i]].icon; // 스킬 아이콘 설정
+                curSkillName.skillData = p_controller.P_Skills.skillMap[updatedSkills[i]];
                 playerSkillList.Add(curSkillName); // 리스트에 추가
                 curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
                 //slotImg[i] = curSkillName.iconImg;
@@ -166,9 +164,9 @@ public class PlayerUI_info : MonoBehaviour
         else p_controller._skillInfo.selectSkill = sskill;
 
         //* slot1~3에 아이콘 사진 넣기
-        slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
-        slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
-        slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
+        //slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
+        //slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
+        //slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
     }
     private SOSkill nameToSkill(string namee)
     {
