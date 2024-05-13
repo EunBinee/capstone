@@ -332,6 +332,7 @@ public class PlayerMovement : MonoBehaviour
                 P_States.isCamOnAim = true;
                 Vector3 rotationDirection = camForward;
                 rotationDirection.y = 0;
+                P_Camera.cameraObj.GetComponent<CameraController>().up_down_LookAngle = 0;
                 rotationDirection.Normalize();
                 Quaternion tr = Quaternion.LookRotation(rotationDirection);
                 transform.rotation = tr;
