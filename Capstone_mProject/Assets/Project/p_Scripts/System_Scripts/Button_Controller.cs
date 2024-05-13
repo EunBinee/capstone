@@ -1,12 +1,13 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ButtonManager : MonoBehaviour
+public class Button_Controller : MonoBehaviour
 {
     public KeyState playerKeyState;
-    public static ButtonManager instance = null;
+    public static Button_Controller instance = null;
 
     public enum Btns
     {

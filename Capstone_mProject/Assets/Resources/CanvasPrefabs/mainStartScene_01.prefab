@@ -979,6 +979,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startBtn: {fileID: 1350280148610541677}
   loadBtn: {fileID: 1350280150029165557}
+  startBtnManager: {fileID: 0}
+  loadBtnManager: {fileID: 0}
   curSelectSceneNameList:
   - StartScene 1
   - BossFieldScene 1
@@ -2055,6 +2057,42 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &7454023816105017353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 9222785168694434465, guid: 3e9effe01eb0c7046a743dcd26f415e3, type: 3}
+  m_PrefabInstance: {fileID: 9093830799895787865}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 130090717288506361}
+  m_Layer: 0
+  m_Name: 'Button (Missing Prefab with guid: 3e9effe01eb0c7046a743dcd26f415e3)'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &130090717288506361
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 9222785168694434464, guid: 3e9effe01eb0c7046a743dcd26f415e3, type: 3}
+  m_PrefabInstance: {fileID: 9093830799895787865}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7454023816105017353}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 828081544070084064}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7492335270005650807
 GameObject:
   m_ObjectHideFlags: 0
@@ -2455,8 +2493,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e9effe01eb0c7046a743dcd26f415e3, type: 3}
---- !u!224 &130090717288506361 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 9222785168694434464, guid: 3e9effe01eb0c7046a743dcd26f415e3, type: 3}
-  m_PrefabInstance: {fileID: 9093830799895787865}
-  m_PrefabAsset: {fileID: 0}

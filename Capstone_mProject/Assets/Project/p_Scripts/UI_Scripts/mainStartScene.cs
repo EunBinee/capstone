@@ -12,6 +12,10 @@ public class mainStartScene : MonoBehaviour
     public UnityEngine.UI.Button startBtn;
     public UnityEngine.UI.Button loadBtn;
 
+    public Michsky.UI.Reach.ButtonManager startBtnManager;
+    public Michsky.UI.Reach.ButtonManager loadBtnManager;
+
+
     [Header("Debug")]
     public List<string> curSelectSceneNameList;
     List<mainSceneName> sceneList;
@@ -93,6 +97,7 @@ public class mainStartScene : MonoBehaviour
 
     public void SetButton()
     {
+        /*
         Debug.Log($"{GameManager.instance.loadScene}");
         startBtn.onClick.AddListener(() =>
         {
@@ -101,6 +106,15 @@ public class mainStartScene : MonoBehaviour
         });
         //startBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadMainScene(curSelectSceneName));
         loadBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadDataScene());
+    
+    */
+
+        startBtnManager.onClick.AddListener(() =>
+        {
+            // CanvasManager.instance.mainStartScene.SetActive(false);
+            LoadingSceneController.LoadScene(curSelectSceneName);
+        });
+        loadBtnManager.onClick.AddListener(() => GameManager.instance.loadScene.LoadDataScene());
     }
 
     public void InputcurSelectSceneName()
