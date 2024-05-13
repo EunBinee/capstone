@@ -30,7 +30,6 @@ public class PlayerUI_info : MonoBehaviour
     public Image slot1Img;
     public Image slot2Img;
     public Image slot3Img;
-    //public List<Image> slotImg;
 
     [Space]
     [Header("Player 조준 카메라 관련")]
@@ -38,9 +37,8 @@ public class PlayerUI_info : MonoBehaviour
 
 
     private PlayerController p_controller;
-    [SerializeField]
-    private List<string> SkillNameList;
-    List<PlayerSkillName> playerSkillList;
+    [SerializeField] private List<string> SkillNameList;
+    [SerializeField] List<PlayerSkillName> playerSkillList;
     private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     [SerializeField] List<SOSkill> sskill;
     [SerializeField] List<SOSkill> non_sskill;
@@ -57,8 +55,6 @@ public class PlayerUI_info : MonoBehaviour
         SkillNameList.Clear();
         playerSkillList = new List<PlayerSkillName>();
         selectedSkillsIndex = new List<int>();
-        //slotImg = new List<Image>();
-        //slotImg.Clear();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
         unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
@@ -78,8 +74,6 @@ public class PlayerUI_info : MonoBehaviour
             {
                 GameObject curObj = Instantiate(skillUIPrefab);
                 curObj.transform.SetParent(content);
-                //curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
-                //curObj.transform.position = new Vector3(350+(i * 100), i / 6, 0);
                 curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 100), -180 + (i / 6), 0);
                 curObj.transform.localScale = Vector3.one;
 
@@ -90,13 +84,8 @@ public class PlayerUI_info : MonoBehaviour
                 curSkillName.skillData = p_controller.P_Skills.skillMap[updatedSkills[i]];
                 playerSkillList.Add(curSkillName); // 리스트에 추가
                 curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
-                //slotImg[i] = curSkillName.iconImg;
             }
             SkillNameList = new List<string>(updatedSkills); // 스킬 목록 업데이트
-
-            //slot1Img.sprite = slotImg[0].sprite;
-            //slot2Img.sprite = slotImg[1].sprite;
-            //slot3Img.sprite = slotImg[2].sprite;
         }
     }
 
@@ -164,9 +153,9 @@ public class PlayerUI_info : MonoBehaviour
         else p_controller._skillInfo.selectSkill = sskill;
 
         //* slot1~3에 아이콘 사진 넣기
-        //slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
-        //slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
-        //slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
+        slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
+        slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
+        slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
     }
     private SOSkill nameToSkill(string namee)
     {
