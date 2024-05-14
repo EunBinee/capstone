@@ -485,6 +485,7 @@ public class PlayerSkills : MonoBehaviour
                         P_States.isBowMode = false;
                         P_Controller.bow.SetActive(false);
                         P_Controller.sword.SetActive(true);
+                        P_Com.animator.SetFloat("isBow", 0);
                     }
                     else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
                     {
@@ -492,6 +493,7 @@ public class PlayerSkills : MonoBehaviour
                         P_Controller.bow.SetActive(true);
                         P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
+                        P_Com.animator.SetFloat("isBow", 1);
                     }
                 }
                 skill_T.OnClicked();

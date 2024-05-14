@@ -142,7 +142,7 @@ public class PlayerMovement : MonoBehaviour
                 || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
             //HandleSprint();
-            HandleWalkOrRun();
+            HandleWalkOrRun(); HandleSprint();
 
             P_InputHandle.MouseMoveInput();
 
@@ -188,7 +188,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleSprint()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && P_Value.moveAmount > 0)
+        if (Input.GetKey(KeyCode.V) && P_Value.moveAmount > 0)
         {
             //moveAmount > 0 하는 이유
             //제자리에서 멈춰서 자꾸 뛴다.
