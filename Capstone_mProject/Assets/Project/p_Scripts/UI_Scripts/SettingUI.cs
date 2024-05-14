@@ -9,22 +9,18 @@ public class SettingUI : MonoBehaviour
 
     void Start()
     {
-        Init();
+        SettingInit();
     }
-    public void Init()
+    public void SettingInit()
     {
 
     }
 
-    void OnDisable()
-    {
-        ChangeSettingValue();
-
-    }
-
-    void ChangeSettingValue()
+    public void ChangeSettingValue()
     {
         //* 닫을 때 변경된 세팅값을 적용시켜주는 함수
+
+        GameManager.instance.cameraSensitivity = settingInfo.slider_CameraSensitivity.value;
         GameManager.instance.ChangeSettingValue();
     }
 

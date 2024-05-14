@@ -7,5 +7,5 @@ using System;
 [Serializable]
 public class SettingInfo
 {
-    public Slider CameraSensitivity;
+    public Slider slider_CameraSensitivity;
 }

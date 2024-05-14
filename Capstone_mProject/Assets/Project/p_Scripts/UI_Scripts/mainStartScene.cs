@@ -16,6 +16,7 @@ public class mainStartScene : MonoBehaviour
     public Michsky.UI.Reach.ButtonManager loadBtnManager;
     public Michsky.UI.Reach.ButtonManager settingBtnManager;
 
+    public SettingUI settingUI;
     public Animator mainStartSceneAnim;
     public Animator settingSceneAnim;
 
@@ -113,6 +114,7 @@ public class mainStartScene : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 showSettingPanel = false;
+                settingUI.ChangeSettingValue();
                 settingSceneAnim.Play(panelFadeOut);
                 mainStartSceneAnim.Play(panelFadeIn);
             }

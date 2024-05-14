@@ -301,8 +301,10 @@ public class GameManager : MonoBehaviour
 
     public void ChangeSettingValue()
     {
+
         cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * cameraSensitivity;
         cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * cameraSensitivity;
+
 
         Debug.Log("하이여");
     }
