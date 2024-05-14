@@ -74,8 +74,8 @@ public class CanvasManager : MonoBehaviour
     public void Init()
     {
         //* 메인씬
-        if (mainStartScene == null)
-            mainStartScene = GetCanvasUI(mainStartSceneName);
+        //if (mainStartScene == null)
+        //    mainStartScene = GetCanvasUI(mainStartSceneName);
         //* 플레이어 UI
         if (playerUI == null)
             playerUI = GetCanvasUI(playerUIName);

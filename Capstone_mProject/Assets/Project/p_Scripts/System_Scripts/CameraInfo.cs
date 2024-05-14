@@ -36,6 +36,11 @@ public class CameraInfo : MonoBehaviour
         cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
         cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
 
+
+        //* 카메라 세팅 값 적용
+        cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * GameManager.instance.cameraSensitivity;
+        cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * GameManager.instance.cameraSensitivity;
+
     }
 
     public void ResetCamera()
@@ -51,5 +56,8 @@ public class CameraInfo : MonoBehaviour
         playerController._playerFollowCamera.playerCamera = null;
         playerController._playerFollowCamera.playerCameraPivot = null;
         playerController._playerFollowCamera.cameraObj = null;
+
+        cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * GameManager.instance.cameraSensitivity;
+        cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * GameManager.instance.cameraSensitivity;
     }
 }

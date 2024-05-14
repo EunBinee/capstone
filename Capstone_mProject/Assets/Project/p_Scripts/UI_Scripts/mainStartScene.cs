@@ -9,11 +9,20 @@ using UnityEngine.UIElements;
 
 public class mainStartScene : MonoBehaviour
 {
-    public UnityEngine.UI.Button startBtn;
-    public UnityEngine.UI.Button loadBtn;
+    //public UnityEngine.UI.Button startBtn;
+    //public UnityEngine.UI.Button loadBtn;
 
     public Michsky.UI.Reach.ButtonManager startBtnManager;
     public Michsky.UI.Reach.ButtonManager loadBtnManager;
+    public Michsky.UI.Reach.ButtonManager settingBtnManager;
+
+    public Animator mainStartSceneAnim;
+    public Animator settingSceneAnim;
+
+    string panelFadeIn = "Panel In";
+    string panelFadeOut = "Panel Out";
+
+    bool showSettingPanel = false;
 
 
     [Header("Debug")]
@@ -31,6 +40,8 @@ public class mainStartScene : MonoBehaviour
 
     void Start()
     {
+        mainStartSceneAnim.Play(panelFadeIn);
+        showSettingPanel = false;
         SetButton();
         sceneList = new List<mainSceneName>();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
@@ -95,26 +106,34 @@ public class mainStartScene : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (showSettingPanel)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                showSettingPanel = false;
+                settingSceneAnim.Play(panelFadeOut);
+                mainStartSceneAnim.Play(panelFadeIn);
+            }
+        }
+    }
+
     public void SetButton()
     {
-        /*
-        Debug.Log($"{GameManager.instance.loadScene}");
-        startBtn.onClick.AddListener(() =>
-        {
-            // CanvasManager.instance.mainStartScene.SetActive(false);
-            LoadingSceneController.LoadScene(curSelectSceneName);
-        });
-        //startBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadMainScene(curSelectSceneName));
-        loadBtn.onClick.AddListener(() => GameManager.instance.loadScene.LoadDataScene());
-    
-    */
-
         startBtnManager.onClick.AddListener(() =>
         {
             // CanvasManager.instance.mainStartScene.SetActive(false);
             LoadingSceneController.LoadScene(curSelectSceneName);
         });
         loadBtnManager.onClick.AddListener(() => GameManager.instance.loadScene.LoadDataScene());
+
+        settingBtnManager.onClick.AddListener(() =>
+        {
+            mainStartSceneAnim.Play(panelFadeOut);
+            settingSceneAnim.Play(panelFadeIn);
+            showSettingPanel = true;
+        });
     }
 
     public void InputcurSelectSceneName()

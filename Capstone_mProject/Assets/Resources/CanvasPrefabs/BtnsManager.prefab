@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 22079611845935293}
-  - component: {fileID: 8493311619173084256}
+  - component: {fileID: 5851128598808165442}
   m_Layer: 5
   m_Name: BtnsManager
   m_TagString: Untagged
@@ -38,7 +38,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8493311619173084256
+--- !u!114 &5851128598808165442
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,9 +47,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 22079611845935292}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 690ae410791e39244a2906fada13eed4, type: 3}
+  m_Script: {fileID: 11500000, guid: ca1730bb2895bb544974c9b17879b5f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerKeyState:
+    QDown: 0
+    WDown: 0
+    EDown: 0
+    RDown: 0
+    TDown: 0
+    YDown: 0
+    UDown: 0
+    IDown: 0
+    ODown: 0
+    PDown: 0
+    ADown: 0
+    SDown: 0
+    DDown: 0
+    FDown: 0
+    GDown: 0
+    HDown: 0
+    JDown: 0
+    KDown: 0
+    LDown: 0
+    ZDown: 0
+    XDown: 0
+    CDown: 0
+    VDown: 0
+    BDown: 0
+    NDown: 0
+    MDown: 0
   skipBtn: {fileID: 22079612054398335}
 --- !u!1 &22079611959515785
 GameObject:

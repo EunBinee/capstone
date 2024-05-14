@@ -8,9 +8,9 @@ namespace Michsky.UI.Reach
     public class RectDepth : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] [Range(0.05f, 1)] private float smoothness = 0.25f;
-        [SerializeField] [Range(0.5f, 10)] private float multiplier = 2;
-        [SerializeField] [Range(1, 2)] private float maxRectScale = 1;
+        [SerializeField][Range(0.05f, 1)] private float smoothness = 0.25f;
+        [SerializeField][Range(0.5f, 10)] private float multiplier = 2;
+        [SerializeField][Range(1, 2)] private float maxRectScale = 1;
 
         [Header("Resources")]
         [SerializeField] private RectTransform targetRect;
@@ -22,10 +22,21 @@ namespace Michsky.UI.Reach
         void Awake()
         {
             if (targetRect == null) { targetRect = GetComponent<RectTransform>(); }
-            if (targetCanvas == null) { targetCanvas = GetComponentInParent<Canvas>(); }
+            if (targetCanvas == null)
+            {
+                targetCanvas = GetComponentInParent<Canvas>();
+            }
             if (targetCamera == null) { targetCamera = Camera.main; }
 
             targetRect.transform.localScale = new Vector3(maxRectScale, maxRectScale, maxRectScale);
+        }
+
+        private void Start()
+        {
+            if (targetCanvas == null)
+            {
+                targetCanvas = GameManager.instance.m_canvas;
+            }
         }
 
         void OnEnable()
