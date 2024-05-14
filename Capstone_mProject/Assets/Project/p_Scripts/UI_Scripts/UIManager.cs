@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    private static UIManager instance = null;
+    public static UIManager instance = null;
     public static UIManager Instance
     {
         get
@@ -30,6 +30,12 @@ public class UIManager : MonoBehaviour
         Quest,
         PopupWindow
     };
+
+    public enum ButtonUI
+    {
+        StartSceneBtn,
+        Btn
+    }
 
     public UIPrefabs uiPrefabs;
     public List<GameObject> uiPrefabsInGame;

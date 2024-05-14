@@ -38,8 +38,7 @@ public class CurSceneManager : MonoBehaviour
     private void SceneSetting()
     {
         //* 처음 불러와졌을때 세팅
-        if (CanvasManager.instance.mainStartScene.activeSelf)
-            CanvasManager.instance.mainStartScene.SetActive(false);
+
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;
