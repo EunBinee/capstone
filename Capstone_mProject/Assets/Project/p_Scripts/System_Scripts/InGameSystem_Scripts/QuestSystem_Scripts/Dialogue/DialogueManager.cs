@@ -88,6 +88,7 @@ public class DialogueManager : MonoBehaviour
                 return;
         }
         DialogueUI_info dialogueUI_Info = CanvasManager.instance.dialogueUI.GetComponent<DialogueUI_info>();
+
         DialogueUI_info.go_DialogueBar = dialogueUI_Info.go_DialogueBar;
         DialogueUI_info.Text_Dialogue = dialogueUI_Info.Text_Dialogue;
         DialogueUI_info.Text_Name = dialogueUI_Info.Text_Name;
@@ -282,7 +283,12 @@ public class DialogueManager : MonoBehaviour
 
                         //선택지 대사 출력
                         DialogueUI_info.Text_Btn01.text = dialogue.lines[curPart][curLine].choice.firstOption.Replace("'", ",");
-                        DialogueUI_info.Text_Btn02.text = dialogue.lines[curPart][curLine].choice.secondOption.Replace("'", ","); ;
+                        DialogueUI_info.Text_Btn02.text = dialogue.lines[curPart][curLine].choice.secondOption.Replace("'", ","); 
+                        
+                        Michsky.UI.Reach.ButtonManager button01 = DialogueUI_info.ObjectTextBox_Button01.GetComponent<Michsky.UI.Reach.ButtonManager>();
+                        button01.highlightTextObj.text = DialogueUI_info.Text_Btn01.text;
+                        Michsky.UI.Reach.ButtonManager button02 = DialogueUI_info.ObjectTextBox_Button02.GetComponent<Michsky.UI.Reach.ButtonManager>();
+                        button02.highlightTextObj.text = DialogueUI_info.Text_Btn02.text;
 
                         //버튼안에 내용물 넣어줌.
                         UnityEngine.UI.Button btn01 = DialogueUI_info.ObjectTextBox_Button01.GetComponent<UnityEngine.UI.Button>();

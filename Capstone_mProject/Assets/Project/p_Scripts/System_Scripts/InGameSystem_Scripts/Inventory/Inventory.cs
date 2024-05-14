@@ -79,16 +79,16 @@ public class Inventory : MonoBehaviour
 
             UIManager.Instance.Pause();
         }
-        else if (openInventory && playerController._keyState.IDown)
-        {
-            playerController._keyState.IDown = false;
-            GameManager.instance.cameraController.stopRotation = false;
+        // else if (openInventory && playerController._keyState.IDown)
+        // {
+        //     playerController._keyState.IDown = false;
+        //     GameManager.instance.cameraController.stopRotation = false;
 
-            inventory.SetActive(false);
-            openInventory = false;
+        //     inventory.SetActive(false);
+        //     openInventory = false;
 
-            UIManager.Instance.Resume();
-        }
+        //     UIManager.Instance.Resume();
+        // }
     }
     public void CloseBtn()
     {
