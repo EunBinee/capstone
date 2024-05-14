@@ -1172,7 +1172,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
         Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("1");
+            //Debug.Log("1");
             PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_LastWeakness_TimeLine");
             director.Stop();
 
@@ -1209,7 +1209,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         Coroutine monsterLastWeakness_co = StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
         Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("2");
+            //Debug.Log("2");
             StopCoroutine(monsterLastWeakness_co);
             monsterLastWeakness_co = null;
         });
@@ -1243,10 +1243,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("3");
+            //Debug.Log("3");
             if (auraEffect != null)
             {
-                Debug.Log("4");
+                //Debug.Log("4");
                 auraEffect.gameObject.SetActive(false);
                 Destroy(auraEffect);
                 auraEffect = null;
