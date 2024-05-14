@@ -135,6 +135,7 @@ public class QuestManager : MonoBehaviour
             }
         }
         DialogueManager.instance.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
+        DialogueManager.instance.QuestTitle_Alarm(text_title);
     }
 
     //튜토리얼 

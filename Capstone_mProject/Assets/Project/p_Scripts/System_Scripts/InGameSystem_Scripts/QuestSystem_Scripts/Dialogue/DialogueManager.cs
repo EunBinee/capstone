@@ -1,4 +1,6 @@
 using System.Collections;
+//using Michsky.UI.Reach;
+
 // using System.Collections.Generic;
 // using TMPro;
 // using Unity.VisualScripting;
@@ -35,6 +37,7 @@ public class DialogueManager : MonoBehaviour
 
     //* 퀘스트
     public QuestManager questManager;
+    public Michsky.UI.Reach.NotificationManager notificationManager;
     //*---------------------------------------------------------------------------------------------//
 
     public bool endChat_inController = false;  //dialogueController 타이핑 애니메이션
@@ -59,6 +62,7 @@ public class DialogueManager : MonoBehaviour
 
         dialogueController = GetComponent<DialogueController>();
         questManager = GetComponent<QuestManager>();
+       
     }
     void Start()
     {
@@ -100,6 +104,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Text_QuestDetailGoal = dialogueUI_Info.Text_QuestDetailGoal;
         DialogueUI_info.Text_QuestDetailTitle = dialogueUI_Info.Text_QuestDetailTitle;
         DialogueUI_info.Text_QuestDetailContent = dialogueUI_Info.Text_QuestDetailContent;
+        DialogueUI_info.Text_Alarm = dialogueUI_Info.Text_Alarm;
     }
 
 
@@ -505,6 +510,16 @@ public class DialogueManager : MonoBehaviour
     {
         DialogueUI_info.Quest_Button01.SetActive(false);
     }
+
+    //퀘스트 목표 UI 출력 활성화
+    public void QuestTitle_Alarm(string text)
+    {
+        //DialogueUI_info.Text_Alarm.SetActive(true);
+        notificationManager= DialogueUI_info.Text_Alarm.GetComponent<Michsky.UI.Reach.NotificationManager>();
+        notificationManager.notificationText = text;
+        //DialogueUI_info.Text_Alarm.text = notificationManager.notificationText ;
+    }
+
     //튜토리얼 ui 활성화
     /*
     public void TutorialUI(string text)
