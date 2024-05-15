@@ -5,6 +5,7 @@ using System;
 using UnityEngine.AI;
 using Unity.VisualScripting;
 using UnityEngine.Animations;
+using UnityEngine.Assertions.Must;
 
 public class MonsterPattern : MonoBehaviour
 {
@@ -306,9 +307,13 @@ public class MonsterPattern : MonoBehaviour
     {
         //몬스터 로밍시 지정된 장소에 장애물이 있는지 확인
         Collider[] colliders = Physics.OverlapSphere(randomPos, 1);
+
         if (colliders.Length > 1)
         {
-            //장애물 존재 (1은 바닥 콜라이더)
+            //장애물 존재
+            //1개는 무조건 존재
+            // 땅바닥 콜라이더
+
             return false;
         }
         return true;
