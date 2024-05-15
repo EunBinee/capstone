@@ -85,7 +85,13 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 screenCenter;
     public bool EnablePlayerUI = true;
-
+    private bool isOn = false;
+    public bool retIsOn(){
+        return isOn;
+    }
+    public void setIsOn(bool val){
+        isOn = val;
+    }
     void Awake()
     {
         P_Com.animator = GetComponent<Animator>();

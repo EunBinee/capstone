@@ -74,7 +74,7 @@ public class PlayerSkillTooltip : MonoBehaviour
         //해상도따라 다르게
         float wRatio = Screen.width / canvasScaler.referenceResolution.x;
         float hRatio = Screen.height / canvasScaler.referenceResolution.y;
-        float ratio = wRatio * (1f - canvasScaler.matchWidthOrHeight) + hRatio * (canvasScaler.matchWidthOrHeight);
+        float ratio = wRatio * (0.5f - canvasScaler.matchWidthOrHeight) + hRatio * (canvasScaler.matchWidthOrHeight);
 
         float slotWidth = slotRect.rect.width * ratio;
         float slotHeight = slotRect.rect.height * ratio;

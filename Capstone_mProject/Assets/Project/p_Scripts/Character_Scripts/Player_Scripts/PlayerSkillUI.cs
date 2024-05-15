@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -52,18 +54,21 @@ public class PlayerSkillUI : MonoBehaviour
         rList.Clear(); //레이캐스트 결과 저장할 리스트 초기화
 
         gr.Raycast(ped, rList);
+        //Debug.DrawRay(ped.position,Input.mousePosition,Color.red); //! 렉 오짐
 
-        if (rList.Count == 0) return null; //히트한 결과가 없으면 null
+        if (rList.Count == 0) //히트한 결과가 없으면 null
+        {
+            return null;
+        } 
 
         Transform aa = rList[0].gameObject.transform;
         T a = aa.GetComponent<T>();
-        while (a == null)   //a에 값이 들어갈 때 까지
+        if (a == null)
         {
-            aa = aa.parent;
-            a = aa.GetComponent<T>();
+            a = aa.GetComponentInParent<T>();
         }
-
-        return a; //있으면 첫번째 히트된 게임오브젝트 가져옴. 
+        
+        return a;
     }
     private void OnPointerEnterExit()
     {
@@ -73,10 +78,6 @@ public class PlayerSkillUI : MonoBehaviour
         //현재 프레임의 슬롯
         //var curSlot = 
         pointerOverSlot = RaycastAndGetFirstComponent<PlayerSkillName>();
-        foreach (var item in rList)
-        {
-            Debug.Log($"rList {item}");
-        }
     }
 
     //아이템 정보 툴팁 보여주고 숨기기
@@ -87,13 +88,11 @@ public class PlayerSkillUI : MonoBehaviour
 
         if (isValid)
         {
-            Debug.Log("isValid");
             UpdateTooltipUI(pointerOverSlot);
             skillTooltip.Show();
         }
         else
         {
-            Debug.Log("else");
             skillTooltip.Hide();
         }
 
