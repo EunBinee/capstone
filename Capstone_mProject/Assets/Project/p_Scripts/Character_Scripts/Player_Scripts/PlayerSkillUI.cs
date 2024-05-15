@@ -54,10 +54,12 @@ public class PlayerSkillUI : MonoBehaviour
         rList.Clear(); //레이캐스트 결과 저장할 리스트 초기화
 
         gr.Raycast(ped, rList);
-        Debug.DrawRay(ped.position,Input.mousePosition,Color.red);
+        //Debug.DrawRay(ped.position,Input.mousePosition,Color.red); //! 렉 오짐
 
-        if (rList.Count == 0) {
-            return null;} //히트한 결과가 없으면 null
+        if (rList.Count == 0) //히트한 결과가 없으면 null
+        {
+            return null;
+        } 
 
         Transform aa = rList[0].gameObject.transform;
         T a = aa.GetComponent<T>();

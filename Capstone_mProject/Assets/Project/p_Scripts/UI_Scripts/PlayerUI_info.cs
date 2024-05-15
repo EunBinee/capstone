@@ -27,9 +27,7 @@ public class PlayerUI_info : MonoBehaviour
 
     [Header("Skill Slot")]
     public GameObject skillScrollWindow;
-    public Image slot1Img;
-    public Image slot2Img;
-    public Image slot3Img;
+    [SerializeField] public List<Image> slot = new List<Image>(3);
 
     [Space]
     [Header("Player 조준 카메라 관련")]
@@ -39,7 +37,7 @@ public class PlayerUI_info : MonoBehaviour
     private PlayerController p_controller;
     [SerializeField] private List<string> SkillNameList;
     [SerializeField] List<PlayerSkillName> playerSkillList;
-    private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
+    [SerializeField] private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     [SerializeField] List<SOSkill> sskill;
     [SerializeField] List<SOSkill> non_sskill;
 
@@ -67,9 +65,10 @@ public class PlayerUI_info : MonoBehaviour
     }
     void Setting()
     {
-        slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
-        slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
-        slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
+        for (int i = 0; i < 3; i++)
+        {
+            SelectSkill(playerSkillList[i]);
+        }
     }
 
     private void SkillMapUpdated()
@@ -81,10 +80,10 @@ public class PlayerUI_info : MonoBehaviour
             {
                 GameObject curObj = Instantiate(skillUIPrefab);
                 curObj.transform.SetParent(content);
-                curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 110), -30 + (i / 6), 0);
+                curObj.transform.localPosition = new Vector3(50 + ((i % 6) * 110), -30 + (i / 6), 0);
                 curObj.transform.localScale = Vector3.one;
 
-                PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근r
+                PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
                 curSkillName.m_Index = i; // 인덱스 설정
                 curSkillName.skillName.text = updatedSkills[i]; // 스킬 이름 설정
                 curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[updatedSkills[i]].icon; // 스킬 아이콘 설정
@@ -119,6 +118,28 @@ public class PlayerUI_info : MonoBehaviour
             selectedSkillsIndex.Add(curIndex); // 새로운 선택 추가
         }
         //skillPresetting();
+        //* slot1~3에 아이콘 사진 넣기
+        selectSkillAddList();
+        if (sskill.Count < 3)   // 3개 미만 선택 했다면
+        {
+            int needSkillCnt = 3 - sskill.Count;
+            for (int i = 0; i < sskill.Count; i++)
+            {
+                slot[i].sprite = sskill[i].icon;
+            }
+            //* 나머지 넣기(skillMap 앞에서부터)
+            int j = 0;
+            for (int i = sskill.Count; i < 3; i++)
+            {
+                slot[i].sprite = non_sskill[j++].icon;
+            }
+        }
+        else 
+        {
+            slot[0].sprite = sskill[0].icon;
+            slot[1].sprite = sskill[1].icon;
+            slot[2].sprite = sskill[2].icon;
+        }
     }
 
     void OnDestroy()
@@ -127,7 +148,7 @@ public class PlayerUI_info : MonoBehaviour
         p_controller.P_Skills.OnSkillMapUpdated -= SkillMapUpdated;
     }
 
-    public void skillPresetting()
+    public void selectSkillAddList()
     {
         sskill = new List<SOSkill>();
         non_sskill = new List<SOSkill>();
@@ -142,9 +163,12 @@ public class PlayerUI_info : MonoBehaviour
                 non_sskill.Add(nameToSkill(i.skillName.text));
             }
         }
+    }
+    public void skillPresetting()
+    {
+        selectSkillAddList();
         if (sskill.Count < 3)   // 3개 미만 선택 했다면
         {
-            int needSkillCnt = 3 - sskill.Count;
             for (int i = 0; i < sskill.Count; i++)
             {
                 p_controller._skillInfo.selectSkill[i] = sskill[i];
@@ -160,9 +184,9 @@ public class PlayerUI_info : MonoBehaviour
         else p_controller._skillInfo.selectSkill = sskill;
 
         //* slot1~3에 아이콘 사진 넣기
-        slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
-        slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
-        slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
+        slot[0].sprite = p_controller._skillInfo.selectSkill[0].icon;
+        slot[1].sprite = p_controller._skillInfo.selectSkill[1].icon;
+        slot[2].sprite = p_controller._skillInfo.selectSkill[2].icon;
     }
     private SOSkill nameToSkill(string namee)
     {
