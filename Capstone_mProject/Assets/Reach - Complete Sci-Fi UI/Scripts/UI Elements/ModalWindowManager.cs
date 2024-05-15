@@ -17,7 +17,7 @@ namespace Michsky.UI.Reach
         public TextMeshProUGUI windowDescription;
         public ButtonManager confirmButton;
         public ButtonManager cancelButton;
-        [SerializeField] private Animator mwAnimator;
+        [SerializeField] public Animator mwAnimator;
 
         // Content
         public Sprite icon;

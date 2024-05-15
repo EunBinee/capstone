@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using Michsky.UI.Reach;
 
 public class Inventory : MonoBehaviour
 {
@@ -75,6 +76,14 @@ public class Inventory : MonoBehaviour
             GameManager.instance.cameraController.stopRotation = true;
 
             inventory.SetActive(true);
+
+            ModalWindowManager modalWindowManager = inventory.GetComponent<ModalWindowManager>();
+            modalWindowManager.mwAnimator.enabled = true;
+            modalWindowManager.mwAnimator.SetFloat("AnimSpeed", modalWindowManager.animationSpeed);
+            modalWindowManager.mwAnimator.Play("In");
+            
+            
+            
             openInventory = true;
 
             UIManager.Instance.Pause();
