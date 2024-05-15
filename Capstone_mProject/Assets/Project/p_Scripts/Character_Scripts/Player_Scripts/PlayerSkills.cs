@@ -521,16 +521,16 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    bool isOn = false;
     public void SkillWindow()
     {
+        bool isOn = P_Controller.retIsOn();
         //todo: P 누르면 스킬 프리셋 설정할 수 있는 창 뜨면서 선택한 스킬이 스킬아이콘에 등록
         if (P_KState.PDown || (isOn && Input.GetKeyUp(KeyCode.Escape)))
         {
             P_KState.PDown = false;
             if (isOn == false)  // 켜져있지 않다면 -> 켜기
             {
-                isOn = true;
+                P_Controller.setIsOn(true);
                 skillScrollWindow.gameObject.SetActive(true);
                 P_Controller.PlayerUI_SetActive(false);
                 UIManager.gameIsPaused = true;
@@ -541,7 +541,7 @@ public class PlayerSkills : MonoBehaviour
             }
             else if (isOn == true)  //켜져있다면 -> 끄기
             {
-                isOn = false;
+                P_Controller.setIsOn(false);
                 P_InputHandle.skillIconApply();
                 skillScrollWindow.gameObject.SetActive(false);
                 P_Controller.PlayerUI_SetActive(true);

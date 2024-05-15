@@ -69,7 +69,7 @@ public class Inventory : MonoBehaviour
 
     public void OpenCloseInventory()
     {
-        if (!openInventory && playerController._keyState.IDown)
+        if (!openInventory && playerController._keyState.IDown && !playerController.retIsOn())
         {
             playerController._keyState.IDown = false;
             GameManager.instance.cameraController.stopRotation = true;
