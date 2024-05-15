@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Michsky.UI.Reach;
 
 public class PopupUI : MonoBehaviour
 {
@@ -77,6 +78,10 @@ public class PopupUI : MonoBehaviour
     private void ShowThrowPopup()
     {
         throwPopup.SetActive(true);
+        ModalWindowManager modalWindowManager = throwPopup.GetComponent<ModalWindowManager>();
+        modalWindowManager.mwAnimator.enabled = true;
+        modalWindowManager.mwAnimator.SetFloat("AnimSpeed", modalWindowManager.animationSpeed);
+        modalWindowManager.mwAnimator.Play("In");
         //usePopup.SetActive(false);
     }
     // private void ShowUsePopup()
@@ -84,4 +89,8 @@ public class PopupUI : MonoBehaviour
     //     usePopup.SetActive(true);
     //     throwPopup.SetActive(false);
     // }
+    public void CloseBtn_Popup()
+    {
+        throwPopup.SetActive(false);
+    }
 }
