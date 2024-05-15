@@ -237,8 +237,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
                                 randomPos = hit.position;
                             mRoaming_randomPos = randomPos;
                             distance = Vector3.Distance(transform.position, randomPos);
+                            //  Debug.Log($"{distance}");
                             checkObstacle = CheckObstacleCollider(randomPos);
-                            if (distance > 3f && checkObstacle)
+                            Debug.Log($"{checkObstacle}");
+                            if (distance > 3f && !checkObstacle)
                                 break;
                         }
 
@@ -251,6 +253,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                     if (!dontMove)
                     {
+                        Debug.Log("hh");
                         SetMove_AI(true);
                         navMeshAgent.SetDestination(randomPos);
                         SetAnimation(MonsterAnimation.Move);
@@ -510,43 +513,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
-        // SetMove_AI(false);
-        // SetAnimation(MonsterAnimation.Idle);
 
-        // int index = UnityEngine.Random.Range(0, m_monster.monsterData.shortAttack_Num);
-        // EnabledWeaponsCollider(true);
-        // SetAttackAnimation(MonsterAttackAnimation.Short_Range_Attack, index);
-
-        // yield return new WaitForSeconds(0.5f);//(0.5f);
-
-        // Effect effect = GameManager.Instance.objectPooling.ShowEffect(shortAttackEffectName, attackEffectPos);
-        // curEffect = effect;
-
-        // effect.finishAction = () =>
-        // {
-        //     curEffect = null;
-        // };
-
-        // effect.transform.localEulerAngles = effectRotation;
-        // effect.transform.position = attackEffectPos.position;
-
-        // //!!!!!---사운드
-        // m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
-
-        // yield return new WaitUntil(() => (m_animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")));
-        // EnabledWeaponsCollider(false);
-
-        // float distance = Vector3.Distance(transform.position, playerTrans.position);
-        // if (distance < 1.3f)
-        // {
-        //     yield return new WaitForSeconds(1f);
-        //     Monster_Motion(MonsterMotion.Short_Range_Attack);
-        // }
-        // else
-        // {
-        //     ChangeMonsterState(MonsterState.Tracing);
-        //     short_Range_Attack_co = null;
-        // }
 
         //공격 텀 두기
         SetMove_AI(false);
