@@ -63,6 +63,13 @@ public class PlayerUI_info : MonoBehaviour
         p_controller.P_Skills.OnSkillMapUpdated += SkillMapUpdated;
 
         SkillMapUpdated(); // 초기 UI 설정을 위해 메서드 호출
+        Invoke("Setting", 0.3f);
+    }
+    void Setting()
+    {
+        slot1Img.sprite = p_controller._skillInfo.selectSkill[0].icon;
+        slot2Img.sprite = p_controller._skillInfo.selectSkill[1].icon;
+        slot3Img.sprite = p_controller._skillInfo.selectSkill[2].icon;
     }
 
     private void SkillMapUpdated()
@@ -74,7 +81,7 @@ public class PlayerUI_info : MonoBehaviour
             {
                 GameObject curObj = Instantiate(skillUIPrefab);
                 curObj.transform.SetParent(content);
-                curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 100), -180 + (i / 6), 0);
+                curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 110), -30 + (i / 6), 0);
                 curObj.transform.localScale = Vector3.one;
 
                 PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근r
@@ -111,7 +118,7 @@ public class PlayerUI_info : MonoBehaviour
             curSkillName.isSelect = true; // 선택 상태로 변경
             selectedSkillsIndex.Add(curIndex); // 새로운 선택 추가
         }
-        skillPresetting();
+        //skillPresetting();
     }
 
     void OnDestroy()
@@ -169,4 +176,15 @@ public class PlayerUI_info : MonoBehaviour
         return null;
     }
 
+    public void confirm(){
+        //선택한 스킬 저장
+        skillPresetting();
+        p_controller.P_Skills.CloseSkillWindow();
+        Debug.Log("confirm()");
+    }
+    public void cancel(){
+        //선택 하기 전 스킬들로 저장
+        p_controller.P_Skills.CloseSkillWindow();
+        Debug.Log("cancel()");
+    }
 }
