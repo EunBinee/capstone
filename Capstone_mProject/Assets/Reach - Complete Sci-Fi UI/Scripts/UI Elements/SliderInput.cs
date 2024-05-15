@@ -52,7 +52,7 @@ namespace Michsky.UI.Reach
             else if (decimals == 1) { inputField.text = value.ToString("F1"); }
             else if (decimals == 2) { inputField.text = value.ToString("F2"); }
             else if (decimals == 3) { inputField.text = value.ToString("F3"); }
-            else if(decimals == 4) { inputField.text = value.ToString("F4"); }
+            else if (decimals == 4) { inputField.text = value.ToString("F4"); }
         }
 
         void SetValue()

@@ -47,6 +47,10 @@ public class GameManager : MonoBehaviour
     public bool isLoading = false;
     public bool curCutScene_ing = false;
     //* --------------------------------------------//
+    //ESC 세팅 값
+    public float cameraSensitivity = 1.0f; //카메라 감도
+
+
     void Awake()
     {
         Init();
@@ -292,6 +296,17 @@ public class GameManager : MonoBehaviour
             UIManager.gameIsPaused = false;
         }
 
+    }
+    //*---------------------------------------------------------------------------//
+
+    public void ChangeSettingValue()
+    {
+
+        cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * cameraSensitivity;
+        cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * cameraSensitivity;
+
+
+        Debug.Log("하이여");
     }
 }
 

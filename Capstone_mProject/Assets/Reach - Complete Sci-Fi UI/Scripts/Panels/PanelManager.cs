@@ -30,14 +30,14 @@ namespace Michsky.UI.Reach
         // Helpers
         Animator currentPanel;
         Animator nextPanel;
-       
+
         PanelButton currentButton;
         PanelButton nextButton;
-        
+
         string panelFadeIn = "Panel In";
         string panelFadeOut = "Panel Out";
         string animSpeedKey = "AnimSpeed";
-       
+
         bool isInitialized = false;
         public float cachedStateLength = 1;
         [HideInInspector] public int managerIndex;
@@ -69,7 +69,10 @@ namespace Michsky.UI.Reach
             if (panels.Count == 0)
                 return;
 
-            if (panelMode == PanelMode.MainPanel) { cachedStateLength = ReachUIInternalTools.GetAnimatorClipLength(panels[currentPanelIndex].panelObject, "MainPanel_In"); }
+            if (panelMode == PanelMode.MainPanel)
+            {
+                cachedStateLength = ReachUIInternalTools.GetAnimatorClipLength(panels[currentPanelIndex].panelObject, "MainPanel_In");
+            }
             else if (panelMode == PanelMode.SubPanel) { cachedStateLength = ReachUIInternalTools.GetAnimatorClipLength(panels[currentPanelIndex].panelObject, "SubPanel_In"); }
 
             if (ControllerManager.instance != null)
@@ -91,14 +94,14 @@ namespace Michsky.UI.Reach
                     if (panels[i].panelObject == null)
                         continue;
 
-                    if (currentPanelIndex == i) 
+                    if (currentPanelIndex == i)
                     {
                         panels[i].panelObject.gameObject.SetActive(true);
                         panels[i].panelObject.enabled = true;
-                        panels[i].panelObject.Play("Panel Instant In"); 
+                        panels[i].panelObject.Play("Panel Instant In");
                     }
 
-                    else 
+                    else
                     {
                         panels[i].panelObject.gameObject.SetActive(false);
                     }
@@ -168,8 +171,8 @@ namespace Michsky.UI.Reach
         }
 
         public void OpenFirstPanel()
-        { 
-            OpenPanelByIndex(0); 
+        {
+            OpenPanelByIndex(0);
         }
 
         public void OpenPanel(string newPanel)
@@ -206,7 +209,7 @@ namespace Michsky.UI.Reach
                 currentPanelIndex = newPanelIndex;
                 nextPanel = panels[currentPanelIndex].panelObject;
                 nextPanel.gameObject.SetActive(true);
-           
+
                 currentPanel.enabled = true;
                 nextPanel.enabled = true;
 
@@ -274,40 +277,40 @@ namespace Michsky.UI.Reach
 
         public void ShowCurrentPanel()
         {
-            if (nextPanel == null) 
+            if (nextPanel == null)
             {
                 StopCoroutine("DisableAnimators");
                 StartCoroutine("DisableAnimators");
 
                 currentPanel.enabled = true;
                 currentPanel.SetFloat(animSpeedKey, animationSpeed);
-                currentPanel.Play(panelFadeIn); 
+                currentPanel.Play(panelFadeIn);
             }
-          
-            else 
+
+            else
             {
                 StopCoroutine("DisableAnimators");
                 StartCoroutine("DisableAnimators");
 
                 nextPanel.enabled = true;
                 nextPanel.SetFloat(animSpeedKey, animationSpeed);
-                nextPanel.Play(panelFadeIn); 
+                nextPanel.Play(panelFadeIn);
             }
         }
 
         public void HideCurrentPanel()
         {
-            if (nextPanel == null) 
+            if (nextPanel == null)
             {
                 StopCoroutine("DisableAnimators");
                 StartCoroutine("DisableAnimators");
 
                 currentPanel.enabled = true;
                 currentPanel.SetFloat(animSpeedKey, animationSpeed);
-                currentPanel.Play(panelFadeOut); 
+                currentPanel.Play(panelFadeOut);
             }
 
-            else 
+            else
             {
                 StopCoroutine("DisableAnimators");
                 StartCoroutine("DisableAnimators");
@@ -385,6 +388,7 @@ namespace Michsky.UI.Reach
 
                 panels[i].panelObject.gameObject.SetActive(false);
             }
+
         }
 
         IEnumerator DisableAnimators()

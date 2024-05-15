@@ -208,7 +208,7 @@ public class PlayerInputHandle : MonoBehaviour
             {
                 if (!P_States.isStartComboAttack)
                 {
-                    P_States.isStartComboAttack = true;
+                    //P_States.isStartComboAttack = true;
                     P_Movement.Attacking_co();
                 }
             }

@@ -218,7 +218,7 @@ namespace Michsky.UI.Reach
             if (enableIcon)
             {
                 Vector3 tempScale = new Vector3(iconScale, iconScale, iconScale);
-               
+
                 if (normalImageObj != null) { normalImageObj.transform.parent.gameObject.SetActive(true); normalImageObj.sprite = buttonIcon; normalImageObj.transform.localScale = tempScale; }
                 if (highlightImageObj != null) { highlightImageObj.transform.parent.gameObject.SetActive(true); highlightImageObj.sprite = buttonIcon; highlightImageObj.transform.localScale = tempScale; }
                 if (disabledImageObj != null) { disabledImageObj.transform.parent.gameObject.SetActive(true); disabledImageObj.sprite = buttonIcon; disabledImageObj.transform.localScale = tempScale; }
@@ -292,7 +292,7 @@ namespace Michsky.UI.Reach
 
         public void DisableUINavigation()
         {
-            if (targetButton != null) 
+            if (targetButton != null)
             {
                 Navigation customNav = new Navigation();
                 Navigation.Mode navMode = Navigation.Mode.None;
@@ -321,7 +321,7 @@ namespace Michsky.UI.Reach
             }
 
             waitingForDoubleClickInput = true;
-            
+
             if (gameObject.activeInHierarchy)
             {
                 StopCoroutine("CheckForDoubleClick");
@@ -377,10 +377,10 @@ namespace Michsky.UI.Reach
         IEnumerator LayoutFix()
         {
             yield return new WaitForSecondsRealtime(0.025f);
-           
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(GetComponent<RectTransform>());
             LayoutRebuilder.ForceRebuildLayoutImmediate(transform.parent.GetComponent<RectTransform>());
-          
+
             if (disabledCG != null) { LayoutRebuilder.ForceRebuildLayoutImmediate(disabledCG.GetComponent<RectTransform>()); }
             if (normalCG != null) { LayoutRebuilder.ForceRebuildLayoutImmediate(normalCG.GetComponent<RectTransform>()); }
             if (highlightCG != null) { LayoutRebuilder.ForceRebuildLayoutImmediate(highlightCG.GetComponent<RectTransform>()); }
@@ -449,12 +449,12 @@ namespace Michsky.UI.Reach
         IEnumerator InitUINavigation(Navigation nav)
         {
             yield return new WaitForSecondsRealtime(0.1f);
-           
+
             if (selectOnUp != null) { nav.selectOnUp = selectOnUp.GetComponent<Selectable>(); }
             if (selectOnDown != null) { nav.selectOnDown = selectOnDown.GetComponent<Selectable>(); }
             if (selectOnLeft != null) { nav.selectOnLeft = selectOnLeft.GetComponent<Selectable>(); }
             if (selectOnRight != null) { nav.selectOnRight = selectOnRight.GetComponent<Selectable>(); }
-          
+
             targetButton.navigation = nav;
         }
     }

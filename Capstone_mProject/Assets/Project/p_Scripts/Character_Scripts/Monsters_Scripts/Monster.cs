@@ -64,8 +64,15 @@ public class Monster : MonoBehaviour
         SoundSetting();
 
         //*skinnedMeshRenderer Material 설정---------------------//
-        if (skinnedMeshRenderer.materials.Length > 0)
-            m_material = skinnedMeshRenderer.materials[0];
+        if (skinnedMeshRenderer != null)
+        {
+            if (skinnedMeshRenderer.materials.Length > 0)
+                m_material = skinnedMeshRenderer.materials[0];
+        }
+        else
+        {
+            Debug.Log("몬스터 skinnedMeshRenderer null");
+        }
         hitMaterial = GameManager.instance.gameData.hitMaterial;
     }
 

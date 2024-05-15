@@ -25,7 +25,8 @@ public class PlayerPhysicsCheck : MonoBehaviour
 
     public List<Collider> forwardHit;
 
-    void FixedUpdate(){
+    void FixedUpdate()
+    {
         if (UIManager.gameIsPaused == false)
         {
             _fixedDeltaTime = Time.fixedDeltaTime;

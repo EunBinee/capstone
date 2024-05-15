@@ -990,8 +990,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //*--------------------------------------------------------------------//
         //* 스킵 버튼
-        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
-        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
+        Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
             PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_FirstStart_TimeLine");
             director.Stop();
@@ -1006,7 +1006,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.instance.cameraController.CameraRecovery();
 
         });
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, true);
 
         //---------------------------------------------------------------------//
 
@@ -1084,7 +1084,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         ChangeMonsterState(MonsterState.Roaming);
 
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
     }
 
     public void ShowBosHPBar()
@@ -1103,8 +1103,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     {
         //*--------------------------------------------------------------------//
         //* 스킵 버튼
-        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
-        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
+        Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
             PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_Weakness_TimeLine");
             director.Stop();
@@ -1119,7 +1119,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.instance.cameraController.CameraRecovery();
         });
 
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, true);
         //---------------------------------------------------------------------//
 
         SetMove_AI(false);
@@ -1155,7 +1155,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(false);
         EnableBossWeaknessEffect(false);
 
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
     }
 
     //*-------------------------------------------------------------------------------------//
@@ -1169,10 +1169,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         //*--------------------------------------------------------------------//
         //* 스킵 버튼
-        ButtonManager.instance.skipBtn.onClick.RemoveAllListeners();
-        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
+        Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("1");
+            //Debug.Log("1");
             PlayableDirector director = CurSceneManager.instance.GetTimeLine("Abyss_LastWeakness_TimeLine");
             director.Stop();
 
@@ -1192,7 +1192,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             // }
         });
 
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, true);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, true);
         //---------------------------------------------------------------------//
 
         noAttack = true;
@@ -1207,9 +1207,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public void MonsterLastWeakness_TimeLineEffect()
     {
         Coroutine monsterLastWeakness_co = StartCoroutine(MonsterLastWeakness_TimeLineEffect_co());
-        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("2");
+            //Debug.Log("2");
             StopCoroutine(monsterLastWeakness_co);
             monsterLastWeakness_co = null;
         });
@@ -1241,12 +1241,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             auraEffect = null;
         };
 
-        ButtonManager.instance.skipBtn.onClick.AddListener(() =>
+        Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            Debug.Log("3");
+            //Debug.Log("3");
             if (auraEffect != null)
             {
-                Debug.Log("4");
+                //Debug.Log("4");
                 auraEffect.gameObject.SetActive(false);
                 Destroy(auraEffect);
                 auraEffect = null;
@@ -1278,7 +1278,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         EnableBossWeaknessEffect(false);
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
 
-        ButtonManager.instance.SetActiveBtn(ButtonManager.Btns.SkipBtn, false);
+        Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
     }
 
     # endregion

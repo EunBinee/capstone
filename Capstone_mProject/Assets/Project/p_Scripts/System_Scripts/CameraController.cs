@@ -26,8 +26,10 @@ public class CameraController : MonoBehaviour
     public Transform cameraTrans;
 
     [Header("스피트")]
-    public float left_right_LookSpeed = 500; //왼 오 돌리는 스피드
-    public float up_down_LookSpeed = 500;    //위아래로 돌리는 스피드
+    public float left_right_LookSpeed = 150; //왼 오 돌리는 스피드
+    public float up_down_LookSpeed = 150;    //위아래로 돌리는 스피드
+    public float left_right_DefaultSpeed = 150; //왼 오 돌리는 스피드
+    public float up_down_DefaultSpeed = 150;    //위아래로 돌리는 스피드
 
     [Header("위아래 고정 비율  >> 0이면 위아래로 카메라 안움직임")]
     public float minPivot = -35;              //위아래 고정 시키기 위한 Pivot -35로 아래 고정

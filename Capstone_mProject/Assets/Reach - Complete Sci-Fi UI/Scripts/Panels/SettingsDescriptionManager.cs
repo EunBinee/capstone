@@ -9,7 +9,7 @@ namespace Michsky.UI.Reach
         [Header("Default Content")]
         [SerializeField] private Sprite cover;
         [SerializeField] private string title = "Settings";
-        [SerializeField] [TextArea] private string description = "Description area.";
+        [SerializeField][TextArea] private string description = "Description area.";
 
         [Header("Localization")]
         public string tableID = "UI";
@@ -30,8 +30,8 @@ namespace Michsky.UI.Reach
         void Start()
         {
             if (useLocalization && !string.IsNullOrEmpty(titleKey) && !string.IsNullOrEmpty(descriptionKey))
-            { 
-                CheckForLocalization(); 
+            {
+                CheckForLocalization();
             }
         }
 
@@ -44,32 +44,36 @@ namespace Michsky.UI.Reach
         {
             localizedObject = gameObject.GetComponent<LocalizedObject>();
 
-            if (localizedObject == null) 
-            { 
+            if (localizedObject == null)
+            {
                 localizedObject = gameObject.AddComponent<LocalizedObject>();
-                localizedObject.objectType = LocalizedObject.ObjectType.ComponentDriven; 
+                localizedObject.objectType = LocalizedObject.ObjectType.ComponentDriven;
                 localizedObject.updateMode = LocalizedObject.UpdateMode.OnDemand;
                 localizedObject.InitializeItem();
 
-                LocalizationSettings locSettings = LocalizationManager.instance.UIManagerAsset.localizationSettings;
-                foreach (LocalizationSettings.Table table in locSettings.tables) 
+                if (LocalizationManager.instance != null)
                 {
-                    if (tableID == table.tableID) 
-                    { 
-                        localizedObject.tableIndex = locSettings.tables.IndexOf(table);
-                        break;
+                    LocalizationSettings locSettings = LocalizationManager.instance.UIManagerAsset.localizationSettings;
+
+                    foreach (LocalizationSettings.Table table in locSettings.tables)
+                    {
+                        if (tableID == table.tableID)
+                        {
+                            localizedObject.tableIndex = locSettings.tables.IndexOf(table);
+                            break;
+                        }
                     }
                 }
             }
 
-            if (localizedObject.tableIndex == -1 || LocalizationManager.instance == null || !LocalizationManager.instance.UIManagerAsset.enableLocalization) 
-            { 
+            if (localizedObject.tableIndex == -1 || LocalizationManager.instance == null || !LocalizationManager.instance.UIManagerAsset.enableLocalization)
+            {
                 localizedObject = null;
                 useLocalization = false;
             }
         }
 
-        public void UpdateUI(string newTitle, string newDescription, Sprite newCover) 
+        public void UpdateUI(string newTitle, string newDescription, Sprite newCover)
         {
             if (newCover != null) { coverImage.sprite = newCover; }
             else { coverImage.sprite = cover; }

@@ -30,7 +30,6 @@ public class PlayerUI_info : MonoBehaviour
     public Image slot1Img;
     public Image slot2Img;
     public Image slot3Img;
-    //public List<Image> slotImg;
 
     [Space]
     [Header("Player 조준 카메라 관련")]
@@ -38,9 +37,8 @@ public class PlayerUI_info : MonoBehaviour
 
 
     private PlayerController p_controller;
-    [SerializeField]
-    private List<string> SkillNameList;
-    List<PlayerSkillName> playerSkillList;
+    [SerializeField] private List<string> SkillNameList;
+    [SerializeField] List<PlayerSkillName> playerSkillList;
     private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     [SerializeField] List<SOSkill> sskill;
     [SerializeField] List<SOSkill> non_sskill;
@@ -49,10 +47,7 @@ public class PlayerUI_info : MonoBehaviour
     Color unselectColor;
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
-    // private bool isAccessSlot = true; // 슬롯 접근가능 여부
-    // private bool isAccessSkill= true; // 스킬 접근가능 여부
-    // public bool IsAccess => isAccessSlot && isAccessSkill;
-    [SerializeField] private PlayerSkillTooltip skillTooltip; //아이템 정보 보여줄 툴팁 UI
+
 
     void Start()
     {
@@ -60,8 +55,6 @@ public class PlayerUI_info : MonoBehaviour
         SkillNameList.Clear();
         playerSkillList = new List<PlayerSkillName>();
         selectedSkillsIndex = new List<int>();
-        //slotImg = new List<Image>();
-        //slotImg.Clear();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
         unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
@@ -81,8 +74,6 @@ public class PlayerUI_info : MonoBehaviour
             {
                 GameObject curObj = Instantiate(skillUIPrefab);
                 curObj.transform.SetParent(content);
-                //curObj.transform.localPosition = new Vector3(0, -180 - (i * 100), 0);
-                //curObj.transform.position = new Vector3(350+(i * 100), i / 6, 0);
                 curObj.transform.localPosition = new Vector3(-260 + ((i % 6) * 100), -180 + (i / 6), 0);
                 curObj.transform.localScale = Vector3.one;
 
@@ -90,15 +81,11 @@ public class PlayerUI_info : MonoBehaviour
                 curSkillName.m_Index = i; // 인덱스 설정
                 curSkillName.skillName.text = updatedSkills[i]; // 스킬 이름 설정
                 curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[updatedSkills[i]].icon; // 스킬 아이콘 설정
+                curSkillName.skillData = p_controller.P_Skills.skillMap[updatedSkills[i]];
                 playerSkillList.Add(curSkillName); // 리스트에 추가
                 curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
-                //slotImg[i] = curSkillName.iconImg;
             }
             SkillNameList = new List<string>(updatedSkills); // 스킬 목록 업데이트
-
-            //slot1Img.sprite = slotImg[0].sprite;
-            //slot2Img.sprite = slotImg[1].sprite;
-            //slot3Img.sprite = slotImg[2].sprite;
         }
     }
 
