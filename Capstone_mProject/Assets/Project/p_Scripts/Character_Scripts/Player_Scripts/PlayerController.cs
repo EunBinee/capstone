@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using Michsky.UI.Reach;
 
 public enum PlayerState
 {
@@ -346,7 +347,15 @@ public class PlayerController : MonoBehaviour
     public void CheckHP()
     {
         if (HPgauge != null)
-            HPgauge.value = P_Value.HP / P_Value.MaxHP;
+        {
+            ProgressBar progressBar = HPgauge.GetComponent<ProgressBar>();
+            //progressBar.UpdateUI();
+            //progressBar.SetBarDirection();
+            //HPgauge.value = P_Value.HP / P_Value.MaxHP;
+            progressBar.currentValue = P_Value.HP; /// P_Value.MaxHP;
+            progressBar.UpdateUI();
+            //Debug.Log(progressBar.currentValue);
+        }
     }
 
     //* 데미지 받는 코루틴 실행
