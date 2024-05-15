@@ -10,8 +10,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
 {
 
     //원거리
-    [Header("바닥부분")]
-    public GameObject buttomGameObject;
     [Header("총알")]
     public string bulletPrefabsName = "Monster02_Bullet"; //총알
     public Transform bulletsParent;
@@ -22,8 +20,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     [Space]
     [Header("몬스터 회전 각도")]
-    public int roamingAngle = 60;
-    private Quaternion buttomOriginRotation;
+    public int roamingAngle = 80;
+    private Quaternion m_monster02_OriginRotation;
     private Quaternion originRotatation;
 
     [Header("몬스터 공격 시간, 공격 중지 시간")]
@@ -67,7 +65,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         originPosition = transform.position;
         originRotatation = transform.rotation;
-        buttomOriginRotation = buttomGameObject.transform.rotation;
+        m_monster02_OriginRotation = m_monster.transform.rotation;
 
 
         overlapRadius = m_monster.monsterData.overlapRadius; //플레이어 감지 범위.
@@ -178,21 +176,21 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
         time = 0;
         Quaternion startRotation = transform.rotation;
-        Quaternion startButtomRotation = buttomGameObject.transform.rotation;
+        Quaternion startButtomRotation = m_monster.transform.rotation;
 
         while (time < 3)
         {
             time += Time.deltaTime;
             transform.rotation = Quaternion.Slerp(startRotation, originRotatation, time * 2f);
-            buttomGameObject.transform.rotation = Quaternion.Slerp(startButtomRotation, buttomOriginRotation, time * 2f);
+            m_monster.transform.rotation = Quaternion.Slerp(startButtomRotation, m_monster02_OriginRotation, time * 2f);
 
-            if (buttomOriginRotation == buttomGameObject.transform.rotation && originRotatation == transform.rotation)
+            if (m_monster02_OriginRotation == m_monster.transform.rotation && originRotatation == transform.rotation)
                 break;
 
             yield return null;
         }
         transform.rotation = originRotatation;
-        buttomGameObject.transform.rotation = buttomOriginRotation;
+        m_monster.transform.rotation = m_monster02_OriginRotation;
 
         while (curMonsterState == MonsterState.Roaming)
         {
@@ -203,27 +201,31 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
             if (curAngle == 0)
             {
-                targetRotation = buttomOriginRotation * Quaternion.Euler(0, roamingAngle, 0);
+
+                targetRotation = m_monster02_OriginRotation * Quaternion.Euler(0, roamingAngle, 0);
                 curAngle = 1;
             }
             else
             {
-                targetRotation = buttomOriginRotation * Quaternion.Euler(0, -roamingAngle, 0);
+                targetRotation = m_monster02_OriginRotation * Quaternion.Euler(0, -roamingAngle, 0);
                 curAngle = 0;
             }
 
             while (time <= 10)
             {
                 time += Time.deltaTime;
+                //Debug.Log("dd");
                 // Slerp를 사용하여 부드럽게 회전합니다.
-                buttomGameObject.transform.rotation = Quaternion.Slerp(buttomGameObject.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-                if (transform.rotation == targetRotation)
+                m_monster.transform.rotation = Quaternion.Slerp(m_monster.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
+                if (m_monster.transform.rotation == targetRotation)
                     break;
 
                 yield return null;
             }
+            m_monster.transform.rotation = targetRotation;
 
-            yield return new WaitUntil(() => isRestraint == false);
+            yield return new WaitUntil(() => isRestraint == false); //구속 스킬
         }
     }
 
@@ -327,9 +329,10 @@ public class MonsterPattern_Monster02 : MonsterPattern
             if (transform.rotation == targetAngle)
                 break;
             else
-            { yield return new WaitUntil(() => isRestraint == false);
+            {
+                yield return new WaitUntil(() => isRestraint == false);
                 time += Time.deltaTime;
-               
+
                 //yield return null;
             }
         }
