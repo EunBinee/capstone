@@ -399,10 +399,10 @@ public class PlayerSkills : MonoBehaviour
                     AdjustEffectSize(effect, smallestMonsterSize, largestMonsterSize);
                     if (monsterEffects.ContainsKey(monsterPattern))
                     {
-                        Debug.Log("이미 있는 키값");
+                        //Debug.Log("이미 있는 키값");
                     }
                     else monsterEffects.Add(monsterPattern, effect); // 몬스터와 이펙트 매핑 추가
-                    Debug.Log("속박");
+                    //Debug.Log("속박");
                 }
             }
         }
@@ -425,12 +425,12 @@ public class PlayerSkills : MonoBehaviour
                     monsterPattern.isRestraint = false;
                     if (monsterEffects.ContainsKey(monsterPattern))
                     {
-                        Debug.Log("effect off");
+                        //Debug.Log("effect off");
                         Effect monsterEffect = monsterEffects[monsterPattern];
                         monsterEffect.StopEffect(); //이펙트 멈춤
                         monsterEffects.Remove(monsterPattern); // 이펙트를 딕셔너리에서 제거 
                     }
-                    Debug.Log("속박풀림");
+                    //Debug.Log("속박풀림");
                 }
             }
         }
@@ -459,7 +459,9 @@ public class PlayerSkills : MonoBehaviour
     /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
-        float effectSizeMultiplier = Mathf.Lerp(0.5f, 1.5f, (largestMonsterSize - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
+       // 이펙트 크기를 조절하는 비율을 계산합니다.
+        float effectSizeMultiplier = Mathf.Lerp(0.5f, 1.5f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
+        // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;
     }
 

@@ -780,7 +780,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
         NavMeshHit hit;
         //* 몬스터가 갈 수 있는 위치일 경우에만 넉백~!
-        if (NavMesh.SamplePosition(KnockBackPos, out hit, 20f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(KnockBackPos, out hit, 20f, NavMesh.AllAreas) && !isRestraint)
         {
             if (hit.position != KnockBackPos)
                 KnockBackPos = hit.position;
