@@ -84,7 +84,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
-        ChangeMonsterState(MonsterState.Stop);
+        ChangeMonsterState(MonsterState.Roaming);
         originPosition = transform.position;
         bossForward = transform.forward;
 
@@ -139,8 +139,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         //*----------------------------------------------------------------------//
 
         // 스타트 컷씬 
-        DirectFirstAppearance_TimeLine();
-        // DirectTheBossLastWeakness();
+        //DirectFirstAppearance_TimeLine();
+        //DirectTheBossLastWeakness();
     }
 
     public override void UpdateRotation()
