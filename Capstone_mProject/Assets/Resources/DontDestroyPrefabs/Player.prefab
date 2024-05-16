@@ -334,9 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
   skillScrollWindow: {fileID: 0}
-  presetWin: 0
-  once: 0
-  skillRangeIndicator: {fileID: 3461343800245115971, guid: a19d33afeeff490479e334657600395c, type: 3}
+  skillRangeIndicator: {fileID: 0}
   cylinderRadius: 3
   cylinderHeight: 5
 --- !u!114 &4604493400107018182
@@ -794,6 +792,8 @@ MonoBehaviour:
   cameraTrans: {fileID: 0}
   left_right_LookSpeed: 500
   up_down_LookSpeed: 500
+  left_right_DefaultSpeed: 150
+  up_down_DefaultSpeed: 150
   minPivot: 0
   maxPivot: 0
   cameraFllowVelocity: {x: 0, y: 0, z: 0}
@@ -4006,7 +4006,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.399265
+      value: 48.399258
       objectReference: {fileID: 0}
     - target: {fileID: 3182778672265820855, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
       propertyPath: m_RotationAtRest.y
