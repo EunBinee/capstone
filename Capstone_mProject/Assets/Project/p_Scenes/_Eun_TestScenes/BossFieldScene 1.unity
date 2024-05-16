@@ -7102,6 +7102,7 @@ MonoBehaviour:
   - Abyss_Weakness_TimeLine
   - Abyss_LastWeakness_TimeLine
   curCMSetting: {fileID: 347121154}
+  timelineParent: {fileID: 38869481}
   timelines:
   - {fileID: 887866828}
   - {fileID: 392046869}
@@ -10554,254 +10555,17 @@ Transform:
   m_Father: {fileID: 862574390}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1061164134 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7417425237227357015, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+--- !u!114 &1061164143 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1061164143, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
   m_PrefabInstance: {fileID: 1601484439}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1061164135 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7417425237227357019, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-  m_PrefabInstance: {fileID: 1601484439}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061164134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b6a9ea846c82f7498793d483b3a5eac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1061164143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061164134}
-  m_Enabled: 1
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowDebugText: 0
-  m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
-  m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 2
-  m_BlendUpdateMethod: 1
-  m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
-    m_CustomCurve:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-  m_CustomBlends: {fileID: 0}
-  m_CameraCutEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_CameraActivatedEvent:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1061164144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061164134}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e52de21a22b6dd44c9cc19f810c65059, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Events:
-    m_Signals:
-    - {fileID: 11400000, guid: 9cb2edadb1a2eb046a4a72de74351f19, type: 2}
-    - {fileID: 11400000, guid: 9c70f80ae0ddb6447bb2326b7e08e1c2, type: 2}
-    - {fileID: 11400000, guid: 6dc5bd3877cc058409ac57f0a361b87f, type: 2}
-    - {fileID: 11400000, guid: 77304ced5d33b96488ff234b18b8f768, type: 2}
-    - {fileID: 11400000, guid: bf6a6a0bcea4230488beebc185c16cb8, type: 2}
-    - {fileID: 11400000, guid: 7102e750adf8fba48b664b7fa4486a16, type: 2}
-    - {fileID: 11400000, guid: fec4df8e86c231d46ada26ee0d67acd4, type: 2}
-    - {fileID: 11400000, guid: fce8e9b2adf695b42908835cfa1091a6, type: 2}
-    - {fileID: 11400000, guid: 7fa91affaef59d448be45ef0a81b9c13, type: 2}
-    m_Events:
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: MonsterLastWeakness_TimeLineEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1061164135}
-          m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
-          m_MethodName: CameraRecovery
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: EndDirectorMonsterLastWeakness
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: End_Phase02_Production
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: EndDirectTheBossWeakness
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1061164135}
-          m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
-          m_MethodName: CameraRecovery
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: ShowBossWeaknessEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: FirstAppearance_TimeLineEffect
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: WalkPlayer
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: StopWalkPlayer
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1061164135}
-          m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
-          m_MethodName: CameraRecovery
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: EndDirectFirstAppearance
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    - m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1833543985}
-          m_TargetAssemblyTypeName: MonsterPattern_Boss_Abyss, Assembly-CSharp
-          m_MethodName: ShowBosHPBar
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!1001 &1068937529
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16242,22 +16006,54 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2715811073955585904, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+    - target: {fileID: 1061164143, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2715811073955585904, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: fog.enabled
-      value: 1
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2715811073955585904, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: fog.excludeSkybox
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2715811073955585904, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: volumeLayer.m_Bits
-      value: 328
-      objectReference: {fileID: 0}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[0].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[1].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[2].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[5].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[6].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[7].m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
+    - target: {fileID: 1061164144, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+      propertyPath: m_Events.m_Events.Array.data[8].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833543985}
     - target: {fileID: 7417425236459633520, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -16318,36 +16114,7 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -19.334778
       objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9969998
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.018779876
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.07495638
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0.0045033777
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357012, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7417425237227357013, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
-      propertyPath: field of view
-      value: 24
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 919353727, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e1278fb3eb3866542b2d94389eb808b0, type: 3}
 --- !u!1001 &1602785351
 PrefabInstance:

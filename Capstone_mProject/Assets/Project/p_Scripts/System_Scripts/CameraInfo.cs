@@ -33,8 +33,8 @@ public class CameraInfo : MonoBehaviour
         GameManager.instance.startActionCam?.Invoke(cameraController);
         GameManager.instance.startActionCam = null;
 
-        cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
-        cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
+        // cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
+        //cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
 
 
         //* 카메라 세팅 값 적용
