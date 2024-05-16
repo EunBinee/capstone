@@ -43,7 +43,6 @@ public class CMInfo : MonoBehaviour
                 m_Cam.Follow = GameManager.instance.gameData.GetPlayerTransform();
                 break;
             case FollowSomething.playerHead:
-                Debug.Log("dddd");
                 m_Cam.Follow = GameManager.instance.gameData.playerHeadPos;
                 break;
             default:

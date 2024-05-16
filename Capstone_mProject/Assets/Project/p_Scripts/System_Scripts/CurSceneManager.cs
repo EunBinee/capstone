@@ -13,9 +13,11 @@ public class CurSceneManager : MonoBehaviour
     public List<string> timelinesName;
 
     public CMSetting curCMSetting;
+    public Transform timelineParent;
     public List<PlayableDirector> timelines;
     Dictionary<string, PlayableDirector> timelineDic;
 
+    bool isReady = false;
     void Awake()
     {
         if (instance == null)
@@ -56,10 +58,15 @@ public class CurSceneManager : MonoBehaviour
 
     private void TimelineSetting()
     {
+
+        LoadTimeLine();
+
         timelineDic = new Dictionary<string, PlayableDirector>();
 
         for (int i = 0; i < timelinesName.Count; i++)
             timelineDic.Add(timelinesName[i], timelines[i]);
+
+        isReady = true;
     }
 
     private void SetPlayerPos()
@@ -70,11 +77,66 @@ public class CurSceneManager : MonoBehaviour
 
     public void PlayTimeline(string timelineName)
     {
+        StartCoroutine("PlayTimeLineRoutine", timelineName);
+    }
+
+    IEnumerator PlayTimeLineRoutine(string timelineName)
+    {
+        if (isReady == false)
+        {
+            Debug.Log("!! Not Ready");
+        }
+        while (isReady == false)
+        {
+            yield return null;
+        }
+        Debug.Log("!! Ready And Play");
+
         timelineDic[timelineName].Play();
     }
+
     public PlayableDirector GetTimeLine(string timelineName)
     {
         return timelineDic[timelineName];
+    }
+    private void LoadTimeLine()
+    {
+
+        if (timelines.Count != timelinesName.Count)
+        {
+            timelines.Clear();
+            foreach (Transform child in timelineParent)
+            {
+                // 자식 오브젝트의 작업을 수행합니다.
+                Debug.Log("Child Object Name: " + child.name);
+                timelines.Add(child.gameObject.GetComponent<PlayableDirector>());
+            }
+        }
+
+        //   timelines.Clear();
+        //   for (int i = 0; i < timelinesName.Count; i++)
+        //   {
+        //       GameObject timeLine = Resources.Load<GameObject>("TimeLinesResource/" + timelinesName[i]);
+        //       GameObject timeLineObj = UnityEngine.Object.Instantiate(timeLine);
+        //       timeLineObj.transform.SetParent(timelineParent);
+        //       PlayableDirector director = timeLineObj.GetComponent<PlayableDirector>();
+        //
+        //
+        //       // TimelineAsset track = timeLineObj.GetComponent<TimelineAsset>();
+        //
+        //       var outputs = director.playableAsset.outputs;
+        //       foreach (var itm in outputs)
+        //       {
+        //           Debug.Log(itm.sourceObject.name);
+        //       }
+        //
+        //       //director.playableAsset.GetOutputTrack(0);
+        //       // director.SetGenericBinding(track, GameManager.instance.cameraController.gameObject.GetComponent<Camera>());
+        //
+        //
+        //       // timelines.Add(director);
+        //   }
+        //
     }
 
 }

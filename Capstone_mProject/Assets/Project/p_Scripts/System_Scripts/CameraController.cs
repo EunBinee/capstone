@@ -81,6 +81,9 @@ public class CameraController : MonoBehaviour
     {
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
         cameraShake = GetComponent<CameraShake>();
+
+        cinemachineBrain = GetComponent<CinemachineBrain>();
+        signalReceiver = GetComponent<SignalReceiver>();
     }
 
     private void Start()
