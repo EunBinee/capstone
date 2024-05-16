@@ -287,7 +287,7 @@ public class InventoryUI : MonoBehaviour
             //아이템을 가지고 있는 슬롯의 경우
             if (beginDragSlot != null && beginDragSlot.HaveItem && beginDragSlot.IsAccess)
             {
-                EditorLog($"Drag Begin : Slot [{beginDragSlot.Index}]");
+                //EditorLog($"Drag Begin : Slot [{beginDragSlot.Index}]");
 
                 //위치 기억, 참조 등록
                 beginDragIconTransform = beginDragSlot.IconRect.transform;
@@ -365,7 +365,7 @@ public class InventoryUI : MonoBehaviour
     }
     private void TryUseItem(int index)
     {
-        EditorLog($"UI - Try Use Item : Slot [{index}]");
+        //EditorLog($"UI - Try Use Item : Slot [{index}]");
         _inventory.Use(index);
     }
     //두 슬롯의 아이템 교환
@@ -373,10 +373,10 @@ public class InventoryUI : MonoBehaviour
     {
         if (from == to)
         {
-            EditorLog($"UI - Try Swap Items: Same Slot [{from.Index}]");
+            //EditorLog($"UI - Try Swap Items: Same Slot [{from.Index}]");
             return;
         }
-        EditorLog($"UI - Try Swap Items: Slot [{from.Index} -> {to.Index}]");
+        //EditorLog($"UI - Try Swap Items: Slot [{from.Index} -> {to.Index}]");
 
         from.SwapOrMoveIcon(to);
         _inventory.Swap(from.Index, to.Index);
@@ -389,7 +389,7 @@ public class InventoryUI : MonoBehaviour
     //슬롯에 아이템 아이콘 등록
     public void SetItemIcon(int index, Sprite icon)
     {
-        EditorLog($"Set Item Icon : Slot [{index}]");
+        //EditorLog($"Set Item Icon : Slot [{index}]");
 
         slotUIList[index].SetItem(icon);
         //! 리스트는 add해줘야함 initslots보기 
@@ -397,7 +397,7 @@ public class InventoryUI : MonoBehaviour
     //해당 슬롯 아이템 개수 텍스트 지정
     public void SetItemAmountText(int index, int amount)
     {
-        EditorLog($"Set Item Amount Text : Slot [{index}], Amount [{amount}]");
+        //EditorLog($"Set Item Amount Text : Slot [{index}], Amount [{amount}]");
 
         // NOTE : amount가 1 이하일 경우 텍스트 미표시
         slotUIList[index].SetItemAmount(amount);
@@ -406,7 +406,7 @@ public class InventoryUI : MonoBehaviour
     //아이템 개수 텍스트 숨기기
     public void HideItemAmountText(int index)
     {
-        EditorLog($"Hide Item Amount Text : Slot [{index}]");
+        //EditorLog($"Hide Item Amount Text : Slot [{index}]");
 
         slotUIList[index].SetItemAmount(1);
     }
@@ -414,19 +414,19 @@ public class InventoryUI : MonoBehaviour
     // 슬롯에서 아이템 아이콘 제거, 개수 텍스트 숨기기
     public void RemoveItem(int index)
     {
-        EditorLog($"Remove Item : Slot [{index}]");
+        //EditorLog($"Remove Item : Slot [{index}]");
 
         slotUIList[index].RemoveItem();
     }
 
-#if UNITY_EDITOR
-    [Header("Editor Options")]
-    [SerializeField] private bool _showDebug = true;
-#endif
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    private void EditorLog(object message)
-    {
-        if (!_showDebug) return;
-        UnityEngine.Debug.Log($"[InventoryUI] {message}");
-    }
+// #if UNITY_EDITOR
+//     [Header("Editor Options")]
+//     [SerializeField] private bool _showDebug = true;
+// #endif
+//     [System.Diagnostics.Conditional("UNITY_EDITOR")]
+//     private void EditorLog(object message)
+//     {
+//         if (!_showDebug) return;
+//         UnityEngine.Debug.Log($"[InventoryUI] {message}");
+//     }
 }

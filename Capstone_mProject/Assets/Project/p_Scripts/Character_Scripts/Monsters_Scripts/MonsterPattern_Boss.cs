@@ -131,7 +131,7 @@ public class MonsterPattern_Boss : MonsterPattern
     //* 보스 약점
     bool isLastWeakness = false;
     bool showWeaknessEffect = false; //이펙트 활성화 여부
-    bool finishEffect = false;
+    //bool finishEffect = false;
 
 
     bool OnEnableWeakness = false;

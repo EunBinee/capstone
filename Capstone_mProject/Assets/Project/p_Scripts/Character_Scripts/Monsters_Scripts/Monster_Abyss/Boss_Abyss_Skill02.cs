@@ -15,7 +15,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
     //* 스킬 2번 코루틴
     Coroutine skill02_MonsterMovement_Co = null;
     Coroutine skill02_Co = null;
-    Coroutine changePhase02_Co = null;
+    //Coroutine changePhase02_Co = null;
 
     public void Init(MonsterPattern_Boss_Abyss _monsterPattern_Boss_Abyss)
     {
