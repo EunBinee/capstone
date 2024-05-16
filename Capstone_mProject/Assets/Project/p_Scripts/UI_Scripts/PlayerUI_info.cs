@@ -46,6 +46,8 @@ public class PlayerUI_info : MonoBehaviour
     public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
 
+    private RectTransform rt;
+    private CanvasScaler canvasScaler;
 
     void Start()
     {
@@ -56,6 +58,7 @@ public class PlayerUI_info : MonoBehaviour
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
         unselectColor = GameManager.Instance.HexToColor("#CEFDFF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+        canvasScaler = GetComponentInParent<CanvasScaler>();
 
         // 스킬 맵 업데이트시 호출할 이벤트에 메서드 구독
         p_controller.P_Skills.OnSkillMapUpdated += SkillMapUpdated;
@@ -80,7 +83,8 @@ public class PlayerUI_info : MonoBehaviour
             {
                 GameObject curObj = Instantiate(skillUIPrefab);
                 curObj.transform.SetParent(content);
-                curObj.transform.localPosition = new Vector3(50 + ((i % 6) * 110), -30 + (i / 6), 0);
+
+                curObj.transform.localPosition = new Vector3(((i % 6) * 110), (i / 6), 0);
                 curObj.transform.localScale = Vector3.one;
 
                 PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
