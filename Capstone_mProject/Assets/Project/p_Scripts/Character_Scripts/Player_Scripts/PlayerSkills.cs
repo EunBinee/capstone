@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEditor.AnimatedValues;
+//using UnityEditor.AnimatedValues;
 using System.Security.Claims;
 using System;
 using Unity.VisualScripting;
@@ -57,7 +57,8 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.selectSkill = new List<SOSkill>();
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
-        skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
+        //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
+        skillRangeIndicator = Resources.Load<GameObject>("TargetMarker");
         skillRangeIndicator.SetActive(false);
         //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
         P_Movement = GetComponent<PlayerMovement>();
@@ -296,7 +297,7 @@ public class PlayerSkills : MonoBehaviour
             targetPosition.y = 0.1f;
 
             skillRangeIndicator.transform.position = targetPosition;
-            Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
+            //Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
             //Debug.Log($"skillRangeIndicator {skillRangeIndicator.transform.position}");
 
             // 플레이어의 위치를 기준으로 skillRangeIndicator의 위치를 향하는 벡터
@@ -324,6 +325,7 @@ public class PlayerSkills : MonoBehaviour
                 case 'F':
                     Debug.Log("switch true");
                     isPressed = true; P_States.isSkill = true;
+                    skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
                     skillRangeIndicator.SetActive(true);
                     break;
                 default: break;
