@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
     private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
     private PlayerInputHandle P_InputHandle;
 
+    float curVertVelocity;
+
     Coroutine idleMotion_co;
 
     public SkillButton skill_T; // weapon change
@@ -283,6 +285,8 @@ public class PlayerMovement : MonoBehaviour
             && !P_States.isStartComboAttack)
         {
             P_States.isDodgeing = true;
+            // 기존 수직 속도 보존
+            curVertVelocity = P_Com.rigidbody.velocity.y;
         }
 
         P_States.previousDodgeKeyPress = P_States.currentDodgeKeyPress;
@@ -292,7 +296,7 @@ public class PlayerMovement : MonoBehaviour
         P_States.isDodgeing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
         //P_Com.rigidbody.velocity = Vector3.zero;
-        P_Com.rigidbody.velocity = Vector3.Lerp(P_Com.rigidbody.velocity, Vector3.zero, 0.4f);
+        //P_Com.rigidbody.velocity = Vector3.Lerp(P_Com.rigidbody.velocity, Vector3.zero, 0.4f);
         P_Controller.AnimState(PlayerState.Idle);
     }
 
@@ -518,19 +522,19 @@ public class PlayerMovement : MonoBehaviour
         {
             if (P_States.isStrafing)    //* 주목중이라면 
             {
-                if (P_Input.verticalMovement > 0)//* front
+                if (P_Input.verticalMovement > 0)
                 {
                     P_Com.animator.Play("Front", 1);
                 }
-                else if (P_Input.verticalMovement < 0)//* back
+                else if (P_Input.verticalMovement < 0)
                 {
                     P_Com.animator.Play("Back", 1);
                 }
-                else if (P_Input.horizontalMovement > 0)//* right
+                else if (P_Input.horizontalMovement > 0)
                 {
                     P_Com.animator.Play("Right", 1);
                 }
-                else if (P_Input.horizontalMovement < 0)//* left
+                else if (P_Input.horizontalMovement < 0)
                 {
                     P_Com.animator.Play("Left", 1);
                 }
@@ -540,19 +544,18 @@ public class PlayerMovement : MonoBehaviour
                 P_Com.animator.Play("Front", 1);
             }
 
-            //P_Value.moveDirection += P_Value.moveDirection * P_COption.dodgingSpeed;
-            //P_Com.rigidbody.velocity += P_Value.moveDirection * P_COption.dodgingSpeed;
-            //Debug.Log($"P_Com.rigidbody.velocity {P_Com.rigidbody.velocity}");
-            //Debug.Log($"P_Value.groundDistance {P_Value.groundDistance}");
-            //todo: 바닥과 거리 체크 해서 플레이어 y 값 지정해주기
+            P_Value.moveDirection += P_Value.moveDirection * P_COption.dodgingSpeed;
             P_Value.moveDirection.y = 0f;
-            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection * P_COption.dodgingSpeed, P_Value.groundNormal);
-            //p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
-            p_velocity.y = 0f;
-            P_Com.rigidbody.velocity += p_velocity;
 
-            P_Controller.AnimState(PlayerState.Dodge);
-            Invoke("dodgeOut", 0.2f);    //닷지 유지 시간 = 0.2초
+            // 회피 방향 벡터를 바닥 평면에 투영
+            Vector3 projectedDodgeDirection = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+
+            P_Com.rigidbody.AddForce(projectedDodgeDirection, ForceMode.VelocityChange);
+
+            // 기존 수직 속도를 유지하도록 수직 속도 다시 설정
+            P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);
+
+            Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 = 0.16초
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {
