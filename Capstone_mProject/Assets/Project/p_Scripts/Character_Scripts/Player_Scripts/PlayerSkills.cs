@@ -461,7 +461,7 @@ public class PlayerSkills : MonoBehaviour
     /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
-       // 이펙트 크기를 조절하는 비율을 계산합니다.
+        // 이펙트 크기를 조절하는 비율을 계산합니다.
         float effectSizeMultiplier = Mathf.Lerp(0.5f, 1.5f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
         // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;
@@ -492,7 +492,7 @@ public class PlayerSkills : MonoBehaviour
                         P_States.isBowMode = false;
                         P_Controller.bow.SetActive(false);
                         P_Controller.sword.SetActive(true);
-                        P_Com.animator.SetFloat("isBow", 0);
+                        P_Com.animator.SetFloat("isBowmode", 0);
                     }
                     else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
                     {
@@ -500,7 +500,7 @@ public class PlayerSkills : MonoBehaviour
                         P_Controller.bow.SetActive(true);
                         P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
-                        P_Com.animator.SetFloat("isBow", 1);
+                        P_Com.animator.SetFloat("isBowmode", 1);
                     }
                 }
                 skill_T.OnClicked();
@@ -578,12 +578,12 @@ public class PlayerSkills : MonoBehaviour
 
     public void OpenSkillWindow()
     {
-        SkillWindow(false,true);
+        SkillWindow(false, true);
     }
 
     public void CloseSkillWindow()
     {
-        SkillWindow(true,true);
+        SkillWindow(true, true);
         Debug.Log("CloseSkillWindow()");
     }
 }

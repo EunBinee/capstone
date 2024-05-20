@@ -229,8 +229,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space)
             && !P_States.isJumping
-            && !P_States.isElectricShock)
+            && !P_States.isElectricShock && P_States.isGround)
         {
+            P_States.isDodgeing = false;
             P_Input.jumpMovement = 1;
             return true;
         }
@@ -238,12 +239,12 @@ public class PlayerMovement : MonoBehaviour
     }
     private void PlayerJump()
     {
-        if (P_Input.jumpMovement == 1 && !P_States.isJumping)
+        if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
-            P_Com.animator.Play("jump 0");
+            P_Com.animator.Play("jump_start");
             P_Com.animator.SetBool("isJump_Up", true);
         }
         if (P_States.isJumping && P_States.isGround)
@@ -280,10 +281,11 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!returnDodgeAnim()
             && P_States.currentDodgeKeyPress
-            && !P_States.isDodgeing
-            && P_Value.moveAmount > 0
-            && !P_States.isStartComboAttack)
+            && !P_States.isDodgeing && !P_States.isJumping
+            //&& P_Value.moveAmount > 0
+            && !P_States.isStartComboAttack && P_States.isGround)
         {
+            P_States.isJumping = false;
             P_States.isDodgeing = true;
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
@@ -293,6 +295,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void dodgeOut()
     {
+        P_States.isJumping = false;
         P_States.isDodgeing = false;
         // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
         //P_Com.rigidbody.velocity = Vector3.zero;
@@ -515,11 +518,13 @@ public class PlayerMovement : MonoBehaviour
         else if (P_States.isJumping)
         {
             //Time.timeScale = 0.1f;
+            P_States.isDodgeing = false;
             p_velocity = P_Com.rigidbody.velocity + Vector3.up * (P_Value.gravity) * Time.fixedDeltaTime;
             P_Com.rigidbody.velocity = p_velocity;
         }
         else if (P_States.isDodgeing)
         {
+            P_States.isJumping = false;
             if (P_States.isStrafing)    //* 주목중이라면 
             {
                 if (P_Input.verticalMovement > 0)
@@ -544,7 +549,11 @@ public class PlayerMovement : MonoBehaviour
                 P_Com.animator.Play("Front", 1);
             }
 
-            P_Value.moveDirection += P_Value.moveDirection * P_COption.dodgingSpeed;
+            if (P_Value.moveDirection == Vector3.zero)
+            {
+                P_Value.moveDirection += (this.transform.forward * 7f) * P_COption.dodgingSpeed;
+            }
+            else P_Value.moveDirection += P_Value.moveDirection * P_COption.dodgingSpeed;
             P_Value.moveDirection.y = 0f;
 
             // 회피 방향 벡터를 바닥 평면에 투영
