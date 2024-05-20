@@ -373,11 +373,11 @@ public class PlayerSkills : MonoBehaviour
         Effect skillEffect = GameManager.Instance.objectPooling.ShowEffect("Temporary explosion");
         skillEffect.transform.position = skillRangeIndicator.transform.position;
 
-        Effect skillEffectCast = GameManager.Instance.objectPooling.ShowEffect("Time cast");
+        //Effect skillEffectCast = GameManager.Instance.objectPooling.ShowEffect("Time cast");
         Vector3 playerPos = this.transform.position;
         playerPos.y = 0.1f;
-        skillEffectCast.transform.position = playerPos;
-        skillEffectCast.transform.rotation = this.transform.rotation;
+        //skillEffectCast.transform.position = playerPos;
+        //skillEffectCast.transform.rotation = this.transform.rotation;
 
         P_States.isStop = true;
 
@@ -411,7 +411,7 @@ public class PlayerSkills : MonoBehaviour
 
         yield return new WaitForSeconds(1.6f);
         skillEffect.StopEffect();
-        skillEffectCast.StopEffect();
+        //skillEffectCast.StopEffect();
         P_States.isStop = false;
 
         // 일정 시간 후에 스킬 비활성화
@@ -462,7 +462,7 @@ public class PlayerSkills : MonoBehaviour
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
        // 이펙트 크기를 조절하는 비율을 계산합니다.
-        float effectSizeMultiplier = Mathf.Lerp(0.5f, 1.5f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
+        float effectSizeMultiplier = Mathf.Lerp(0.3f, 1.1f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
         // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;
     }
