@@ -86,7 +86,7 @@ Animator:
   m_GameObject: {fileID: -7299792492529011644}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: baada6a912c83374b9a7462cd57e74f2, type: 3}
-  m_Controller: {fileID: 9100000, guid: b81955c4e82d4254b97a0d93bb1f8929, type: 2}
+  m_Controller: {fileID: 9100000, guid: f7b0bb25825c3e347b1c3f1b08f0404b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -334,8 +334,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
   skillScrollWindow: {fileID: 0}
-  presetWin: 0
-  once: 0
   skillRangeIndicator: {fileID: 3461343800245115971, guid: a19d33afeeff490479e334657600395c, type: 3}
   cylinderRadius: 3
   cylinderHeight: 5
@@ -794,6 +792,8 @@ MonoBehaviour:
   cameraTrans: {fileID: 0}
   left_right_LookSpeed: 500
   up_down_LookSpeed: 500
+  left_right_DefaultSpeed: 150
+  up_down_DefaultSpeed: 150
   minPivot: 0
   maxPivot: 0
   cameraFllowVelocity: {x: 0, y: 0, z: 0}
@@ -2270,13 +2270,14 @@ GameObject:
   m_Component:
   - component: {fileID: 7722732383442781259}
   - component: {fileID: 4510886311826418670}
+  - component: {fileID: 6377117092287330799}
   m_Layer: 3
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7722732383442781259
 Transform:
   m_ObjectHideFlags: 0
@@ -2354,6 +2355,26 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &6377117092287330799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6660571108938791773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &6672127236264971578
 GameObject:
   m_ObjectHideFlags: 0
