@@ -239,7 +239,7 @@ public class GameManager : MonoBehaviour
         // 몬스터가 플레이어 인지 못함.
         foreach (var m in monsters)
         {
-            m.monsterPattern.StopMonster();
+            //m.monsterPattern.StopMonster();
         }
     }
 

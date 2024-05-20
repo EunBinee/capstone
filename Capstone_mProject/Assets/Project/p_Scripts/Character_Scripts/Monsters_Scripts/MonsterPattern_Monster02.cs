@@ -20,7 +20,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     [Space]
     [Header("몬스터 회전 각도")]
-    public int roamingAngle = 80;
+    public int roamingAngle = 60;
     private Quaternion m_monster02_OriginRotation;
     private Quaternion originRotatation;
 
@@ -45,6 +45,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     Coroutine long_Range_Attack_co = null;
     Coroutine hidePlayer_waitMonster_co = null;
     Coroutine shake_co = null;
+
     public override void Init()
     {
         m_monster = GetComponentInParent<Monster>();
@@ -60,8 +61,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
         ChangeMonsterState(MonsterState.Roaming);
-        //ChangeMonsterState(MonsterState.Tracing);
-        //Monster_Motion(MonsterMotion.Long_Range_Attack);
 
         originPosition = transform.position;
         originRotatation = transform.rotation;
@@ -214,7 +213,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
             while (time <= 10)
             {
                 time += Time.deltaTime;
-                //Debug.Log("dd");
                 // Slerp를 사용하여 부드럽게 회전합니다.
                 m_monster.transform.rotation = Quaternion.Slerp(m_monster.transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
 
@@ -824,53 +822,60 @@ public class MonsterPattern_Monster02 : MonsterPattern
 
     public override void StopMonster()
     {
+        //각자의 자리로 가기
+        base.StopMonster();
+
+        if (curMonsterState == MonsterState.Roaming)
+            return;
+        if (curMonsterState == MonsterState.Death)
+            return;
+        if (curMonsterState == MonsterState.Roaming)
+            return;
         //상태는 그대로.
         // 몬스터 is도 그대로.
         //모든 코루틴 정지
 
-        //각자의 자리로 가기
-        base.StopMonster();
+
 
         StopAtackCoroutine();
 
-        if ((curMonsterState != MonsterState.Death || curMonsterState != MonsterState.Roaming) || curMonsterState != MonsterState.GoingBack)
-        {
-            if (curMonsterState == MonsterState.Discovery)
-            {
-                isRoaming = false;
-                isFinding = false;
-                isTracing = false;
-                isGoingBack = false;
-                isGettingHit = false;
-                //로밍 으로 변경
-                if (discovery_Monster_co != null)
-                {
-                    StopCoroutine(discovery_Monster_co);
-                    discovery_Monster_co = null;
-                }
 
-                ChangeMonsterState(MonsterState.Roaming);
-            }
-            else if (curMonsterState == MonsterState.GetHit)
+        if (curMonsterState == MonsterState.Discovery)
+        {
+            isRoaming = false;
+            isFinding = false;
+            isTracing = false;
+            isGoingBack = false;
+            isGettingHit = false;
+            //로밍 으로 변경
+            if (discovery_Monster_co != null)
             {
-                isRoaming = false;
-                isFinding = false;
-                isTracing = false;
-                isGoingBack = true;
-                isGettingHit = false;
-                SetPlayerAttackList(false);
+                StopCoroutine(discovery_Monster_co);
+                discovery_Monster_co = null;
             }
-            else
-            {
-                isRoaming = false;
-                isFinding = false;
-                isTracing = false;
-                isGoingBack = true;
-                isGettingHit = false;
-                ChangeMonsterState(MonsterState.GoingBack);
-                SetPlayerAttackList(false);
-            }
+
+            ChangeMonsterState(MonsterState.Roaming);
         }
+        else if (curMonsterState == MonsterState.GetHit)
+        {
+            isRoaming = false;
+            isFinding = false;
+            isTracing = false;
+            isGoingBack = true;
+            isGettingHit = false;
+            SetPlayerAttackList(false);
+        }
+        else
+        {
+            isRoaming = false;
+            isFinding = false;
+            isTracing = false;
+            isGoingBack = true;
+            isGettingHit = false;
+            ChangeMonsterState(MonsterState.GoingBack);
+            SetPlayerAttackList(false);
+        }
+
 
     }
     public override void StartMonster()
