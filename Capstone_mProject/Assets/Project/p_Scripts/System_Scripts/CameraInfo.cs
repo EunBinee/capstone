@@ -21,6 +21,7 @@ public class CameraInfo : MonoBehaviour
         GameManager.instance.gameData.cameraObj = cameraController.cameraObj;
         GameManager.instance.cameraController = cameraController;
 
+
         UIManager.Instance.damageManager.m_Camera = cameraController.cameraObj;
         UIManager.Instance.hPBarManager.m_Camera = cameraController.cameraObj;
 
@@ -36,6 +37,8 @@ public class CameraInfo : MonoBehaviour
         // cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
         //cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
 
+        cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
+        cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
 
         //* 카메라 세팅 값 적용
         cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * GameManager.instance.cameraSensitivity;
@@ -49,8 +52,7 @@ public class CameraInfo : MonoBehaviour
         GameManager.instance.gameData.playerCamera = null;
         GameManager.instance.gameData.playerCameraPivot = null;
         GameManager.instance.gameData.cameraObj = null;
-        cameraController.cinemachineBrain = cameraController.cameraObj.gameObject.GetComponent<CinemachineBrain>();
-        cameraController.signalReceiver = cameraController.cameraObj.gameObject.GetComponent<SignalReceiver>();
+
         //플레이어
         PlayerController playerController = GameManager.instance.gameData.GetPlayerController();
         playerController._playerFollowCamera.playerCamera = null;

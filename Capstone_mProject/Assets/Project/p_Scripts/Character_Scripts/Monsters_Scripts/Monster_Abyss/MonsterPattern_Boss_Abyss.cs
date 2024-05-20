@@ -55,6 +55,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public List<NavMeshSurface> navMeshSurface;
 
+    bool StartFirstScene = false;
+
 
     public override void Init()
     {
@@ -84,7 +86,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         playerlayerMask = 1 << playerLayerId; //플레이어 레이어
 
-        ChangeMonsterState(MonsterState.Roaming);
+        ChangeMonsterState(MonsterState.Stop);
         originPosition = transform.position;
         bossForward = transform.forward;
 
@@ -157,6 +159,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void useUpdate()
     {
+        if (StartFirstScene == false)
+        {
+            StartFirstScene = true;
+            DirectFirstAppearance_TimeLine();
+        }
+
         //* -----------------------------------------------------------------------------//
         if (Input.GetKeyDown(KeyCode.H))
         {
@@ -1178,18 +1186,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             EndDirectorMonsterLastWeakness();
             GameManager.instance.cameraController.CameraRecovery();
-
-            // if (monsterLastWeakness_co != null)
-            // {
-            //     StopCoroutine(monsterLastWeakness_co);
-            //     monsterLastWeakness_co = null;
-
-            //     if (auraEffect != null)
-            //     {
-            //         auraEffect.gameObject.SetActive(false);
-            //         Destroy(auraEffect);
-            //     }
-            // }
         });
 
         Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, true);

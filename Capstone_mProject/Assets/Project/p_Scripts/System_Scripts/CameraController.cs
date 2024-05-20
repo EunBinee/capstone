@@ -82,8 +82,6 @@ public class CameraController : MonoBehaviour
         cameraTrans = cameraObj.gameObject.GetComponent<Transform>();
         cameraShake = GetComponent<CameraShake>();
 
-        cinemachineBrain = GetComponent<CinemachineBrain>();
-        signalReceiver = GetComponent<SignalReceiver>();
     }
 
     private void Start()
@@ -706,6 +704,11 @@ public class CameraController : MonoBehaviour
 
     public void CinemachineSetting(bool _value)
     {
+        if (cinemachineBrain == null)
+        {
+            cinemachineBrain = GetComponent<CinemachineBrain>();
+            signalReceiver = GetComponent<SignalReceiver>();
+        }
         cinemachineBrain.enabled = _value;
         signalReceiver.enabled = _value;
     }
