@@ -137,7 +137,8 @@ public class UIManager : MonoBehaviour
         {
             case UI.SettingMenu:
                 if (uiPrefabs.settingUI == null)
-                    prefab = Resources.Load<GameObject>("SystemPrefabs/" + "Popup_Settings");
+                    //prefab = Resources.Load<GameObject>("SystemPrefabs/" + "Popup_Settings");
+                    prefab = Resources.Load<GameObject>("CanvasPrefabs/" + "SettingsUI");
                 else
                     prefab = uiPrefabs.settingUI;
                 break;
