@@ -36,7 +36,7 @@ public class SettingUI : MonoBehaviour
         if (!isMainScene)
         {
             //* 메인 씬이 아닐때
-            settingUIAnim.Play(panelFadeIn);
+            StartCoroutine(ShowSettingUI_co());
         }
     }
 
@@ -50,7 +50,6 @@ public class SettingUI : MonoBehaviour
 
     public void ShowSettingUI()
     {
-        //settingUIAnim.Play(panelFadeIn);
         StartCoroutine(ShowSettingUI_co());
 
     }
@@ -69,7 +68,6 @@ public class SettingUI : MonoBehaviour
         {
             yield return null;
         }
-        hideSettingUI_co = null;
         canAccess = true;
     }
 
@@ -84,6 +82,14 @@ public class SettingUI : MonoBehaviour
         }
         hideSettingUI_co = null;
         canAccess = true;
+
+
+        ChangeSettingValue();
+        if (UIManager.gameIsPaused == true)
+        {
+            //게임이 멈춰있으면 다시 재생.
+            UIManager.Instance.Resume();
+        }
         this.gameObject.SetActive(false);
     }
 

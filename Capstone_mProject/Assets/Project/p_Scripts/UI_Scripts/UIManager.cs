@@ -187,7 +187,24 @@ public class UIManager : MonoBehaviour
             else
             {
                 int index = uiPrefabsInGame.IndexOf(prefab);
-                uiPrefabsInGame[index].SetActive(true);
+                GameObject curObj = uiPrefabsInGame[index];
+                curObj.SetActive(true);
+
+                switch (ui)
+                {
+                    case UI.SettingMenu:
+                        curObj.GetComponent<SettingUI>().ShowSettingUI();
+                        break;
+                    case UI.Inventory:
+                        break;
+                    case UI.Quest:
+                        break;
+                    case UI.PopupWindow:
+                        uiPrefabs.popupWindow = prefab;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
