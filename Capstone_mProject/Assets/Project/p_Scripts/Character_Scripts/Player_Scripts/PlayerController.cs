@@ -83,13 +83,15 @@ public class PlayerController : MonoBehaviour
     public Vector3 originFpos;
     public Vector3 originQpos;
 
-    private Vector3 screenCenter;
+    //private Vector3 screenCenter;
     public bool EnablePlayerUI = true;
     private bool isOn = false;
-    public bool retIsOn(){
+    public bool retIsOn()
+    {
         return isOn;
     }
-    public void setIsOn(bool val){
+    public void setIsOn(bool val)
+    {
         isOn = val;
     }
     void Awake()
@@ -116,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
+        //screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
         if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
             DontDestroyOnLoad(this.gameObject);
         else
@@ -376,8 +378,7 @@ public class PlayerController : MonoBehaviour
     //* 무조건 넘어지는 GetHit
     public void GetHit_FallDown(Monster enemy, float damage, float fallDownDistance = 5f)
     {
-        if (fallDownDistance < 5f)
-            fallDownDistance = 5f;
+        fallDownDistance = Mathf.Clamp(fallDownDistance, 5f, fallDownDistance);
 
         StartCoroutine(PlayerGetHit(enemy, damage, fallDownDistance));
     }
@@ -459,12 +460,12 @@ public class PlayerController : MonoBehaviour
 
         if (knockbackDistance > 1.5f)
         {
-            hitStop = 1.8f;
+            hitStop = 1.4f;
             P_Com.animator.SetTrigger("isKnockback");
         }
         else
         {
-            hitStop = 0.5f;
+            hitStop = 0.367f;
             P_Com.animator.Play("Get_Damage", 0);
         }
         P_Value.hits = 0;   //* 피격 시 히트 초기화
