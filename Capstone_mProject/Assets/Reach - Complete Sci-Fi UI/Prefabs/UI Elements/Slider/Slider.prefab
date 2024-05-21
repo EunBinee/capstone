@@ -316,9 +316,8 @@ MonoBehaviour:
   mainSlider: {fileID: 2757495201192361423}
   valueText: {fileID: 2757495203025905131}
   highlightCG: {fileID: 6683520728854751180}
-  audioManager: {fileID: 0}
   saveValue: 0
-  invokeOnAwake: 1
+  invokeOnEnable: 1
   saveKey: My Slider
   isInteractable: 1
   usePercent: 0
@@ -822,11 +821,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0.5
+  m_text: "1.0\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8322a83c36dbf604db8a075474b12c47, type: 2}
-  m_sharedMaterial: {fileID: 3055816025143138274, guid: 8322a83c36dbf604db8a075474b12c47,
-    type: 2}
+  m_sharedMaterial: {fileID: 3055816025143138274, guid: 8322a83c36dbf604db8a075474b12c47, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

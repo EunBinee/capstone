@@ -204,9 +204,11 @@ public class DialogueManager : MonoBehaviour
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
             //대화 스킵 버튼
-            if (Input.GetKeyDown(KeyCode.J))
+            if (Input.GetKeyDown(KeyCode.J) || Input.GetKey(KeyCode.J))
             {
                 curContext = curlineContextLen;
+                //isFinish = true;
+                Debug.Log("skip");
             }
 
             if (curContext < curlineContextLen)

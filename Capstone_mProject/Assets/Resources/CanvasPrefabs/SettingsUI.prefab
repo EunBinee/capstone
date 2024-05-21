@@ -1651,6 +1651,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settingInfo:
     slider_CameraSensitivity: {fileID: 6623338387886263180}
+  isMainScene: 0
 --- !u!1 &6224238006878671013
 GameObject:
   m_ObjectHideFlags: 0
@@ -5075,6 +5076,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Master Volume
       objectReference: {fileID: 0}
+    - target: {fileID: 7539475247283540567, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8983305642954309742, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
       propertyPath: localizationKey
       value: MasterVolumeLabel
@@ -5616,6 +5621,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 4054662820581930932, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 6994490987773217343, guid: fd2e95e311c5b5e4da32b572f6628427, type: 2}
     - target: {fileID: 5036607318987461956, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
       propertyPath: valueMultiplier
       value: 1
@@ -5815,6 +5824,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 4054662820581930932, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 7631198204876010554, guid: fd2e95e311c5b5e4da32b572f6628427, type: 2}
     - target: {fileID: 5036607318987461956, guid: 56aca52c3ca69e44ea5927e9d1e67667, type: 3}
       propertyPath: valueMultiplier
       value: 1
