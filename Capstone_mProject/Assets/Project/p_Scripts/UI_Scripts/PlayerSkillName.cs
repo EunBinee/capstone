@@ -12,4 +12,17 @@ public class PlayerSkillName : MonoBehaviour
     public Button InputButton;
     public int m_Index;
     public bool isSelect;
+    public bool isOpen;
+
+    public void onClick()
+    {
+        if (isSelect)
+        {
+            isSelect = false;
+        }
+        else
+        {
+            isSelect = true;
+        }
+    }
 }

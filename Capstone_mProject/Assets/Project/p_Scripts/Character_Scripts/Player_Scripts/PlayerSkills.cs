@@ -70,7 +70,7 @@ public class PlayerSkills : MonoBehaviour
     }
     void Setting()
     {
-        skillScrollWindow = P_Controller.P_Movement.skillScrollWindow;
+        skillScrollWindow = P_Controller.P_Movement.skillTree;
         skill_T = P_Controller.P_Movement.skill_T;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
@@ -557,7 +557,7 @@ public class PlayerSkills : MonoBehaviour
         Cursor.visible = true;     //마우스 커서
         Cursor.lockState = CursorLockMode.None;
 
-        ModalWindowManager modalWindowManager = P_Movement.skillScrollWindow.GetComponent<ModalWindowManager>();
+        ModalWindowManager modalWindowManager = P_Movement.skillTree.GetComponent<ModalWindowManager>();
         modalWindowManager.mwAnimator.enabled = true;
         modalWindowManager.mwAnimator.SetFloat("AnimSpeed", modalWindowManager.animationSpeed);
         modalWindowManager.mwAnimator.Play("In");

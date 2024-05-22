@@ -26,7 +26,7 @@ public class PlayerUI_info : MonoBehaviour
     public SkillButton skill_Q;
 
     [Header("Skill Slot")]
-    public GameObject skillScrollWindow;
+    public GameObject skillTree;
     [SerializeField] public List<Image> slot = new List<Image>(3);
 
     [Space]
@@ -138,7 +138,7 @@ public class PlayerUI_info : MonoBehaviour
                 slot[i].sprite = non_sskill[j++].icon;
             }
         }
-        else 
+        else
         {
             slot[0].sprite = sskill[0].icon;
             slot[1].sprite = sskill[1].icon;
@@ -204,13 +204,15 @@ public class PlayerUI_info : MonoBehaviour
         return null;
     }
 
-    public void confirm(){
+    public void confirm()
+    {
         //선택한 스킬 저장
         skillPresetting();
         p_controller.P_Skills.CloseSkillWindow();
         Debug.Log("confirm()");
     }
-    public void cancel(){
+    public void cancel()
+    {
         //선택 하기 전 스킬들로 저장
         p_controller.P_Skills.CloseSkillWindow();
         Debug.Log("cancel()");

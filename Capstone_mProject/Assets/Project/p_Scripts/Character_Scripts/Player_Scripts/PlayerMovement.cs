@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 camForward;
 
-    public GameObject skillScrollWindow;
+    public GameObject skillTree;
 
     [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
     void Start()
@@ -96,8 +96,8 @@ public class PlayerMovement : MonoBehaviour
         skill_Q.gameObject.SetActive(false);
         _controller.originQpos = skill_Q.gameObject.transform.position;
 
-        skillScrollWindow = playerUI_info.skillScrollWindow;
-        skillScrollWindow.gameObject.SetActive(false);
+        skillTree = playerUI_info.skillTree;
+        skillTree.gameObject.SetActive(false);
     }
 
     void Update()
