@@ -9,16 +9,49 @@ public class CameraResolution : MonoBehaviour
     public int setWidth = 1920; // 사용자 설정 너비
     public int setHeight = 1080; // 사용자 설정 높이
 
+    CanvasScaler canvasScaler;
+
     private void Awake()
     {
+        canvasScaler = GetComponent<CanvasScaler>();
         SetResolution(); // 초기에 게임 해상도 고정
     }
 
     /* 해상도 설정하는 함수 */
     public void SetResolution()
     {
+        if (canvasScaler == null)
+            canvasScaler = GetComponent<CanvasScaler>();
+
         int deviceWidth = Screen.width; // 기기 너비 저장
         int deviceHeight = Screen.height; // 기기 높이 저장
+
+        if (canvasScaler.matchWidthOrHeight == 1)
+        {
+            if (deviceWidth < setWidth)
+            {
+                canvasScaler.matchWidthOrHeight = 0;
+            }
+            else
+            {
+                canvasScaler.matchWidthOrHeight = 1;
+            }
+
+        }
+        else if (canvasScaler.matchWidthOrHeight == 0)
+        {
+
+            if (deviceHeight < setHeight)
+            {
+                canvasScaler.matchWidthOrHeight = 0;
+            }
+            else
+            {
+                canvasScaler.matchWidthOrHeight = 1;
+            }
+
+        }
+
 
         Screen.SetResolution(setWidth, (int)(((float)deviceHeight / deviceWidth) * setWidth), true); // SetResolution 함수 제대로 사용하기
 

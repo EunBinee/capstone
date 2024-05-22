@@ -31,36 +31,11 @@ public class LoadScene
         //새로 불러왔을때 세팅.
     }
 
-    public void LoadMainScene(string sceneName) //* 메인씬 로드
-    {
-        if (mainScene == null)
-            mainScene = CanvasManager.instance.mainStartScene;
-
-        mainScene.gameObject.SetActive(false);
-        Cursor.visible = false;     //마우스 커서를 보이지 않게
-        Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-        Time.timeScale = 1f;
-        UIManager.gameIsPaused = false;
-
-        SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
-        ChangeScene(sceneName);
-    }
-
-
 
     public void LoadDataScene() //* 불러오기
     {
         loadData = SaveSystem.Load("GameData");
         DialogueLoad();
-
-        if (mainScene == null)
-            mainScene = CanvasManager.instance.mainStartScene;
-
-        mainScene.gameObject.SetActive(false);
-        Cursor.visible = false;     //마우스 커서를 보이지 않게
-        Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
-        Time.timeScale = 1f;
-        UIManager.gameIsPaused = false;
     }
 
     public void DialogueLoad()

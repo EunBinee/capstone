@@ -9,6 +9,15 @@ public class LoadingSceneController : MonoBehaviour
     public static string nextScene;
     [SerializeField] private Image progressBar;
 
+    private void Awake()
+    {
+        if (CanvasManager.instance.cameraResolution == null)
+        {
+            CanvasManager.instance.cameraResolution = CanvasManager.instance.gameObject.GetComponent<CameraResolution>();
+        }
+        CanvasManager.instance.cameraResolution.SetResolution();
+    }
+
     private void Start()
     {
         StartCoroutine(LoadScene_co());
