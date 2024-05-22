@@ -131,7 +131,7 @@ MonoBehaviour:
   skillData: {fileID: 11400000, guid: f2e73e0df475fe34daa699ad73e46c47, type: 2}
   skillName: {fileID: 2471801627097568049}
   InputButton: {fileID: 4543354791615577162}
-  m_Index: 0
+  skillCodeNum: 0
   isSelect: 0
   isOpen: 0
 --- !u!1 &2497656020489142449
@@ -393,7 +393,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 817801566311968182}
         m_TargetAssemblyTypeName: PlayerSkillName, Assembly-CSharp
-        m_MethodName: onClick
+        m_MethodName: onClickSelect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

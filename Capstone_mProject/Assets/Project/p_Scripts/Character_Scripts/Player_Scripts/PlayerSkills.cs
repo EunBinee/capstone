@@ -111,7 +111,7 @@ public class PlayerSkills : MonoBehaviour
     }
 
     List<string> callName = new List<string>();
-    public List<string> getskillMap()
+    public List<string> getskillMapToName()
     {
         callName.Clear();
         foreach (KeyValuePair<string, SOSkill> i in skillMap)
@@ -124,6 +124,21 @@ public class PlayerSkills : MonoBehaviour
             }
         }
         return callName;
+    }
+    List<SOSkill> callSkill = new List<SOSkill>();
+    public List<SOSkill> getskillMapToSkill()
+    {
+        callSkill.Clear();
+        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        {
+            if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+            { }
+            else
+            {
+                callSkill.Add(i.Value);
+            }
+        }
+        return callSkill;
     }
 
     //* skill
@@ -461,7 +476,7 @@ public class PlayerSkills : MonoBehaviour
     /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
-       // 이펙트 크기를 조절하는 비율을 계산합니다.
+        // 이펙트 크기를 조절하는 비율을 계산합니다.
         float effectSizeMultiplier = Mathf.Lerp(0.3f, 1.1f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
         // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;
