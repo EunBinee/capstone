@@ -19,10 +19,6 @@ public class CanvasManager : MonoBehaviour
         }
     }
 
-    [Header("메인 스타트 화면")]
-    public string mainStartSceneName;
-    public GameObject mainStartScene;
-
     [Space]
     [Header("player UI")]
     public string playerUIName;
@@ -58,6 +54,8 @@ public class CanvasManager : MonoBehaviour
     public GameObject btnsUI;
 
 
+    public CameraResolution cameraResolution;
+
     void Awake()
     {
         if (instance == null)
@@ -74,8 +72,7 @@ public class CanvasManager : MonoBehaviour
     public void Init()
     {
         //* 메인씬
-        //if (mainStartScene == null)
-        //    mainStartScene = GetCanvasUI(mainStartSceneName);
+
         //* 플레이어 UI
         if (playerUI == null)
             playerUI = GetCanvasUI(playerUIName);
@@ -110,6 +107,8 @@ public class CanvasManager : MonoBehaviour
         {
             btnsUI = GetCanvasUI(btnsUIName);
         }
+
+        cameraResolution = GetComponent<CameraResolution>();
     }
 
     public GameObject GetCanvasUI(string name)
