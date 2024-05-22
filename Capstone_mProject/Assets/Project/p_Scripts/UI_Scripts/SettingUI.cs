@@ -5,8 +5,12 @@ using UnityEngine;
 
 public class SettingUI : MonoBehaviour
 {
-    public SettingInfo settingInfo;
+    [Header("메인화면이면 체크하세요!")]
     public bool isMainScene = false;
+
+    [Space]
+    public SettingInfo settingInfo;
+
     CanvasGroup canvasGroup;
     Animator settingUIAnim;
     string panelFadeIn = "Panel In";
@@ -24,10 +28,20 @@ public class SettingUI : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && canAccess)
+        if (!isMainScene)
         {
-            if (hideSettingUI_co == null)
-                HideSettingUI();
+            if (Input.GetKeyDown(KeyCode.Escape) && canAccess)
+            {
+                if (hideSettingUI_co == null)
+                    HideSettingUI();
+            }
+        }
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Escape) && canvasGroup.alpha == 1)
+            {
+                settingUIAnim.Play(panelFadeOut);
+            }
         }
     }
 
@@ -46,6 +60,8 @@ public class SettingUI : MonoBehaviour
 
         GameManager.instance.cameraSensitivity = settingInfo.slider_CameraSensitivity.value;
         GameManager.instance.ChangeSettingValue();
+
+        SettingVolume();
     }
 
     public void ShowSettingUI()
@@ -53,7 +69,6 @@ public class SettingUI : MonoBehaviour
         StartCoroutine(ShowSettingUI_co());
 
     }
-
     public void HideSettingUI()
     {
         hideSettingUI_co = StartCoroutine(HideSettingUI_co());
@@ -70,7 +85,6 @@ public class SettingUI : MonoBehaviour
         }
         canAccess = true;
     }
-
     IEnumerator HideSettingUI_co()
     {
         canAccess = false;
@@ -90,7 +104,41 @@ public class SettingUI : MonoBehaviour
             //게임이 멈춰있으면 다시 재생.
             UIManager.Instance.Resume();
         }
-        this.gameObject.SetActive(false);
+        if (!isMainScene)
+            this.gameObject.SetActive(false);
+    }
+
+
+    //* 오디오의 소리 조절
+    public void SettingVolume()
+    {
+
+        float masterValue = settingInfo.masterVolumeSlider.value;
+
+        float bgmValue = settingInfo.BGMVolumeSlider.value * masterValue;
+        SoundManager.Instance.bgmPlayer.volume = bgmValue;
+
+        float sfxValue = settingInfo.sfxVolumeSlider.value * masterValue;
+        SoundManager.Instance.playerSoundPlayer.volume = sfxValue;
+        foreach (AudioSource audioSource in SoundManager.Instance.mosterSoundPlayer)
+        {
+            audioSource.volume = sfxValue;
+        }
+        foreach (AudioSource audioSource in SoundManager.Instance.sfxPlayer)
+        {
+            audioSource.volume = sfxValue;
+        }
+
+        /*
+        bgm
+        SoundManager.Instance.bgmPlayer
+
+        sfx
+        SoundManager.Instance.playerSoundPlayer
+        SoundManager.Instance.mosterSoundPlayer
+        SoundManager.Instance.sfxPlayer
+
+        */
     }
 
 }

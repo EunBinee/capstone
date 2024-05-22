@@ -19,7 +19,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("BGM")]
     public AudioClip[] bgmClip;
-    private AudioSource bgmPlayer;
+    public AudioSource bgmPlayer;
     public enum BGM
     {
         Title,
@@ -29,7 +29,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("PlayerSound")]
     public AudioClip[] playerSoundClips;
-    private AudioSource playerSoundPlayer;
+    public AudioSource playerSoundPlayer;
     public enum PlayerSound
     {
         Hit,
@@ -39,13 +39,13 @@ public class SoundManager : MonoBehaviour
 
     [Header("MonsterSound")]
     //몬스터 사운드 클립은 몬스터 스크립트로 따로 관리
-    private AudioSource[] mosterSoundPlayer;
+    public AudioSource[] mosterSoundPlayer;
     public int monsterSound_channels;
     private int monsterSound_ChannelIndex;
 
     [Header("Other sfx Sound")] //기타. 효과음.
     public AudioClip[] sfxClips;
-    private AudioSource[] sfxPlayer;
+    public AudioSource[] sfxPlayer;
     public int sfx_channels;
     private int sfx_channelIndex;
     public enum SfxSound
@@ -242,7 +242,7 @@ public class SoundManager : MonoBehaviour
             break;
         }
     }
-     public void Stop_SfxSound(SfxSound sfx_Sound)
+    public void Stop_SfxSound(SfxSound sfx_Sound)
     {
         for (int index = 0; index < sfxPlayer.Length; index++)
         {

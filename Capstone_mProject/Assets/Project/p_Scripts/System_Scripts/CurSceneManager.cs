@@ -24,6 +24,12 @@ public class CurSceneManager : MonoBehaviour
         {
             instance = this;
         }
+
+        if (CanvasManager.instance.cameraResolution == null)
+        {
+            CanvasManager.instance.cameraResolution = CanvasManager.instance.gameObject.GetComponent<CameraResolution>();
+        }
+        CanvasManager.instance.cameraResolution.SetResolution();
     }
 
     void Start()
