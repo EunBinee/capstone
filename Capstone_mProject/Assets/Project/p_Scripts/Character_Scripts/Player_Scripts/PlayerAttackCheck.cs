@@ -265,12 +265,19 @@ public class PlayerAttackCheck : MonoBehaviour
                 GameManager.instance.damageCalculator.damageExpression = "A+B";
                 GameManager.instance.damageCalculator.CalculateAndPrint();
                 damageValue = GameManager.instance.damageCalculator.result;
+
+                
             }
             else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
             {
                 GameManager.instance.damageCalculator.damageExpression = "A+C";
                 GameManager.instance.damageCalculator.CalculateAndPrint();
                 damageValue = GameManager.instance.damageCalculator.result;
+            }
+            // 20% 확률로 데미지에 100을 추가
+            if (Random.value < 0.25f)
+            {
+                damageValue *= 1.5;
             }
 
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
