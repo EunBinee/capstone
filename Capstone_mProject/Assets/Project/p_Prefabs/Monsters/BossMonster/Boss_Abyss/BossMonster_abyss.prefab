@@ -3910,7 +3910,7 @@ MonoBehaviour:
     - {fileID: 2836291601694631459}
     weaknessDamageRate: 0.05
     HPBarPos: {fileID: 0}
-    MaxHP: 20000
+    MaxHP: 50000
     HP: 0
     movingMonster: 1
     overlapRadius: 20
@@ -3922,6 +3922,9 @@ MonoBehaviour:
     effectTrans: {fileID: 2755003018275303168}
   monsterPattern: {fileID: 2755003020157360586}
   bossMonsterPattern: {fileID: 2755003020157360586}
+  skinnedMeshRenderer: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  m_material: {fileID: 0}
   soundName: []
   monsterSoundClips:
   - {fileID: 8300000, guid: 605c7659dc4cacb42ac95a2ea24d6530, type: 3}
@@ -4030,6 +4033,7 @@ MonoBehaviour:
   wreckages: []
   wreckage_obj: {fileID: 0}
   skillRadius: 10
+  Shield_Effect_skill03: {fileID: 0}
 --- !u!114 &4200983437960885994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5102,6 +5106,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5548586771043669933}
   - component: {fileID: 5548586771043669932}
+  - component: {fileID: 9001019343491831948}
   m_Layer: 6
   m_Name: Point Light
   m_TagString: Monster
@@ -5186,6 +5191,26 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &9001019343491831948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548586771043669906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &5548586771119777138
 GameObject:
   m_ObjectHideFlags: 0

@@ -744,8 +744,8 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //! 사운드 => 터지는 소리
         m_monster.SoundPlay("Monster02_Death", false);
         yield return new WaitForSeconds(0.4f);
-        effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v2_L");
-        effect.transform.position = transform.position;
+        // effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v2_M");
+        // effect.transform.position = transform.position;
 
         yield return new WaitForSeconds(1f);
 
