@@ -8,7 +8,7 @@ public class SOSkill : ScriptableObject
     public float damage;
     public float cool;
     public bool isTwice;
-    public bool isSelect;
+    //public bool isSelect;
 
     public string animationName;
     public Sprite icon;

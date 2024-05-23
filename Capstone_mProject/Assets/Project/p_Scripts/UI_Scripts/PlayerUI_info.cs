@@ -35,102 +35,143 @@ public class PlayerUI_info : MonoBehaviour
 
 
     private PlayerController p_controller;
-    //[SerializeField] private List<string> SkillNameList;
-    [SerializeField] public List<SOSkill> playerSkillList;  // 스킬 프리팹 저장 리스트
+    [SerializeField] private List<string> SkillNameList;
+    [SerializeField] List<PlayerSkillName> playerSkillList;
     [SerializeField] private List<int> selectedSkillsIndex;  // 선택된 스킬의 인덱스를 저장하는 리스트
     [SerializeField] List<SOSkill> sskill;
     [SerializeField] List<SOSkill> non_sskill;
 
+    Color selectColor;
+    Color unselectColor;
+    [SerializeField] public GameObject skillUIPrefab;  //리스트에 추가할 UI 프리팹
     public Transform content;
+
+    //private RectTransform rt;
+    //private CanvasScaler canvasScaler;
+
 
     void Start()
     {
-        //SkillNameList = new List<string>();
-        //SkillNameList.Clear();
-        playerSkillList = new List<SOSkill>();
-        //selectedSkillsIndex = new List<int>();
-        sskill = new List<SOSkill>();
-        non_sskill = new List<SOSkill>();
+        SkillNameList = new List<string>();
+        SkillNameList.Clear();
+        playerSkillList = new List<PlayerSkillName>();
+        selectedSkillsIndex = new List<int>();
+        selectColor = GameManager.Instance.HexToColor("#FF8C80");
+        unselectColor = GameManager.Instance.HexToColor("#00C8FF");
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();
+        //canvasScaler = GetComponentInParent<CanvasScaler>();
 
         // 스킬 맵 업데이트시 호출할 이벤트에 메서드 구독
-        //p_controller.P_Skills.OnSkillMapUpdated += SkillMapUpdated;
+        p_controller.P_Skills.OnSkillMapUpdated += SkillMapUpdated;
 
-        //SkillMapUpdated(); // 초기 UI 설정을 위해 메서드 호출
+        SkillMapUpdated(); // 초기 UI 설정을 위해 메서드 호출
         Invoke("Setting", 0.3f);
+
     }
     void Setting()
     {
-        playerSkillList = p_controller.P_Skills.getskillMapToSkill();
-        skillPresetting();
+        for (int i = 0; i < 3; i++)
+        {
+            SelectSkill(playerSkillList[i]);
+        }
     }
 
-    /*private void SkillMapUpdated()
+    private void SkillMapUpdated()
     {
         List<string> updatedSkills = p_controller.P_Skills.getskillMapToName(); // 업데이트된 스킬 목록 가져오기
         if (SkillNameList.Count != updatedSkills.Count) // 새 스킬이 추가되었는지 확인
         {
-            //for (int i = SkillNameList.Count; i < updatedSkills.Count; i++) // 새 스킬만큼 UI 요소 생성
+            for (int i = SkillNameList.Count; i < updatedSkills.Count; i++) // 새 스킬만큼 UI 요소 생성
             {
-                //GameObject curObj = Instantiate(skillUIPrefab);
-                //curObj.transform.SetParent(content);
+                GameObject curObj = Instantiate(skillUIPrefab);
+                curObj.transform.SetParent(content);
 
-                //curObj.transform.localPosition = new Vector3(((i % 6) * 110), (i / 6), 0);
-                //curObj.transform.localScale = Vector3.one;
+                curObj.transform.localPosition = new Vector3(30 + ((i % 6) * 110), -30 + (i / 6), 0);
+                curObj.transform.localScale = Vector3.one;
 
-                //PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
-                //playerSkillList.Add(curSkillName); // 리스트에 추가 nameToSkill
-                //curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
+                PlayerSkillName curSkillName = curObj.GetComponent<PlayerSkillName>(); // 스킬 이름 컴포넌트 접근
+                curSkillName.skillCodeNum = i; // 인덱스 설정
+                curSkillName.skillName.text = updatedSkills[i]; // 스킬 이름 설정
+                curSkillName.iconImg.sprite = p_controller.P_Skills.skillMap[updatedSkills[i]].icon; // 스킬 아이콘 설정
+                curSkillName.skillData = p_controller.P_Skills.skillMap[updatedSkills[i]];
+                playerSkillList.Add(curSkillName); // 리스트에 추가
+                curSkillName.InputButton.onClick.AddListener(() => SelectSkill(curSkillName)); // 선택 이벤트 리스너 추가
             }
             SkillNameList = new List<string>(updatedSkills); // 스킬 목록 업데이트
         }
-    }*/
 
-    public void SelectSkill(SOSkill curSkill)
+    }
+
+    public void SelectSkill(PlayerSkillName curSkillName)
     {
-        int curIndex = curSkill.skillCodeNum; // 현재 스킬의 인덱스
+        Debug.Log($"[skill test] SelectSkill()");
+        int curIndex = curSkillName.skillCodeNum; // 현재 스킬의 인덱스
         if (selectedSkillsIndex.Contains(curIndex)) // 이미 선택된 경우
         {
+            curSkillName.InputButton.image.color = unselectColor; // 색상 변경
+            curSkillName.m_isSelect = false; // 선택 상태 변경
             selectedSkillsIndex.Remove(curIndex); // 인덱스 리스트에서 제거
-            sskill.RemoveAt(curIndex);  // 선택한 거에 최근 인덱스 스킬 삭제
-            non_sskill.Add(curSkill);   // 선택안한 거에 받아온 스킬 추가
-            curSkill.isSelect = false;
         }
         else
         {
             if (selectedSkillsIndex.Count >= 3) // 선택된 스킬이 3개 이상인 경우
             {
+                int firstSelectedIndex = selectedSkillsIndex[0]; // 가장 먼저 선택된 스킬의 인덱스
+                playerSkillList[firstSelectedIndex].InputButton.image.color = unselectColor; // 색상 변경
+                playerSkillList[firstSelectedIndex].m_isSelect = false; // 선택 상태 변경
                 selectedSkillsIndex.RemoveAt(0); // 인덱스 리스트에서 첫 번째 요소 제거
-                non_sskill.Add(sskill[0]);  //선택안한 거에 지울 스킬 추가
-                sskill.RemoveAt(0);     //선택한 거에 처음 거 삭제
-                sskill[0].isSelect = false;
             }
+            curSkillName.InputButton.image.color = selectColor; // 새로운 스킬의 색상 변경
+            curSkillName.m_isSelect = true; // 선택 상태로 변경
             selectedSkillsIndex.Add(curIndex); // 새로운 선택 추가
-            sskill.Add(curSkill);   // 선택한 거에 받아온 스킬 추가
-            non_sskill.Remove(curSkill);  // 선택안한 거에 받아온 스킬 삭제
-            curSkill.isSelect = true;
         }
-        //selectSkillAddList();
+        //skillPresetting();
+        //* slot1~3에 아이콘 사진 넣기
+        selectSkillAddList();
+        if (sskill.Count < 3)   // 3개 미만 선택 했다면
+        {
+            int needSkillCnt = 3 - sskill.Count;
+            for (int i = 0; i < sskill.Count; i++)
+            {
+                slot[i].sprite = sskill[i].icon;
+            }
+            //* 나머지 넣기(skillMap 앞에서부터)
+            int j = 0;
+            for (int i = sskill.Count; i < 3; i++)
+            {
+                slot[i].sprite = non_sskill[j++].icon;
+            }
+        }
+        else
+        {
+            slot[0].sprite = sskill[0].icon;
+            slot[1].sprite = sskill[1].icon;
+            slot[2].sprite = sskill[2].icon;
+        }
+    }
+
+    void OnDestroy()
+    {
+        // 메모리 누수 방지를 위해 이벤트 구독 해제
+        p_controller.P_Skills.OnSkillMapUpdated -= SkillMapUpdated;
     }
 
     public void selectSkillAddList()
     {
-        if (sskill.Count >= 3)
+        sskill = new List<SOSkill>();
+        non_sskill = new List<SOSkill>();
+        foreach (PlayerSkillName i in playerSkillList)
         {
-            sskill.Clear();
-            non_sskill.Clear();
-        }
-        foreach (SOSkill i in playerSkillList)
-        {
-            if (i.isSelect)
+            if (i.m_isSelect)
             {
-                sskill.Add(i);
+                sskill.Add(nameToSkill(i.skillName.text));
             }
             else
             {
-                non_sskill.Add(i);
+                non_sskill.Add(nameToSkill(i.skillName.text));
             }
         }
+
     }
     public void skillPresetting()
     {
@@ -150,6 +191,12 @@ public class PlayerUI_info : MonoBehaviour
             //p_controller._skillInfo.selectSkill = sskill;
         }
         else p_controller._skillInfo.selectSkill = sskill;
+
+        //* slot1~3에 아이콘 사진 넣기
+        slot[0].sprite = p_controller._skillInfo.selectSkill[0].icon;
+        slot[1].sprite = p_controller._skillInfo.selectSkill[1].icon;
+        slot[2].sprite = p_controller._skillInfo.selectSkill[2].icon;
+
     }
     private SOSkill nameToSkill(string namee)
     {
