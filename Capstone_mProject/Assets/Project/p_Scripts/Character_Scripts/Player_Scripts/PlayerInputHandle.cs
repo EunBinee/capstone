@@ -171,7 +171,7 @@ public class PlayerInputHandle : MonoBehaviour
         P_Input.mouseY = Input.GetAxis("Mouse Y");  //마우스 상하
     }
 
-    public void Key2Movement()
+    public float Key2Movement()
     {
         if (P_KState.WDown)
         {
@@ -197,6 +197,7 @@ public class PlayerInputHandle : MonoBehaviour
         {
             P_Input.horizontalMovement = 0;
         }
+        return P_Input.verticalMovement + P_Input.horizontalMovement;
     }
 
     public void MouseClickInput()

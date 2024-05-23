@@ -70,20 +70,20 @@ public class PlayerSkills : MonoBehaviour
     }
     void Setting()
     {
-        skillScrollWindow = P_Controller.P_Movement.skillScrollWindow;
+        skillScrollWindow = P_Controller.P_Movement.skillTree;
         skill_T = P_Controller.P_Movement.skill_T;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
         SkillMapAdd("Heal", P_SkillInfo.heal);
         P_SkillInfo.haveHeal = true;
+        SkillMapAdd("Restraint", P_SkillInfo.restraint);
+        P_SkillInfo.haveRestraint = true;
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
         P_SkillInfo.haveSample1 = true;
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
-        SkillMapAdd("Restraint", P_SkillInfo.restraint);
-        P_SkillInfo.haveRestraint = true;
     }
 
     void FixedUpdate()
@@ -111,7 +111,7 @@ public class PlayerSkills : MonoBehaviour
     }
 
     List<string> callName = new List<string>();
-    public List<string> getskillMap()
+    public List<string> getskillMapToName()
     {
         callName.Clear();
         foreach (KeyValuePair<string, SOSkill> i in skillMap)
@@ -124,6 +124,21 @@ public class PlayerSkills : MonoBehaviour
             }
         }
         return callName;
+    }
+    List<SOSkill> callSkill = new List<SOSkill>();
+    public List<SOSkill> getskillMapToSkill()
+    {
+        callSkill.Clear();
+        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        {
+            if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
+            { }
+            else
+            {
+                callSkill.Add(i.Value);
+            }
+        }
+        return callSkill;
     }
 
     //* skill
@@ -461,7 +476,7 @@ public class PlayerSkills : MonoBehaviour
     /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
-       // 이펙트 크기를 조절하는 비율을 계산합니다.
+        // 이펙트 크기를 조절하는 비율을 계산합니다.
         float effectSizeMultiplier = Mathf.Lerp(0.3f, 1.1f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
         // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;
@@ -557,7 +572,7 @@ public class PlayerSkills : MonoBehaviour
         Cursor.visible = true;     //마우스 커서
         Cursor.lockState = CursorLockMode.None;
 
-        ModalWindowManager modalWindowManager = P_Movement.skillScrollWindow.GetComponent<ModalWindowManager>();
+        ModalWindowManager modalWindowManager = P_Movement.skillTree.GetComponent<ModalWindowManager>();
         modalWindowManager.mwAnimator.enabled = true;
         modalWindowManager.mwAnimator.SetFloat("AnimSpeed", modalWindowManager.animationSpeed);
         modalWindowManager.mwAnimator.Play("In");

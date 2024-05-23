@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector3 camForward;
 
-    public GameObject skillScrollWindow;
+    public GameObject skillTree;
 
     [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
     void Start()
@@ -96,8 +96,8 @@ public class PlayerMovement : MonoBehaviour
         skill_Q.gameObject.SetActive(false);
         _controller.originQpos = skill_Q.gameObject.transform.position;
 
-        skillScrollWindow = playerUI_info.skillScrollWindow;
-        skillScrollWindow.gameObject.SetActive(false);
+        skillTree = playerUI_info.skillTree;
+        skillTree.gameObject.SetActive(false);
     }
 
     void Update()
@@ -143,29 +143,19 @@ public class PlayerMovement : MonoBehaviour
         if (!HandleJump()
                 || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
-            //HandleSprint();
             HandleWalkOrRun(); HandleSprint();
 
             P_InputHandle.MouseMoveInput();
 
             P_InputHandle.MouseClickInput();
 
-            P_InputHandle.Key2Movement();
+            if (P_InputHandle.Key2Movement() > 0 || P_InputHandle.Key2Movement() < 0)
+                P_Com.animator.SetBool("isRun", true);
+            else
+                P_Com.animator.SetBool("isRun", false);
 
             //* skills input
             P_InputHandle.SkillKeyInput();
-
-            //* [미카 디버프 단축키]==================================================
-            //if (P_KeyState.ODown)
-            //{
-            //    P_Value.HP = 10;
-            //}
-            //if (P_KeyState.PDown)
-            //{
-            //    //Debug.Log("Electric on");
-            //    P_States.isElectricShock = true;    // 감전
-            //}
-
 
             if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false
                 && (P_Controller.curPlayerState == PlayerState.Idle || P_Controller.curPlayerState == PlayerState.FinishComboAttack))
@@ -192,10 +182,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.V) && P_Value.moveAmount > 0)
         {
-            //moveAmount > 0 하는 이유
-            //제자리에서 멈춰서 자꾸 뛴다.
             P_States.isSprinting = true;
-            //P_States.isWalking = false;
             P_States.isRunning = false;
             //P_States.isJumping = false;
         }
@@ -244,7 +231,8 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
-            P_Com.animator.Play("jump_start");
+            //P_Com.animator.Play("jump_start");
+            P_Com.animator.SetTrigger("isJump");
             P_Com.animator.SetBool("isJump_Up", true);
         }
         if (P_States.isJumping && P_States.isGround)
@@ -584,7 +572,10 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = p_velocity;
             P_Controller.AnimState(PlayerState.Move);
         }
-
+        else
+        {
+            P_Com.animator.SetBool("isRun", false);
+        }
     }
 
     IEnumerator electricity_Damage()
