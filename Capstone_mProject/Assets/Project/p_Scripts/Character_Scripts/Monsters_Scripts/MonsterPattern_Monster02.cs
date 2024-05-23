@@ -401,23 +401,25 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
         m_monster.SoundPlay("Monster02_Alarm", false);
 
-        yield return new WaitForSeconds(1.2f);
-
-        Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
-        Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 1f, m_monster.gameObject.transform.position.z);
+        // yield return new WaitForSeconds(1.2f);  //* dP
+        yield return new WaitForSeconds(0.1f);
+        // Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
+        Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("LaserCannonBarrage", m_monster.gameObject.transform);
+        Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 0.1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
+
+        yield return new WaitForSeconds(2);
         //! 사운드
         // m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
-        m_monster.SoundPlay("Monster02_ShortAttack", false);
-
-        yield return new WaitForSeconds(0.2f);
+        // m_monster.SoundPlay("Monster02_ShortAttack", false);
+        // yield return new WaitForSeconds(0.2f);
 
         bool playerGetDamage = CheckPlayerDamage(shortRangeAttack_Radius, transform.position, 10, true);
 
         if (playerGetDamage)
         {
             //카메라 흔들림
-            GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.5f, 2, 2);
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(1.5f, 2, 2);
             //이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01");
 
@@ -426,7 +428,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             effect.gameObject.transform.position += curDirection * 0.1f;
         }
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(4.5f);
 
         float distance = Vector3.Distance(transform.position, playerTrans.position);
         if (distance < shortRangeAttackDistance)
