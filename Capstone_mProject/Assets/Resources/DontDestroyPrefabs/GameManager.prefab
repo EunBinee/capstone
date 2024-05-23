@@ -57,6 +57,7 @@ MonoBehaviour:
     midDamage: 300
     bigDamage: 600
     criticalAdditionalMultiples: 2
+    hitMaterial: {fileID: 2100000, guid: 1dae9780a8efa364488c1600b84cace6, type: 2}
   objectPooling:
     PoolCount: 50
     loofEffectPools: []
@@ -77,6 +78,8 @@ MonoBehaviour:
   monsters: []
   bossBattle: 0
   isLoading: 0
+  curCutScene_ing: 0
+  cameraSensitivity: 1
 --- !u!114 &2170918644158675050
 MonoBehaviour:
   m_ObjectHideFlags: 0
