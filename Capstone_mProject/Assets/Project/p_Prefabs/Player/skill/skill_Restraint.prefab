@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 749bd9c33392c774aa798ede2ca2623d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 132a668bf459bfc43873dc16f1b1de27, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -127,12 +127,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937d7d8ee61276b47be04c80f6cd22ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerUI_Info: {fileID: 0}
   iconImg: {fileID: 6867914783657755775}
   skillData: {fileID: 11400000, guid: 6b14ea14f91a89d4e88a4ffba0910f8a, type: 2}
   skillName: {fileID: 2471801627097568049}
   InputButton: {fileID: 4543354791615577162}
   skillCodeNum: 0
-  isSelect: 0
+  m_isSelect: 0
   isOpen: 0
 --- !u!1 &2497656020489142449
 GameObject:

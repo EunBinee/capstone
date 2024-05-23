@@ -76,14 +76,14 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveBowmode = true;
         SkillMapAdd("Heal", P_SkillInfo.heal);
         P_SkillInfo.haveHeal = true;
+        SkillMapAdd("Restraint", P_SkillInfo.restraint);
+        P_SkillInfo.haveRestraint = true;
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
         P_SkillInfo.haveSample1 = true;
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
-        SkillMapAdd("Restraint", P_SkillInfo.restraint);
-        P_SkillInfo.haveRestraint = true;
     }
 
     void FixedUpdate()

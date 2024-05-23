@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     public GameObject hitUI;
     public GameObject hitUiGuide;
     public GameObject portrait;
-    public GameObject chargingImg;
+    //public GameObject chargingImg;
     public Slider HPgauge;
     float nowHitTime;
     public List<GameObject> hitMonsters;
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
         hitUI = playerUI_info.hitUI;
         hitUiGuide = playerUI_info.hitUiGuide;
         portrait = playerUI_info.portrait;
-        chargingImg = playerUI_info.chargingImg;
+        //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
     }
@@ -188,7 +188,7 @@ public class PlayerController : MonoBehaviour
             hitUiGuide.SetActive(false);
             portrait.SetActive(false);
             hitNum.gameObject.SetActive(false);
-            chargingImg.SetActive(false);
+            //chargingImg.SetActive(false);
             EnablePlayerUI = false;
         }
         else if (activeSelf)
@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour
             hitUiGuide.SetActive(true);
             portrait.SetActive(true);
             hitNum.gameObject.SetActive(true);
-            chargingImg.SetActive(true);
+            //chargingImg.SetActive(true);
             P_Movement.skill_T.gameObject.transform.position = originTpos;
             P_Movement.skill_E.gameObject.transform.position = originEpos;
             P_Movement.skill_R.gameObject.transform.position = originRpos;

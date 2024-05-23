@@ -1124,12 +1124,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937d7d8ee61276b47be04c80f6cd22ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerUI_Info: {fileID: 0}
   iconImg: {fileID: 0}
   skillData: {fileID: 0}
   skillName: {fileID: 4282577923162011572}
   InputButton: {fileID: 2751244766975023311}
   skillCodeNum: 0
-  isSelect: 0
+  m_isSelect: 0
   isOpen: 0
 --- !u!1 &1136799896885005010
 GameObject:
@@ -6206,7 +6207,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6104789076743124363}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -9839,7 +9840,6 @@ MonoBehaviour:
   hitNum: {fileID: 5424296416843787637}
   hitUiGuide: {fileID: 5424296416729314656}
   hitUI: {fileID: 7208634931128638174}
-  chargingImg: {fileID: 7835558617499166172}
   portrait: {fileID: 6984924974441979555}
   HPgauge: {fileID: 2656945058408231650}
   skill_T: {fileID: 4134663810281622624}
@@ -9853,12 +9853,10 @@ MonoBehaviour:
   - {fileID: 8406802727196666118}
   - {fileID: 1763484561303941506}
   crosshairImage: {fileID: 1276410616177756403}
-  SkillNameList: []
   playerSkillList: []
   selectedSkillsIndex: 
   sskill: []
   non_sskill: []
-  skillUIPrefab: {fileID: 1681760049594525386, guid: 02a49c1c8eaf7824e91385994ce60450, type: 3}
   content: {fileID: 6997304737663273924}
 --- !u!1001 &911808959
 PrefabInstance:
@@ -10461,6 +10459,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: skill_Sample2
       objectReference: {fileID: 0}
+    - target: {fileID: 6867914783657755775, guid: 797836e16bb8a62478a07c1134b6a682, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5b4147bc641216f45ba8545049e8535d, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 797836e16bb8a62478a07c1134b6a682, type: 3}
 --- !u!224 &3806110843255012274 stripped
@@ -11089,6 +11091,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: skill_Sample1
       objectReference: {fileID: 0}
+    - target: {fileID: 6867914783657755775, guid: c6b2c080770da394b9a8174963d65a79, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 776b2830a3f9e914ca9beabfc09a898d, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6b2c080770da394b9a8174963d65a79, type: 3}
 --- !u!224 &5437957120131479623 stripped
@@ -11336,6 +11342,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: skill_Sample3
       objectReference: {fileID: 0}
+    - target: {fileID: 6867914783657755775, guid: d3c6c9e4efbc40346ade92c77de56122, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c0b795a2d6abd2945a2c0d9fb8e018f2, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d3c6c9e4efbc40346ade92c77de56122, type: 3}
 --- !u!224 &7550195480517698736 stripped
