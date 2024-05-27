@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     public PlayerMovement P_Movement;
     public PlayerPhysicsCheck P_PhysicsCheck;
     public PlayerSkills P_Skills;
+    public PlayerSkillTree playerSkillTree;
 
     public List<NavMeshSurface> navMeshSurface;
 

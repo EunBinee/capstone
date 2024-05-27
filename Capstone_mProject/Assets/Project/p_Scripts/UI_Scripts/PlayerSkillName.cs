@@ -13,18 +13,15 @@ public class PlayerSkillName : MonoBehaviour
     public TMP_Text skillName;
     public Button InputButton;
     public int skillCodeNum;
-    public bool m_isSelect;
+    //public bool m_isSelect;
     public bool isOpen;
 
-    Color selectColor;
-    Color unselectColor;
 
     void Start()
     {
-        selectColor = GameManager.Instance.HexToColor("#FF8C80");
-        unselectColor = GameManager.Instance.HexToColor("#00C8FF");
         skillName.text = skillData.skillName;
         skillCodeNum = skillData.skillCodeNum;
+        //skillData.skillObj = this;
         Transform i = this.transform;
         playerUI_Info = i.GetComponent<PlayerUI_info>();
         while (playerUI_Info == null)
@@ -32,33 +29,17 @@ public class PlayerSkillName : MonoBehaviour
             i = i.transform.parent;
             playerUI_Info = i.GetComponent<PlayerUI_info>();
         }
-    }
-    private void FixedUpdate()
-    {
-        m_isSelect = skillData.isSelect;
+        playerUI_Info.p_controller.playerSkillTree.SelectSkill(this);
+        playerUI_Info.p_controller.playerSkillTree.SelectSkill(this);
     }
 
     public void onClickSelect()
     {
-        if (m_isSelect)
-        {
-            Debug.Log($"[skill test] skillName {skillName.text}");
-            Debug.Log($"[skill test] m_isSelect {m_isSelect}");
-            skillData.isSelect = m_isSelect = false;
-            InputButton.image.color = unselectColor;
-        }
-        else
-        {
-            Debug.Log($"[skill test] skillName {skillName.text}");
-            Debug.Log($"[skill test] m_isSelect {m_isSelect}");
-            skillData.isSelect = m_isSelect = true;
-            InputButton.image.color = selectColor;
-        }
         selecSkill();
     }
 
     public void selecSkill()
     {
-        playerUI_Info.SelectSkill(skillData);
+        playerUI_Info.p_controller.playerSkillTree.SelectSkill(this);
     }
 }

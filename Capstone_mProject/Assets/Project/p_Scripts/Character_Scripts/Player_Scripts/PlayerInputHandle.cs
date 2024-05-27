@@ -32,9 +32,9 @@ public class PlayerInputHandle : MonoBehaviour
     }
     void Start()
     {
-        Invoke("Setting", 0.2f);
+        //Invoke("Setting", 0.2f);
     }
-    void Setting()
+    public void Setting()
     {
         skill_T = P_Movement.skill_T;
         skill_E = P_Movement.skill_E;
@@ -43,6 +43,7 @@ public class PlayerInputHandle : MonoBehaviour
         skill_Q = P_Movement.skill_Q;
 
         skillIconApply();
+        P_Controller.playerSkillTree.setting();
     }
     public void skillIconApply()
     {

@@ -33,10 +33,8 @@ public class PlayerSkills : MonoBehaviour
 
     [SerializeField]
     public Dictionary<string, SOSkill> skillMap;
-    //public List<SOSkill> selectSkill;
-    private int selectSize = 3;
 
-    public GameObject skillScrollWindow;
+    //public GameObject skillTreeWindow;
     // 스킬 맵 업데이트 시 발동할 이벤트
     public event Action OnSkillMapUpdated;
     //Effect effect; //스킬 이펙트
@@ -66,11 +64,12 @@ public class PlayerSkills : MonoBehaviour
     void Start()
     {
         P_InputHandle = GetComponent<PlayerInputHandle>();
-        Invoke("Setting", 0.1f);
+        
+        Setting();
     }
     void Setting()
     {
-        skillScrollWindow = P_Controller.P_Movement.skillTree;
+        //skillTreeWindow = P_Movement.skillTree;
         skill_T = P_Controller.P_Movement.skill_T;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
@@ -84,6 +83,9 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveSample1 = true;
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
+        //skillTreeWindow = P_Controller.playerSkillTree.gameObject;
+        
+        //P_Controller.P_InputHandle.Setting();
     }
 
     void FixedUpdate()
@@ -154,12 +156,15 @@ public class PlayerSkills : MonoBehaviour
             skillMap.Add(name, skill);  // 스킬 등록
             // 스킬 맵이 업데이트되면 이벤트 발동
             OnSkillMapUpdated?.Invoke();
-            if (P_SkillInfo.selectSkill.Count < selectSize)  // 플레이어가 고른 스킬 갯수 3개 미만?
+            if (P_SkillInfo.selectSkill.Count < 3)  // 플레이어가 고른 스킬 갯수 3개 미만?
             {
                 if (name == "Bowmode" || name == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
                 { }
                 else
+                {
+                    Debug.Log("[skill test] map add");
                     P_SkillInfo.selectSkill.Add(skill); // 자동 추가
+                }
             }
         }
     }
@@ -564,7 +569,8 @@ public class PlayerSkills : MonoBehaviour
     private void OpenSkillWindowInternal()
     {
         P_Controller.setIsOn(true);
-        skillScrollWindow.gameObject.SetActive(true);
+        //skillTreeWindow.gameObject.SetActive(true);
+        P_Movement.skillTree.gameObject.SetActive(true);
         P_Controller.PlayerUI_SetActive(false);
         UIManager.gameIsPaused = true;
         P_States.isStop = true;
@@ -582,7 +588,8 @@ public class PlayerSkills : MonoBehaviour
     {
         P_Controller.setIsOn(false);
         P_InputHandle.skillIconApply();
-        skillScrollWindow.gameObject.SetActive(false);
+        //skillTreeWindow.gameObject.SetActive(false);
+        P_Movement.skillTree.gameObject.SetActive(false);
         P_Controller.PlayerUI_SetActive(true);
         UIManager.gameIsPaused = false;
         P_States.isStop = false;
