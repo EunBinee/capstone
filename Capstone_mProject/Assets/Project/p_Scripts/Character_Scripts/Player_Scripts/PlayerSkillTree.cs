@@ -22,9 +22,10 @@ public class PlayerSkillTree : MonoBehaviour
         selectedSkill.Clear();
         nonSelectedSkill = new List<PlayerSkillName>();
         nonSelectedSkill.Clear();
-        
-    }    
-    public void setting(){
+
+    }
+    public void setting()
+    {
         p_controller.P_Skills.OnSkillMapUpdated += SkillMapUpdate;
         SkillSetting();
         SkillMapUpdate();
@@ -45,8 +46,8 @@ public class PlayerSkillTree : MonoBehaviour
     public void SelectSkill(PlayerSkillName curSkill)
     {
         PlayerSkillName curSkillName = curSkill.GetComponent<PlayerSkillName>();
-        if(selectedSkill.Contains(curSkill))  // 이미 선택된 경우
-        { 
+        if (selectedSkill.Contains(curSkill))  // 이미 선택된 경우
+        {
             selectedSkill.Remove(curSkill);
             nonSelectedSkill.Add(curSkill);
             curSkillName.skillData.isSelect = false;
@@ -107,17 +108,11 @@ public class PlayerSkillTree : MonoBehaviour
                 p_controller._skillInfo.selectSkill[i] = nonSelectedSkill[j++];
             }
         }
-        else 
+        else
         {
             for (int i = 0; i < 3; i++)
             {
-<<<<<<< Updated upstream
-                p_controller._skillInfo.selectSkill[i] = selectedSkill[i].skillData;
-                
-=======
                 p_controller._skillInfo.selectSkill[i] = selectedSkill[i];
-
->>>>>>> Stashed changes
             }
         }
     }
