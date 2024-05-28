@@ -220,20 +220,39 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
         EffectController effectController = effect.gameObject.GetComponent<EffectController>();
         effectController.ChangeSize();
-
+        //* 0.5=> 1.4로 scale;
         Vector3 GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
         effect.transform.position = GroundPos;
         float time = 0;
 
-        while (time < duration)
+        while (time < duration - 1)
         {
             time += Time.deltaTime;
             GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
             effect.transform.position = GroundPos;
             yield return null;
         }
+        time = 0;
+        duration = 1;
+        Vector3 startScale = new Vector3(0.2f, 0.2f, 0.2f);
+        Vector3 endScale = new Vector3(1.4f, 1.4f, 1.4f);
 
+
+        while (time < duration)
+        {
+            GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
+            effect.transform.position = GroundPos;
+
+            effect.transform.localScale = Vector3.Lerp(startScale, endScale, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
         yield return new WaitForSeconds(1f);
+
+        effect.finishAction = () =>
+            {
+                effect.transform.localScale = startScale;
+            };
         effect.StopEffect();
     }
 
