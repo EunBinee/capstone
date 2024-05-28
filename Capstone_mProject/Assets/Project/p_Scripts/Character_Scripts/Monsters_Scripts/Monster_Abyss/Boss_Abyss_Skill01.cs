@@ -42,7 +42,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         if (monsterState != MonsterPattern.MonsterState.Death)
         {
             //* 플레이어를 쫓아 다니는 이펙트 
-            float duration = 5f;
+            float duration = 3f;
             StartCoroutine(FollowPlayer_Effect_InSkill01(duration));
             yield return new WaitForSeconds(duration);
             Vector3 curPlayerPos = playerTrans.position;
@@ -58,7 +58,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
                 Debug.Log("보스가 못가는 곳입니다..");
                 curPlayerPos = originPos;
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             monsterPattern_Abyss.isJump = true;
             BossAbyss_JumpDown(curPlayerPos);
             StartCoroutine(JumpDown(curPlayerPos));
@@ -100,7 +100,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
 
         monsterPattern_Abyss.SetBossAttackAnimation(MonsterPattern_Boss.BossMonsterAttackAnimation.Skill01, 0);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.8f);
 
         MonsterPattern.MonsterState monsterState = monsterPattern_Abyss.GetCurMonsterState();
         if (monsterState != MonsterPattern.MonsterState.Death)
@@ -111,7 +111,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
             //-----------------------------------------------------------------------------------//
 
             // 점프전 잠깐 밑으로 내려감.
-            while (time < 0.1)
+            while (time < 0.05)
             {
                 time += Time.deltaTime;
                 transform.Translate(-Vector3.up * speed * Time.deltaTime);
@@ -137,7 +137,10 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
                 transform.Translate(Vector3.up * speed * Time.deltaTime);
 
                 if (transform.position.y >= targetPos.y)
+                {
+                    Debug.Log("Break~~~");
                     break;
+                }
                 yield return null;
             }
 
@@ -230,7 +233,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(1f);
         effect.StopEffect();
     }
 

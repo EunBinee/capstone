@@ -405,7 +405,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         noAttack = true;
         yield return new WaitUntil(() => startSkill == false);
 
-        yield return new WaitForSeconds(0.5f);
         //* 몬스터 지정된 장소로 점프
         isJump = true;
         boss_Abyss_Skill01.BossAbyss_JumpUp();
@@ -486,13 +485,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //- 대화 시스템 ON
 
             //! 사운드
-            // m_monster.SoundPlay(Monster.monsterSound.Phase, true);
             m_monster.SoundPlay("Boss_ChangePhase", true);
 
             yield return new WaitForSeconds(10f);
 
             //! 사운드 멈춤
-            //  m_monster.SoundPlayStop(Monster.monsterSound.Phase);
             m_monster.SoundPlayStop("Boss_ChangePhase");
             GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3f, 3f);
             //* 연기 이펙트
@@ -529,9 +526,6 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
-            //boss_Abyss_Skill03.SettingWreckage();
-            //ChangeBossPhase(BossMonsterPhase.Phase2);
-            //boss_Abyss_Skill04.Skill04();
 
             //* 테스트 후 아래 주석 풀기
             ChangeBossPhase(BossMonsterPhase.Phase1);
@@ -640,7 +634,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     if (!ing_skill01) //실행중이 아닐 때만...
                     {
                         Monster_Motion(BossMonsterMotion.Skill01);
-                        breakTime = 2;
+                        breakTime = 1;
                     }
                     else
                         pickAgain = true;
@@ -650,7 +644,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     {
                         //* 페이즈 2 이상이면, 스킬 2번에서 바로 스킬 3번으로 연계
                         Monster_Motion(BossMonsterMotion.Skill02);
-                        breakTime = 4;
+                        breakTime = 2;
                     }
                     else
                         pickAgain = true;
@@ -660,7 +654,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     {
                         //* 스킬 4번으로 연계
                         Monster_Motion(BossMonsterMotion.Skill04);
-                        breakTime = 4;
+                        breakTime = 2;
                     }
                     break;
                 default:
@@ -674,8 +668,17 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 yield return new WaitUntil(() => startSkill == false);
                 Debug.Log("startSkill false");
                 //* 쉬는 시간 (플레이어 공격 시간)
-                yield return new WaitForSeconds(breakTime);
-                Debug.Log("break 끝");
+
+                if (curBossPhase != curBossP) //* 페이즈 넘어가면 break;
+                {
+                    break;
+                }
+                else
+                {
+                    yield return new WaitForSeconds(breakTime);
+                    Debug.Log("break 끝");
+                }
+
             }
             else
             {
@@ -700,6 +703,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             case BossMonsterMotion.Skill01:
                 startSkill = false;
                 ing_skill01 = false;
+                Base_Phase_HP();
                 break;
             case BossMonsterMotion.Skill02:
                 if (curBossPhase == BossMonsterPhase.Phase1)
@@ -708,14 +712,17 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     startSkill = false;
                 }
                 ing_skill02 = false;
+                Base_Phase_HP();
                 break;
             case BossMonsterMotion.Skill03:
                 startSkill = false;
                 ing_skill03 = false;
+                Base_Phase_HP();
                 break;
             case BossMonsterMotion.Skill04:
                 startSkill = false;
                 ing_skill04 = false;
+                Base_Phase_HP();
                 break;
             default:
                 break;
