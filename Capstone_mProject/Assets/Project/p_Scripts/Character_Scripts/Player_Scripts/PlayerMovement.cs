@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
         skillTree = playerUI_info.skillTree;
         skillTree.gameObject.SetActive(false);
 
-        P_InputHandle.Setting();
+        //P_InputHandle.Setting();
     }
 
     void Update()
@@ -760,17 +760,17 @@ public class PlayerMovement : MonoBehaviour
         yield return null;
     }
 
-    string comboName01 = "Attack_Combo_1";
-    string comboName02 = "Attack_Combo_2";
-    string comboName03 = "Attack_Combo_3";
-    string comboName04 = "Attack_Combo_4";
-    string comboName05 = "Attack_Combo_5";
 
     List<Collider> playerColliderList = new List<Collider>();
     List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
 
     IEnumerator Attacking() //클릭해서 들어오면
     {
+        string comboName01 = "Attack_Combo_1";
+        string comboName02 = "Attack_Combo_2";
+        string comboName03 = "Attack_Combo_3";
+        string comboName04 = "Attack_Combo_4";
+        string comboName05 = "Attack_Combo_5";
         //Debug.Log("[attack test]플레이어 공격 코루틴 입장");
         P_Com.animator.SetInteger("comboCount", 0);
         P_States.hadAttack = false; //* 공격 여부 비활성화
