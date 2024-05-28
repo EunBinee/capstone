@@ -545,9 +545,14 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         Vector3 randomPos = Vector3.zero;
         bool isTrigger = false;
         bool getBounds = false;
+
+
+        float createEffectStopTime = 0.02f;
+
         while (time < 2f)
         {
             time += Time.deltaTime;
+
             if (angle == -1)
                 getBounds = true;
             randomPos = skill_Indicator.GetRandomPos(getBounds);
@@ -577,6 +582,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 effect.transform.localPosition = rotation * effect.transform.localPosition;
             }
 
+            yield return new WaitForSeconds(createEffectStopTime);
+            time += createEffectStopTime;
+
             yield return new WaitUntil(() => UIManager.gameIsPaused == false);
         }
 
@@ -598,6 +606,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                         skill_Indicator.electricity_Effects.Remove(effect);
                     };
                     skill_Indicator.electricity_Effects.Add(effect);
+
+                    yield return new WaitForSeconds(createEffectStopTime);
+                    time += createEffectStopTime;
 
                     yield return new WaitUntil(() => UIManager.gameIsPaused == false);
                 }
