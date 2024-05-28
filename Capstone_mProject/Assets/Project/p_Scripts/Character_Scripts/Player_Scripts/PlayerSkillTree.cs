@@ -30,9 +30,9 @@ public class PlayerSkillTree : MonoBehaviour
         SkillMapUpdate();
     }
 
-    private SOSkill nameToSkill(string namee)
+    private PlayerSkillName nameToSkill(string namee)
     {
-        foreach (KeyValuePair<string, SOSkill> i in p_controller.P_Skills.skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> i in p_controller.P_Skills.skillMap)
         {
             if (namee == i.Key)
             {
@@ -71,18 +71,10 @@ public class PlayerSkillTree : MonoBehaviour
             curSkillName.InputButton.image.color = selectColor;
         }
     }
-    [SerializeField] List<SOSkill> skillname;
+
     public void SkillMapUpdate()
     {
-        skillname = p_controller.P_Skills.getskillMapToSkill();
-        for (int i = 0; i < skillname.Count; i++)
-        {
-            skill[i].skillData = skillname[i];
-            if (skill[i] == null)
-            {
-                Debug.Log("if (skill == null)");
-            }
-        }
+        skill = p_controller.P_Skills.getskillMapToSkill();
     }
 
     public void selectSkillAddList()
@@ -107,20 +99,25 @@ public class PlayerSkillTree : MonoBehaviour
         {
             for (int i = 0; i < selectedSkill.Count; i++)
             {
-                p_controller._skillInfo.selectSkill[i] = selectedSkill[i].skillData;
+                p_controller._skillInfo.selectSkill[i] = selectedSkill[i];
             }
             int j = 0;
             for (int i = selectedSkill.Count; i < 3; i++)
             {
-                p_controller._skillInfo.selectSkill[i] = nonSelectedSkill[j++].skillData;
+                p_controller._skillInfo.selectSkill[i] = nonSelectedSkill[j++];
             }
         }
         else 
         {
             for (int i = 0; i < 3; i++)
             {
+<<<<<<< Updated upstream
                 p_controller._skillInfo.selectSkill[i] = selectedSkill[i].skillData;
                 
+=======
+                p_controller._skillInfo.selectSkill[i] = selectedSkill[i];
+
+>>>>>>> Stashed changes
             }
         }
     }

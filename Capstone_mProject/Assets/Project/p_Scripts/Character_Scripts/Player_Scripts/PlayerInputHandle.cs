@@ -48,9 +48,9 @@ public class PlayerInputHandle : MonoBehaviour
     public void skillIconApply()
     {
         //todo: 선택스킬이 null이면 자동으로 리스트 앞에서부터 넣기
-        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
-        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
-        skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
+        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].iconImg.sprite;
+        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].iconImg.sprite;
+        skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].iconImg.sprite;
     }
     void Update()
     {
@@ -303,8 +303,8 @@ public class PlayerInputHandle : MonoBehaviour
         {
             if (skill_E.imgCool.fillAmount == 0)
             {
-                skill_E.skill = P_SkillInfo.selectSkill[0];    //test 중 : aim
-                skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].icon;
+                skill_E.skill = P_SkillInfo.selectSkill[0].skillData;    //test 중 : aim
+                skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].skillData.icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'E');
             }
         }
@@ -312,8 +312,8 @@ public class PlayerInputHandle : MonoBehaviour
         {
             if (skill_R.imgCool.fillAmount == 0)
             {
-                skill_R.skill = P_SkillInfo.selectSkill[1];    //test 중 : heal
-                skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].icon;
+                skill_R.skill = P_SkillInfo.selectSkill[1].skillData;    //test 중 : heal
+                skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].skillData.icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'R');
             }
         }
@@ -321,8 +321,8 @@ public class PlayerInputHandle : MonoBehaviour
         {
             if (skill_F.imgCool.fillAmount == 0)
             {
-                skill_F.skill = P_SkillInfo.selectSkill[2];    //test 중 : ultimate
-                skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].icon;
+                skill_F.skill = P_SkillInfo.selectSkill[2].skillData;    //test 중 : ultimate
+                skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].skillData.icon;
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
             }
         }
@@ -359,9 +359,9 @@ public class PlayerInputHandle : MonoBehaviour
         P_States.isSkill = false;
     }
 
-    public string mapValueReturnKey(SOSkill skill)
+    public string mapValueReturnKey(PlayerSkillName skill)
     {
-        foreach (KeyValuePair<string, SOSkill> item in P_Skills.skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> item in P_Skills.skillMap)
         {
             if (item.Value == skill)
             {

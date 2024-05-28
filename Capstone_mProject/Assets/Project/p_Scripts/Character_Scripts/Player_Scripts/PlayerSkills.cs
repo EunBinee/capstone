@@ -32,7 +32,7 @@ public class PlayerSkills : MonoBehaviour
     private string R_StrongName = "ChargingArrowLaunch";
 
     [SerializeField]
-    public Dictionary<string, SOSkill> skillMap;
+    public Dictionary<string, PlayerSkillName> skillMap;
 
     //public GameObject skillTreeWindow;
     // 스킬 맵 업데이트 시 발동할 이벤트
@@ -50,9 +50,9 @@ public class PlayerSkills : MonoBehaviour
 
     void Awake()
     {
-        skillMap = new Dictionary<string, SOSkill>();
+        skillMap = new Dictionary<string, PlayerSkillName>();
         skillMap.Clear();
-        P_SkillInfo.selectSkill = new List<SOSkill>();
+        P_SkillInfo.selectSkill = new List<PlayerSkillName>();
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
         //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
@@ -64,7 +64,7 @@ public class PlayerSkills : MonoBehaviour
     void Start()
     {
         P_InputHandle = GetComponent<PlayerInputHandle>();
-        
+
         Setting();
     }
     void Setting()
@@ -84,7 +84,7 @@ public class PlayerSkills : MonoBehaviour
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
         //skillTreeWindow = P_Controller.playerSkillTree.gameObject;
-        
+
         //P_Controller.P_InputHandle.Setting();
     }
 
@@ -116,7 +116,7 @@ public class PlayerSkills : MonoBehaviour
     public List<string> getskillMapToName()
     {
         callName.Clear();
-        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> i in skillMap)
         {
             if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
             { }
@@ -127,11 +127,11 @@ public class PlayerSkills : MonoBehaviour
         }
         return callName;
     }
-    List<SOSkill> callSkill = new List<SOSkill>();
-    public List<SOSkill> getskillMapToSkill()
+    List<PlayerSkillName> callSkill = new List<PlayerSkillName>();
+    public List<PlayerSkillName> getskillMapToSkill()
     {
         callSkill.Clear();
-        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> i in skillMap)
         {
             if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
             { }
@@ -144,7 +144,7 @@ public class PlayerSkills : MonoBehaviour
     }
 
     //* skill
-    public void SkillMapAdd(string name, SOSkill skill)
+    public void SkillMapAdd(string name, PlayerSkillName skill)
     {
         if (skillMap.ContainsKey(name))
         {
