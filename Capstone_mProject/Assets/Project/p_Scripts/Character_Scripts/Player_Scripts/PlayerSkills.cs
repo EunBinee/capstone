@@ -246,7 +246,8 @@ public class PlayerSkills : MonoBehaviour
                     if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
                     {
                         //주목 풀기
-                        GameManager.instance.cameraController.AttentionMonster();
+                        if (!GameManager.instance.cameraController.banAttention)
+                            GameManager.instance.cameraController.AttentionMonster();
                         P_States.beenAttention = false;
                     }
                     //arrow.SetActive(true);
@@ -461,7 +462,7 @@ public class PlayerSkills : MonoBehaviour
     /// 몬스터 크기에 따라 스킬 이펙트의 크기를 조절하는 함수
     void AdjustEffectSize(Effect skillEffect, float smallestMonsterSize, float largestMonsterSize)
     {
-       // 이펙트 크기를 조절하는 비율을 계산합니다.
+        // 이펙트 크기를 조절하는 비율을 계산합니다.
         float effectSizeMultiplier = Mathf.Lerp(0.3f, 1.1f, (skillEffect.transform.localScale.magnitude - smallestMonsterSize) / (largestMonsterSize - smallestMonsterSize));
         // 이펙트 크기를 조절합니다.
         skillEffect.transform.localScale *= effectSizeMultiplier;

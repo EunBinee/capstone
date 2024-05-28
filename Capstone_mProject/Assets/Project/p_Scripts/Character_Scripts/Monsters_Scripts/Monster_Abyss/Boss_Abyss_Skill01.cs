@@ -138,7 +138,6 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
 
                 if (transform.position.y >= targetPos.y)
                 {
-                    Debug.Log("Break~~~");
                     break;
                 }
                 yield return null;
@@ -190,7 +189,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill01", false);
         //* 데미지 체크
         if (getDamage)
-            monsterPattern_Abyss.CheckPlayerDamage(5.5f, transform.position, 20, true);
+            monsterPattern_Abyss.CheckPlayerDamage(5f, transform.position, 20, true);
 
         //* 연기이펙트-----------------------------------------------------------------------//
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
