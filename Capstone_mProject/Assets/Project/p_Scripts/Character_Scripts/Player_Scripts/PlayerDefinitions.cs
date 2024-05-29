@@ -213,14 +213,14 @@ public class SkillInfo
 
     [Space]
     [Header("skill")]
-    public SOSkill bowmode;
-    public SOSkill heal;
-    public SOSkill ultimate;
-    public SOSkill sample1;
-    public SOSkill sample2;
-    public SOSkill restraint; //속박스킬
+    public PlayerSkillName bowmode;
+    public PlayerSkillName heal;
+    public PlayerSkillName ultimate;
+    public PlayerSkillName sample1;
+    public PlayerSkillName sample2;
+    public PlayerSkillName restraint; //속박스킬
 
-    public List<SOSkill> selectSkill;
+    public List<PlayerSkillName> selectSkill;
 }
 
 [Serializable]

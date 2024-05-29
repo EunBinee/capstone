@@ -245,17 +245,18 @@ MonoBehaviour:
     haveSample1: 0
     haveSample2: 0
     haveRestraint: 0
-    bowmode: {fileID: 11400000, guid: 873915f231220f24bbad58ac07101e31, type: 2}
-    heal: {fileID: 11400000, guid: 074394ad8d1b3384390f5bbfc66090e3, type: 2}
-    ultimate: {fileID: 11400000, guid: 4f2f0e3ecafe0bb4ebc0bc3a3dbf3dee, type: 2}
-    sample1: {fileID: 11400000, guid: f78847a2d158b5f489f3f3884f983e19, type: 2}
-    sample2: {fileID: 11400000, guid: f2e73e0df475fe34daa699ad73e46c47, type: 2}
-    restraint: {fileID: 11400000, guid: 6b14ea14f91a89d4e88a4ffba0910f8a, type: 2}
+    bowmode: {fileID: 817801566311968182, guid: a3633a8e5c5c7bd449b618b66783ca41, type: 3}
+    heal: {fileID: 817801566311968182, guid: f21ccd7f0002381449f92c0b864cf696, type: 3}
+    ultimate: {fileID: 817801566311968182, guid: 151c6a8bf16add74eb8c3a237e24950e, type: 3}
+    sample1: {fileID: 817801566311968182, guid: c6b2c080770da394b9a8174963d65a79, type: 3}
+    sample2: {fileID: 817801566311968182, guid: 797836e16bb8a62478a07c1134b6a682, type: 3}
+    restraint: {fileID: 817801566311968182, guid: df2731bbcef3a1047afeafb3ce4a8915, type: 3}
     selectSkill: []
   P_InputHandle: {fileID: 4604493400107018182}
   P_Movement: {fileID: 1404091125779623576}
   P_PhysicsCheck: {fileID: 1667498000}
   P_Skills: {fileID: 1667498001}
+  playerSkillTree: {fileID: 0}
   navMeshSurface: []
   isGettingHit: 0
   curPlayerState: 0
@@ -263,7 +264,6 @@ MonoBehaviour:
   hitUI: {fileID: 0}
   hitUiGuide: {fileID: 0}
   portrait: {fileID: 0}
-  chargingImg: {fileID: 0}
   HPgauge: {fileID: 0}
   hitMonsters: []
   bow: {fileID: 8890993529786064295}
@@ -303,7 +303,7 @@ MonoBehaviour:
   - {fileID: 5043616183923541767, guid: d8c30db2b9106204d94323dd96f7cce2, type: 3}
   playerArrowList: []
   camForward: {x: 0, y: 0, z: 0}
-  skillScrollWindow: {fileID: 0}
+  skillTree: {fileID: 0}
   skillTooltipUI: {fileID: 0}
 --- !u!114 &1667498000
 MonoBehaviour:
@@ -333,7 +333,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
-  skillScrollWindow: {fileID: 0}
   skillRangeIndicator: {fileID: 3461343800245115971, guid: a19d33afeeff490479e334657600395c, type: 3}
   cylinderRadius: 3
   cylinderHeight: 5

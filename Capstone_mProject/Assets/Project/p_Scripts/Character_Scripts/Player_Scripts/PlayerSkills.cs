@@ -26,13 +26,13 @@ public class PlayerSkills : MonoBehaviour
 
     private GameObject arrow;// => P_Controller.arrow;
 
-    private SkillButton skill_T;
+    private SkillButton skill_Q;
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     private string R_StrongName = "ChargingArrowLaunch";
 
     [SerializeField]
-    public Dictionary<string, SOSkill> skillMap;
+    public Dictionary<string, PlayerSkillName> skillMap;
 
     //public GameObject skillTreeWindow;
     // 스킬 맵 업데이트 시 발동할 이벤트
@@ -50,9 +50,9 @@ public class PlayerSkills : MonoBehaviour
 
     void Awake()
     {
-        skillMap = new Dictionary<string, SOSkill>();
+        skillMap = new Dictionary<string, PlayerSkillName>();
         skillMap.Clear();
-        P_SkillInfo.selectSkill = new List<SOSkill>();
+        P_SkillInfo.selectSkill = new List<PlayerSkillName>();
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
         //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
@@ -64,13 +64,13 @@ public class PlayerSkills : MonoBehaviour
     void Start()
     {
         P_InputHandle = GetComponent<PlayerInputHandle>();
-        
-        Setting();
+
+        //Invoke("Setting", 0.1f);
     }
-    void Setting()
+    public void Setting()
     {
         //skillTreeWindow = P_Movement.skillTree;
-        skill_T = P_Controller.P_Movement.skill_T;
+        skill_Q = P_Controller.P_Movement.skill_Q;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
         SkillMapAdd("Heal", P_SkillInfo.heal);
@@ -84,7 +84,7 @@ public class PlayerSkills : MonoBehaviour
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
         //skillTreeWindow = P_Controller.playerSkillTree.gameObject;
-        
+
         //P_Controller.P_InputHandle.Setting();
     }
 
@@ -116,7 +116,7 @@ public class PlayerSkills : MonoBehaviour
     public List<string> getskillMapToName()
     {
         callName.Clear();
-        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> i in skillMap)
         {
             if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
             { }
@@ -127,11 +127,11 @@ public class PlayerSkills : MonoBehaviour
         }
         return callName;
     }
-    List<SOSkill> callSkill = new List<SOSkill>();
-    public List<SOSkill> getskillMapToSkill()
+    List<PlayerSkillName> callSkill = new List<PlayerSkillName>();
+    public List<PlayerSkillName> getskillMapToSkill()
     {
         callSkill.Clear();
-        foreach (KeyValuePair<string, SOSkill> i in skillMap)
+        foreach (KeyValuePair<string, PlayerSkillName> i in skillMap)
         {
             if (i.Key == "Bowmode" || i.Key == "Ultimate")   // 무기변경스킬이나 궁 스킬 이라면 무시
             { }
@@ -144,7 +144,7 @@ public class PlayerSkills : MonoBehaviour
     }
 
     //* skill
-    public void SkillMapAdd(string name, SOSkill skill)
+    public void SkillMapAdd(string name, PlayerSkillName skill)
     {
         if (skillMap.ContainsKey(name))
         {
@@ -504,7 +504,7 @@ public class PlayerSkills : MonoBehaviour
         switch (skillName)
         {
             case "ChangeWeapon":   //* weapon change
-                if (skill_T.imgCool.fillAmount == 0)
+                if (skill_Q.imgCool.fillAmount == 0)
                 {
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
@@ -524,7 +524,7 @@ public class PlayerSkills : MonoBehaviour
                         P_Com.animator.SetFloat("isBowmode", 1);
                     }
                 }
-                skill_T.OnClicked();
+                skill_Q.OnClicked();
                 break;
 
             case "Heal":
@@ -536,7 +536,7 @@ public class PlayerSkills : MonoBehaviour
             case "Ultimate":
                 P_States.isSkill = true;
                 P_InputHandle.skillBtnOnclick(whatKey);
-                Debug.Log("스킬Q");
+                Debug.Log("스킬T");
                 break;
 
             case "Restraint":
