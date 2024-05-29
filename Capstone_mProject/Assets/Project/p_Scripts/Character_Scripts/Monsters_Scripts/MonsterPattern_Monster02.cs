@@ -531,7 +531,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 {
                     time += Time.deltaTime;
                     transform.rotation = Quaternion.Slerp(transform.rotation, originRotatation, Time.deltaTime * 5.0f);
-                    //buttomGameObject.transform.rotation = Quaternion.Slerp(buttomGameObject.transform.rotation, buttomOriginRotation, Time.deltaTime * 5.0f);
 
                     yield return null;
                 }

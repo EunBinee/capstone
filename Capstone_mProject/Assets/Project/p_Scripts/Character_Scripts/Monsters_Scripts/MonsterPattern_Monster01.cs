@@ -424,6 +424,10 @@ public class MonsterPattern_Monster01 : MonsterPattern
             Debug.Log("멈춰있답니다~");
 
             //! 회전!!!!
+            Vector3 direction = (playerTrans.position - transform.position).normalized;
+            //회전 각도 산출 후, 선형 보간 함수로 부드럽게 회전
+            Quaternion targetAngle = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetAngle, Time.deltaTime * 8.0f);
         }
 
     }
@@ -732,9 +736,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
             }
         }
 
-        //EnabledWeaponsCollider(false);
-
-
         navMeshAgent.speed = defaultSpeed;
         navMeshAgent.acceleration = defaultAcceleration;
 
@@ -936,7 +937,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
         //모든 코루틴 정지
 
         //각자의 자리로 가기
-
         base.StopMonster();
 
         StopAtackCoroutine();
@@ -982,29 +982,29 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     }
 
-
-
     public override void StartMonster()
     {
         forcedReturnHome = false;
     }
 
     //! 네비메쉬를 사용중인 몬스터가 플레이어 
-
-
-    public bool MonsterAICanGo_PlayerLocation(Vector3 playerPos)
-    {
-        return false;
-
-    }
-
     public bool IsMonsterOnNavMesh(float maxDistance = 1f)
     {
         NavMeshHit hit;
 
         Vector3 playerDirect = (playerTargetPos.position - transform.position).normalized;
         // 플레이어의 위치에서 아래 방향으로 레이캐스트 수행
+        if (NavMesh.Raycast(transform.position + (playerDirect * 1f), transform.position + (playerDirect * 1.5f) + Vector3.down * maxDistance, out hit, NavMesh.AllAreas))
+        {
+            // 레이캐스트가 무언가를 맞추면 NavMeshSurface 위에 있음
+            return true;
+        }
         if (NavMesh.Raycast(transform.position + (playerDirect * 1.5f), transform.position + (playerDirect * 1.5f) + Vector3.down * maxDistance, out hit, NavMesh.AllAreas))
+        {
+            // 레이캐스트가 무언가를 맞추면 NavMeshSurface 위에 있음
+            return true;
+        }
+        if (NavMesh.Raycast(transform.position + (playerDirect * 2f), transform.position + (playerDirect * 1.5f) + Vector3.down * maxDistance, out hit, NavMesh.AllAreas))
         {
             // 레이캐스트가 무언가를 맞추면 NavMeshSurface 위에 있음
             return true;
