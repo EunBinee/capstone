@@ -266,7 +266,8 @@ public class PlayerSkills : MonoBehaviour
                     if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
                     {
                         //주목 풀기
-                        GameManager.instance.cameraController.AttentionMonster();
+                        if (!GameManager.instance.cameraController.banAttention)
+                            GameManager.instance.cameraController.AttentionMonster();
                         P_States.beenAttention = false;
                     }
                     //arrow.SetActive(true);

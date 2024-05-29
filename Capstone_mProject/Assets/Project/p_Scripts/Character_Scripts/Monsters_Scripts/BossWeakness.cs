@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,9 @@ public class BossWeakness : MonoBehaviour
     public string effectName01;
     public string effectName02;
 
+    public Action HitWeakness_director = null; //*맞았을 때 연출 있는지.
+
+
     public void SetMonster(Monster _monster)
     {
         m_monster = _monster;
@@ -27,6 +31,8 @@ public class BossWeakness : MonoBehaviour
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.8f, 2f, 2f);
         StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
         m_monster.bossMonsterPattern.ReduceRemainWeaknessesNum(this);
+
+        HitWeakness_director?.Invoke();
     }
 
     IEnumerator GetDamageEffect(Vector3 _normalHitPoint, Vector3 hitPoint)

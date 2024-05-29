@@ -3261,9 +3261,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2755003019798204021}
-  m_LocalRotation: {x: -0.59215754, y: -0.38645637, z: -0.3864521, w: 0.5921619}
-  m_LocalPosition: {x: -1.3860794, y: -0.00000012874602, z: 0.00000030517577}
-  m_LocalScale: {x: 0.9999999, y: 1.0000001, z: 1}
+  m_LocalRotation: {x: -0.5921575, y: -0.38645643, z: -0.3864521, w: 0.5921619}
+  m_LocalPosition: {x: -1.3860794, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2755003018265630036}
@@ -3910,7 +3910,7 @@ MonoBehaviour:
     - {fileID: 2836291601694631459}
     weaknessDamageRate: 0.05
     HPBarPos: {fileID: 0}
-    MaxHP: 50000
+    MaxHP: 20000
     HP: 0
     movingMonster: 1
     overlapRadius: 20
@@ -3993,6 +3993,9 @@ MonoBehaviour:
   isJump: 0
   useExplosionSound: 0
   navMeshSurface: []
+  bossEyes: []
+  redMaterial: {fileID: 0}
+  buleMaterial: {fileID: 0}
 --- !u!114 &6273765010286152407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5106,7 +5109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5548586771043669933}
   - component: {fileID: 5548586771043669932}
-  - component: {fileID: 9001019343491831948}
+  - component: {fileID: 6379146890490388277}
   m_Layer: 6
   m_Name: Point Light
   m_TagString: Monster
@@ -5191,7 +5194,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &9001019343491831948
+--- !u!114 &6379146890490388277
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

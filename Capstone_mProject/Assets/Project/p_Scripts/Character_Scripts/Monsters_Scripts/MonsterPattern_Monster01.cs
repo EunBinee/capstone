@@ -253,7 +253,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                     if (!dontMove)
                     {
-                        //Debug.Log("hh");
+
                         SetMove_AI(true);
                         navMeshAgent.SetDestination(randomPos);
                         SetAnimation(MonsterAnimation.Move);

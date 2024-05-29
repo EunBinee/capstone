@@ -42,7 +42,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         if (monsterState != MonsterPattern.MonsterState.Death)
         {
             //* 플레이어를 쫓아 다니는 이펙트 
-            float duration = 5f;
+            float duration = 3f;
             StartCoroutine(FollowPlayer_Effect_InSkill01(duration));
             yield return new WaitForSeconds(duration);
             Vector3 curPlayerPos = playerTrans.position;
@@ -58,7 +58,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
                 Debug.Log("보스가 못가는 곳입니다..");
                 curPlayerPos = originPos;
             }
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
             monsterPattern_Abyss.isJump = true;
             BossAbyss_JumpDown(curPlayerPos);
             StartCoroutine(JumpDown(curPlayerPos));
@@ -100,7 +100,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
 
         monsterPattern_Abyss.SetBossAttackAnimation(MonsterPattern_Boss.BossMonsterAttackAnimation.Skill01, 0);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.8f);
 
         MonsterPattern.MonsterState monsterState = monsterPattern_Abyss.GetCurMonsterState();
         if (monsterState != MonsterPattern.MonsterState.Death)
@@ -111,7 +111,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
             //-----------------------------------------------------------------------------------//
 
             // 점프전 잠깐 밑으로 내려감.
-            while (time < 0.1)
+            while (time < 0.05)
             {
                 time += Time.deltaTime;
                 transform.Translate(-Vector3.up * speed * Time.deltaTime);
@@ -137,7 +137,9 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
                 transform.Translate(Vector3.up * speed * Time.deltaTime);
 
                 if (transform.position.y >= targetPos.y)
+                {
                     break;
+                }
                 yield return null;
             }
 
@@ -187,7 +189,7 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill01", false);
         //* 데미지 체크
         if (getDamage)
-            monsterPattern_Abyss.CheckPlayerDamage(6.5f, transform.position, 20, true);
+            monsterPattern_Abyss.CheckPlayerDamage(5f, transform.position, 20, true);
 
         //* 연기이펙트-----------------------------------------------------------------------//
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(1f, 3, 3);
@@ -217,20 +219,39 @@ public class Boss_Abyss_Skill01 : MonoBehaviour
         Effect effect = GameManager.Instance.objectPooling.ShowEffect("PulseGrenade_01");
         EffectController effectController = effect.gameObject.GetComponent<EffectController>();
         effectController.ChangeSize();
-
+        //* 0.5=> 1.4로 scale;
         Vector3 GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
         effect.transform.position = GroundPos;
         float time = 0;
 
-        while (time < duration)
+        while (time < duration - 1)
         {
             time += Time.deltaTime;
             GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
             effect.transform.position = GroundPos;
             yield return null;
         }
+        time = 0;
+        duration = 1;
+        Vector3 startScale = new Vector3(0.2f, 0.2f, 0.2f);
+        Vector3 endScale = new Vector3(1.4f, 1.4f, 1.4f);
 
-        yield return new WaitForSeconds(4f);
+
+        while (time < duration)
+        {
+            GroundPos = monsterPattern_Abyss.GetGroundPos(playerTrans);
+            effect.transform.position = GroundPos;
+
+            effect.transform.localScale = Vector3.Lerp(startScale, endScale, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        yield return new WaitForSeconds(1f);
+
+        effect.finishAction = () =>
+        {
+            effect.transform.localScale = startScale;
+        };
         effect.StopEffect();
     }
 

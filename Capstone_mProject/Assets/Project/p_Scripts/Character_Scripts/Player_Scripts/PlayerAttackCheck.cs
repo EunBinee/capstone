@@ -50,6 +50,7 @@ public class PlayerAttackCheck : MonoBehaviour
         }
         _playerController.hitMonsters.Clear();
 
+
     }
     void FixedUpdate()
     {

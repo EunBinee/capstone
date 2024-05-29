@@ -19,7 +19,7 @@ public class CameraResolution : MonoBehaviour
         {
             FixScales();
         }
-        
+
     }
 
     /* 해상도 설정하는 함수 */
@@ -59,6 +59,9 @@ public class CameraResolution : MonoBehaviour
             Camera.main.rect = new Rect(0f, (1f - newHeight) / 2f, 1f, newHeight); // 새로운 Rect 적용
         }
     }
+
+
+
     public void FixScales()
     {
         foreach (Transform child in transform)
@@ -75,8 +78,5 @@ public class CameraResolution : MonoBehaviour
         //     FixScaleRecursive(child); // 자식들에 대해 재귀적으로 호출
         // }
     }
-
-
-
 
 }
