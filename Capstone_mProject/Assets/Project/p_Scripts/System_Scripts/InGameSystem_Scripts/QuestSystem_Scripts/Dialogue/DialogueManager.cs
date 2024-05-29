@@ -45,10 +45,12 @@ public class DialogueManager : MonoBehaviour
     public GameObject Text_Alarm; //튜토리얼, 알람등을 알려주는 text 
 
     public bool DoQuest;
-    public bool IsQuestDetail;
+    public bool isQuestDetail;
     public bool isDialogue;
     //화살표애니메이션
     public bool isArrowAnimating = false;
+    //대화 스킵 버튼
+    public bool isDialogueSkip = false;
 
     void Awake()
     {
@@ -72,8 +74,10 @@ public class DialogueManager : MonoBehaviour
         dialogueController = GetComponent<DialogueController>();
 
         DoQuest = false;
-        IsQuestDetail = false;
+        isQuestDetail = false;
         isDialogue = false;
+
+        DialogueUI_info.dialogueSkip.onClick.AddListener(OnClickDialogueSkipBtn);
 
         //text_tuto = Text_Alarm.transform.GetChild(0);
         //textComponent = text_tuto.GetComponent<TMP_Text>();
@@ -98,6 +102,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Text_Btn02 = dialogueUI_Info.Text_Btn02;
         DialogueUI_info.dialogueArrow = dialogueUI_Info.dialogueArrow;
         DialogueUI_info.portrait = dialogueUI_Info.portrait;
+        DialogueUI_info.dialogueSkip = dialogueUI_Info.dialogueSkip;
 
         DialogueUI_info.Quest_Button01 = dialogueUI_Info.Quest_Button01;
         DialogueUI_info.Go_QuestDetail = dialogueUI_Info.Go_QuestDetail;
@@ -192,7 +197,9 @@ public class DialogueManager : MonoBehaviour
 
         string line = ""; //대사 공백으로 초기화
 
-        endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.
+        endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.\
+
+        isDialogueSkip = false;
 
         while (!AllFinish && !DoQuest)
         {
@@ -204,12 +211,11 @@ public class DialogueManager : MonoBehaviour
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
             //대화 스킵 버튼
-            if (Input.GetKeyDown(KeyCode.J) || Input.GetKey(KeyCode.J))
+            if (isDialogueSkip)
             {
-                curContext = curlineContextLen;
-                //isFinish = true;
-                Debug.Log("skip");
+                break;
             }
+            
 
             if (curContext < curlineContextLen)
             {
@@ -470,7 +476,7 @@ public class DialogueManager : MonoBehaviour
     public void QuestDetailTitle_UI(string text)
     {
         DialogueUI_info.Go_QuestDetail.SetActive(true);
-        IsQuestDetail = true;
+        isQuestDetail = true;
         //player_InteractingTrue();
         if (DialogueUI_info.Text_QuestDetailTitle.text != text)
         {
@@ -595,5 +601,13 @@ public class DialogueManager : MonoBehaviour
         //초상화 비활성화
         DialogueUI_info.portrait.gameObject.SetActive(false);
     }
+
+    public void OnClickDialogueSkipBtn()
+    {
+        isDialogueSkip = true;
+        Debug.Log(isDialogueSkip);
+    }
+
+  
 
 }

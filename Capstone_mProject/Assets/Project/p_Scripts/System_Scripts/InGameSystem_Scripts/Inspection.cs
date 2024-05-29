@@ -35,7 +35,7 @@ public class Inspection : MonoBehaviour
     }
 
     private void Update() {
-        if(isCanInspection && Input.GetKeyDown(KeyCode.C))
+        if(isCanInspection && Input.GetKeyDown(KeyCode.F))
         {
             OnClickButton();
         }

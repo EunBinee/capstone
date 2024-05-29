@@ -24,6 +24,7 @@ public class DialogueUI_info : MonoBehaviour
 
     public GameObject dialogueArrow; //대사 끝났을 경우 화살표ui
     public Image portrait;
+    public Button dialogueSkip; //대화 스킵 버튼 UI
 
     public GameObject Quest_Button01;
     public GameObject Go_QuestDetail;

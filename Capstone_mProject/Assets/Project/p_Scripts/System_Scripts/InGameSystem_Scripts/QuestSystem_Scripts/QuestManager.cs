@@ -43,12 +43,12 @@ public class QuestManager : MonoBehaviour
 
         }
 
-        if (DialogueManager.instance.IsQuestDetail)
+        if (DialogueManager.instance.isQuestDetail)
         {
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
             {
                 QuestExit();
-                DialogueManager.instance.IsQuestDetail = false;
+                DialogueManager.instance.isQuestDetail = false;
             }
         }
 
