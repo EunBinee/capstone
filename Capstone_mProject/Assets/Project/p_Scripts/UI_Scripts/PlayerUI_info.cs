@@ -19,12 +19,12 @@ public class PlayerUI_info : MonoBehaviour
 
     [Space]
     [Header("Player Skill")]
-    public SkillButton skill_T;
+    public SkillButton skill_Q;
     public SkillButton skill_F;
     public SkillButton skill_E;
     public SkillButton skill_R;
-    public SkillButton skill_Q;
-/**/
+    public SkillButton skill_T;
+    /**/
     [Header("Skill Slot")]
     public GameObject skillTree;
     //[SerializeField] public List<Image> slot = new List<Image>(3);
@@ -36,7 +36,7 @@ public class PlayerUI_info : MonoBehaviour
 
     public PlayerController p_controller;
     //public PlayerSkillTree playerSkillTree;
-    
+
     void Start()
     {
         p_controller = GameManager.Instance.gameData.player.GetComponent<PlayerController>();

@@ -286,16 +286,16 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.TDown)  //* Bow Mode & Sword Mode
+        if (P_KState.QDown)  //* Bow Mode & Sword Mode
         {
-            P_KState.TDown = false;
-            if (skill_T.imgCool.fillAmount == 0)
+            P_KState.QDown = false;
+            if (skill_Q.imgCool.fillAmount == 0)
             {
                 if (P_States.startAim)   // 조준 중일때 전환 키 누르면
                 {
                     P_Skills.arrowSkillOff();    // 조준 헤제
                 }
-                P_Skills.skillMotion("ChangeWeapon");
+                P_Skills.skillMotion("ChangeWeapon", 'Q');
             }
         }
         if (P_KState.EDown && !P_States.isSkill)
@@ -325,11 +325,11 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
             }
         }
-        if (P_KState.QDown && !P_States.isSkill)
+        if (P_KState.TDown && !P_States.isSkill)
         {
-            P_KState.QDown = false;
-            if (skill_Q.imgCool.fillAmount == 0)
-                P_Skills.skillMotion("Ultimate", 'Q');
+            P_KState.TDown = false;
+            if (skill_T.imgCool.fillAmount == 0)
+                P_Skills.skillMotion("Ultimate", 'T');
         }
     }
 
@@ -349,9 +349,9 @@ public class PlayerInputHandle : MonoBehaviour
                 P_KState.FDown = false;
                 skill_F.OnClicked();
                 break;
-            case 'Q':
-                P_KState.QDown = false;
-                skill_Q.OnClicked();
+            case 'T':
+                P_KState.TDown = false;
+                skill_T.OnClicked();
                 break;
             default: break;
         }

@@ -6380,7 +6380,7 @@ GameObject:
   - component: {fileID: 4235486337218456600}
   - component: {fileID: 7093811783588414531}
   m_Layer: 5
-  m_Name: SkillSlot_Q
+  m_Name: SkillSlot_T
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10635,12 +10635,12 @@ GameObject:
   - component: {fileID: 4134663810281622624}
   - component: {fileID: 8086923704111769273}
   m_Layer: 5
-  m_Name: SkillSlot_T
+  m_Name: SkillSlot_Q
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7049389667419317304
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10809,7 +10809,7 @@ RectTransform:
   m_GameObject: {fileID: 7049389668780423602}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7049389667419317304}
@@ -10818,7 +10818,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 220, y: 220}
+  m_SizeDelta: {x: 400, y: 420}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7049389668780423615
 CanvasRenderer:
@@ -10841,15 +10841,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.78431374, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 38c3e942d44f5da4eaee257ab6d51916, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: b791daab11936de49b68fa35e163954f, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -10857,7 +10857,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 1.7
 --- !u!1 &7208634931128638174
 GameObject:
   m_ObjectHideFlags: 0
@@ -12904,7 +12904,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8428985795068512599}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -12917,7 +12917,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 680df7a9fdae709408a71a9692341e72, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c9bc86458a293a442b391bfeb1a5f762, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13422,11 +13422,11 @@ MonoBehaviour:
   hitUI: {fileID: 7208634931128638174}
   portrait: {fileID: 6984924974441979555}
   HPgauge: {fileID: 2656945058408231650}
-  skill_T: {fileID: 4134663810281622624}
+  skill_Q: {fileID: 4134663810281622624}
   skill_F: {fileID: 7038057910060357790}
   skill_E: {fileID: 3607604791824576696}
   skill_R: {fileID: 3996699226769602055}
-  skill_Q: {fileID: 7093811783588414531}
+  skill_T: {fileID: 7093811783588414531}
   skillTree: {fileID: 6104789077165725983}
   crosshairImage: {fileID: 1276410616177756403}
   p_controller: {fileID: 0}

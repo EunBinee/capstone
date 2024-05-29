@@ -535,7 +535,7 @@ public class PlayerSkills : MonoBehaviour
             case "Ultimate":
                 P_States.isSkill = true;
                 P_InputHandle.skillBtnOnclick(whatKey);
-                Debug.Log("스킬Q");
+                Debug.Log("스킬T");
                 break;
 
             case "Restraint":
