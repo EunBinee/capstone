@@ -259,4 +259,5 @@ public class MonsterPattern_Boss : MonsterPattern
     }
 
 
+
 }

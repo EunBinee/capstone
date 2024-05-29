@@ -3261,9 +3261,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2755003019798204021}
-  m_LocalRotation: {x: -0.59215754, y: -0.38645637, z: -0.3864521, w: 0.5921619}
-  m_LocalPosition: {x: -1.3860794, y: -0.00000012874602, z: 0.00000030517577}
-  m_LocalScale: {x: 0.9999999, y: 1.0000001, z: 1}
+  m_LocalRotation: {x: -0.5921575, y: -0.38645643, z: -0.3864521, w: 0.5921619}
+  m_LocalPosition: {x: -1.3860794, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2755003018265630036}
@@ -3922,6 +3922,9 @@ MonoBehaviour:
     effectTrans: {fileID: 2755003018275303168}
   monsterPattern: {fileID: 2755003020157360586}
   bossMonsterPattern: {fileID: 2755003020157360586}
+  skinnedMeshRenderer: {fileID: 0}
+  hitMaterial: {fileID: 0}
+  m_material: {fileID: 0}
   soundName: []
   monsterSoundClips:
   - {fileID: 8300000, guid: 605c7659dc4cacb42ac95a2ea24d6530, type: 3}
@@ -3990,6 +3993,9 @@ MonoBehaviour:
   isJump: 0
   useExplosionSound: 0
   navMeshSurface: []
+  bossEyes: []
+  redMaterial: {fileID: 0}
+  buleMaterial: {fileID: 0}
 --- !u!114 &6273765010286152407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4030,6 +4036,7 @@ MonoBehaviour:
   wreckages: []
   wreckage_obj: {fileID: 0}
   skillRadius: 10
+  Shield_Effect_skill03: {fileID: 0}
 --- !u!114 &4200983437960885994
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5102,6 +5109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5548586771043669933}
   - component: {fileID: 5548586771043669932}
+  - component: {fileID: 6379146890490388277}
   m_Layer: 6
   m_Name: Point Light
   m_TagString: Monster
@@ -5186,6 +5194,26 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &6379146890490388277
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5548586771043669906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &5548586771119777138
 GameObject:
   m_ObjectHideFlags: 0

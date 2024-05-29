@@ -13,6 +13,7 @@ using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
+using TMPro;
 
 public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 {
@@ -56,6 +57,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public List<NavMeshSurface> navMeshSurface;
 
     bool StartFirstScene = false;
+
+    public List<GameObject> bossEyes;
+    public Material redMaterial;
+    public Material buleMaterial;
 
 
     public override void Init()
@@ -136,7 +141,29 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             if (bossWeakness.m_monster == null)
                 bossWeakness.SetMonster(m_monster);
+
+            //* 약점 맞았을 때 눈 색상 바뀌는 연출 세팅
+
+            if (bossEyes.Count == m_monster.monsterData.weaknessList.Count)
+            {
+                GameObject bossEye = bossEyes[i];
+                bossWeakness.HitWeakness_director = () =>
+                {
+                    List<Material> materials = new List<Material>();
+                    materials.Add(buleMaterial);
+                    bossEye.GetComponent<MeshRenderer>().materials = materials.ToArray();
+                };
+            }
+            else
+            {
+                Debug.LogError("눈개수하고 약점 개수가 안맞아여");
+            }
+
         }
+
+
+
+
 
         //*----------------------------------------------------------------------//
 
@@ -528,10 +555,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 일단은 바로 공격하도록
             //ChangeBossPhase(BossMonsterPhase.Phase2);
             //Monster_Motion(BossMonsterMotion.Skill04);
-            Monster_Motion(BossMonsterMotion.Skill01);
+            // Monster_Motion(BossMonsterMotion.Skill01);
             //* 테스트 후 아래 주석 풀기
-            //ChangeBossPhase(BossMonsterPhase.Phase1);
-            //ChangeMonsterState(MonsterState.Tracing);
+            ChangeBossPhase(BossMonsterPhase.Phase1);
+            ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
