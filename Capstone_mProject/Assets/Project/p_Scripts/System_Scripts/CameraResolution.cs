@@ -15,6 +15,10 @@ public class CameraResolution : MonoBehaviour
     {
         canvasScaler = GetComponent<CanvasScaler>();
         SetResolution(); // 초기에 게임 해상도 고정
+        if (canvasScaler != null)
+        {
+            FixScales();
+        }
     }
 
     /* 해상도 설정하는 함수 */
@@ -67,5 +71,21 @@ public class CameraResolution : MonoBehaviour
         }
     }
 
+    public void FixScales()
+    {
+        foreach (Transform child in transform)
+        {
+            FixScaleRecursive(child);
+        }
+    }
+
+    private void FixScaleRecursive(Transform obj)
+    {
+        obj.localScale = Vector3.one; // scale을 1로 설정
+        // foreach (Transform child in obj)
+        // {
+        //     FixScaleRecursive(child); // 자식들에 대해 재귀적으로 호출
+        // }
+    }
 
 }
