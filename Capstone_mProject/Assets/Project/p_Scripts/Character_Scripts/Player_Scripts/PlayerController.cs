@@ -128,7 +128,6 @@ public class PlayerController : MonoBehaviour
         }
         SetUIVariable();
         _playerArrows.Init();
-        // InitComponent();
     }
 
     public void SetUIVariable()
@@ -148,6 +147,14 @@ public class PlayerController : MonoBehaviour
         //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
+
+        playerSkillTree = playerUI_info.GetComponent<PlayerSkillTree>();
+        P_Movement.skill_E = playerUI_info.skill_E;
+        P_Movement.skill_R = playerUI_info.skill_R;
+        P_Movement.skill_F = playerUI_info.skill_F;
+        P_Movement.skill_Q = playerUI_info.skill_Q;
+        P_Movement.skill_T = playerUI_info.skill_T;
+        P_Movement.skillTree = playerUI_info.skillTree;
     }
 
     void Update()
@@ -224,7 +231,7 @@ public class PlayerController : MonoBehaviour
     Vector3 ChestDir = new Vector3();
 
     Quaternion lastRotation; // 마지막 회전값을 저장할 변수
-    //float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
+                             //float rotationSpeed = 2.0f; // 회전 속도를 조절하는 변수
     void Operation_boneRotation()
     {
         //Transform camTrans = Camera.main.transform;

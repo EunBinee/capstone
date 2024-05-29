@@ -52,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
         playerAttackChecks = new List<PlayerAttackCheck>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         P_InputHandle = GetComponent<PlayerInputHandle>();
+
+        P_Controller.P_Skills.Setting();
+
         SetUIVariable();
         for (int i = 0; i < attackColliders.Length; i++)
         {
