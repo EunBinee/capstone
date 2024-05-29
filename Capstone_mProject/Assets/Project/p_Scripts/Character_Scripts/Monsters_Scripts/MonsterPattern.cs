@@ -263,7 +263,7 @@ public class MonsterPattern : MonoBehaviour
 
     protected void ChangeMonsterState(MonsterState monsterState)
     {
-
+        Debug.Log($"{curMonsterState}");
         if (curMonsterState != MonsterState.Death)
             curMonsterState = monsterState;
 
@@ -502,6 +502,8 @@ public class MonsterPattern : MonoBehaviour
         }
         return true;
     }
+
+
 
     //* ----------------------------------------------------------------------------------------//
     //! 플레이어가 몬스터의 뒤에 있는지 앞에 있는지 확인용 함수

@@ -569,11 +569,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
             bullet.OnHitPlayerEffect = () =>
             {
                 //플레이어가 총에 맞았을 경우, 이펙트
-                //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Basic_Impact_01");
 
-                //effect.gameObject.transform.position = targetPos;
-                //Vector3 curDirection = targetPos - bulletObj.transform.position;
-                //effect.gameObject.transform.position += curDirection * 0.35f;
             };
 
             //총알 방향//

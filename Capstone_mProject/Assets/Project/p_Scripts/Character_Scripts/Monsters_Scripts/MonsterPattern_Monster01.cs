@@ -36,7 +36,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     Action GetHit_duringLongRangeAttack = null;
 
-
+    //! 플레이어의 위치가 몬스터 네비 메쉬가 갈 수 있는 위치에 있는지 확인하는 변수
+    bool checkPlayerLocation_cantMosterGo = false; // true 갈 수 있는 위치, false 갈 수 없는 위치
 
 
     public override void Init()
@@ -152,9 +153,11 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         if (curMonsterState != MonsterState.Death)
         {
+            checkPlayerLocation_cantMosterGo = IsMonsterOnNavMesh(2);
             switch (curMonsterState)
             {
                 case MonsterState.Roaming:
+
                     if (m_monster.HPBar_CheckNull() == true)
                         m_monster.RetrunHPBar();
                     Roam_Monster();
@@ -174,6 +177,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 case MonsterState.Attack:
                     if (m_monster.HPBar_CheckNull() == false)
                         m_monster.GetHPBar();
+
+                    CheckDistance();
                     break;
                 case MonsterState.GetHit:
 
@@ -192,6 +197,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         if (!isRoaming)
         {
+            Debug.Log("로밍 - 처음시작");
             isRoaming = true;
             //x와 Z주변을 배회하는 몬스터
             roam_Monster_co = StartCoroutine(Roam_Monster_co());
@@ -275,6 +281,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     public override void CheckPlayerCollider()
     {
+
         if (curMonsterState != MonsterState.Death)
         {
             //로밍중, 집돌아갈 때 플레이어 콜라이더 감지중
@@ -317,11 +324,15 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     }
                     if (isFinding || isGoingBack)
                     {
+
                         //집돌아가는 도중이면 다시 추적 또는 찾은 후라면
                         ChangeMonsterState(MonsterState.Tracing);
                         isFinding = false;
                         isGoingBack = false;
+
+
                     }
+
                 }
                 else
                 {
@@ -343,6 +354,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 }
             }
+
         }
     }
     // * ---------------------------------------------------------------------------------------------------------//
@@ -393,19 +405,33 @@ public class MonsterPattern_Monster01 : MonsterPattern
             isTracing = true;
             SetPlayerAttackList(true);
         }
-        //움직임.
-        if (navMeshAgent.isStopped == true)
-            SetMove_AI(true);
+        if (checkPlayerLocation_cantMosterGo == false)
+        {
+            //움직임.
+            if (navMeshAgent.isStopped == true)
+                SetMove_AI(true);
 
-        navMeshAgent.SetDestination(playerTrans.position);
-        SetAnimation(MonsterAnimation.Move);
-        //몬스터와 플레이어 사이의 거리 체크
-        CheckDistance();
+            navMeshAgent.SetDestination(playerTrans.position);
+            SetAnimation(MonsterAnimation.Move);
+            //몬스터와 플레이어 사이의 거리 체크
+            CheckDistance();
+        }
+        else if (checkPlayerLocation_cantMosterGo == true)
+        {
+            if (navMeshAgent.isStopped == false)
+                SetMove_AI(false);
+            SetAnimation(MonsterAnimation.Idle);
+            Debug.Log("멈춰있답니다~");
+
+            //! 회전!!!!
+        }
+
     }
     // * ---------------------------------------------------------------------------------------------------------//
     // * 몬스터 상태 =>> 다시 자기자리로
     public override void GoingBack_Movement()
     {
+        Debug.Log(" GoingBack!! ");
         if (isTracing)
         {
             isTracing = false;
@@ -443,26 +469,41 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     ChangeMonsterState(MonsterState.GoingBack);
                 }
 
-                if (distance <= 1.3f)
+                if (checkPlayerLocation_cantMosterGo == false)
                 {
-                    //거리가 2.5만큼 가깝다.
-                    //일반 공격
-                    ChangeMonsterState(MonsterState.Attack);
-                    Monster_Motion(MonsterMotion.Short_Range_Attack);
-                }
-                else if (distance >= 8f && distance < 12f)
-                {
-                    ChangeMonsterState(MonsterState.Attack);
-                    Monster_Motion(MonsterMotion.Long_Range_Attack);
+                    if (distance <= 1.3f)
+                    {
+                        //거리가 2.5만큼 가깝다.
+                        //일반 공격
+                        ChangeMonsterState(MonsterState.Attack);
+                        Monster_Motion(MonsterMotion.Short_Range_Attack);
+                    }
+                    else if (distance >= 8f && distance < 12f)
+                    {
+                        ChangeMonsterState(MonsterState.Attack);
+                        Monster_Motion(MonsterMotion.Long_Range_Attack);
+                    }
                 }
                 break;
 
             case MonsterState.Attack:
+                if (checkPlayerLocation_cantMosterGo == true)
+                {
+                    StopAtackCoroutine();
+                    ChangeMonsterState(MonsterState.Tracing);
+
+                    // StopAtackCoroutine();
+                    // SetMove_AI(false);
+                    // SetAnimation(MonsterAnimation.Idle);
+                    // isGoingBack = true;
+                    // isGoingBack_dontLookPlayer = true;
+                    // ChangeMonsterState(MonsterState.GoingBack);
+                }
                 break;
 
             case MonsterState.GoingBack:
                 distance = Vector3.Distance(transform.position, originPosition);
-                if (distance < 1f)
+                if (distance < 1.5f)
                 {
                     isGoingBack = false;
                     ChangeMonsterState(MonsterState.Roaming);
@@ -512,8 +553,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 근거리 공격 01
     IEnumerator Short_Range_Attack_Monster01()
     {
-
-
         //공격 텀 두기
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
@@ -649,7 +688,6 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     capsuleCollider.enabled = false;
 
                     //! 사운드
-                    //m_monster.SoundPlay(Monster.monsterSound.Hit_Long, false);
                     m_monster.SoundPlay("Monster01_LongAttack", false);
                     while (true)
                     {
@@ -723,14 +761,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     private void GetHit()
     {
         //? 피격 이펙트
-        //Effect effect = GameManager.Instance.objectPooling.ShowEffect("Power_Impact_Fire_02_01", attackEffectPos);
-        //TODO: 나중에 플레이어 방향쪽으로 변경.
-        // float x = UnityEngine.Random.Range(-1.0f, 1.0f);
-        // float y = UnityEngine.Random.Range(-1.0f, 1.0f);
-        // float z = UnityEngine.Random.Range(-1.0f, 1.0f);
-        // Vector3 randomPos = new Vector3(x, y, z);
 
-        // effect.transform.position = attackEffectPos.position + randomPos;
         StartCoroutine(electricity_Damage(0.8f));
     }
 
@@ -951,8 +982,38 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
     }
 
+
+
     public override void StartMonster()
     {
         forcedReturnHome = false;
     }
+
+    //! 네비메쉬를 사용중인 몬스터가 플레이어 
+
+
+    public bool MonsterAICanGo_PlayerLocation(Vector3 playerPos)
+    {
+        return false;
+
+    }
+
+    public bool IsMonsterOnNavMesh(float maxDistance = 1f)
+    {
+        NavMeshHit hit;
+
+        Vector3 playerDirect = (playerTargetPos.position - transform.position).normalized;
+        // 플레이어의 위치에서 아래 방향으로 레이캐스트 수행
+        if (NavMesh.Raycast(transform.position + (playerDirect * 1.5f), transform.position + (playerDirect * 1.5f) + Vector3.down * maxDistance, out hit, NavMesh.AllAreas))
+        {
+            // 레이캐스트가 무언가를 맞추면 NavMeshSurface 위에 있음
+            return true;
+        }
+
+        // 레이캐스트가 아무것도 맞추지 못하면 NavMeshSurface 위에 있지 않음
+        return false;
+    }
+
+
+
 }
