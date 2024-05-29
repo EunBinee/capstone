@@ -129,7 +129,7 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void KeyRebind()
     {
-        Debug.Log("KeyRebind()");
+        //Debug.Log("KeyRebind()");
         P_States.isWalking = false;
         P_States.isRunning = false;
         //P_States.isNotMoving = true;

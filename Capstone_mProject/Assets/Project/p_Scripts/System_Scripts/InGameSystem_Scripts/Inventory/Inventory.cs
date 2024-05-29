@@ -82,8 +82,6 @@ public class Inventory : MonoBehaviour
             modalWindowManager.mwAnimator.SetFloat("AnimSpeed", modalWindowManager.animationSpeed);
             modalWindowManager.mwAnimator.Play("In");
             
-            
-            
             openInventory = true;
 
             UIManager.Instance.Pause();

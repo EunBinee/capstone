@@ -53,8 +53,12 @@ public class CanvasManager : MonoBehaviour
     public string btnsUIName;
     public GameObject btnsUI;
 
-
     public CameraResolution cameraResolution;
+
+    [Space]
+    [Header("조사 UI 모음")]
+    public string inspectionName;
+    public GameObject inspectionUI;
 
     void Awake()
     {
@@ -109,6 +113,12 @@ public class CanvasManager : MonoBehaviour
         }
 
         cameraResolution = GetComponent<CameraResolution>();
+
+        //* 조사 UI
+        if(inspectionUI==null)
+        {
+            inspectionUI = GetCanvasUI(inspectionName);
+        }
     }
 
     public GameObject GetCanvasUI(string name)

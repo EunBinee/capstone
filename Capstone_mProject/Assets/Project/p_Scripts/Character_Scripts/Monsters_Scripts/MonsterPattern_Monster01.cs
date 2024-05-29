@@ -239,7 +239,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
                             distance = Vector3.Distance(transform.position, randomPos);
                             //  Debug.Log($"{distance}");
                             checkObstacle = CheckObstacleCollider(randomPos);
-                            Debug.Log($"{checkObstacle}");
+                            //Debug.Log($"{checkObstacle}");
                             if (distance > 3f && !checkObstacle)
                                 break;
                         }
@@ -253,7 +253,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                     if (!dontMove)
                     {
-                        Debug.Log("hh");
+                        //Debug.Log("hh");
                         SetMove_AI(true);
                         navMeshAgent.SetDestination(randomPos);
                         SetAnimation(MonsterAnimation.Move);

@@ -118,6 +118,6 @@ public class DatabaseManager : MonoBehaviour
             id = reasonings[i].reasoningID;
             Reasoning_Dictionary[id] = reasonings[i];
         }
-        Debug.Log(csvFileName + "완료!");
+        //Debug.Log(csvFileName + "완료!");
     }
 }

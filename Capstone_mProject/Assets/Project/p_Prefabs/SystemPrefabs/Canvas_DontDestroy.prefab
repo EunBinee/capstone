@@ -114,8 +114,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdd012c703086c745bb94a0933987572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainStartSceneName: mainStartScene
-  mainStartScene: {fileID: 0}
   playerUIName: Player_UI
   playerUI: {fileID: 0}
   dialogueUIName: Dialogue
@@ -130,6 +128,9 @@ MonoBehaviour:
   inventoryUI: {fileID: 0}
   btnsUIName: BtnsManager
   btnsUI: {fileID: 0}
+  cameraResolution: {fileID: 0}
+  inspectionName: Inspection
+  inspectionUI: {fileID: 0}
 --- !u!114 &6335004101130092080
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -162,7 +162,7 @@ public class PlayerSkills : MonoBehaviour
                 { }
                 else
                 {
-                    Debug.Log("[skill test] map add");
+                    //Debug.Log("[skill test] map add");
                     P_SkillInfo.selectSkill.Add(skill); // 자동 추가
                 }
             }
