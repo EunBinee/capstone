@@ -64,11 +64,12 @@ public class PlayerSkills : MonoBehaviour
     void Start()
     {
         P_InputHandle = GetComponent<PlayerInputHandle>();
-        
-        Setting();
+
+        //Setting();
     }
-    void Setting()
+    public void Setting()
     {
+        Debug.Log("1");
         //skillTreeWindow = P_Movement.skillTree;
         skill_T = P_Controller.P_Movement.skill_T;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
@@ -84,7 +85,7 @@ public class PlayerSkills : MonoBehaviour
         SkillMapAdd("Sample2", P_SkillInfo.sample2);
         P_SkillInfo.haveSample2 = true;
         //skillTreeWindow = P_Controller.playerSkillTree.gameObject;
-        
+
         //P_Controller.P_InputHandle.Setting();
     }
 

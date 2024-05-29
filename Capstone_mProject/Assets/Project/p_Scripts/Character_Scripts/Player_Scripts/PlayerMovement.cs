@@ -52,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
         playerAttackChecks = new List<PlayerAttackCheck>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         P_InputHandle = GetComponent<PlayerInputHandle>();
+
+        P_Controller.P_Skills.Setting();
+
         SetUIVariable();
         for (int i = 0; i < attackColliders.Length; i++)
         {
@@ -74,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
                 return;
         }
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
-
+        Debug.Log("2");
         skill_T = playerUI_info.skill_T;
         skill_T.gameObject.SetActive(true);
         //_controller.originTpos = skill_T.gameObject.transform.position;
