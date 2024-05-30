@@ -127,6 +127,7 @@ public class PlayerMovement : MonoBehaviour
             P_Value.time = 0;
             P_Value.isCombo = false;
             P_States.isStartComboAttack = false;
+            P_InputHandle.isAttack = false;
             P_Com.animator.SetInteger("comboCount", P_Value.index);
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
@@ -969,6 +970,7 @@ public class PlayerMovement : MonoBehaviour
         }   // ...2 (while (true))
 
         P_States.isStartComboAttack = false;    //* 공격 끝
+        P_InputHandle.isAttack = false;
         P_Value.index = 1;  //* 인덱스 초기화
         P_Value.time = 0;   //* 시간 초기화
     }
