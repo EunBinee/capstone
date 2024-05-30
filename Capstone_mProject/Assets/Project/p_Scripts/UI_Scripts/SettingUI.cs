@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 public class SettingUI : MonoBehaviour
 {
@@ -19,11 +20,17 @@ public class SettingUI : MonoBehaviour
     bool canAccess = true;
     Coroutine hideSettingUI_co = null;
 
+    public string mainSceneName = "StartMainScene";
+
+
+
     void Start()
     {
         settingUIAnim = GetComponent<Animator>();
         canvasGroup = GetComponent<CanvasGroup>();
         SettingInit();
+        SettingBtn();
+        Michsky.UI.Reach.UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
     }
 
     private void Update()
@@ -47,6 +54,7 @@ public class SettingUI : MonoBehaviour
 
     public void SettingInit()
     {
+        SettingText();
         if (!isMainScene)
         {
             //* 메인 씬이 아닐때
@@ -63,6 +71,8 @@ public class SettingUI : MonoBehaviour
 
         SettingVolume();
     }
+
+
 
     public void ShowSettingUI()
     {
@@ -129,16 +139,62 @@ public class SettingUI : MonoBehaviour
             audioSource.volume = sfxValue;
         }
 
-        /*
-        bgm
-        SoundManager.Instance.bgmPlayer
-
-        sfx
-        SoundManager.Instance.playerSoundPlayer
-        SoundManager.Instance.mosterSoundPlayer
-        SoundManager.Instance.sfxPlayer
-
-        */
     }
 
+    void SettingBtn()
+    {
+        settingInfo.gototheMainSceneBtn.onClick.AddListener(() =>
+        {
+            if (!isMainScene)
+            {
+                //* 메인씬이 아니면 세팅창 닫아주고 메인으로
+                settingUIAnim.Play(panelFadeOut);
+                ChangeSettingValue();
+                if (UIManager.gameIsPaused == true)
+                {
+                    //게임이 멈춰있으면 다시 재생.
+                    UIManager.Instance.Resume();
+                }
+                if (!isMainScene)
+                    this.gameObject.SetActive(false);
+            }
+            LoadingSceneController.LoadScene(mainSceneName);
+        });
+
+
+        settingInfo.restartBtn.onClick.AddListener(() =>
+        {
+            if (!isMainScene)
+            {
+                //* 메인씬이 아니면 세팅창 닫아주고 다시 시작
+                settingUIAnim.Play(panelFadeOut);
+                ChangeSettingValue();
+                if (UIManager.gameIsPaused == true)
+                {
+                    //게임이 멈춰있으면 다시 재생.
+                    UIManager.Instance.Resume();
+                }
+                if (!isMainScene)
+                    this.gameObject.SetActive(false);
+
+                string curSceneName = CurSceneManager.instance.curSceneName;
+                if (curSceneName == "")
+                {
+#if UNITY_EDITOR
+                    Debug.Log("없는 씬 이름입니다");
+#endif
+                }
+                LoadingSceneController.LoadScene(curSceneName);
+            }
+            //
+
+        });
+    }
+
+    void SettingText()
+    {
+        settingInfo.windowModeText.objText.text = settingInfo.windowModeName;
+        settingInfo.resolutionText.objText.text = settingInfo.resolutionName;
+        settingInfo.restartHeaderText.objText.text = settingInfo.restartHeaderName;
+    }
 }

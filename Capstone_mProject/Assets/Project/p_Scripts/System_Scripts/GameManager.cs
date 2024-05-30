@@ -94,6 +94,7 @@ public class GameManager : MonoBehaviour
     {
         loadScene.Init();
     }
+
     static public GameManager GetInstance()
     {
         return instance;
@@ -299,14 +300,12 @@ public class GameManager : MonoBehaviour
     }
     //*---------------------------------------------------------------------------//
 
+    //* 세팅값 바꿔주기
     public void ChangeSettingValue()
     {
-
         cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * cameraSensitivity;
         cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * cameraSensitivity;
 
-
-        Debug.Log("하이여");
     }
 }
 

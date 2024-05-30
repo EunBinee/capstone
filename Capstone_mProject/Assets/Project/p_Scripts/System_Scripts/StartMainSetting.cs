@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StartMainSetting : MonoBehaviour
@@ -20,13 +21,13 @@ public class StartMainSetting : MonoBehaviour
 
     void Awake()
     {
-        bool checkObj = CheckObject();
+        //bool checkObj = CheckObject();
 
-        if (!checkObj)
-        {
-            //생성.
-            ObjInit();
-        }
+        //if (!checkObj)
+        // {
+        //생성.
+        ObjInit();
+        // }
     }
 
     //*Dont Destroy Object가 없는지 있는지 체크---------------------//
@@ -46,6 +47,33 @@ public class StartMainSetting : MonoBehaviour
     //*--------------------------------------------------------------//
     public void ObjInit()
     {
+        if (GameManager.instance != null)
+        {
+            Destroy(GameManager.instance.gameData.player);
+            Destroy(GameManager.instance.gameObject);
+            GameManager.instance = null;
+        }
+        if (SoundManager.Instance != null)
+        {
+            Destroy(SoundManager.instance.gameObject);
+            SoundManager.instance = null;
+        }
+        if (DialogueManager.instance != null)
+        {
+            Destroy(DialogueManager.instance.gameObject);
+            DialogueManager.instance = null;
+        }
+        if (UIManager.instance != null)
+        {
+            Destroy(UIManager.instance.gameObject);
+            UIManager.instance = null;
+        }
+        if (CanvasManager.instance != null)
+        {
+            Destroy(CanvasManager.instance.gameObject);
+            CanvasManager.instance = null;
+        }
+
         gameManagerObj = GetDontDestroyObj(gameManagerName);
         soundManagerObj = GetDontDestroyObj(soundManagerName);
         dialogueObj = GetDontDestroyObj(dialogueName);

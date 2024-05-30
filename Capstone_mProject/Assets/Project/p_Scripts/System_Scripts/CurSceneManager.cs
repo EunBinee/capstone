@@ -9,6 +9,7 @@ public class CurSceneManager : MonoBehaviour
 {
     public static CurSceneManager instance = null;
 
+    public string curSceneName = "";
     public List<Transform> spawnPoints;
     public List<string> timelinesName;
 
@@ -54,7 +55,6 @@ public class CurSceneManager : MonoBehaviour
 
         //나중에 씬마다 BGM동적으로 바뀌도록 설정하기
         SoundManager.Instance.Play_BGM(SoundManager.BGM.Ingame, true);
-        // GameManager.instance.cameraController.cameraInfo.ResetCamera();
 
         GameManager.instance.gameData.player.GetComponent<PlayerInputHandle>().KeyRebind();
         SetPlayerPos();
@@ -105,9 +105,9 @@ public class CurSceneManager : MonoBehaviour
     {
         return timelineDic[timelineName];
     }
+
     private void LoadTimeLine()
     {
-
         if (timelines.Count != timelinesName.Count)
         {
             timelines.Clear();
@@ -119,30 +119,6 @@ public class CurSceneManager : MonoBehaviour
             }
         }
 
-        //   timelines.Clear();
-        //   for (int i = 0; i < timelinesName.Count; i++)
-        //   {
-        //       GameObject timeLine = Resources.Load<GameObject>("TimeLinesResource/" + timelinesName[i]);
-        //       GameObject timeLineObj = UnityEngine.Object.Instantiate(timeLine);
-        //       timeLineObj.transform.SetParent(timelineParent);
-        //       PlayableDirector director = timeLineObj.GetComponent<PlayableDirector>();
-        //
-        //
-        //       // TimelineAsset track = timeLineObj.GetComponent<TimelineAsset>();
-        //
-        //       var outputs = director.playableAsset.outputs;
-        //       foreach (var itm in outputs)
-        //       {
-        //           Debug.Log(itm.sourceObject.name);
-        //       }
-        //
-        //       //director.playableAsset.GetOutputTrack(0);
-        //       // director.SetGenericBinding(track, GameManager.instance.cameraController.gameObject.GetComponent<Camera>());
-        //
-        //
-        //       // timelines.Add(director);
-        //   }
-        //
     }
 
 }

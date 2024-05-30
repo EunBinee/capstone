@@ -70,9 +70,9 @@ namespace Michsky.UI.Reach
 
         void Start()
         {
-            if (UIManagerAudio.instance == null) 
+            if (UIManagerAudio.instance == null)
             {
-                useSounds = false; 
+                useSounds = false;
             }
         }
 
@@ -109,7 +109,14 @@ namespace Michsky.UI.Reach
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
             if (!isInteractable) { return; }
 
             StartCoroutine("SetHighlight");

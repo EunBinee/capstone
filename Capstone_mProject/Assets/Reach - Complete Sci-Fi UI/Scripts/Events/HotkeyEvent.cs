@@ -154,7 +154,7 @@ namespace Michsky.UI.Reach
                     }
                 }
 
-                if (!keyFound) 
+                if (!keyFound)
                 {
                     // gameObject.SetActive(false);
                     return;
@@ -223,7 +223,14 @@ namespace Michsky.UI.Reach
         {
             onHotkeyPress.Invoke();
 
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound);
+            }
             if (normalCG == null || highlightCG == null || !gameObject.activeInHierarchy) { return; }
 
             StopCoroutine("SetHighlight");
@@ -232,7 +239,14 @@ namespace Michsky.UI.Reach
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
             if (normalCG == null || highlightCG == null) { return; }
 
             StopCoroutine("SetNormal");
