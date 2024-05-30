@@ -133,6 +133,7 @@ MonoBehaviour:
   isEnable: 0
   monster: {fileID: 0}
   _playerController: {fileID: 0}
+  _playerMovement: {fileID: 0}
   deltaShootTime: 0
 --- !u!120 &5891312319907364769
 LineRenderer:
@@ -247,4 +248,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToTrack: {fileID: 0}
   lineRenderer: {fileID: 5891312319907364769}
-  maxPositions: 100
+  maxPositions: 50

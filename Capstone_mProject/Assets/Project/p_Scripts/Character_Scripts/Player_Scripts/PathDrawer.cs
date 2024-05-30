@@ -7,7 +7,7 @@ public class PathDrawer : MonoBehaviour
 {
     public Transform objectToTrack;
     public LineRenderer lineRenderer;
-    public int maxPositions = 100; // 저장할 최대 위치 수
+    public int maxPositions = 50; // 저장할 최대 위치 수
     private Vector3[] positions;
 
     void Start()
