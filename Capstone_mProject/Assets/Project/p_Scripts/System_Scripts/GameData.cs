@@ -6,6 +6,9 @@ using System;
 [Serializable]
 public class GameData
 {
+    //* 메인 씬 이름
+    public string mainSceneName = "StartMainScene";
+
     public GameObject player;
     public Transform playerTargetPos;
     public Transform playerHeadPos;

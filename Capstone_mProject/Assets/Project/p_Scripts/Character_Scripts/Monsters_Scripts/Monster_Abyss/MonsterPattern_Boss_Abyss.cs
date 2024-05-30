@@ -822,6 +822,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.BossCameraReset(0.4f);
         UIManager.Instance.PadeInBlack(1f);
         useExplosionSound = false;
+
+        //! 게임 끝!
+        UIManager.instance.FinishGame();
+
         this.gameObject.SetActive(false);
     }
 
