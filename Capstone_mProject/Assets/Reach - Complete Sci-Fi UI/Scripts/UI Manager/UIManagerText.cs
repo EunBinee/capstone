@@ -11,7 +11,7 @@ namespace Michsky.UI.Reach
     {
         // Resources
         public UIManager UIManagerAsset;
-        private TextMeshProUGUI objText;
+        public TextMeshProUGUI objText;
 
         // Settings
         public FontType fontType = FontType.Regular;
@@ -30,15 +30,19 @@ namespace Michsky.UI.Reach
             if (UIManagerAsset == null) { UIManagerAsset = Resources.Load<UIManager>("Reach UI Manager"); }
             if (objText == null) { objText = GetComponent<TextMeshProUGUI>(); }
             if (UIManagerAsset.enableDynamicUpdate == false) { UpdateText(); this.enabled = false; }
+
+
         }
 
         void Update()
         {
             if (UIManagerAsset == null) { return; }
-            if (UIManagerAsset.enableDynamicUpdate == true) { UpdateText(); }
+            if (UIManagerAsset.enableDynamicUpdate == true)
+            { //UpdateText(); 
+            }
         }
 
-      
+
         void UpdateText()
         {
             if (objText == null)

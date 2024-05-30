@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    private static SoundManager instance = null;
+    public static SoundManager instance = null;
     public static SoundManager Instance
     {
         get
@@ -42,6 +42,9 @@ public class SoundManager : MonoBehaviour
     public AudioSource[] mosterSoundPlayer;
     public int monsterSound_channels;
     private int monsterSound_ChannelIndex;
+
+    [Header("UI Sound")]
+    public AudioSource UIPlayer;
 
     [Header("Other sfx Sound")] //기타. 효과음.
     public AudioClip[] sfxClips;
@@ -97,6 +100,14 @@ public class SoundManager : MonoBehaviour
             mosterSoundPlayer[i].loop = true;
             mosterSoundPlayer[i].volume = 1;
         }
+
+        //UI 플레이어
+        GameObject uiobject = new GameObject("UIPlayer");
+        uiobject.transform.parent = transform;
+        UIPlayer = uiobject.AddComponent<AudioSource>();
+        UIPlayer.playOnAwake = false;
+        UIPlayer.loop = true;
+        UIPlayer.volume = 1;
 
         //기타 효과음
         GameObject sfxObject = new GameObject("sfxPlayer");

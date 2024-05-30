@@ -39,10 +39,10 @@ namespace Michsky.UI.Reach
             if (saveValue) { GetSavedData(); }
             else
             {
-                if (gameObject.activeInHierarchy) 
+                if (gameObject.activeInHierarchy)
                 {
-                    StopCoroutine("DisableAnimator"); 
-                    StartCoroutine("DisableAnimator"); 
+                    StopCoroutine("DisableAnimator");
+                    StartCoroutine("DisableAnimator");
                 }
 
                 switchAnimator.enabled = true;
@@ -67,10 +67,10 @@ namespace Michsky.UI.Reach
             isInitialized = true;
         }
 
-        void OnEnable() 
+        void OnEnable()
         {
             if (UIManagerAudio.instance == null) { useSounds = false; }
-            if (isInitialized) { UpdateUI(); } 
+            if (isInitialized) { UpdateUI(); }
         }
 
         void GetSavedData()
@@ -117,9 +117,9 @@ namespace Michsky.UI.Reach
                 isOn = false;
                 offEvents.Invoke();
 
-                if (saveValue) 
-                { 
-                    PlayerPrefs.SetString("Switch_" + saveKey, "false"); 
+                if (saveValue)
+                {
+                    PlayerPrefs.SetString("Switch_" + saveKey, "false");
                 }
             }
 
@@ -131,7 +131,7 @@ namespace Michsky.UI.Reach
 
                 if (saveValue)
                 {
-                    PlayerPrefs.SetString("Switch_" + saveKey, "true"); 
+                    PlayerPrefs.SetString("Switch_" + saveKey, "true");
                 }
             }
 
@@ -189,7 +189,14 @@ namespace Michsky.UI.Reach
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!isInteractable || eventData.button != PointerEventData.InputButton.Left) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound);
+            }
 
             AnimateSwitch();
         }
@@ -197,7 +204,14 @@ namespace Michsky.UI.Reach
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!isInteractable) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
 
             StartCoroutine("SetHighlight");
         }

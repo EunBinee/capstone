@@ -131,15 +131,29 @@ namespace Michsky.UI.Reach
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!isInteractable) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound); }
-        
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound);
+            }
+
             onClick.Invoke();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!isInteractable || isSelected) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
 
             onHover.Invoke();
             StartCoroutine("SetHighlight");

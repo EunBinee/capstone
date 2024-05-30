@@ -197,7 +197,7 @@ namespace Michsky.UI.Reach
             }
 
             if (!enableFilter && filterObj != null) { filterObj.gameObject.SetActive(false); }
-            else if (enableFilter && filterObj != null && filters.Count > 1) 
+            else if (enableFilter && filterObj != null && filters.Count > 1)
             {
                 filterObj.gameObject.SetActive(true);
 
@@ -313,9 +313,9 @@ namespace Michsky.UI.Reach
             }
         }
 
-        public void InvokeOnClick() 
-        { 
-            onClick.Invoke(); 
+        public void InvokeOnClick()
+        {
+            onClick.Invoke();
         }
 
         void TriggerAnimation(string triggername)
@@ -335,7 +335,14 @@ namespace Michsky.UI.Reach
         public void OnPointerClick(PointerEventData eventData)
         {
             if (!isInteractable || eventData.button != PointerEventData.InputButton.Left) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound);
+            }
 
             // Invoke click actions
             onClick.Invoke();
@@ -344,7 +351,14 @@ namespace Michsky.UI.Reach
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!isInteractable) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
 
             TriggerAnimation("Highlighted");
             onHover.Invoke();
@@ -362,7 +376,14 @@ namespace Michsky.UI.Reach
         public void OnSelect(BaseEventData eventData)
         {
             if (!isInteractable) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.hoverSound);
+            }
 
             TriggerAnimation("Highlighted");
             onSelect.Invoke();
@@ -380,7 +401,14 @@ namespace Michsky.UI.Reach
         public void OnSubmit(BaseEventData eventData)
         {
             if (!isInteractable) { return; }
-            if (useSounds) { UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound); }
+            if (useSounds)
+            {
+                if (UIManagerAudio.instance.audioSource == null)
+                {
+                    UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+                }
+                UIManagerAudio.instance.audioSource.PlayOneShot(UIManagerAudio.instance.UIManagerAsset.clickSound);
+            }
             if (EventSystem.current.currentSelectedGameObject != gameObject) { TriggerAnimation("Normal"); }
 
             onClick.Invoke();
@@ -389,12 +417,12 @@ namespace Michsky.UI.Reach
         IEnumerator InitUINavigation(Navigation nav)
         {
             yield return new WaitForSecondsRealtime(0.1f);
-           
+
             if (selectOnUp != null) { nav.selectOnUp = selectOnUp.GetComponent<Selectable>(); }
             if (selectOnDown != null) { nav.selectOnDown = selectOnDown.GetComponent<Selectable>(); }
             if (selectOnLeft != null) { nav.selectOnLeft = selectOnLeft.GetComponent<Selectable>(); }
             if (selectOnRight != null) { nav.selectOnRight = selectOnRight.GetComponent<Selectable>(); }
-           
+
             targetButton.navigation = nav;
         }
 
