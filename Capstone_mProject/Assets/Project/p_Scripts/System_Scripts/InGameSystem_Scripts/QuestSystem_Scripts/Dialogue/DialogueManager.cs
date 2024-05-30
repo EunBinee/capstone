@@ -200,6 +200,7 @@ public class DialogueManager : MonoBehaviour
         endChat_inController = true; //Chat 애니메이션이 끝났는지, 확인용.\
 
         isDialogueSkip = false;
+        AllFinish = false;
 
         while (!AllFinish && !DoQuest)
         {
@@ -210,12 +211,12 @@ public class DialogueManager : MonoBehaviour
             QuestGoal_UIFalse(); //퀘스트 완료시 ui 비활성화
             curlineContextLen = dialogue.lines[curPart][curLine].context.Length; //현재대사 배열 길이
 
-            //대화 스킵 버튼
-            if (isDialogueSkip)
+            if(isDialogueSkip)
             {
-                break;
+                AllFinish = true;
+                //! 대화 스킵 나중에 고치기...
+                
             }
-            
 
             if (curContext < curlineContextLen)
             {
@@ -436,6 +437,7 @@ public class DialogueManager : MonoBehaviour
                 HidePortrait();
             }
         }
+        
         //엔딩 변화 있는 경우
         if (changeEndingID)
         {
@@ -605,7 +607,7 @@ public class DialogueManager : MonoBehaviour
     public void OnClickDialogueSkipBtn()
     {
         isDialogueSkip = true;
-        Debug.Log(isDialogueSkip);
+        //Debug.Log(isDialogueSkip);
     }
 
   

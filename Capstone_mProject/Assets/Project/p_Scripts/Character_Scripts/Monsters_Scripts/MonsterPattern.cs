@@ -263,7 +263,7 @@ public class MonsterPattern : MonoBehaviour
 
     protected void ChangeMonsterState(MonsterState monsterState)
     {
-        Debug.Log($"{curMonsterState}");
+        //Debug.Log($"{curMonsterState}");
         if (curMonsterState != MonsterState.Death)
             curMonsterState = monsterState;
 

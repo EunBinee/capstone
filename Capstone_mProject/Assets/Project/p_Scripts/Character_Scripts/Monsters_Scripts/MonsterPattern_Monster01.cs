@@ -197,7 +197,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     {
         if (!isRoaming)
         {
-            Debug.Log("로밍 - 처음시작");
+            //Debug.Log("로밍 - 처음시작");
             isRoaming = true;
             //x와 Z주변을 배회하는 몬스터
             roam_Monster_co = StartCoroutine(Roam_Monster_co());
@@ -436,7 +436,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
     // * 몬스터 상태 =>> 다시 자기자리로
     public override void GoingBack_Movement()
     {
-        Debug.Log(" GoingBack!! ");
+        //Debug.Log(" GoingBack!! ");
         if (isTracing)
         {
             isTracing = false;
