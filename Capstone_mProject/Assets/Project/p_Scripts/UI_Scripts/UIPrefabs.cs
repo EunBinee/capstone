@@ -8,4 +8,6 @@ public class UIPrefabs
 {
     public GameObject settingUI;
     public GameObject popupWindow;
+    public GameObject finishUIWindow;
+    public GameObject playerDieWindow;
 }

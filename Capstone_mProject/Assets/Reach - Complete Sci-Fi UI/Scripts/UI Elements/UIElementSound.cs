@@ -22,7 +22,7 @@ namespace Michsky.UI.Reach
         {
             if (UIManagerAudio.instance != null && audioSource == null) 
             { 
-                audioSource = UIManagerAudio.instance.audioSource;
+                audioSource =SoundManager.instance.UIPlayer;// UIManagerAudio.instance.audioSource;
             }
         }
 

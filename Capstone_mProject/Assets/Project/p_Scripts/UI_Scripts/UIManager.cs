@@ -28,7 +28,9 @@ public class UIManager : MonoBehaviour
         SettingMenu,
         Inventory,
         Quest,
-        PopupWindow
+        PopupWindow,
+        PlayerDieWindow,
+        FinishGameWindow
     };
 
     public enum ButtonUI
@@ -152,6 +154,22 @@ public class UIManager : MonoBehaviour
                 else
                     prefab = uiPrefabs.popupWindow;
                 break;
+            case UI.PlayerDieWindow:
+                if (uiPrefabs.playerDieWindow == null)
+                {
+                    prefab = Resources.Load<GameObject>("CanvasPrefabs/" + "PlayerDieUI");
+                }
+                else
+                    prefab = uiPrefabs.playerDieWindow;
+                break;
+            case UI.FinishGameWindow:
+                if (uiPrefabs.finishUIWindow == null)
+                {
+                    prefab = Resources.Load<GameObject>("CanvasPrefabs/" + "FinishUI");
+                }
+                else
+                    prefab = uiPrefabs.finishUIWindow;
+                break;
             default:
                 break;
         }
@@ -180,6 +198,12 @@ public class UIManager : MonoBehaviour
                     case UI.PopupWindow:
                         uiPrefabs.popupWindow = prefab;
                         break;
+                    case UI.PlayerDieWindow:
+                        uiPrefabs.playerDieWindow = prefab;
+                        break;
+                    case UI.FinishGameWindow:
+                        uiPrefabs.finishUIWindow = prefab;
+                        break;
                     default:
                         break;
                 }
@@ -201,6 +225,12 @@ public class UIManager : MonoBehaviour
                         break;
                     case UI.PopupWindow:
                         uiPrefabs.popupWindow = prefab;
+                        break;
+                    case UI.PlayerDieWindow:
+                        curObj.GetComponent<FinishUI>().ShowFinishUI();
+                        break;
+                    case UI.FinishGameWindow:
+                        curObj.GetComponent<FinishUI>().ShowFinishUI();
                         break;
                     default:
                         break;
@@ -265,6 +295,32 @@ public class UIManager : MonoBehaviour
     {
         GameManager.Instance.PadeIn_Alpha(loadingImg.gameObject, false, 0, 0.65f, true);
     }
+
+
+    //*-----------------------------------------------------------------------------------//
+    public void FinishGame()
+    {
+        //* 게임 끝났을 때 UI
+        StartCoroutine(FinishGame_co());
+    }
+    IEnumerator FinishGame_co()
+    {
+        yield return new WaitForSeconds(3f);
+        GetUIPrefab(UI.FinishGameWindow);
+        Pause();
+    }
+    public void PlayerDie()
+    {
+        //* 플레이어 죽었을 때 UI
+        StartCoroutine(PlayerDie_co());
+    }
+    IEnumerator PlayerDie_co()
+    {
+        yield return new WaitForSeconds(3f);
+        GetUIPrefab(UI.PlayerDieWindow);
+        Pause();
+    }
+
 
 }
 

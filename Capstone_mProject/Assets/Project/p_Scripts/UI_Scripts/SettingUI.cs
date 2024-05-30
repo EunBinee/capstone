@@ -158,6 +158,7 @@ public class SettingUI : MonoBehaviour
                 if (!isMainScene)
                     this.gameObject.SetActive(false);
             }
+
             LoadingSceneController.LoadScene(mainSceneName);
         });
 
@@ -184,6 +185,7 @@ public class SettingUI : MonoBehaviour
                     Debug.Log("없는 씬 이름입니다");
 #endif
                 }
+
                 LoadingSceneController.LoadScene(curSceneName);
             }
             //

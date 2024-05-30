@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
     public float cameraSensitivity = 1.0f; //카메라 감도
 
 
+
+
     void Awake()
     {
         Init();
