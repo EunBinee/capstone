@@ -227,6 +227,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void PlayerSetting()
+    {
+        P_States.isDie = false;
+        AnimState(PlayerState.Idle);
+        P_Value.HP = P_Value.MaxHP;
+        P_Com.sickScreen.SetFloat("_Fullscreenintencity",0f);
+        P_Value.index = 1;
+        P_Value.time = 0;
+        P_Value.isCombo = false;
+        P_States.isStartComboAttack = false;
+        P_InputHandle.isAttack = false;
+        P_Com.animator.SetInteger("comboCount", P_Value.index);
+        P_Com.animator.SetBool("p_Locomotion", true);
+        P_Com.animator.Rebind();
+    }
+
     public void LateUpdate()
     {
         if (P_States.isAim)
@@ -357,7 +373,6 @@ public class PlayerController : MonoBehaviour
                 break;
             case PlayerState.Death:
                 P_States.isDie = true;
-                Time.timeScale = 0f;
                 break;
 
         }
