@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using JetBrains.Annotations;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 //Player캐릭터 정의의 모든 것
 
@@ -16,7 +18,7 @@ public class PlayerComponents
     public Transform playerTargetPos;
     public Transform playerHeadPos;
     public Transform playerBackPos;
-
+    public Material sickScreen;
 }
 
 [Serializable]
@@ -93,6 +95,7 @@ public class CurrentState
     public bool isDodgeing;  //닷지
     public bool isSkill;
     public bool doNotRotate;
+    public bool isDie;
 
     [Header("Timing Check")]
     public bool isPerformingAction; //액션을 수행 중인지 여부
