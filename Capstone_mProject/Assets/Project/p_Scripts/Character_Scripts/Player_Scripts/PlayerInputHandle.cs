@@ -205,8 +205,9 @@ public class PlayerInputHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때 => 기본공격
         {   //* 마우스 클릭
-            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing && !P_States.isStop && !P_States.isElectricShock //&& !P_States.isGettingHit
-                && !EventSystem.current.IsPointerOverGameObject())
+            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing 
+                && !P_States.isStop && !P_States.isElectricShock)
+                //&& !EventSystem.current.IsPointerOverGameObject())
             {
                 if (!isAttack)//P_States.isStartComboAttack)
                 {
