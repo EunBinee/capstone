@@ -1479,6 +1479,34 @@ PrefabInstance:
       propertyPath: buttonText
       value: RESTART
       objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3683051908040468593}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: resetPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: FinishUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257686548136090565, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
+      propertyPath: onClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3899771300507422779, guid: 0d548a8ca328f02429b0c2ed07daabec, type: 3}
       propertyPath: objText
       value: 

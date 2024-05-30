@@ -67,4 +67,9 @@ public class FinishUI : MonoBehaviour
     {
         SettingInit();
     }
+
+    public void resetPlayer()
+    {
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
+    }
 }
