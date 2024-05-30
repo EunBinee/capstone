@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 using Michsky.UI.Reach;
+using UnityEngine.Rendering.Universal;
 
 public enum PlayerState
 {
@@ -87,6 +88,11 @@ public class PlayerController : MonoBehaviour
     //private Vector3 screenCenter;
     public bool EnablePlayerUI = true;
     private bool isOn = false;
+
+    //* 쉐이더 블링크 관련
+    public float blinkDuration = 1f; // 블링크 지속 시간
+    private float maxIntensity = 0.25f;
+
     public bool retIsOn()
     {
         return isOn;
@@ -104,6 +110,7 @@ public class PlayerController : MonoBehaviour
         P_Skills = GetComponent<PlayerSkills>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         InitPlayer();
+        P_Com.sickScreen.SetFloat("_Fullscreenintencity",0f);
 
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -119,6 +126,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        //P_Com.sickScreen = transform.GetComponent<Renderer>().material.shader = Shader.Find("Shader Graphs/TutorialBilt");
         //screenCenter = new Vector3(Camera.main.pixelWidth / 2, Camera.main.pixelHeight / 2);
         if (GameManager.instance.gameData.player == null || GameManager.instance.gameData.player == this.gameObject)
             DontDestroyOnLoad(this.gameObject);
@@ -347,6 +355,10 @@ public class PlayerController : MonoBehaviour
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
+            case PlayerState.Death:
+                P_States.isDie = true;
+                Time.timeScale = 0f;
+                break;
 
         }
     }
@@ -360,6 +372,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    bool isSick = false;
     public void CheckHP()
     {
         if (HPgauge != null)
@@ -370,8 +383,44 @@ public class PlayerController : MonoBehaviour
             //HPgauge.value = P_Value.HP / P_Value.MaxHP;
             progressBar.currentValue = P_Value.HP; /// P_Value.MaxHP;
             progressBar.UpdateUI();
+            //todo: 15퍼 미만이면 화면 깜빡이게
+            if (P_Value.HP <= (P_Value.MaxHP / 100f) * 20f && !isSick)
+            {
+                isSick = true;
+                StartCoroutine(BlinkSickScreen());
+            }
+            else if (P_Value.HP > (P_Value.MaxHP / 100f) * 20f)
+            {
+                isSick = false;
+            }
             //Debug.Log(progressBar.currentValue);
         }
+    }
+    IEnumerator BlinkSickScreen()
+    {
+        while (!P_States.isDie)
+        {
+            // 값을 올리는 동안
+            yield return StartCoroutine(ChangeIntensity(0f, maxIntensity, blinkDuration / 2));
+            // 값을 내리는 동안
+            yield return StartCoroutine(ChangeIntensity(maxIntensity, 0f, blinkDuration / 2));
+        }
+    }
+
+    IEnumerator ChangeIntensity(float from, float to, float duration)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float currentIntensity = Mathf.Lerp(from, to, elapsed / duration);
+            P_Com.sickScreen.SetFloat("_Fullscreenintencity", currentIntensity);
+            yield return null;
+        }
+
+        // 최종 값 보정
+        P_Com.sickScreen.SetFloat("_Fullscreenintencity", to);
     }
 
     //* 데미지 받는 코루틴 실행
@@ -439,13 +488,24 @@ public class PlayerController : MonoBehaviour
     {
         //죽다.
         P_Value.HP = 0;
-        AnimState(PlayerState.Death);
         Debug.Log("플레이어 사망");
-        UIManager.Instance.PadeInBlack(1);
-
-        UIManager.instance.PlayerDie();
+        //UIManager.Instance.PadeInBlack(1);
+        StartCoroutine(dieScreen());
+        //UIManager.instance.PlayerDie();
     }
-
+    IEnumerator dieScreen(){
+        float intencity = P_Com.sickScreen.GetFloat("_Fullscreenintencity");
+        while (intencity < 1f)
+        {
+            intencity += Time.deltaTime;
+            P_Com.sickScreen.SetFloat("_Fullscreenintencity",intencity);
+            yield return null;
+        }
+        UIManager.instance.PlayerDie();
+        AnimState(PlayerState.Death);
+        yield return null;
+    }
+    
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
         //* ~ 1.5f : 안넘어지고 가벼운 피격 모션. 

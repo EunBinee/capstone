@@ -26,7 +26,7 @@ public class PlayerSkills : MonoBehaviour
 
     private GameObject arrow;// => P_Controller.arrow;
 
-    private SkillButton skill_Q;
+    //private SkillButton skill_Q;
     private string R_Start_Name = "Bow_Attack_Charging";
     private string R_Name = "Bow_Attack_launch_02";
     private string R_StrongName = "ChargingArrowLaunch";
@@ -70,7 +70,7 @@ public class PlayerSkills : MonoBehaviour
     public void Setting()
     {
         //skillTreeWindow = P_Movement.skillTree;
-        skill_Q = P_Controller.P_Movement.skill_Q;
+        //skill_Q = P_Movement.skill_Q;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
         SkillMapAdd("Heal", P_SkillInfo.heal);
@@ -504,7 +504,7 @@ public class PlayerSkills : MonoBehaviour
         switch (skillName)
         {
             case "ChangeWeapon":   //* weapon change
-                if (skill_Q.imgCool.fillAmount == 0)
+                //if (skill_Q.imgCool.fillAmount == 0)
                 {
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
@@ -524,7 +524,7 @@ public class PlayerSkills : MonoBehaviour
                         P_Com.animator.SetFloat("isBowmode", 1);
                     }
                 }
-                skill_Q.OnClicked();
+                P_Movement.skill_Q.OnClicked();
                 break;
 
             case "Heal":

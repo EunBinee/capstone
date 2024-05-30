@@ -524,7 +524,7 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = false;
             if (P_States.isStrafing)    //* 주목중이라면 
             {
-                if (P_Input.verticalMovement > 0)
+                if (P_Input.verticalMovement >= 0)
                 {
                     P_Com.animator.Play("Front", 1);
                 }
