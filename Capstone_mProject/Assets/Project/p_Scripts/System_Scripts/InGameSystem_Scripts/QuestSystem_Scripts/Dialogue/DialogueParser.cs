@@ -145,6 +145,7 @@ public class DialogueParser
                 dialogueNum_in = int.Parse(row[csv_Context].ToString());
                 dialogue.dialogueNum = dialogueNum_in;
             }
+            
             // if (row[4].ToString() == "")
             // {
             //     //dialogue.lineNum = lineNum_in;
@@ -316,6 +317,39 @@ public class DialogueParser
 
                             }
                         }
+                        if(row[csv_Quest].ToString() != "")
+                        {
+                            int nextDialogueNum = 0;
+                            bool isNumeric = int.TryParse(row[csv_Npc].ToString(), out nextDialogueNum);
+                            if (!line.changeQuestID)
+                                {
+                                    int changeQuestID = 0;
+                                    isNumeric = int.TryParse(row[csv_Quest].ToString(), out changeQuestID);
+
+                                    if (isNumeric)
+                                    {
+                                        line.changeQuestID = true;
+                                        line.questIDToBeChange = changeQuestID;
+                                    }
+                                }
+                           //Debug.Log(line.questIDToBeChange);
+                           if(row[csv_Event].ToString() != "")
+                            {
+                                int changeEvnetID = 0;
+                                //int nextDialogueNum = 0;
+                                //bool isNumeric = int.TryParse(row[csv_Npc].ToString(), out nextDialogueNum);
+                                isNumeric = int.TryParse(row[csv_Event].ToString(), out changeEvnetID);
+
+                                if (isNumeric && line.evnetIDToBeChange !=changeEvnetID)
+                                {
+                                    line.changeEvnetID = true;
+                                    line.evnetIDToBeChange = changeEvnetID+1;
+                                    //Debug.Log(line.evnetIDToBeChange);
+                                    //Debug.Log("이벤트 변화 있음");
+                                }
+                            }
+                        }
+        
 
                         //-----------------------------------------------------------
                         //여기서 i를 ++
