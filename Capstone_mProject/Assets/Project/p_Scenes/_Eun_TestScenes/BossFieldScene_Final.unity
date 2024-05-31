@@ -6304,7 +6304,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6289568037670363905, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.399258
+      value: 48.398827
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965927949542687181, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
+      propertyPath: m_RotationAtRest.x
+      value: 48.398785
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
@@ -8653,6 +8657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d70d21d2469799479e45864f0bac578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curSceneName: BossFieldScene_Final
   spawnPoints:
   - {fileID: 1303641728}
   timelinesName:
