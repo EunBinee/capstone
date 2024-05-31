@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
         P_Skills = GetComponent<PlayerSkills>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         InitPlayer();
-        P_Com.sickScreen.SetFloat("_Fullscreenintencity",0f);
+        P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
 
 
         Cursor.visible = false;     //마우스 커서를 보이지 않게
@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
         P_States.isDie = false;
         AnimState(PlayerState.Idle);
         P_Value.HP = P_Value.MaxHP;
-        P_Com.sickScreen.SetFloat("_Fullscreenintencity",0f);
+        P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
         P_Value.index = 1;
         P_Value.time = 0;
         P_Value.isCombo = false;
@@ -508,19 +508,21 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(dieScreen());
         //UIManager.instance.PlayerDie();
     }
-    IEnumerator dieScreen(){
+    IEnumerator dieScreen()
+    {
         float intencity = P_Com.sickScreen.GetFloat("_Fullscreenintencity");
         while (intencity < 1f)
         {
             intencity += Time.deltaTime;
-            P_Com.sickScreen.SetFloat("_Fullscreenintencity",intencity);
+            P_Com.sickScreen.SetFloat("_Fullscreenintencity", intencity);
             yield return null;
         }
+        Debug.Log("죽음죽음죽음");
         UIManager.instance.PlayerDie();
         AnimState(PlayerState.Death);
         yield return null;
     }
-    
+
     IEnumerator GetHit_KnockBack_co(float knockbackDistance = 1.5f) //넉백만을 수행
     {
         //* ~ 1.5f : 안넘어지고 가벼운 피격 모션. 

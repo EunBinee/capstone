@@ -139,7 +139,6 @@ public class UIManager : MonoBehaviour
         {
             case UI.SettingMenu:
                 if (uiPrefabs.settingUI == null)
-                    //prefab = Resources.Load<GameObject>("SystemPrefabs/" + "Popup_Settings");
                     prefab = Resources.Load<GameObject>("CanvasPrefabs/" + "SettingsUI");
                 else
                     prefab = uiPrefabs.settingUI;
@@ -184,25 +183,30 @@ public class UIManager : MonoBehaviour
                 }
                 prefab = Instantiate(prefab, GameManager.Instance.m_canvas.transform);
                 prefab.SetActive(true);
-                uiPrefabsInGame.Add(prefab);
+
+
 
                 switch (ui)
                 {
                     case UI.SettingMenu:
                         uiPrefabs.settingUI = prefab;
+                        uiPrefabsInGame.Add(prefab);
                         break;
                     case UI.Inventory:
+                        uiPrefabsInGame.Add(prefab);
                         break;
                     case UI.Quest:
+                        uiPrefabsInGame.Add(prefab);
                         break;
                     case UI.PopupWindow:
                         uiPrefabs.popupWindow = prefab;
+                        uiPrefabsInGame.Add(prefab);
                         break;
                     case UI.PlayerDieWindow:
-                        uiPrefabs.playerDieWindow = prefab;
+                        // uiPrefabs.playerDieWindow = prefab;
                         break;
                     case UI.FinishGameWindow:
-                        uiPrefabs.finishUIWindow = prefab;
+                        //uiPrefabs.finishUIWindow = prefab;
                         break;
                     default:
                         break;

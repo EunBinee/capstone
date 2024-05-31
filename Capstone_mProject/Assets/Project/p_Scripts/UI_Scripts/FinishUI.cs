@@ -23,11 +23,21 @@ public class FinishUI : MonoBehaviour
 
     void SettingBtn()
     {
+        GameManager.instance.Stop_AllMonster();
+
+        if (GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing)
+        {
+            GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing = false;
+        }
+
+        GameManager.instance.RemoveMonster();
+
         gototheMainSceneBtn.onClick.AddListener(() =>
         {
             settingUIAnim.Play(panelFadeOut);
             string mainSceneName = GameManager.instance.gameData.mainSceneName;
             LoadingSceneController.LoadScene(mainSceneName);
+            Destroy(this);
         });
 
         if (restartBtn != null)
@@ -43,7 +53,7 @@ public class FinishUI : MonoBehaviour
                             //게임이 멈춰있으면 다시 재생.
                             UIManager.Instance.Resume();
                         }
-                        this.gameObject.SetActive(false);
+
 
                         string curSceneName = CurSceneManager.instance.curSceneName;
                         if (curSceneName == "")
@@ -53,7 +63,14 @@ public class FinishUI : MonoBehaviour
 #endif
                         }
 
+
+
+                        resetPlayer();
                         LoadingSceneController.LoadScene(curSceneName);
+
+                        Debug.Log("HI");
+
+                        Destroy(this);
                     });
         }
 
