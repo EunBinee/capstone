@@ -12,9 +12,6 @@ public class DialogueInfo
     //public int id;
     public void StartInteraction(GameObject _gameObject)
     {
-
-
-
         Npc interaction_Item = _gameObject.GetComponent<Npc>();
 
 

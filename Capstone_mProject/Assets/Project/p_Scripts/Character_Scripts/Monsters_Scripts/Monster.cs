@@ -309,7 +309,7 @@ public class Monster : MonoBehaviour
         {
 
             DialogueManager.Instance.questManager.currentQuestValue_++;
-            Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
+            //Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
 
         }
         else if (!DialogueManager.instance.DoQuest)
