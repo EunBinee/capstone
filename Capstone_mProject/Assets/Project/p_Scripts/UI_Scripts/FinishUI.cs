@@ -37,7 +37,7 @@ public class FinishUI : MonoBehaviour
             settingUIAnim.Play(panelFadeOut);
             string mainSceneName = GameManager.instance.gameData.mainSceneName;
             LoadingSceneController.LoadScene(mainSceneName);
-            Destroy(this);
+            // Destroy(this);
         });
 
         if (restartBtn != null)
@@ -69,8 +69,8 @@ public class FinishUI : MonoBehaviour
                         LoadingSceneController.LoadScene(curSceneName);
 
                         Debug.Log("HI");
-
-                        Destroy(this);
+                        // this.gameObject.SetActive(false);
+                        // Destroy(this);
                     });
         }
 

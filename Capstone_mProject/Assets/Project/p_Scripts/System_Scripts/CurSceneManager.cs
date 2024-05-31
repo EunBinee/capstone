@@ -48,6 +48,12 @@ public class CurSceneManager : MonoBehaviour
     {
         //* 처음 불러와졌을때 세팅
 
+        if (UIManager.instance.uiPrefabs.playerDieWindow != null)
+            UIManager.instance.uiPrefabs.playerDieWindow.gameObject.SetActive(false);
+
+        if (UIManager.instance.uiPrefabs.finishUIWindow != null)
+            UIManager.instance.uiPrefabs.finishUIWindow.gameObject.SetActive(false);
+
         Cursor.visible = false;     //마우스 커서를 보이지 않게
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
         Time.timeScale = 1f;

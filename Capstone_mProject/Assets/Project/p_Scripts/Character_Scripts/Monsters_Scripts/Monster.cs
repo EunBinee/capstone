@@ -132,26 +132,33 @@ public class Monster : MonoBehaviour
     //* 몬스터가 플레이어를 때렸을 때 //
     public virtual void OnHit(float damage = 0, Action action = null)
     {
-        if (!playerController._currentState.isGettingHit)
+        if (playerController._currentState.isDie == false)
         {
             if (!playerController._currentState.isGettingHit)
-                playerController._currentState.isGettingHit = true;
-            //몬스터가 플레이어를 때렸을 때 처리.
-            playerController.OnHitPlayerEffect = action;
-            playerController.GetHit(this, damage);
+            {
+                if (!playerController._currentState.isGettingHit)
+                    playerController._currentState.isGettingHit = true;
+                //몬스터가 플레이어를 때렸을 때 처리.
+                playerController.OnHitPlayerEffect = action;
+                playerController.GetHit(this, damage);
+            }
         }
     }
 
     public virtual void OnHit_FallDown(float damage = 0, float distance = 10f, Action action = null)
     {
-        if (!playerController._currentState.isGettingHit)
+        if (playerController._currentState.isDie == false)
         {
             if (!playerController._currentState.isGettingHit)
-                playerController._currentState.isGettingHit = true;
-            //몬스터가 플레이어를 때렸을 때 처리.
-            playerController.OnHitPlayerEffect = action;
-            playerController.GetHit_FallDown(this, damage, distance);
+            {
+                if (!playerController._currentState.isGettingHit)
+                    playerController._currentState.isGettingHit = true;
+                //몬스터가 플레이어를 때렸을 때 처리.
+                playerController.OnHitPlayerEffect = action;
+                playerController.GetHit_FallDown(this, damage, distance);
+            }
         }
+
     }
     //*------------------------------------------------------------------------------------------//
     //*몬스터가 플레이어에게 공격 당함.

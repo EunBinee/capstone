@@ -457,6 +457,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PlayerGetHit(Monster enemy, float damage, float knockbackDistance = 1.5f)
     {
+
         if (!P_States.isGettingHit)
             P_States.isGettingHit = true;
         //임시로 시간지나면 isGettingHit false로 만들어줌
@@ -502,6 +503,7 @@ public class PlayerController : MonoBehaviour
     public void Death()
     {
         //죽다.
+        AnimState(PlayerState.Death);
         P_Value.HP = 0;
         Debug.Log("플레이어 사망");
         //UIManager.Instance.PadeInBlack(1);
@@ -519,7 +521,7 @@ public class PlayerController : MonoBehaviour
         }
         Debug.Log("죽음죽음죽음");
         UIManager.instance.PlayerDie();
-        AnimState(PlayerState.Death);
+
         yield return null;
     }
 
