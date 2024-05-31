@@ -88,9 +88,9 @@ public class DatabaseManager : MonoBehaviour
                 //idList01.Add(id);   //Start() Debug용
                 NPC_diaglogues_Dictionary[id] = dialogues[i];
             }
-
         }
         Debug.Log(csvFileName + "완료!");
+       
     }
 
     public void QuestParser(string csvFileName, int questNum)
