@@ -407,13 +407,14 @@ public class PlayerController : MonoBehaviour
             else if (P_Value.HP > (P_Value.MaxHP / 100f) * 20f)
             {
                 isSick = false;
+                StopCoroutine(BlinkSickScreen());
             }
             //Debug.Log(progressBar.currentValue);
         }
     }
     IEnumerator BlinkSickScreen()
     {
-        while (!P_States.isDie)
+        while (!P_States.isDie && isSick)
         {
             // 값을 올리는 동안
             yield return StartCoroutine(ChangeIntensity(0f, maxIntensity, blinkDuration / 2));
