@@ -5307,12 +5307,12 @@ GameObject:
   - component: {fileID: 4114324376792281285}
   - component: {fileID: 7038057910060357790}
   m_Layer: 5
-  m_Name: SkillSlot_F
+  m_Name: SkillSlot_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4114324376792281286
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5334,7 +5334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -81, y: 75}
+  m_AnchoredPosition: {x: -80, y: 75}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4114324376792281147
@@ -10643,7 +10643,7 @@ GameObject:
   - component: {fileID: 4134663810281622624}
   - component: {fileID: 8086923704111769273}
   m_Layer: 5
-  m_Name: SkillSlot_Q
+  m_Name: SkillSlot_V
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11789,7 +11789,7 @@ GameObject:
   - component: {fileID: 7684822290010921187}
   - component: {fileID: 3607604791824576696}
   m_Layer: 5
-  m_Name: SkillSlot_E
+  m_Name: SkillSlot_Q
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11816,7 +11816,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -300, y: 75}
+  m_AnchoredPosition: {x: -190, y: 75}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7684822290010920989
@@ -12407,7 +12407,7 @@ GameObject:
   - component: {fileID: 8053017349802401372}
   - component: {fileID: 3996699226769602055}
   m_Layer: 5
-  m_Name: SkillSlot_R
+  m_Name: SkillSlot_E
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12434,7 +12434,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -190, y: 75}
+  m_AnchoredPosition: {x: -80, y: 75}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8053017349802401442
@@ -13432,11 +13432,10 @@ MonoBehaviour:
   hitUI: {fileID: 7208634931128638174}
   portrait: {fileID: 6984924974441979555}
   HPgauge: {fileID: 2656945058408231650}
-  skill_Q: {fileID: 4134663810281622624}
-  skill_F: {fileID: 7038057910060357790}
-  skill_E: {fileID: 3607604791824576696}
-  skill_R: {fileID: 3996699226769602055}
-  skill_T: {fileID: 7093811783588414531}
+  skill_V: {fileID: 4134663810281622624}
+  skill_Q: {fileID: 3607604791824576696}
+  skill_E: {fileID: 3996699226769602055}
+  skill_R: {fileID: 7038057910060357790}
   skillTree: {fileID: 6104789077165725983}
   crosshairImage: {fileID: 1276410616177756403}
   p_controller: {fileID: 0}

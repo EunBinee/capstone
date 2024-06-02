@@ -26,11 +26,11 @@ public class PlayerMovement : MonoBehaviour
 
     Coroutine idleMotion_co;
 
-    public SkillButton skill_T;
+    public SkillButton skill_Q;
     public SkillButton skill_E;
     public SkillButton skill_R;
-    public SkillButton skill_F;
-    public SkillButton skill_Q;
+    //public SkillButton skill_F;
+    public SkillButton skill_V;
 
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
@@ -78,30 +78,31 @@ public class PlayerMovement : MonoBehaviour
         }
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
 
+        skill_V = playerUI_info.skill_V;
+        skill_V.gameObject.SetActive(true);
+        _controller.originQpos = skill_V.gameObject.transform.position;
+        //_controller.originVpos = new Vector3(1000, -1000, 0);
+
+
         skill_Q = playerUI_info.skill_Q;
+        skill_Q.imgIcon.sprite = P_SkillInfo.selectSkill[0].skillData.icon;
         skill_Q.gameObject.SetActive(true);
         _controller.originQpos = skill_Q.gameObject.transform.position;
-        //_controller.originQpos = new Vector3(1000, -1000, 0);
-
 
         skill_E = playerUI_info.skill_E;
-        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].skillData.icon;
+        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[1].skillData.icon;
         skill_E.gameObject.SetActive(true);
         _controller.originEpos = skill_E.gameObject.transform.position;
 
         skill_R = playerUI_info.skill_R;
-        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].skillData.icon;
-        skill_R.gameObject.SetActive(true);
+        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[2].skillData.icon;
+        skill_R.gameObject.SetActive(false);
         _controller.originRpos = skill_R.gameObject.transform.position;
 
-        skill_F = playerUI_info.skill_F;
-        skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].skillData.icon;
-        skill_F.gameObject.SetActive(true);
-        _controller.originFpos = skill_F.gameObject.transform.position;
 
-        skill_T = playerUI_info.skill_T;
-        skill_T.gameObject.SetActive(false);
-        _controller.originTpos = skill_T.gameObject.transform.position;
+        //skill_T = playerUI_info.skill_T;
+        //skill_T.gameObject.SetActive(false);
+        //_controller.originTpos = skill_T.gameObject.transform.position;
 
         skillTree = playerUI_info.skillTree;
         skillTree.gameObject.SetActive(false);
@@ -153,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
         if (!HandleJump()
                 || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
-            HandleWalkOrRun(); HandleSprint();
+            HandleWalkOrRun(); //HandleSprint();
 
             P_InputHandle.MouseMoveInput();
 

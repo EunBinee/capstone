@@ -77,6 +77,7 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveHeal = true;
         SkillMapAdd("Restraint", P_SkillInfo.restraint);
         P_SkillInfo.haveRestraint = true;
+        
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
@@ -524,7 +525,7 @@ public class PlayerSkills : MonoBehaviour
                         P_Com.animator.SetFloat("isBowmode", 1);
                     }
                 }
-                P_Movement.skill_Q.OnClicked();
+                P_Movement.skill_V.OnClicked();
                 break;
 
             case "Heal":
