@@ -93,6 +93,9 @@ public class PlayerController : MonoBehaviour
     public float blinkDuration = 1f; // 블링크 지속 시간
     private float maxIntensity = 0.25f;
 
+    public Material[] m_material;
+    Coroutine changeMaterial_co = null;
+
     public bool retIsOn()
     {
         return isOn;
@@ -136,6 +139,25 @@ public class PlayerController : MonoBehaviour
         }
         SetUIVariable();
         _playerArrows.Init();
+        //SetPlayerMaterials();
+    }
+
+    public void SetPlayerMaterials()
+    {
+        if (P_Com.skinnedMeshRenderers != null)
+        {
+            for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
+            {
+                Debug.Log("[player test] SetPlayerMaterials()");
+                m_material[i] = P_Com.skinnedMeshRenderers[i].materials[0];
+                Debug.Log($"[player test] m_material[i] {m_material[i]}");
+                Debug.Log($"[player test] P_Com.skinnedMeshRenderers[i].materials[0] {P_Com.skinnedMeshRenderers[i].materials[0]}");
+            }
+        }
+        else
+        {
+            Debug.Log("플레이어 skinnedMeshRenderer null");
+        }
     }
 
     public void SetUIVariable()
@@ -486,6 +508,11 @@ public class PlayerController : MonoBehaviour
                 P_Skills.arrowSkillOff();
             }
 
+            if (changeMaterial_co == null && P_Com.skinnedMeshRenderers != null)
+            {
+                changeMaterial_co = StartCoroutine(ChangeMaterial());
+            }
+
             //* 데미지가 크면 넘어지고 데미지가 작으면 안넘어짐.
 
             AnimState(PlayerState.GetHit_KnockBack, 0, knockbackDistance);
@@ -586,6 +613,40 @@ public class PlayerController : MonoBehaviour
         effectRotation.x = 0;
         effectRotation.z = 0;
         effect.gameObject.transform.rotation = effectRotation;
+    }
+
+    IEnumerator ChangeMaterial()
+    {
+        // Skinned Mesh Renderer의 모든 Materials를 새로운 Material로 변경합니다.
+        Material[] materials = P_Com.skinnedMeshRenderers[0].materials;
+        for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
+        {
+            Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
+            for (int j = 0; j < _materials.Length; j++)
+            {
+                if (j == 0)
+                    _materials[j] = P_Com.hitMat;
+                else
+                    _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
+            }
+            P_Com.skinnedMeshRenderers[i].materials = _materials;
+        }
+
+        yield return new WaitForSeconds(0.3f);
+        for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
+        {
+            Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
+            for (int j = 0; j < _materials.Length; j++)
+            {
+                if (j == 0)
+                    _materials[j] = m_material[i];
+                else
+                    _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
+            }
+            P_Com.skinnedMeshRenderers[i].materials = _materials;
+        }
+
+        changeMaterial_co = null;
     }
 
     //*-------------------------------------------------------------------//
