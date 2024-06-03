@@ -49,6 +49,7 @@ public class DialogueManager : MonoBehaviour
     public bool DoQuest;
     public bool isQuestDetail;
     public bool isDialogue;
+    public bool startDialogue;
     //화살표애니메이션
     public bool isArrowAnimating = false;
     //대화 스킵 버튼
@@ -78,6 +79,7 @@ public class DialogueManager : MonoBehaviour
         DoQuest = false;
         isQuestDetail = false;
         isDialogue = false;
+        startDialogue = false;
 
         DialogueUI_info.dialogueSkip.onClick.AddListener(OnClickDialogueSkipBtn);
 

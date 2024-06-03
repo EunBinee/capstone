@@ -294,6 +294,13 @@ public class QuestManager : MonoBehaviour
                         isEnd();
                     }
                 }
+                else if(stringdata=="우클릭")
+                {
+                    if(Input.GetMouseButtonDown(1)||Input.GetKeyDown(KeyCode.LeftShift))
+                    {
+                        isEnd();
+                    }
+                }
                 else if(stringdata=="")
                 {
                     //Debug.Log(quest_.currentQuestValue);
@@ -328,6 +335,12 @@ public class QuestManager : MonoBehaviour
 
             //Debug.Log(text_goal);
             DialogueManager.instance.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
+        }
+        else
+        {
+            isTutorial = false;
+            Quest_Clear();
+            
         }
     }
 }
