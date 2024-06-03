@@ -92,13 +92,5 @@ public class Inspection : MonoBehaviour
 
        
     }
-
-    private IEnumerator UIFalse()
-    {
-        Debug.Log("zvdasv");
-        yield return new WaitForSeconds( 1.5f ); 
-        interactionNotice.SetActive(false);
-        Debug.Log("qwe");
-    }
     
 }

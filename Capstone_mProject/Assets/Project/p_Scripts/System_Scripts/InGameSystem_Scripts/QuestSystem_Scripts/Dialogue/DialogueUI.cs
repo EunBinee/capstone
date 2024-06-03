@@ -27,6 +27,7 @@ public class DialogueUI
     public TMP_Text Text_QuestDetailTitle; //퀘스트 제목 text
     public TMP_Text Text_QuestDetailContent; //퀘스트 세부내용 text
     public GameObject Text_Alarm; //튜토리얼, 알람등을 알려주는 text 
+    public GameObject Text_Tuto;
 
     public TMP_Text objectText;
 }

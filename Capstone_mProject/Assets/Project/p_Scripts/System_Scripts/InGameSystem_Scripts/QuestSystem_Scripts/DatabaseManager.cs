@@ -9,7 +9,7 @@ public class DatabaseManager : MonoBehaviour
     public DialogueParser dialogueParser;
     public string csvFileName_NPC;
     public string csvFileName_Quest;
-    public string csvFileName_Reasoning;
+    //public string csvFileName_Reasoning;
 
     //npc
     public Dictionary<int, Dialogue> NPC_diaglogues_Dictionary = new Dictionary<int, Dialogue>(); //csvFileName_NPC
