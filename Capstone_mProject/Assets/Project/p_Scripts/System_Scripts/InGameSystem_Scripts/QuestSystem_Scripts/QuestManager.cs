@@ -18,7 +18,30 @@ public class QuestManager : MonoBehaviour
 
     DialogueController dialogueController;
 
+    public static QuestManager instance = null;
+        public static QuestManager Instance
+        {
+            get
+            {
+                if (null == instance)
+                {
+                    return null;
+                }
+                return instance;
+            }
+        }
+    void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+                DontDestroyOnLoad(this.gameObject);
+            }
+            else
+                Destroy(this.gameObject);
 
+        
+    }
     private void Start()
     {
         if (isTutorial)
@@ -37,7 +60,7 @@ public class QuestManager : MonoBehaviour
 
     private void Update()
     {
-        if (DialogueManager.instance.DoQuest == true)
+        if (DialogueManager.instance.DoQuest == true) 
         {
             UpdateQuest(quest_.questId);
 
@@ -78,18 +101,62 @@ public class QuestManager : MonoBehaviour
     public void Quest_ValueUpdate()
     {
         //현재 퀘스트 진행도와 퀘스트 목표치가 같으면 퀘스트 클리어.
-        if (quest_.currentQuestValue >= quest_.questClearValue)
-        {
-            quest_.currentQuestValue = quest_.questClearValue;
-            Quest_Clear();
-        }
+        //if(!isTutorial)
+        //{
 
+            if (quest_.currentQuestValue >= quest_.questClearValue)
+            {
+                quest_.currentQuestValue = quest_.questClearValue;
+                Quest_Clear();
+            }
+        //}
+        
+        // if(quest_.questClearValue == 0 && quest_.questClearString.Contains("W"))
+        // {
+        //     if (Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.D))
+        //         Quest_Clear();
+        // }
+        // else if(quest_.questClearValue == 0 && quest_.questClearString.Contains("SPACE"))
+        // {
+        //     if (Input.GetKeyDown(KeyCode.Space))
+        //         Quest_Clear();
+        // }
+        // else if(quest_.questClearValue == 0 && quest_.questClearString.Contains("SHIFT"))
+        // {
+        //     if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1))
+        //         Quest_Clear();
+        // }
+        // else if(quest_.questClearValue == 0 && quest_.questClearString.Contains("F"))
+        // {
+        //     if (Input.GetKeyDown(KeyCode.F))
+        //         Quest_Clear();
+        // }
+        // else if(quest_.questClearValue == 0 && quest_.questClearString.Contains("좌클릭"))
+        // {
+        //     if (Input.GetMouseButtonDown(0))
+        //         Quest_Clear();
+        // }
+        // else if(quest_.questClearValue == 0 && quest_.questClearString.Contains("Q"))
+        // {
+        //     if (Input.GetKeyDown(KeyCode.Q))
+        //         Quest_Clear();
+        // }
     }
 
     //퀘스트 클리어 함수
     protected void Quest_Clear()
     {
+        // if(isTutorial)
+        //     StartCoroutine(Delay());
+        // else if(!isTutorial)
         DialogueManager.instance.DoQuest = false;
+
+    }
+    IEnumerator Delay()
+    {
+        yield return new WaitForSeconds(1.5f);
+        DialogueManager.instance.DoQuest = false;
+        Debug.Log("대화");
     }
 
     //퀘스트 업데이트 함수 
@@ -109,14 +176,29 @@ public class QuestManager : MonoBehaviour
     //퀘스트 목표 업데이트 함수 
     public void TextUpdate()
     {
-        for (int i = 0; i < quest_.questGoal.Count;)
+        if(!isTutorial)
         {
-            text_goal = quest_.questGoal[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>") + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
-            if (++i != quest_.questGoal.Count)
+            for (int i = 0; i < quest_.questGoal.Count;)
             {
-                text_goal += "\n";
+                text_goal = quest_.questGoal[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>") + "(" + quest_.currentQuestValue + "/" + quest_.questClearValue + ")";
+                if (++i != quest_.questGoal.Count)
+                {
+                    text_goal += "\n";
+                }
             }
         }
+        else if(isTutorial)
+        {
+            for (int i = 0; i < quest_.questGoal.Count;)
+            {
+                text_goal = quest_.questGoal[i].Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>");
+                if (++i != quest_.questGoal.Count)
+                {
+                    text_goal += "\n";
+                }
+            }
+        }
+        
 
         for (int i = 0; i < quest_.questTitle.Count;)
         {
@@ -134,28 +216,37 @@ public class QuestManager : MonoBehaviour
                 text_content += "\n";
             }
         }
-        DialogueManager.instance.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
-        DialogueManager.instance.QuestTitle_Alarm(text_title);
+        if (!isTutorial)
+        {
+            DialogueManager.instance.QuestGoal_UI(text_goal); //퀘스트 목표 UI 활성화
+            DialogueManager.instance.QuestTitle_Alarm(text_title);
+        }
+        else
+        {
+           DialogueManager.instance.QuestGoal_UI(text_goal); 
+        }
+
     }
 
     //튜토리얼 
     public void UpdateAlarm(int id)
     {
+        //Debug.Log(GameManager.Instance.gameInfo.QuestNum);
+        //Debug.Log(DatabaseManager.GetInstance().Quest_Dictionary.ContainsKey(quest_.questId));
         if (GameManager.Instance.gameInfo.QuestNum != 0 && DatabaseManager.GetInstance().Quest_Dictionary.ContainsKey(quest_.questId))
         {
             quest_ = DatabaseManager.GetInstance().Quest_Dictionary[GameManager.Instance.gameInfo.QuestNum];
-            //TextAlarm();
+            TextAlarm();
             NextTextAlarm();
         }
-        // else
-        // {
-        //     GameManager.GetInstance().dialogueManager.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
-        //     isTutorial = false;
-        // }
+        else
+        {
+            DialogueManager.instance.TutorialUIFalse(text_goal); //퀘스트 목표 UI 비활성화
+            //isTutorial = false;
+        }
 
     }
     //튜토 알람 텍스트 
-    /*
     public void TextAlarm()
     {
         for (int i = 0; i < quest_.questGoal.Count;)
@@ -166,42 +257,67 @@ public class QuestManager : MonoBehaviour
                 text_goal += "\n";
             }
         }
-        GameManager.GetInstance().dialogueManager.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
+        DialogueManager.instance.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
 
         //GameManager.Instance.gameInfo.QuestNum = quest_.questId;
     }
-    */
+    
     public void NextTextAlarm()
     {
         string[] data = quest_.questClearString.ToString().Split(new char[] { '\'' });
         string stringdata = quest_.questClearString.ToString();
 
-        if (data != null && data.Length > 1)
+        if (data != null && data.Length >= 1)
         {
             bool[] keysPressed = new bool[data.Length];
             bool allKeysPressed = false;
 
             for (int i = 0; i < data.Length; i++)
             {
-                KeyCode key = (KeyCode)Enum.Parse(typeof(KeyCode), data[i]);
-                // 키가 눌렸을 때만 keysPressed[i]를 true로 설정
-                keysPressed[i] = Input.GetKeyDown(key);
+                KeyCode key;// = (KeyCode)Enum.Parse(typeof(KeyCode), data[i]);
+                bool keyParsed = Enum.TryParse(data[i], out key);
 
-                if (keysPressed[i])
+                if(keyParsed)
                 {
-                    allKeysPressed = true;
+                    // 키가 눌렸을 때만 keysPressed[i]를 true로 설정
+                    keysPressed[i] = Input.GetKeyDown(key);
+
+                    if (keysPressed[i])
+                    {
+                        allKeysPressed = true;
+                    }
                 }
+                else if (stringdata == "좌클릭")
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        isEnd();
+                    }
+                }
+                else if(stringdata=="우클릭")
+                {
+                    if(Input.GetMouseButtonDown(1)||Input.GetKeyDown(KeyCode.LeftShift))
+                    {
+                        isEnd();
+                    }
+                }
+                else if(stringdata=="")
+                {
+                    //Debug.Log(quest_.currentQuestValue);
+                    quest_.currentQuestValue = currentQuestValue_;
+                    if (quest_.currentQuestValue >= quest_.questClearValue)
+                    {
+                        quest_.currentQuestValue = quest_.questClearValue;
+                        //Quest_Clear();
+                        isEnd();
+                    }
+
+                }
+
             }
             //Debug.Log("Keys Pressed: " + string.Join(", ", keysPressed));
             // 모든 키가 한 번 이상 눌렸을 때 수행할 동작
             if (allKeysPressed)
-            {
-                isEnd();
-            }
-        }
-        if (stringdata == "좌클릭")
-        {
-            if (Input.GetMouseButtonDown(0))
             {
                 isEnd();
             }
@@ -212,15 +328,20 @@ public class QuestManager : MonoBehaviour
 
     public void isEnd()
     {
-
         if (DatabaseManager.GetInstance().Quest_Dictionary.ContainsKey(quest_.questId)) //퀘스트 번호가 딕셔너리 범위를 벗어나면 ui비활성화가 되게 해야하는뎅...
         {
             quest_.questId++;
             GameManager.Instance.gameInfo.QuestNum = quest_.questId;
 
-            //GameManager.GetInstance().dialogueManager.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
+            //Debug.Log(text_goal);
+            DialogueManager.instance.TutorialUI(text_goal); //퀘스트 목표 UI 활성화
+        }
+        else
+        {
+            isTutorial = false;
+            Quest_Clear();
+            
         }
     }
 }
-
 

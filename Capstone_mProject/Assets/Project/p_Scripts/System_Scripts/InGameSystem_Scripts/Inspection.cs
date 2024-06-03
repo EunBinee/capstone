@@ -74,31 +74,45 @@ public class Inspection : MonoBehaviour
         // interactionNotice.transform.SetSiblingIndex(inventory.transform.GetSiblingIndex() + 5);
         // Debug.Log(interactionNotice.transform.GetSiblingIndex());
         // Debug.Log(inventory.transform.GetSiblingIndex());
+
+        if (itemDataArray.Length!=0)
+        {
+            string itemName = itemDataArray[0].Name;
+
+            NotificationManager notification = interactionNotice.GetComponent<NotificationManager>();
+            notification.notificationText=itemName+"를 획득하였습니다.";
+
+            inventory.transform.SetSiblingIndex(10);
+        
+            interactionNotice.SetActive(true);
+            interactionBtn.gameObject.SetActive(false);
+            //StartCoroutine(UIFalse());
+            notification.AnimateNotification();
+            inventory_.Add(itemDataArray[0]);
+        }
+        // string itemName = itemDataArray[0].Name;
+
+        // NotificationManager notification = interactionNotice.GetComponent<NotificationManager>();
+        // notification.notificationText=itemName+"를 획득하였습니다.";
+
+        // inventory.transform.SetSiblingIndex(10);
     
-        string itemName = itemDataArray[0].Name;
+        // interactionNotice.SetActive(true);
+        // interactionBtn.gameObject.SetActive(false);
+        // //StartCoroutine(UIFalse());
+        // notification.AnimateNotification();
 
-        NotificationManager notification = interactionNotice.GetComponent<NotificationManager>();
-        notification.notificationText=itemName+"를 획득하였습니다.";
-
-        inventory.transform.SetSiblingIndex(10);
-    
-        interactionNotice.SetActive(true);
-        interactionBtn.gameObject.SetActive(false);
-        //StartCoroutine(UIFalse());
-        notification.AnimateNotification();
-
-        inventory_.Add(itemDataArray[0]);
+        //inventory_.Add(itemDataArray[0]);
+        else if(itemDataArray.Length==0)
+        {
+            interactionBtn.gameObject.SetActive(false);
+            DialogueManager.instance.startDialogue = true;
+            GameManager.instance.gameData.GetPlayerController().StartDialogue(DialogueManager.instance.startDialogue);
+            Debug.Log(DialogueManager.instance.startDialogue);
+        }
         Destroy(this.gameObject);
 
        
-    }
-
-    private IEnumerator UIFalse()
-    {
-        Debug.Log("zvdasv");
-        yield return new WaitForSeconds( 1.5f ); 
-        interactionNotice.SetActive(false);
-        Debug.Log("qwe");
     }
     
 }

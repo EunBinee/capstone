@@ -1,4 +1,6 @@
 using System.Collections;
+using TMPro;
+
 //using Michsky.UI.Reach;
 
 // using System.Collections.Generic;
@@ -47,6 +49,7 @@ public class DialogueManager : MonoBehaviour
     public bool DoQuest;
     public bool isQuestDetail;
     public bool isDialogue;
+    public bool startDialogue;
     //화살표애니메이션
     public bool isArrowAnimating = false;
     //대화 스킵 버튼
@@ -76,6 +79,7 @@ public class DialogueManager : MonoBehaviour
         DoQuest = false;
         isQuestDetail = false;
         isDialogue = false;
+        startDialogue = false;
 
         DialogueUI_info.dialogueSkip.onClick.AddListener(OnClickDialogueSkipBtn);
 
@@ -111,6 +115,7 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Text_QuestDetailTitle = dialogueUI_Info.Text_QuestDetailTitle;
         DialogueUI_info.Text_QuestDetailContent = dialogueUI_Info.Text_QuestDetailContent;
         DialogueUI_info.Text_Alarm = dialogueUI_Info.Text_Alarm;
+        DialogueUI_info.Text_Tuto = dialogueUI_Info.Text_Tuto;
     }
 
 
@@ -152,7 +157,6 @@ public class DialogueManager : MonoBehaviour
     }
 
     IEnumerator StartObjectTextBox(Dialogue dialogue, Npc interaction_Item)
-
     {
         isDialogue = true;
         GameManager.instance.cameraController.stopRotation = true;
@@ -202,6 +206,7 @@ public class DialogueManager : MonoBehaviour
         isDialogueSkip = false;
         AllFinish = false;
 
+        //Debug.Log(DialogueManager.instance.DoQuest);
         while (!AllFinish && !DoQuest)
         {
             //* 게임 멈춤 = 참
@@ -564,11 +569,21 @@ public class DialogueManager : MonoBehaviour
     //퀘스트 목표 UI 출력 활성화
     public void QuestGoal_UI(string text)
     {
-        DialogueUI_info.Quest_Button01.SetActive(true);
-        if (DialogueUI_info.Text_QuestGoal.text != text)
-        {
-            DialogueUI_info.Text_QuestGoal.text = text;
+        if (!questManager.isTutorial)
+        {  
+            DialogueUI_info.Quest_Button01.SetActive(true);
+            if (DialogueUI_info.Text_QuestGoal.text != text)
+            {
+                DialogueUI_info.Text_QuestGoal.text = text;
+            }
         }
+        // else if(questManager.isTutorial)
+        // {
+        //     DialogueUI_info.Text_Tuto.SetActive(true);
+        //     TMP_Text tuto= DialogueUI_info.Text_Tuto.gameObject.GetComponentInChildren<TMP_Text>();
+        //     tuto.text = text;
+        //     //Debug.Log(tuto.text);
+        // }
     }
     //퀘스트 목표 UI 출력 비활성화
     public void QuestGoal_UIFalse()
@@ -576,35 +591,49 @@ public class DialogueManager : MonoBehaviour
         DialogueUI_info.Quest_Button01.SetActive(false);
     }
 
-    //퀘스트 목표 UI 출력 활성화
+    //퀘스트 제목 UI 출력 활성화
     public void QuestTitle_Alarm(string text)
     {
         //DialogueUI_info.Text_Alarm.SetActive(true);
-        notificationManager= DialogueUI_info.Text_Alarm.GetComponent<Michsky.UI.Reach.NotificationManager>();
-        notificationManager.notificationText = text;
+        if(!questManager.isTutorial)
+        {
+            notificationManager= DialogueUI_info.Text_Alarm.GetComponent<Michsky.UI.Reach.NotificationManager>();
+            notificationManager.notificationText = text;
+        }
+        // else 
+        // {
+        //     DialogueUI_info.Text_Tuto.SetActive(true);
+        //     TMP_Text tuto= DialogueUI_info.Text_Tuto.gameObject.GetComponentInChildren<TMP_Text>();
+        //     tuto.text = text;
+        //     Debug.Log(tuto.text);
+        // }
+        
         //DialogueUI_info.Text_Alarm.text = notificationManager.notificationText ;
     }
 
     //튜토리얼 ui 활성화
-    /*
     public void TutorialUI(string text)
     {
-        if (textComponent.text != text)
+        DialogueUI_info.Text_Tuto.SetActive(true);
+        TMP_Text text_tuto = DialogueUI_info.Text_Tuto.GetComponentInChildren<TMP_Text>();
+        if (text_tuto.text != text)
         {
-            textComponent.text = text;
+            //Debug.Log(text);
+            text_tuto.text = text;
         }
-        GameManager.Instance.PadeIn_Alpha(Text_Alarm, true, 255, 0.7f, true);
-        GameManager.Instance.PadeIn_Alpha(textComponent.gameObject, true, 255, 0.7f, false);
+        // GameManager.Instance.PadeIn_Alpha(DialogueUI_info.Text_Tuto, true, 255, 0.7f, true);
+        // GameManager.Instance.PadeIn_Alpha(DialogueUI_info.Text_Tuto, true, 255, 0.7f, false);
+
     }
     //튜토리얼 ui 비활성화
     public void TutorialUIFalse(string text)
     {
         //DialogueUI_info.Text_QuestGoal.enabled = false;
-        GameManager.Instance.PadeIn_Alpha(Text_Alarm, false, 0, 1f, true);
-        GameManager.Instance.PadeIn_Alpha(textComponent.gameObject, false, 0, 1f, false);
-        //Text_Alarm.gameObject.SetActive(false);
+        // GameManager.Instance.PadeIn_Alpha(DialogueUI_info.Text_Tuto, false, 0, 1f, true);
+        // GameManager.Instance.PadeIn_Alpha(DialogueUI_info.Text_Tuto, false, 0, 1f, false);
+        DialogueUI_info.Text_Tuto.SetActive(false);
     }
-    */
+
 
     //플레이어 움직임, 몬스터 등 상호작용 멈추게 함.
     public void player_InteractingTrue()

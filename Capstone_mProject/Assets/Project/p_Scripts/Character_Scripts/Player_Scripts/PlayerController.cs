@@ -672,14 +672,13 @@ public class PlayerController : MonoBehaviour
 
     //*-------------------------------------------------------------------//
     public Action TriggerMonsterCheck = null; //* 몬스터 쪽에서 플레이어 트리거 쓸 일있을때 사용할거임
-
+    private GameObject interObject; //플레이어와 충돌한 오브젝트 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Npc") //플레이어가 들어가면 대화창 활성화
+        if (other.gameObject.CompareTag("Npc")) //플레이어가 들어가면 대화창 활성화
         {
             //Debug.Log("엔피시 대화 에리어");
-            GameObject interObject = other.gameObject;
-
+            interObject = other.gameObject;
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
@@ -689,6 +688,19 @@ public class PlayerController : MonoBehaviour
                     interObject.SetActive(false);
                 //StopToFalse(true);
             }
+            // else if(QuestManager.instance.isTutorial)
+            // {
+            //     if(DialogueManager.instance.startDialogue)
+            //     {
+            //         Debug.Log("aqwd");
+            //         P_Com.animator.Rebind();
+            //         DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
+            //         if (!DialogueManager.instance.DoQuest)
+            //             interObject.SetActive(false);
+
+            //         DialogueManager.instance.startDialogue = false;
+            //     }
+            // }
         }
         if (other.gameObject.tag == "LoadScene" && !DialogueManager.instance.DoQuest)
         {
@@ -703,6 +715,15 @@ public class PlayerController : MonoBehaviour
 
         TriggerMonsterCheck?.Invoke();
     }
-
-
+    //* 플레이어 대화 
+    public void StartDialogue(bool isStart)
+    {
+        if(isStart)
+        {
+            P_Com.animator.Rebind();
+            DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
+                if (!DialogueManager.instance.DoQuest)
+                    interObject.SetActive(false);
+        }
+    }
 }
