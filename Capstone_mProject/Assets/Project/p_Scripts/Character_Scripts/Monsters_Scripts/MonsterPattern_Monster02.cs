@@ -34,7 +34,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
     [Header("몬스터 근거리 공격 거리")]
     public float shortRangeAttackDistance = 3f;
     [Header("몬스터가 공격을 멈추는 거리")]
-    public float stopAttackDistance = 20;
+    public float stopAttackDistance = 9;
 
     [Header("플레이어가 뒤에 있을때 몬스터가 눈치까는 거리")]
     public float findPlayerDistance = 6f;
@@ -460,6 +460,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 useBack = true;
                 // * 플레이어 쪽으로 고개 돌림--------------------------------//
                 Vector3 targetPos = playerTrans.position;
+
                 //몬스터 고개 돌리기
                 Vector3 curPlayerdirection = playerTrans.position - transform.position;
                 Quaternion targetAngle = Quaternion.LookRotation(curPlayerdirection);
@@ -475,7 +476,7 @@ public class MonsterPattern_Monster02 : MonsterPattern
                 if (curAttackTime < attackTime && canAttack)
                 {
                     time += Time.deltaTime;
-                    if (time > 0.2f) //n초마다 총알 발사
+                    if (time > 0.4f) //n초마다 총알 발사
                     {
                         time = 0;
 
@@ -574,20 +575,18 @@ public class MonsterPattern_Monster02 : MonsterPattern
             };
 
             //총알 방향//
-
             Quaternion targetAngle = Quaternion.LookRotation(curDirection);
             bulletObj.transform.rotation = targetAngle;
 
             bullet.SetInfo(curDirection.normalized, "FX_Shoot_08_hit"); //* Bullet.cs에 방향 벡터 보냄
                                                                         //총알 발사.
-            bulletRigid.velocity = curDirection.normalized * 80f;
+            bulletRigid.velocity = curDirection.normalized * 100f;
             //총쏠때 이펙트
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("FX_Shoot_08_muzzle");
             effect.gameObject.transform.position = muzzlePos.position;
             effect.transform.rotation = targetAngle;
 
             //! 사운드 
-            // m_monster.SoundPlay(Monster.monsterSound.Hit_Close, false);
             m_monster.SoundPlay("Monster02_LongAttack", false);
             //몬스터 몸 흔들리는 연출//
             if (shake_co == null)
@@ -739,8 +738,6 @@ public class MonsterPattern_Monster02 : MonsterPattern
         //! 사운드 => 터지는 소리
         m_monster.SoundPlay("Monster02_Death", false);
         yield return new WaitForSeconds(0.4f);
-        // effect = GameManager.Instance.objectPooling.ShowEffect("explosion_360_v2_M");
-        // effect.transform.position = transform.position;
 
         yield return new WaitForSeconds(1f);
 
