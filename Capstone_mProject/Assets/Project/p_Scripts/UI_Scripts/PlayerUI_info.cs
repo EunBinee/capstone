@@ -19,11 +19,11 @@ public class PlayerUI_info : MonoBehaviour
 
     [Space]
     [Header("Player Skill")]
+    public SkillButton skill_V;
     public SkillButton skill_Q;
-    public SkillButton skill_F;
     public SkillButton skill_E;
     public SkillButton skill_R;
-    public SkillButton skill_T;
+    //public SkillButton skill_T;
     /**/
     [Header("Skill Slot")]
     public GameObject skillTree;

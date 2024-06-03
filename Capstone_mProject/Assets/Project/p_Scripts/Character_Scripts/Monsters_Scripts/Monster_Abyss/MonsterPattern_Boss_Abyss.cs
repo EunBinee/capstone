@@ -876,14 +876,12 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
             if (!useOneSound)
             {
-                // m_monster.SoundPlay(Monster.monsterSound.Death, false);
                 m_monster.SoundPlay("Boss_Death", false);
 
             }
             else if (useOneSound && !useExplosionSound)
             {
                 useExplosionSound = true;
-                //m_monster.SoundPlay(Monster.monsterSound.Death, false);
                 m_monster.SoundPlay("Boss_Death", false);
             }
         }

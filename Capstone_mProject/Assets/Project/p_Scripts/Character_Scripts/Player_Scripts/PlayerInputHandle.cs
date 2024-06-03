@@ -20,11 +20,10 @@ public class PlayerInputHandle : MonoBehaviour
     bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
     public bool isAttack = false;
 
-    private SkillButton skill_T;
+    private SkillButton skill_Q;
     private SkillButton skill_E;
     private SkillButton skill_R;
-    private SkillButton skill_F;
-    private SkillButton skill_Q;
+    private SkillButton skill_V;
 
     void Awake()
     {
@@ -37,20 +36,20 @@ public class PlayerInputHandle : MonoBehaviour
     }
     void Setting()
     {
-        skill_T = P_Movement.skill_T;
+        skill_Q = P_Movement.skill_Q;
         skill_E = P_Movement.skill_E;
         skill_R = P_Movement.skill_R;
-        skill_F = P_Movement.skill_F;
-        skill_Q = P_Movement.skill_Q;
+        //skill_F = P_Movement.skill_F;
+        skill_V = P_Movement.skill_V;
 
         //skillIconApply();
     }
     public void skillIconApply()
     {
         //todo: 선택스킬이 null이면 자동으로 리스트 앞에서부터 넣기
-        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].iconImg.sprite;
-        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].iconImg.sprite;
-        skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].iconImg.sprite;
+        skill_Q.imgIcon.sprite = P_SkillInfo.selectSkill[0].iconImg.sprite;
+        skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[1].iconImg.sprite;
+        skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[2].iconImg.sprite;
     }
     void Update()
     {
@@ -289,57 +288,61 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.QDown)  //* Bow Mode & Sword Mode
+        if (P_KState.VDown)  //* Bow Mode & Sword Mode
         {
-            P_KState.QDown = false;
-            if (skill_Q.imgCool.fillAmount == 0)
+            P_KState.VDown = false;
+            if (skill_V.imgCool.fillAmount == 0)
             {
                 if (P_States.startAim)   // 조준 중일때 전환 키 누르면
                 {
                     P_Skills.arrowSkillOff();    // 조준 헤제
                 }
-                P_Skills.skillMotion("ChangeWeapon", 'Q');
+                P_Skills.skillMotion("ChangeWeapon", 'V');
+            }
+        }
+        if (P_KState.QDown && !P_States.isSkill)
+        {
+            if (skill_Q.imgCool.fillAmount == 0)
+            {
+                skill_Q.skill = P_SkillInfo.selectSkill[0].skillData;
+                skill_Q.imgIcon.sprite = P_SkillInfo.selectSkill[0].skillData.icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'Q');
             }
         }
         if (P_KState.EDown && !P_States.isSkill)
         {
             if (skill_E.imgCool.fillAmount == 0)
             {
-                skill_E.skill = P_SkillInfo.selectSkill[0].skillData;    //test 중 : aim
-                skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[0].skillData.icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'E');
+                skill_E.skill = P_SkillInfo.selectSkill[1].skillData;
+                skill_E.imgIcon.sprite = P_SkillInfo.selectSkill[1].skillData.icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'E');
             }
         }
         if (P_KState.RDown && !P_States.isSkill)
         {
             if (skill_R.imgCool.fillAmount == 0)
             {
-                skill_R.skill = P_SkillInfo.selectSkill[1].skillData;    //test 중 : heal
-                skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[1].skillData.icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'R');
+                skill_R.skill = P_SkillInfo.selectSkill[2].skillData;
+                skill_R.imgIcon.sprite = P_SkillInfo.selectSkill[2].skillData.icon;
+                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'R');
             }
         }
-        if (P_KState.FDown && !P_States.isSkill)
-        {
-            if (skill_F.imgCool.fillAmount == 0)
-            {
-                skill_F.skill = P_SkillInfo.selectSkill[2].skillData;    //test 중 : ultimate
-                skill_F.imgIcon.sprite = P_SkillInfo.selectSkill[2].skillData.icon;
-                P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[2]), 'F');
-            }
-        }
-        if (P_KState.TDown && !P_States.isSkill)
-        {
-            P_KState.TDown = false;
-            if (skill_T.imgCool.fillAmount == 0)
-                P_Skills.skillMotion("Ultimate", 'T');
-        }
+        //if (P_KState.TDown && !P_States.isSkill)
+        //{
+        //    P_KState.TDown = false;
+        //    if (skill_T.imgCool.fillAmount == 0)
+        //        P_Skills.skillMotion("Ultimate", 'T');
+        //}
     }
 
     public void skillBtnOnclick(char key)
     {
         switch (key)
         {
+            case 'Q':
+                P_KState.QDown = false;
+                skill_Q.OnClicked();
+                break;
             case 'E':
                 P_KState.EDown = false;
                 skill_E.OnClicked();
@@ -348,14 +351,10 @@ public class PlayerInputHandle : MonoBehaviour
                 P_KState.RDown = false;
                 skill_R.OnClicked();
                 break;
-            case 'F':
-                P_KState.FDown = false;
-                skill_F.OnClicked();
-                break;
-            case 'T':
-                P_KState.TDown = false;
-                skill_T.OnClicked();
-                break;
+            //case 'T':
+            //    P_KState.TDown = false;
+            //    skill_T.OnClicked();
+            //    break;
             default: break;
         }
         P_States.isSkill = false;

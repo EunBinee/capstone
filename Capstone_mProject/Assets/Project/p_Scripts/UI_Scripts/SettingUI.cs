@@ -199,4 +199,9 @@ public class SettingUI : MonoBehaviour
         settingInfo.resolutionText.objText.text = settingInfo.resolutionName;
         settingInfo.restartHeaderText.objText.text = settingInfo.restartHeaderName;
     }
+
+    public void resetPlayer()
+    {
+        GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
+    }
 }
