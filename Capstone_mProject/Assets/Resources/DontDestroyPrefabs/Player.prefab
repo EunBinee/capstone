@@ -116,6 +116,13 @@ MonoBehaviour:
     playerHeadPos: {fileID: 1721222533}
     playerBackPos: {fileID: 1997270830}
     sickScreen: {fileID: 2100000, guid: a61a18be572132e44b5c911a9d371bcf, type: 2}
+    skinnedMeshRenderers:
+    - {fileID: 2434497719586037637}
+    - {fileID: 6009856928834321725}
+    - {fileID: 8218494111749226560}
+    - {fileID: 8614701419367063370}
+    - {fileID: 3707370200143766591}
+    hitMat: {fileID: 2100000, guid: 07cdef0da6c8254448855d23a3cbe500, type: 2}
   _input:
     verticalMovement: 0
     horizontalMovement: 0
@@ -151,6 +158,7 @@ MonoBehaviour:
     isDodgeing: 0
     isSkill: 0
     doNotRotate: 0
+    isDie: 0
     isPerformingAction: 0
     isStop: 0
     previousDodgeKeyPress: 0
@@ -273,12 +281,18 @@ MonoBehaviour:
   arrow: {fileID: 0}
   shootPoint: {fileID: 5607881394436242999}
   spine: {fileID: 0}
-  originTpos: {x: 0, y: 0, z: 0}
+  originQpos: {x: 0, y: 0, z: 0}
   originEpos: {x: 0, y: 0, z: 0}
   originRpos: {x: 0, y: 0, z: 0}
-  originFpos: {x: 0, y: 0, z: 0}
-  originQpos: {x: 0, y: 0, z: 0}
+  originVpos: {x: 0, y: 0, z: 0}
   EnablePlayerUI: 1
+  blinkDuration: 1
+  m_material:
+  - {fileID: 2100000, guid: 4eedd0d9e9040954fac95aef234ccd6c, type: 2}
+  - {fileID: 2100000, guid: 41495429103fedf408abbee14632dd74, type: 2}
+  - {fileID: 2100000, guid: 73a5198d2e6b48b44a13f4005e6eead0, type: 2}
+  - {fileID: 2100000, guid: 90924096dfcdf014ea02f4ad62821cb0, type: 2}
+  - {fileID: 2100000, guid: c7657ca3c0c26c04c90788164e3e18ce, type: 2}
 --- !u!114 &1404091125779623576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,11 +305,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skill_T: {fileID: 0}
+  skill_Q: {fileID: 0}
   skill_E: {fileID: 0}
   skill_R: {fileID: 0}
-  skill_F: {fileID: 0}
-  skill_Q: {fileID: 0}
+  skill_V: {fileID: 0}
   comboClickTime: 0.5
   attackColliders:
   - {fileID: 1861370307325144441}
@@ -350,6 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _controller: {fileID: 7195301709572235706}
+  isAttack: 0
 --- !u!1 &1721222532
 GameObject:
   m_ObjectHideFlags: 0
@@ -4738,6 +4752,16 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+--- !u!137 &2434497719586037637 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6533485418762290739, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &3707370200143766591 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5193126551949540745, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3723415152261526016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5246327162783607734, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -4751,6 +4775,11 @@ Transform:
 --- !u!4 &5833539143202210119 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3140816988919453937, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &6009856928834321725 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2883928364555379851, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
   m_PrefabInstance: {fileID: 8890818802358016438}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &6167231033347645081 stripped
@@ -4791,6 +4820,16 @@ Transform:
 --- !u!4 &7807731989223168268 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1673133960142520506, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8218494111749226560 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 679898690518391286, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
+  m_PrefabInstance: {fileID: 8890818802358016438}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &8614701419367063370 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 931992046338868988, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
   m_PrefabInstance: {fileID: 8890818802358016438}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &9069027666689469690 stripped

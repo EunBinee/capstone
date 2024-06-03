@@ -19,6 +19,8 @@ public class PlayerComponents
     public Transform playerHeadPos;
     public Transform playerBackPos;
     public Material sickScreen;
+    public List<SkinnedMeshRenderer> skinnedMeshRenderers;
+    public Material hitMat;
 }
 
 [Serializable]
