@@ -282,21 +282,13 @@ public class GameManager : MonoBehaviour
                 }
             }
             curCutScene_ing = true;
-            PlayerController playerController = gameData.GetPlayerController();
-            playerController.PlayerUI_SetActive(false);
-            Stop_AllMonster();
-
-            UIManager.gameIsPaused = true;
+            StopGame();
         }
         else if (!start)
         {
             curCutScene_ing = false;
 
-            PlayerController playerController = gameData.GetPlayerController();
-            playerController.PlayerUI_SetActive(true);
-            Start_AllMonster();
-
-            UIManager.gameIsPaused = false;
+            StartGame();
         }
 
     }
@@ -308,6 +300,23 @@ public class GameManager : MonoBehaviour
         cameraController.left_right_LookSpeed = cameraController.left_right_DefaultSpeed * cameraSensitivity;
         cameraController.up_down_LookSpeed = cameraController.up_down_DefaultSpeed * cameraSensitivity;
 
+    }
+
+    public void StopGame()
+    {
+        PlayerController playerController = gameData.GetPlayerController();
+        playerController.PlayerUI_SetActive(false);
+        Stop_AllMonster();
+
+        UIManager.gameIsPaused = true;
+    }
+    public void StartGame()
+    {
+        PlayerController playerController = gameData.GetPlayerController();
+        playerController.PlayerUI_SetActive(true);
+        Start_AllMonster();
+
+        UIManager.gameIsPaused = false;
     }
 }
 
