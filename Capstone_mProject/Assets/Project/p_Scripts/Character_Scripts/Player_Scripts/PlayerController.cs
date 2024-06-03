@@ -325,6 +325,7 @@ public class PlayerController : MonoBehaviour
     public void PlayerStop(bool isStop)
     {
         P_States.isStop = isStop;
+        P_States.isStartComboAttack = false;
     }
 
     public void CheckHitTime()
