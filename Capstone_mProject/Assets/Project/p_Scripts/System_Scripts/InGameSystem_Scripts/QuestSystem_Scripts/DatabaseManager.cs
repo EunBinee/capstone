@@ -14,7 +14,7 @@ public class DatabaseManager : MonoBehaviour
     //npc
     public Dictionary<int, Dialogue> NPC_diaglogues_Dictionary = new Dictionary<int, Dialogue>(); //csvFileName_NPC
     public Dictionary<int, Quest> Quest_Dictionary = new Dictionary<int, Quest>(); //csvFileName_Quest
-    public Dictionary<int, Reasoning> Reasoning_Dictionary = new Dictionary<int, Reasoning>();
+    //public Dictionary<int, Reasoning> Reasoning_Dictionary = new Dictionary<int, Reasoning>();
 
     int eventID;
 
@@ -27,7 +27,7 @@ public class DatabaseManager : MonoBehaviour
             //NPC Dialogue
             DialogueParser(csvFileName_NPC, true);
             QuestParser(csvFileName_Quest, 0);
-            ReasoningParser(csvFileName_Reasoning, 0);
+            //ReasoningParser(csvFileName_Reasoning, 0);
 
         }
     }
@@ -108,16 +108,16 @@ public class DatabaseManager : MonoBehaviour
         Debug.Log(csvFileName + "완료!");
     }
 
-    public void ReasoningParser(string csvFileName, int reasoningNum)
-    {
-        Reasoning[] reasonings = dialogueParser.ReasoningParse(csvFileName);
+    // public void ReasoningParser(string csvFileName, int reasoningNum)
+    // {
+    //     Reasoning[] reasonings = dialogueParser.ReasoningParse(csvFileName);
 
-        for(int i=0; i<reasonings.Length; i++)
-        {
-            int id = 0;
-            id = reasonings[i].reasoningID;
-            Reasoning_Dictionary[id] = reasonings[i];
-        }
-        //Debug.Log(csvFileName + "완료!");
-    }
+    //     for(int i=0; i<reasonings.Length; i++)
+    //     {
+    //         int id = 0;
+    //         id = reasonings[i].reasoningID;
+    //         Reasoning_Dictionary[id] = reasonings[i];
+    //     }
+    //     //Debug.Log(csvFileName + "완료!");
+    // }
 }
