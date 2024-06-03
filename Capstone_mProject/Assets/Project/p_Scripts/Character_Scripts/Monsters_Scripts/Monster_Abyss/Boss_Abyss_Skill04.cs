@@ -15,6 +15,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     Transform playerTrans;
 
     [Header("스킬 04")]
+    public bool skill04_ing = false;
+
     public GameObject targetMarker_Prefabs;
     public List<GameObject> targetMarkerList = new List<GameObject>();
     public GameObject targetMarker_Pattern05_Prefabs;
@@ -35,6 +37,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
     bool stopSkillPattern = false;
 
+
     public void Init(MonsterPattern_Boss_Abyss _monsterPattern_Boss_Abyss)
     {
         monsterPattern_Abyss = _monsterPattern_Boss_Abyss;
@@ -46,6 +49,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
     public void Skill04()
     {
+        skill04_ing = true;
         curTargetMarker = new List<Skill_Indicator>();
         skill04_Co = StartCoroutine(BossAbyss_Skill04());
     }
@@ -173,7 +177,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
             while (true)
             {
-                curRandomSkillPattern_num = UnityEngine.Random.Range(1, 6);
+                curRandomSkillPattern_num = UnityEngine.Random.Range(1, 5);
 
                 if (curIndex != curRandomSkillPattern_num)
                 {
@@ -227,7 +231,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
             StartCoroutine(SkillActivation(mAngle, i, true));
         }
     }
+
     //* 패턴 04-----------------------------------------------------------------------------------//
+
     public void CreateTargetMarker_Pattern04()
     {
         skill04_Pattern04_Co = StartCoroutine(CreateTargetMarker_4_co());
@@ -496,6 +502,8 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         skillIndicator_obj.transform.position = new Vector3(transform.position.x, posY + 0.05f, transform.position.z);
         for (int i = 0; i < targetMarker_Pattern05_List.Count; ++i)
         {
+            if (!targetMarker_Pattern05_List[i].gameObject.activeSelf)
+                targetMarker_Pattern05_List[i].gameObject.SetActive(true);
             curTargetMarker.Add(targetMarker_Pattern05_List[i]);
         }
         //*------------------------------------------------------------------------------------------------//
@@ -684,7 +692,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
     //* 스킬 04번 정지--------------------------------------------------------------//
     public void Stop_MonsterSkill04()
     {
-
         if (moveMonster_co != null)
         {
             StopCoroutine(moveMonster_co);
@@ -709,7 +716,18 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         if (stopSkillPattern == true)
             stopSkillPattern = false;
+
+        if (curTargetMarker.Count != 0)
+        {
+            foreach (Skill_Indicator skill in curTargetMarker)
+            {
+
+                skill.gameObject.SetActive(false);
+            }
+        }
+
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill04);
+
     }
 
 }

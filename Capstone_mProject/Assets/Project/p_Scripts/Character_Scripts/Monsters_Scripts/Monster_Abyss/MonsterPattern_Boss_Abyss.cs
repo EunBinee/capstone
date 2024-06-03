@@ -534,6 +534,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         }
     }
 
+
     IEnumerator CheckPlayer_Production()
     {
         while (CheckPlayerPos)
@@ -612,6 +613,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 break;
             }
+            yield return new WaitUntil(() => startSkill == false);
 
             if (curBossPhase == BossMonsterPhase.Phase1)
                 skill = UnityEngine.Random.Range(0, 2);
@@ -653,6 +655,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     }
                 }
             }
+
+
+
+
 
             //----------------------------------//
             pickAgain = false;
@@ -1277,10 +1283,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         Button_Controller.instance.skipBtn.onClick.AddListener(() =>
         {
-            //Debug.Log("3");
             if (auraEffect != null)
             {
-                //Debug.Log("4");
                 auraEffect.gameObject.SetActive(false);
                 Destroy(auraEffect);
                 auraEffect = null;
@@ -1313,6 +1317,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
 
         Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
+
     }
 
     # endregion

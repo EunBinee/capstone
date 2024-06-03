@@ -394,17 +394,14 @@ public class MonsterPattern_Monster02 : MonsterPattern
     IEnumerator Short_Range_Attack_Monster01()
     {
         yield return new WaitUntil(() => isRestraint == false);
-        Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red", m_monster.gameObject.transform);
+        Effect effect01 = GameManager.Instance.objectPooling.ShowEffect("MC01_Red");//, m_monster.gameObject.transform);
         effect01.gameObject.transform.position = m_monster.gameObject.transform.position;
         effect01.gameObject.transform.position += new Vector3(0, 0.3f, 0);
         //! 사운드
-        //m_monster.SoundPlay(Monster.monsterSound.Alarm, false);
         m_monster.SoundPlay("Monster02_Alarm", false);
 
-        // yield return new WaitForSeconds(1.2f);  //* dP
         yield return new WaitForSeconds(0.1f);
-        // Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("Spikes attack", m_monster.gameObject.transform);
-        Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("LaserCannonBarrage", m_monster.gameObject.transform);
+        Effect effect02 = GameManager.Instance.objectPooling.ShowEffect("LaserCannonBarrage");//, m_monster.gameObject.transform);
         Vector3 effect02Pos = new Vector3(m_monster.gameObject.transform.position.x, 0.1f, m_monster.gameObject.transform.position.z);
         effect02.gameObject.transform.position = effect02Pos;
 

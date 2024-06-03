@@ -901,6 +901,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 83342967}
   m_Mesh: {fileID: 4300058, guid: ded14b7acdcdbe740ad6f9f85ea3bae2, type: 3}
+--- !u!1 &94025655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1634784162725577455, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+  m_PrefabInstance: {fileID: 871912601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &102669484
 GameObject:
   m_ObjectHideFlags: 0
@@ -6304,11 +6309,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6289568037670363905, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.398827
+      value: 48.39882
       objectReference: {fileID: 0}
     - target: {fileID: 6965927949542687181, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.398785
+      value: 48.39879
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
@@ -10198,6 +10203,26 @@ PrefabInstance:
       propertyPath: redImage
       value: 
       objectReference: {fileID: 381984058}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: bossEyes.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: bossEyes.Array.data[0]
+      value: 
+      objectReference: {fileID: 94025655}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: bossEyes.Array.data[1]
+      value: 
+      objectReference: {fileID: 1675083303}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: bossEyes.Array.data[2]
+      value: 
+      objectReference: {fileID: 1937886410}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: bossEyes.Array.data[3]
+      value: 
+      objectReference: {fileID: 1983688524}
     - target: {fileID: 2755003020157360589, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_Name
       value: BossMonster_abyss
@@ -10257,6 +10282,10 @@ PrefabInstance:
     - target: {fileID: 4960948139861666607, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7990027529974533162, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_Name
+      value: Eye_Right_D
       objectReference: {fileID: 0}
     - target: {fileID: 8255850618955075821, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_IsActive
@@ -19590,6 +19619,11 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 974099366}
+--- !u!1 &1675083303 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4822973365282114163, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+  m_PrefabInstance: {fileID: 871912601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1679065153
 GameObject:
   m_ObjectHideFlags: 3
@@ -22822,6 +22856,11 @@ Transform:
   m_Father: {fileID: 1637272727}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 34.351, y: -32.968, z: 0}
+--- !u!1 &1937886410 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1466543224308961130, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+  m_PrefabInstance: {fileID: 871912601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1939930055
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23116,6 +23155,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4521121665968070, guid: 3b73c568b145663479c2ff05f7097d14, type: 3}
   m_PrefabInstance: {fileID: 1971536320}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1983688524 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7990027529974533162, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+  m_PrefabInstance: {fileID: 871912601}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1996551720
 PrefabInstance:
