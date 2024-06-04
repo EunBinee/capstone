@@ -75,7 +75,6 @@ public class DialogueController : MonoBehaviour
 
                 writerText = sentence.Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>");
                 objectText.text = writerText;
-                //writerText = sentence.Replace("\\n", "\n");
                 yield return new WaitForSeconds(0.05f);
                 break;
 
@@ -101,8 +100,6 @@ public class DialogueController : MonoBehaviour
                 objectText.text = writerText.Replace("\\n", "\n");
                 t_ignore = false;
                 yield return new WaitForSeconds(0.02f);
-
-                //yield return new WaitForSeconds(0.02f);
 
             }
         }
