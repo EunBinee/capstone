@@ -59,6 +59,7 @@ public class CurSceneManager : MonoBehaviour
         {
             DatabaseManager.instance.csvFileName_Quest = csvFileName_Quest;
             DatabaseManager.instance.QuestParser(csvFileName_Quest, 0);
+            QuestManager.instance.currentQuestValue_ = 0;
         }
     }
 
