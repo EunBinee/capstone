@@ -528,11 +528,33 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_Input.verticalMovement >= 0)
                 {
-                    P_Com.animator.Play("Front", 1);
+                    if (P_Input.horizontalMovement > 0)
+                    {
+                        P_Com.animator.Play("Right", 1);
+                    }
+                    else if (P_Input.horizontalMovement < 0)
+                    {
+                        P_Com.animator.Play("Left", 1);
+                    }
+                    else
+                    {
+                        P_Com.animator.Play("Front", 1);
+                    }
                 }
                 else if (P_Input.verticalMovement < 0)
                 {
-                    P_Com.animator.Play("Back", 1);
+                    if (P_Input.horizontalMovement > 0)
+                    {
+                        P_Com.animator.Play("Right", 1);
+                    }
+                    else if (P_Input.horizontalMovement < 0)
+                    {
+                        P_Com.animator.Play("Left", 1);
+                    }
+                    else
+                    {
+                        P_Com.animator.Play("Back", 1);
+                    }
                 }
                 else if (P_Input.horizontalMovement > 0)
                 {
