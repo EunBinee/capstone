@@ -15,6 +15,7 @@ public class mainStartScene : MonoBehaviour
     public Michsky.UI.Reach.ButtonManager startBtnManager;
     public Michsky.UI.Reach.ButtonManager loadBtnManager;
     public Michsky.UI.Reach.ButtonManager settingBtnManager;
+    public Michsky.UI.Reach.ButtonManager exitBtnManager;
 
     public SettingUI settingUI;
     public Animator mainStartSceneAnim;
@@ -80,7 +81,7 @@ public class mainStartScene : MonoBehaviour
                 curSelectSceneNameDebug.InputButton.onClick.AddListener(() =>
                 {
                     int curIndex = curSelectSceneNameDebug.m_Index;
-                    Debug.Log(curIndex);
+                    //                    Debug.Log(curIndex);
                     curSelectSceneName = sceneList[curIndex].sceneName.text;
                     noticeText.text = $"이동할 씬 이름은 [ {curSelectSceneName} ]입니다.";
                     sceneList[curIndex].bgImg.color = selectColor;
@@ -135,6 +136,11 @@ public class mainStartScene : MonoBehaviour
             mainStartSceneAnim.Play(panelFadeOut);
             settingSceneAnim.Play(panelFadeIn);
             showSettingPanel = true;
+        });
+
+        exitBtnManager.onClick.AddListener(() =>
+        {
+            Application.Quit();
         });
     }
 

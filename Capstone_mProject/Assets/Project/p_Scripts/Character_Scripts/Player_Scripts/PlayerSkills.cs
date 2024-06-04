@@ -77,7 +77,7 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.haveHeal = true;
         SkillMapAdd("Restraint", P_SkillInfo.restraint);
         P_SkillInfo.haveRestraint = true;
-        
+
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;
         SkillMapAdd("Sample1", P_SkillInfo.sample1);
@@ -345,7 +345,6 @@ public class PlayerSkills : MonoBehaviour
                 case 'E':
                 case 'R':
                 case 'F':
-                    Debug.Log("switch true");
                     isPressed = true; P_States.isSkill = true;
                     skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
                     skillRangeIndicator.SetActive(true);
@@ -373,7 +372,6 @@ public class PlayerSkills : MonoBehaviour
                 case 'E':
                 case 'R':
                 case 'F':
-                    Debug.Log("switch false");
                     isPressed = false; P_States.isSkill = false;
                     P_InputHandle.skillBtnOnclick(whatKey);
                     skillRangeIndicator.SetActive(false);
@@ -537,12 +535,16 @@ public class PlayerSkills : MonoBehaviour
             case "Ultimate":
                 P_States.isSkill = true;
                 P_InputHandle.skillBtnOnclick(whatKey);
+#if UNITY_EDITOR
                 Debug.Log("스킬T");
+#endif
                 break;
 
             case "Restraint":
                 StartCoroutine(Skill_Restraint(whatKey));
+#if UNITY_EDITOR
                 Debug.Log("속박스킬");
+#endif
                 break;
 
             default:

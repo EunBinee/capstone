@@ -71,7 +71,9 @@ public class Monster : MonoBehaviour
         }
         else
         {
+#if UNITY_EDITOR
             Debug.Log("몬스터 skinnedMeshRenderer null");
+#endif
         }
         hitMaterial = GameManager.instance.gameData.hitMaterial;
     }
@@ -120,9 +122,9 @@ public class Monster : MonoBehaviour
 
 
             weaknessHP = monsterData.MaxHP * monsterData.weaknessDamageRate * monsterWeaknessNum;
-            Debug.Log($"weaknessHP   {weaknessHP}");
+            //Debug.Log($"weaknessHP   {weaknessHP}");
             normalHP = monsterData.MaxHP - weaknessHP;
-            Debug.Log($"normalHP   {normalHP}");
+            //Debug.Log($"normalHP   {normalHP}");
 
             curMonsterWeaknessNum = monsterWeaknessNum;
         }
@@ -312,11 +314,10 @@ public class Monster : MonoBehaviour
             monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.Death);
 
         //퀘스트 진행도 ++
-        if (DialogueManager.instance.DoQuest||QuestManager.instance.isTutorial)//GameManager.Instance.questManager != null
+        if (DialogueManager.instance.DoQuest || QuestManager.instance.isTutorial)//GameManager.Instance.questManager != null
         {
 
             DialogueManager.Instance.questManager.currentQuestValue_++;
-            Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
             //Debug.Log(DialogueManager.Instance.questManager.currentQuestValue_);
 
         }

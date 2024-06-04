@@ -134,7 +134,7 @@ public class CurSceneManager : MonoBehaviour
         {
             yield return null;
         }
-        Debug.Log("!! Ready And Play");
+        // Debug.Log("!! Ready And Play");
 
         timelineDic[timelineName].Play();
     }

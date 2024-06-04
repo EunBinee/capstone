@@ -156,7 +156,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             }
             else
             {
-                Debug.LogError("눈개수하고 약점 개수가 안맞아여");
+#if UNITY_EDITOR
+                Debug.Log("눈개수하고 약점 개수가 안맞아여");
+#endif
             }
 
         }
@@ -208,7 +210,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             Vector3 velocity = navMeshAgent.velocity;
             int x = 0;
             int z = 0;
-            Debug.Log($"velocity.x  {velocity.x}, velocity.z  {velocity.z}");
+            //  Debug.Log($"velocity.x  {velocity.x}, velocity.z  {velocity.z}");
             if (velocity.x == 0)
                 x = 0;
             else
@@ -262,13 +264,17 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             {
                 case BossMonsterMotion.Skill01:
                     //*내려찍기
+#if UNITY_EDITOR
                     Debug.Log("다음 스킬 : 01");
+#endif
                     ing_skill01 = true;
                     boss_Abyss_Skill01.Skill01();
                     break;
                 case BossMonsterMotion.Skill02:
                     //* 폭탄
+#if UNITY_EDITOR
                     Debug.Log("다음 스킬 : 02");
+#endif
                     ing_skill02 = true;
                     boss_Abyss_Skill02.Skill02();
                     break;
@@ -276,7 +282,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     if (curBossPhase != BossMonsterPhase.Phase1)
                     {
                         //* 총
+#if UNITY_EDITOR
                         Debug.Log("다음 스킬 : 03");
+#endif
                         ing_skill03 = true;
                         boss_Abyss_Skill03.Skill03();
                     }
@@ -284,8 +292,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 case BossMonsterMotion.Skill04:
                     if (curBossPhase != BossMonsterPhase.Phase1)
                     {
-                        //* 전기
+                        //* 전기'
+#if UNITY_EDITOR
                         Debug.Log("다음 스킬 : 04");
+#endif
                         ing_skill04 = true;
                         boss_Abyss_Skill04.Skill04();
                     }
@@ -379,7 +389,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //*----------------------------------------------------------------------------------------------------------//
     public override void ChangeBossPhase(BossMonsterPhase bossMonsterPhase, bool production = true)
     {
-        Debug.Log($"CurBossPhase_전 {curBossPhase}");
+        // Debug.Log($"CurBossPhase_전 {curBossPhase}");
 
         curBossPhase = bossMonsterPhase;
         if (production)
@@ -419,7 +429,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     break;
             }
         }
-        Debug.Log($"CurBossPhase_후 {curBossPhase}");
+        //Debug.Log($"CurBossPhase_후 {curBossPhase}");
     }
 
     //* 보스 연출---------------------------------------------------------------------------------------------------------------------//
@@ -491,7 +501,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (redImage == null)
             {
                 //TODO: 현재는 그냥 인스펙터에서 redImage를 가져오지만 여기처럼 나중에 resource폴더에서 가져올 수 있도록.
+#if UNITY_EDITOR
                 Debug.Log("보스 redImage 넣어주세여 null입니다.00");
+#endif
             }
             redImage.SetActive(true);
             GameManager.instance.PadeIn_Alpha(redImage, true, 90);
@@ -698,10 +710,10 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (!pickAgain)
             {
                 startSkill = true;
-                Debug.Log($"breakTime {breakTime}");
+                //Debug.Log($"breakTime {breakTime}");
                 //* 스킬이 끝날 때까지 기다림.
                 yield return new WaitUntil(() => startSkill == false);
-                Debug.Log("startSkill false");
+                //  Debug.Log("startSkill false");
                 //* 쉬는 시간 (플레이어 공격 시간)
 
                 if (curBossPhase != curBossP) //* 페이즈 넘어가면 break;
@@ -711,7 +723,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 else
                 {
                     yield return new WaitForSeconds(breakTime);
-                    Debug.Log("break 끝");
+                    //      Debug.Log("break 끝");
                 }
 
             }
@@ -899,7 +911,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     public override void StopAtackCoroutine()
     {
         forcedReturnHome = true;
-        Debug.Log("보스 몬스터 stop");
+        // Debug.Log("보스 몬스터 stop");
         ChangeMonsterState(MonsterState.Stop);
         isTracing = false;
         //Abyss 보스 몬스터의 경우 => 스킬 2번 4번만 멈추면 될 듯
@@ -925,7 +937,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
     public override void StartMonster()
     {
-        Debug.Log("start");
+        //Debug.Log("start");
         forcedReturnHome = false;
 
         ChangeMonsterState(MonsterState.Tracing);
@@ -1079,7 +1091,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     IEnumerator WalkPlayer_co()
     {
-        Debug.Log("플레이어 움직임");
+        //Debug.Log("플레이어 움직임");
         playerController._currentState.doNotRotate = true;  // 플레이어 움직임 막음
         float duration = 7f;
         float initialMoveSpeed = 3;
@@ -1103,7 +1115,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         playerController._playerComponents.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
         playerController._playerComponents.animator.SetFloat("Horizontal", 0, 0f, Time.deltaTime);  //하
 
-        Debug.Log("플레이어 멈춤");
+        //Debug.Log("플레이어 멈춤");
     }
 
     public void FirstAppearance_TimeLineEffect()

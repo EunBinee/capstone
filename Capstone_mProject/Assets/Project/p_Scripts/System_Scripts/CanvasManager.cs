@@ -70,12 +70,12 @@ public class CanvasManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-
+            Init();
             DontDestroyOnLoad(this.gameObject);
         }
         else
             Destroy(this.gameObject);
-        Init();
+
     }
 
     public void Init()
@@ -136,7 +136,7 @@ public class CanvasManager : MonoBehaviour
         GameObject curObj = Resources.Load<GameObject>("CanvasPrefabs/" + name);
         if (curObj == null)
         {
-            Debug.LogError($"리소스 파일에 {name}프리펩 없음");
+            Debug.Log($"리소스 파일에 {name}프리펩 없음");
             return null;
         }
         curObj = Instantiate(curObj);
