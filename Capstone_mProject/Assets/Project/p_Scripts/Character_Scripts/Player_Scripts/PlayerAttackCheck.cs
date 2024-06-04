@@ -267,7 +267,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 GameManager.instance.damageCalculator.CalculateAndPrint();
                 damageValue = GameManager.instance.damageCalculator.result;
 
-                
+
             }
             else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
             {
@@ -371,7 +371,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     monster = bossWeakness.m_monster;
                     if (monster != null)
                     {
-                        Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
+                        //Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
                     }
 
                     if (!bossWeakness.destroy_BossWeakness)

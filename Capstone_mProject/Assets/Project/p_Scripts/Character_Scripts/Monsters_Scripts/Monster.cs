@@ -213,7 +213,7 @@ public class Monster : MonoBehaviour
                         curMonsterWeaknessNum--;
                         if (weaknessHP != 0)
                         {
-                            Debug.Log($" curMonsterWeaknessNum    {curMonsterWeaknessNum},   normalHP {normalHP}");
+                            // Debug.Log($" curMonsterWeaknessNum    {curMonsterWeaknessNum},   normalHP {normalHP}");
 
                             if (curMonsterWeaknessNum == 0 && normalHP == 0)
                             {
