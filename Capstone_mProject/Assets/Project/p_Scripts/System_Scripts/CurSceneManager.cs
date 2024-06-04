@@ -16,7 +16,7 @@ public class CurSceneManager : MonoBehaviour
     public CMSetting curCMSetting;
     public Transform timelineParent;
     public List<PlayableDirector> timelines;
-    Dictionary<string, PlayableDirector> timelineDic;
+    public Dictionary<string, PlayableDirector> timelineDic;
 
     bool isReady = false;
     void Awake()

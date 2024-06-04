@@ -158,6 +158,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("플레이어 skinnedMeshRenderer null");
         }
+
     }
 
     public void SetUIVariable()
@@ -718,12 +719,12 @@ public class PlayerController : MonoBehaviour
     //* 플레이어 대화 
     public void StartDialogue(bool isStart)
     {
-        if(isStart)
+        if (isStart)
         {
             P_Com.animator.Rebind();
             DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
-                if (!DialogueManager.instance.DoQuest)
-                    interObject.SetActive(false);
+            if (!DialogueManager.instance.DoQuest)
+                interObject.SetActive(false);
         }
     }
 }
