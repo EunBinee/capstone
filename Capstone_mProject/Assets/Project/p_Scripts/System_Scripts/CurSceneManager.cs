@@ -18,6 +18,11 @@ public class CurSceneManager : MonoBehaviour
     public List<PlayableDirector> timelines;
     public Dictionary<string, PlayableDirector> timelineDic;
 
+    public bool haveCsv_Npc;
+    public string csvFileName_NPC;
+    public bool haveCsv_Quest;
+    public string csvFileName_Quest;
+
     bool isReady = false;
     void Awake()
     {
@@ -31,12 +36,28 @@ public class CurSceneManager : MonoBehaviour
             CanvasManager.instance.cameraResolution = CanvasManager.instance.gameObject.GetComponent<CameraResolution>();
         }
         CanvasManager.instance.cameraResolution.SetResolution();
+
     }
 
     void Start()
     {
         SceneSetting();
         TimelineSetting();
+        if (haveCsv_Npc)
+        {
+            DatabaseManager.instance.csvFileName_NPC = csvFileName_NPC;
+            DatabaseManager.instance.DialogueParser(csvFileName_NPC, true);
+
+            if (csvFileName_NPC == "Tutorial")
+                DialogueManager.instance.questManager.isTutorial = true;
+            else
+                DialogueManager.instance.questManager.isTutorial = false;
+        }
+        if (haveCsv_Quest)
+        {
+            DatabaseManager.instance.csvFileName_Quest = csvFileName_Quest;
+            DatabaseManager.instance.QuestParser(csvFileName_Quest, 0);
+        }
     }
 
     void Update()

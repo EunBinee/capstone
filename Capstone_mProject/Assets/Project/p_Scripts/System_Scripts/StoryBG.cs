@@ -101,14 +101,6 @@ public class StoryBG : MonoBehaviour
                 storyText.text = writerText;
                 yield return new WaitForSeconds(0.05f);
             }
-            // sentence = storyList[i];
-            // for (int j = 0; j < sentence.Length; j++)
-            // {
-            //     writerText += sentence[j];
-            //     storyText.text = writerText;
-            //
-            //     yield return new WaitForSeconds(0.05f);
-            // }
 
             storyText.text = storyList[i];
             yield return new WaitForSeconds(0.5f);
