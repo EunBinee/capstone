@@ -51,7 +51,6 @@ MonoBehaviour:
     dialogueNum_in: 0
   csvFileName_NPC: D2
   csvFileName_Quest: Quest_02
-  csvFileName_Reasoning: R1
 --- !u!114 &6243158102669294942
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,6 +81,7 @@ MonoBehaviour:
     Text_QuestDetailTitle: {fileID: 0}
     Text_QuestDetailContent: {fileID: 0}
     Text_Alarm: {fileID: 0}
+    Text_Tuto: {fileID: 0}
     objectText: {fileID: 0}
   questManager: {fileID: 0}
   notificationManager: {fileID: 0}
@@ -90,6 +90,7 @@ MonoBehaviour:
   DoQuest: 0
   isQuestDetail: 0
   isDialogue: 0
+  startDialogue: 0
   isArrowAnimating: 0
   isDialogueSkip: 0
 --- !u!114 &6243158102669294941
