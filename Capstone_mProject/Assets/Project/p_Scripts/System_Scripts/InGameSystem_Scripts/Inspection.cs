@@ -108,7 +108,7 @@ public class Inspection : MonoBehaviour
             interactionBtn.gameObject.SetActive(false);
             DialogueManager.instance.startDialogue = true;
             GameManager.instance.gameData.GetPlayerController().StartDialogue(DialogueManager.instance.startDialogue);
-            Debug.Log(DialogueManager.instance.startDialogue);
+            //Debug.Log(DialogueManager.instance.startDialogue);
         }
         Destroy(this.gameObject);
 
