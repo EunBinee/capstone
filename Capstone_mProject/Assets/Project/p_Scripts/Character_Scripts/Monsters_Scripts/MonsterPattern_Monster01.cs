@@ -422,7 +422,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
             if (navMeshAgent.isStopped == false)
                 SetMove_AI(false);
             SetAnimation(MonsterAnimation.Idle);
-            Debug.Log("멈춰있답니다~");
+
 
             //! 회전!!!!
             Vector3 direction = (playerTrans.position - transform.position).normalized;

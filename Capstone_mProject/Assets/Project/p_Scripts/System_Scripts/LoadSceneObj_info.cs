@@ -35,6 +35,7 @@ public class LoadSceneObj_info : MonoBehaviour
     {
         CanvasManager.instance.fadeImg.SetActive(true);
         Fade fade = CanvasManager.instance.fadeImg.GetComponent<Fade>();
+        fade.finishFadeIn = false;
         fade.FadeIn();
         yield return new WaitUntil(() => fade.finishFadeIn == true);
 

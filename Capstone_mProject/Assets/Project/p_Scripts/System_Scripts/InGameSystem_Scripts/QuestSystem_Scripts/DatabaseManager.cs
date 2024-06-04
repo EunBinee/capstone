@@ -89,8 +89,9 @@ public class DatabaseManager : MonoBehaviour
                 NPC_diaglogues_Dictionary[id] = dialogues[i];
             }
         }
-        Debug.Log(csvFileName + "완료!");
-       
+#if UNITY_EDITOR
+        Debug.Log("데이터 파싱" + csvFileName + "완료!");
+#endif
     }
 
     public void QuestParser(string csvFileName, int questNum)
@@ -105,7 +106,9 @@ public class DatabaseManager : MonoBehaviour
             Quest_Dictionary[id] = quests[i];
 
         }
-        Debug.Log(csvFileName + "완료!");
+#if UNITY_EDITOR
+        Debug.Log("데이터 파싱" + csvFileName + "완료!");
+#endif
     }
 
     // public void ReasoningParser(string csvFileName, int reasoningNum)
