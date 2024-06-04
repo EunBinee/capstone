@@ -80,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
         skill_V = playerUI_info.skill_V;
         skill_V.gameObject.SetActive(true);
-        _controller.originQpos = skill_V.gameObject.transform.position;
+        _controller.originVpos = skill_V.gameObject.transform.position;
         //_controller.originVpos = new Vector3(1000, -1000, 0);
 
 
