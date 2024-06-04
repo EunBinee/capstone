@@ -19,15 +19,25 @@ public class StoryBG : MonoBehaviour
 
     string yellow_Color = "<#FFD559>";
     string murkyYellow_Color = "<#A4CD8D>";
+
+    public bool isStart = false;
     void Start()
     {
-        startStory();
+        isStart = false;
+        //startStory();
 
+    }
+
+    void Update()
+    {
+        if (!isStart)
+            startStory();
     }
 
     //*처음 불러올때 이거 무조건 쓰기
     public void startStory()
     {
+        isStart = true;
         //*  플레이어 정지
         GameManager.instance.StopGame();
 

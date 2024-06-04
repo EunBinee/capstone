@@ -136,6 +136,8 @@ public class PlayerController : MonoBehaviour
         }
         SetUIVariable();
         _playerArrows.Init();
+
+
     }
 
     public void SetUIVariable()
