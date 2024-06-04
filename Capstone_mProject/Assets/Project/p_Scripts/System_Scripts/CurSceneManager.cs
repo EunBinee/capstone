@@ -52,6 +52,8 @@ public class CurSceneManager : MonoBehaviour
                 DialogueManager.instance.questManager.isTutorial = true;
             else
                 DialogueManager.instance.questManager.isTutorial = false;
+
+            GameManager.Instance.gameInfo.EventNum = 1;
         }
         if (haveCsv_Quest)
         {
