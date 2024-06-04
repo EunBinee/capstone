@@ -136,7 +136,7 @@ public class CanvasManager : MonoBehaviour
         GameObject curObj = Resources.Load<GameObject>("CanvasPrefabs/" + name);
         if (curObj == null)
         {
-            Debug.LogError($"리소스 파일에 {name}프리펩 없음");
+            //Debug.LogError($"리소스 파일에 {name}프리펩 없음");
             return null;
         }
         curObj = Instantiate(curObj);
