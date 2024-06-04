@@ -89,6 +89,15 @@ public class CurSceneManager : MonoBehaviour
         SetPlayerPos();
 
         GameManager.instance.GetGameInfo();
+
+        GameManager.instance.gameData.GetPlayerController().player_loadScene = false;
+
+        if (CanvasManager.instance.fadeImg != null)
+        {
+            CanvasManager.instance.fadeImg.SetActive(true);
+            Fade fade = CanvasManager.instance.fadeImg.GetComponent<Fade>();
+            fade.FadeOut();
+        }
     }
 
     private void TimelineSetting()
@@ -145,6 +154,7 @@ public class CurSceneManager : MonoBehaviour
                 // 자식 오브젝트의 작업을 수행합니다.
                 Debug.Log("Child Object Name: " + child.name);
                 timelines.Add(child.gameObject.GetComponent<PlayableDirector>());
+
             }
         }
 
