@@ -6309,11 +6309,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6289568037670363905, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.39882
+      value: 48.398827
       objectReference: {fileID: 0}
     - target: {fileID: 6965927949542687181, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
       propertyPath: m_RotationAtRest.x
-      value: 48.39879
+      value: 48.398785
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93fa8b1cb102c3c4b872d5936788c193, type: 3}
@@ -8675,6 +8675,10 @@ MonoBehaviour:
   - {fileID: 887866828}
   - {fileID: 392046869}
   - {fileID: 737278005}
+  haveCsv_Npc: 0
+  csvFileName_NPC: 
+  haveCsv_Quest: 0
+  csvFileName_Quest: 
 --- !u!4 &765949824
 Transform:
   m_ObjectHideFlags: 0
@@ -10095,6 +10099,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 823084827}
     m_Modifications:
+    - target: {fileID: 603542843840046084, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 155fb76184d251449802e31372733ec1, type: 2}
     - target: {fileID: 2755003020157360583, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -10203,6 +10211,14 @@ PrefabInstance:
       propertyPath: redImage
       value: 
       objectReference: {fileID: 381984058}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: redMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 155fb76184d251449802e31372733ec1, type: 2}
+    - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: buleMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: d724443a931e183469cec779a8ca650e, type: 2}
     - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: bossEyes.Array.size
       value: 4
