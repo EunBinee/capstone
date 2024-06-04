@@ -60,6 +60,11 @@ public class CanvasManager : MonoBehaviour
     public string inspectionName;
     public GameObject inspectionUI;
 
+    [Space]
+    [Header("fadeInfadeOut")]
+    public string fadeImgName;
+    public GameObject fadeImg;
+
     void Awake()
     {
         if (instance == null)
@@ -115,9 +120,14 @@ public class CanvasManager : MonoBehaviour
         cameraResolution = GetComponent<CameraResolution>();
 
         //* 조사 UI
-        if(inspectionUI==null)
+        if (inspectionUI == null)
         {
             inspectionUI = GetCanvasUI(inspectionName);
+        }
+
+        if (fadeImg == null)
+        {
+            fadeImg = GetCanvasUI(fadeImgName);
         }
     }
 

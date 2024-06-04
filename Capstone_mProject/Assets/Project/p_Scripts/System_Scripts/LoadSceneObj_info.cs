@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class LoadSceneObj_info : MonoBehaviour
@@ -21,6 +22,26 @@ public class LoadSceneObj_info : MonoBehaviour
         }
 
         GameManager.instance.RemoveMonster();
+
+
+    }
+
+
+    public void LoadSceneSetting()
+    {
+        StartCoroutine(LoadSceneSetting_co());
+    }
+    IEnumerator LoadSceneSetting_co()
+    {
+        CanvasManager.instance.fadeImg.SetActive(true);
+        Fade fade = CanvasManager.instance.fadeImg.GetComponent<Fade>();
+        fade.FadeIn();
+        yield return new WaitUntil(() => fade.finishFadeIn == true);
+
+        PreLoadSceneSetting();
+        LoadingSceneController.LoadScene(sceneName);
+
+
 
     }
 }

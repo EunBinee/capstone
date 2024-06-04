@@ -27,6 +27,7 @@ public class LoadingSceneController : MonoBehaviour
     {
         nextScene = sceneName;
         SceneManager.LoadScene("LoadingScene"); //로딩씬으로 바로 이동
+                                                // CanvasManager.instance.fadeImg.SetActive(false);
     }
 
     IEnumerator LoadScene_co()
