@@ -55,6 +55,8 @@ public class DialogueController : MonoBehaviour
 
     IEnumerator ObjectChat(string sentence)
     {
+
+        Debug.Log($"지금 문장 : {sentence}");
         string writerText = "";
         bool t_white = false, t_yellow = false;
         bool t_ignore = false;
@@ -64,14 +66,11 @@ public class DialogueController : MonoBehaviour
             if (stopChat)
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록.
-
                 switch (sentence[i])
                 {
                     case 'ⓦ': t_white = true; t_yellow = false; t_ignore = true; break;
                     case 'ⓨ': t_white = false; t_yellow = true; t_ignore = true; break;
                 }
-
-
 
                 writerText = sentence.Replace("'", ",").Replace("ⓨ", "<color=#ffff00>").Replace("ⓦ", "</color><color=#ffffff>" + "</color>");
                 objectText.text = writerText;
@@ -102,6 +101,7 @@ public class DialogueController : MonoBehaviour
                 yield return new WaitForSeconds(0.02f);
 
             }
+            yield return null;
         }
         //모든 대사가 타이핑 되고 초기화
         dialogueManager.endChat_inController = true;

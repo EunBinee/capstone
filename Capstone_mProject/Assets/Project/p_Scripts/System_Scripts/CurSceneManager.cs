@@ -31,11 +31,7 @@ public class CurSceneManager : MonoBehaviour
             instance = this;
         }
 
-        if (CanvasManager.instance.cameraResolution == null)
-        {
-            CanvasManager.instance.cameraResolution = CanvasManager.instance.gameObject.GetComponent<CameraResolution>();
-        }
-        CanvasManager.instance.cameraResolution.SetResolution();
+
 
     }
 
@@ -99,6 +95,13 @@ public class CurSceneManager : MonoBehaviour
             Fade fade = CanvasManager.instance.fadeImg.GetComponent<Fade>();
             fade.FadeOut();
         }
+
+
+        if (CanvasManager.instance.cameraResolution == null)
+        {
+            CanvasManager.instance.cameraResolution = CanvasManager.instance.gameObject.GetComponent<CameraResolution>();
+        }
+        CanvasManager.instance.cameraResolution.SetResolution();
     }
 
     private void TimelineSetting()
