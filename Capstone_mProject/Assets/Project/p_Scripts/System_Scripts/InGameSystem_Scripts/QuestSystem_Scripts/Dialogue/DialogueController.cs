@@ -114,6 +114,7 @@ public class DialogueController : MonoBehaviour
     {
         StartCoroutine(AnimateArrow());
     }
+
     private IEnumerator AnimateArrow()
     {
         dialogueManager.isArrowAnimating = true;
@@ -130,16 +131,4 @@ public class DialogueController : MonoBehaviour
         }
     }
 
-    // public static IEnumerator WaitForRealTime(float delay)
-    // {
-    //     while (true)
-    //     {
-    //         float pauseEndTime = Time.realtimeSinceStartup + delay;
-    //         while (Time.realtimeSinceStartup < pauseEndTime)
-    //         {
-    //             yield return 0;
-    //         }
-    //         break;
-    //     }
-    // }
 }

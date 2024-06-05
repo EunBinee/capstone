@@ -21,6 +21,8 @@ public class StoryBG : MonoBehaviour
     string murkyYellow_Color = "<#A4CD8D>";
 
     public bool isStart = false;
+    public bool startChat = false;
+    public bool stopChat = false;
     void Start()
     {
         isStart = false;
@@ -32,6 +34,15 @@ public class StoryBG : MonoBehaviour
     {
         if (!isStart)
             startStory();
+
+        if (isStart && startChat)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+            {
+                //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록 하기 위함.
+                stopChat = true;
+            }
+        }
     }
 
     //*처음 불러올때 이거 무조건 쓰기
@@ -93,14 +104,25 @@ public class StoryBG : MonoBehaviour
 
             storyText.text = "";
             writerText = "";
-
+            startChat = true;
             string[] divideSentence = DivideSentence(storyList[i]);
             for (int j = 0; j < divideSentence.Length; j++)
             {
+                if (stopChat)
+                {
+                    //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록.
+                    storyText.text = storyList[i];
+                    yield return new WaitForSeconds(0.05f);
+                    break;
+                }
+
                 writerText += divideSentence[j];
                 storyText.text = writerText;
                 yield return new WaitForSeconds(0.05f);
+
             }
+            startChat = false;
+            stopChat = false;
 
             storyText.text = storyList[i];
             yield return new WaitForSeconds(0.5f);
