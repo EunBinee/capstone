@@ -56,7 +56,7 @@ public class DialogueController : MonoBehaviour
     IEnumerator ObjectChat(string sentence)
     {
 
-        Debug.Log($"지금 문장 : {sentence}");
+        //s        Debug.Log($"지금 문장 : {sentence}");
         string writerText = "";
         bool t_white = false, t_yellow = false;
         bool t_ignore = false;
