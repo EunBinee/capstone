@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Michsky.UI.Reach;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -112,6 +113,8 @@ public class CanvasManager : MonoBehaviour
         }
 
         //* 버튼 UI
+        Button_Controller.instance = null;
+        btnsUI = null;
         if (btnsUI == null)
         {
             btnsUI = GetCanvasUI(btnsUIName);

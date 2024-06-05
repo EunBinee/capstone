@@ -45,7 +45,7 @@ public class Button_Controller : MonoBehaviour
     {
         if (skipBtnActive)
         {
-            //*skip버튼이있을경우
+            //*skip버튼이있을경우 
             if (playerKeyState.ZDown)
             {
                 skipBtnActive = false;
@@ -60,8 +60,16 @@ public class Button_Controller : MonoBehaviour
         switch (btn)
         {
             case Btns.SkipBtn:
-                skipBtn.gameObject.SetActive(active);
-                skipBtnActive = active;
+                if (skipBtn.gameObject == null)
+                {
+                    Debug.Log($"{transform.GetChild(0).name}");
+                    skipBtn = transform.GetChild(0).GetComponent<Button>();
+                }
+                if (skipBtn.gameObject != null)
+                {
+                    skipBtn.gameObject.SetActive(active);
+                    skipBtnActive = active;
+                }
                 break;
             default:
                 break;
