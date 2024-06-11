@@ -208,11 +208,13 @@ public class PlayerInputHandle : MonoBehaviour
                 && !P_States.isStop && !P_States.isElectricShock)
                 //&& !EventSystem.current.IsPointerOverGameObject())
             {
-                if (!isAttack)//P_States.isStartComboAttack)
+                //if (!isAttack)//P_States.isStartComboAttack)
                 {
                     //P_States.isStartComboAttack = true;
-                    isAttack = true;
-                    P_Movement.Attacking_co();
+                    //isAttack = true;
+                    //P_Movement.Attack();
+                    P_Com.animator.SetTrigger("onAttackCombo");
+                    P_Controller.ComboAttack.inAttackClick();
                 }
             }
         }

@@ -50,6 +50,10 @@ public class PlayerController : MonoBehaviour
     public PlayerPhysicsCheck P_PhysicsCheck;
     public PlayerSkills P_Skills;
     public PlayerSkillTree playerSkillTree;
+    public PlayerComboAttack ComboAttack;
+    
+
+    public string[] AttackEffectName = new string[5];
 
     public List<NavMeshSurface> navMeshSurface;
 
@@ -112,6 +116,7 @@ public class PlayerController : MonoBehaviour
         P_Movement = GetComponent<PlayerMovement>();
         P_Skills = GetComponent<PlayerSkills>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
+        ComboAttack = GetComponent<PlayerComboAttack>();
         InitPlayer();
         P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
 
@@ -604,10 +609,22 @@ public class PlayerController : MonoBehaviour
         effect.gameObject.transform.position += curDirection * 0.35f;
     }
 
-    public void playAttackEffect(string name)
+    public void playEffect(string name)
     {
         //* 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(name);
+        effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+        //* 이펙트 회전
+        Quaternion effectRotation = this.gameObject.transform.rotation;
+        effectRotation.x = 0;
+        effectRotation.z = 0;
+        effect.gameObject.transform.rotation = effectRotation;
+    }
+
+    public void playAttackEffect()
+    {
+        //* 이펙트
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(AttackEffectName[P_Value.index-1]);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
         //* 이펙트 회전
         Quaternion effectRotation = this.gameObject.transform.rotation;
