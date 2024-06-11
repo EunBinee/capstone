@@ -261,7 +261,7 @@ public class PlayerController : MonoBehaviour
         AnimState(PlayerState.Idle);
         P_Value.HP = P_Value.MaxHP;
         P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
-        P_Value.index = 1;
+        P_Value.index = 0;
         P_Value.time = 0;
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;
@@ -624,7 +624,7 @@ public class PlayerController : MonoBehaviour
     public void playAttackEffect()
     {
         //* 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(AttackEffectName[P_Value.index-1]);
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(AttackEffectName[P_Value.index]);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
         //* 이펙트 회전
         Quaternion effectRotation = this.gameObject.transform.rotation;

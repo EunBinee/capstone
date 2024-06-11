@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         //    playerAttackChecks.Add(attackCheck);
         //}
         playerArrowList = new List<PlayerAttackCheck>();
-        P_Value.index = 1;
+        //P_Value.index = 0;
         P_States.hadAttack = false;
         P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임
         //ComboAttack.SetAttackCheckList();
@@ -127,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             && !P_States.isGettingHit
             && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
         {
-            P_Value.index = 1;
+            P_Value.index = 0;
             P_Value.time = 0;
             P_Value.isCombo = false;
             P_States.isStartComboAttack = false;
@@ -457,9 +457,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if (P_States.doNotRotate || (P_States.isStartComboAttack
-                && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
-                && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
+        if (P_States.doNotRotate || P_States.isStartComboAttack //|| P_Value.index > 0
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
                 || (P_States.isClickDown && P_States.isShortArrow))
@@ -1010,7 +1008,7 @@ public class PlayerMovement : MonoBehaviour
     {
         P_States.isStop = true;
 
-        P_Value.index = 1;
+        P_Value.index = 0;
         P_Value.time = 0;
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;

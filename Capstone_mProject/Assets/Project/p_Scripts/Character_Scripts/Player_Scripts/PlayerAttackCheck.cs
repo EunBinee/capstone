@@ -296,6 +296,7 @@ public class PlayerAttackCheck : MonoBehaviour
             P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
             P_States.hadAttack = true;
             P_States.notSameMonster = false;
+            P_States.isStartComboAttack = false;
 
             P_Controller.ComboAttack.AttackColliderOff();
 
