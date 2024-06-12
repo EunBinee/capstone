@@ -187,11 +187,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void Attack()
-    {
-        ComboAttack.Attacking_co();
-    }
-
     private void HandleSprint()
     {
         if (Input.GetKey(KeyCode.V) && P_Value.moveAmount > 0)
@@ -787,7 +782,6 @@ public class PlayerMovement : MonoBehaviour
         }
         yield return null;
     }
-
 
     List<Collider> playerColliderList = new List<Collider>();
     List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();

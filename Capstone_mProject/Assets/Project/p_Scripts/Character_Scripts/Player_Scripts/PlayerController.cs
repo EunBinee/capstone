@@ -621,10 +621,10 @@ public class PlayerController : MonoBehaviour
         effect.gameObject.transform.rotation = effectRotation;
     }
 
-    public void playAttackEffect()
+    public void playAttackEffect(int ind)
     {
         //* 이펙트
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect(AttackEffectName[P_Value.index]);
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect(AttackEffectName[ind]);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
         //* 이펙트 회전
         Quaternion effectRotation = this.gameObject.transform.rotation;

@@ -177,7 +177,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     _playerController.hitMonsters.Add(other.gameObject);
 
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
-                    if (P_States.hadAttack == false || P_States.notSameMonster)
+                    if (P_States.hadAttack == false)
                     {
                         P_States.hadAttack = true;
                         // 충돌한 객체의 Transform을 얻기
@@ -294,7 +294,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             P_Controller.CheckHitTime();
             P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
-            P_States.hadAttack = true;
+            P_States.hadAttack = false;
             P_States.notSameMonster = false;
             P_States.isStartComboAttack = false;
 
