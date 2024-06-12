@@ -73,26 +73,31 @@ public class PlayerComboAttack : MonoBehaviour
     }
     public void FirstAttackEffect()
     {//Debug.Log("[attack test] 1111111111111111");
+        P_States.isStartAnim = true;
         P_Controller.playAttackEffect(0);
         //AttackColliderOff();
     }
     public void SecondAttackEffect()
     {//Debug.Log("[attack test] 2222222222222222");
+        P_States.isStartAnim = true;
         P_Controller.playAttackEffect(1);
         //AttackColliderOff();
     }
     public void ThirdAttackEffect()
     {//Debug.Log("[attack test] 3333333333333333");
+        P_States.isStartAnim = true;
         P_Controller.playAttackEffect(2);
         //AttackColliderOff();
     }
     public void FourthAttackEffect()
     {//Debug.Log("[attack test] 4444444444444444");
+        P_States.isStartAnim = true;
         P_Controller.playAttackEffect(3);
         //AttackColliderOff();
     }
     public void FifthAttackEffect()
     {//Debug.Log("[attack test] 5555555555555555");
+        P_States.isStartAnim = true;
         P_Controller.playAttackEffect(4);
         //AttackColliderOff();
     }
@@ -184,6 +189,8 @@ public class PlayerComboAttack : MonoBehaviour
     public void AttackColliderOff()
     {
         Debug.Log("[attack test] AttackColliderOff()");
+        P_States.isStartComboAttack = false;
+        P_States.isStartAnim = false;
         if (playerAttackCheckList.Count != 0)
         {
             //Debug.Log("[attack test]플레이어 공격 콜라이더 비활성화");

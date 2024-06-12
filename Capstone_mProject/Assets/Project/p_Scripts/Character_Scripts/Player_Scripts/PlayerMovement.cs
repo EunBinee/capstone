@@ -123,16 +123,16 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
+        if ( !P_States.isStartAnim //P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
             && !P_States.isGettingHit
             && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
-        {
-            P_Value.index = 0;
+        {   //공격 중 점프나 닷지로 캔슬 하도록
+            P_Value.index = 0;  
             P_Value.time = 0;
             P_Value.isCombo = false;
             P_States.isStartComboAttack = false;
             P_InputHandle.isAttack = false;
-            P_Com.animator.SetInteger("comboCount", P_Value.index);
+            P_Com.animator.SetInteger("comboCount", 0);
             P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
         }
@@ -401,7 +401,7 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 targetDirect = Vector3.zero;
 
-            if (P_Value.nowEnemy != null && (P_States.isShortArrow || (P_States.isStartComboAttack && P_Value.isCombo)))   //* 최근에 공격한 적(몬서터)이 있다면
+            if (P_Value.nowEnemy != null && (P_States.isShortArrow || P_States.isStartComboAttack))//( && P_Value.isCombo)))   //* 최근에 공격한 적(몬서터)이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
                 Vector3 toMonsterDir = Vector3.zero;
@@ -452,7 +452,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if (P_States.doNotRotate || P_States.isStartComboAttack //|| P_Value.index > 0
+        if (P_States.doNotRotate || P_States.isStartAnim//P_States.isStartComboAttack || P_Value.index > 0
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
                 || (P_States.isClickDown && P_States.isShortArrow))

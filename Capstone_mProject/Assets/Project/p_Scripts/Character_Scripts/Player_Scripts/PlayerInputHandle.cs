@@ -219,10 +219,6 @@ public class PlayerInputHandle : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            P_States.isStartComboAttack = false;   
-        }
 
         //* 활 
         if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.isElectricShock)
