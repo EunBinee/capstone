@@ -47,10 +47,14 @@ public class PlayerMovement : MonoBehaviour
     public GameObject skillTree;
 
     [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
+
+    [Header("Player Animation ID")]
+    private int animJumpTriggerHash;
+    private int animDodgeTriggerHash;
+
     void Start()
     {
         _controller = GetComponent<PlayerController>();
-        //playerAttackChecks = new List<PlayerAttackCheck>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         P_InputHandle = GetComponent<PlayerInputHandle>();
         ComboAttack = P_Controller.ComboAttack;
@@ -58,16 +62,11 @@ public class PlayerMovement : MonoBehaviour
         P_Controller.P_Skills.Setting();
 
         SetUIVariable();
-        //for (int i = 0; i < attackColliders.Length; i++)
-        //{
-        //    PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
-        //    playerAttackChecks.Add(attackCheck);
-        //}
         playerArrowList = new List<PlayerAttackCheck>();
-        //P_Value.index = 0;
-        P_States.hadAttack = false;
         P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임
-        //ComboAttack.SetAttackCheckList();
+
+        animJumpTriggerHash = Animator.StringToHash("isJump");
+        animDodgeTriggerHash = Animator.StringToHash("isDodge");
     }
 
     public void SetUIVariable()
@@ -241,7 +240,7 @@ public class PlayerMovement : MonoBehaviour
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             //P_Com.animator.Play("jump_start");
-            P_Com.animator.SetTrigger("isJump");
+            P_Com.animator.SetTrigger(animJumpTriggerHash);
             P_Com.animator.SetBool("isJump_Up", true);
         }
         if (P_States.isJumping && P_States.isGround)
@@ -279,11 +278,11 @@ public class PlayerMovement : MonoBehaviour
         else if (!returnDodgeAnim()
             && P_States.currentDodgeKeyPress
             && !P_States.isDodgeing && !P_States.isJumping
-            //&& P_Value.moveAmount > 0
             && !P_States.isStartComboAttack && P_States.isGround)
         {
             P_States.isJumping = false;
             P_States.isDodgeing = true;
+            P_Com.animator.SetTrigger(animDodgeTriggerHash);
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
         }

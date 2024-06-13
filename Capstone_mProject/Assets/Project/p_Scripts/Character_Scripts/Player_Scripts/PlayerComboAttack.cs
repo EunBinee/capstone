@@ -202,7 +202,7 @@ public class PlayerComboAttack : MonoBehaviour
             playerColliderList.Clear();
             playerAttackCheckList.Clear();
             P_States.hadAttack = false; //* 공격 여부 비활성화
-            //P_States.isStartComboAttack = false;
+            P_States.isStartComboAttack = false;
         }
     }
 }
