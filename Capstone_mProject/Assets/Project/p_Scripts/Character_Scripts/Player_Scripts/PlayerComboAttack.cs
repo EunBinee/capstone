@@ -21,11 +21,18 @@ public class PlayerComboAttack : MonoBehaviour
     public Collider[] attackColliders;
     private List<PlayerAttackCheck> playerAttackChecks;
 
+    float lastClickTime;
+    Coroutine clickTime_co = null;
+
     string comboName01 = "Attack_Combo_1";
     string comboName02 = "Attack_Combo_2";
     string comboName03 = "Attack_Combo_3";
     string comboName04 = "Attack_Combo_4";
     string comboName05 = "Attack_Combo_5";
+
+    [Header("Player Animation ID")]
+    private int animComboTriggerHash;
+    private int animComboCountHash;
 
     void Awake()
     {
@@ -52,24 +59,26 @@ public class PlayerComboAttack : MonoBehaviour
             playerAttackChecks.Add(attackCheck);
         }
         P_Value.index = 0;
+        
+        animComboTriggerHash = Animator.StringToHash("onAttackCombo");
+        animComboCountHash = Animator.StringToHash("comboCount");
     }
 
     public void inAttackClick()
     {
-
+        lastClickTime = 0;
+        if (clickTime_co == null)
+        {
+            clickTime_co = StartCoroutine(ComboTime());
+        }
         //Debug.Log("[attack test] inAttackClick()");
-        P_Com.animator.SetTrigger("onAttackCombo");
+        P_Com.animator.SetTrigger(animComboTriggerHash);
 
         P_Value.index = (P_Value.index + 1) % 5;
         //Debug.Log($"[attack test] P_Value.index {P_Value.index}");
-        P_Com.animator.SetInteger("comboCount", P_Value.index);
+        P_Com.animator.SetInteger(animComboCountHash, P_Value.index);
         
         AttackIndexColliderSet();
-        // 이펙트
-        //P_Controller.playAttackEffect(P_Value.index);
-        
-
-        //AttackColliderOff();
     }
     public void FirstAttackEffect()
     {//Debug.Log("[attack test] 1111111111111111");
@@ -105,7 +114,7 @@ public class PlayerComboAttack : MonoBehaviour
     private void AttackIndexColliderSet()
     {
         //AttackColliderOff();
-        Debug.Log("[attack test] AttackIndexColliderSet()");
+        //Debug.Log("[attack test] AttackIndexColliderSet()");
         switch (P_Value.index)
         {
             case 0:
@@ -188,9 +197,8 @@ public class PlayerComboAttack : MonoBehaviour
 
     public void AttackColliderOff()
     {
-        Debug.Log("[attack test] AttackColliderOff()");
-        P_States.isStartComboAttack = false;
-        P_States.isStartAnim = false;
+        Debug.Log("[player test] AttackColliderOff()");
+        //P_States.isStartComboAttack = false;
         if (playerAttackCheckList.Count != 0)
         {
             //Debug.Log("[attack test]플레이어 공격 콜라이더 비활성화");
@@ -202,7 +210,36 @@ public class PlayerComboAttack : MonoBehaviour
             playerColliderList.Clear();
             playerAttackCheckList.Clear();
             P_States.hadAttack = false; //* 공격 여부 비활성화
-            P_States.isStartComboAttack = false;
+            P_States.isStartAnim = false;
+            //P_States.isStartComboAttack = false;
+        }
+    }
+
+    IEnumerator ComboTime()
+    {
+        //comboClickTime
+        //todo: click 후 콤보클릭타임보다 크면 index reset
+        while (lastClickTime < comboClickTime)
+        {
+            yield return new WaitUntil(() => timefunc());
+        }
+        P_Value.index = 0;
+        P_Com.animator.SetInteger(animComboCountHash, P_Value.index);
+        P_States.isStartComboAttack = false; P_States.isStartAnim = false;
+        Debug.Log("[player test] ComboTime() yield return null;");
+        yield return null;
+    }
+    bool timefunc()
+    {
+        if (Input.GetMouseButton(0))    // 클릭이 들어오면
+        {
+            lastClickTime = 0;  // 시간 초기화
+            return true;
+        }
+        else    // 클릭이 안들어오면
+        {
+            lastClickTime += Time.deltaTime;    // 시간 누적
+            return false;
         }
     }
 }

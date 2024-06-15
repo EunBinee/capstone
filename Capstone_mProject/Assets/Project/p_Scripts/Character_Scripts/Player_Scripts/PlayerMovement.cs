@@ -122,7 +122,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if ( !P_States.isStartAnim //P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
+        if ( (!P_States.isStartAnim || P_States.isStartComboAttack) //&& P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
             && !P_States.isGettingHit
             && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
         {   //공격 중 점프나 닷지로 캔슬 하도록
@@ -130,9 +130,10 @@ public class PlayerMovement : MonoBehaviour
             P_Value.time = 0;
             P_Value.isCombo = false;
             P_States.isStartComboAttack = false;
+            P_States.isStartAnim = false;
             P_InputHandle.isAttack = false;
             P_Com.animator.SetInteger("comboCount", 0);
-            P_Com.animator.SetBool("p_Locomotion", true);
+            //P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
         }
         P_PhysicsCheck.CheckedGround();
@@ -237,16 +238,29 @@ public class PlayerMovement : MonoBehaviour
         if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
             P_States.isJumping = true;
+            Debug.Log("[player test] P_States.isJumping = true;");
             P_Value.gravity = P_COption.gravity;
+            //Debug.Log($"[player test] P_Value.gravity {P_Value.gravity}");
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             //P_Com.animator.Play("jump_start");
             P_Com.animator.SetTrigger(animJumpTriggerHash);
+            //P_Com.animator.SetTrigger("isJump");
             P_Com.animator.SetBool("isJump_Up", true);
+
+            if (P_States.isRunning)
+            {
+                P_Com.animator.Play("Jump_run", 1);
+            }
+            else
+            {
+                P_Com.animator.Play("jump_start", 1);
+            }
         }
-        if (P_States.isJumping && P_States.isGround)
+        if (P_States.isGround && P_States.isJumping)
         {
             P_Com.animator.SetBool("isJump_Up", false);
             P_States.isJumping = false;
+            Debug.Log("[player test] P_States.isJumping = false;");
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
         }
@@ -278,11 +292,11 @@ public class PlayerMovement : MonoBehaviour
         else if (!returnDodgeAnim()
             && P_States.currentDodgeKeyPress
             && !P_States.isDodgeing && !P_States.isJumping
-            && !P_States.isStartComboAttack && P_States.isGround)
+            && !P_States.isStartComboAttack && !P_States.isStartAnim && P_States.isGround)
         {
             P_States.isJumping = false;
             P_States.isDodgeing = true;
-            P_Com.animator.SetTrigger(animDodgeTriggerHash);
+            //P_Com.animator.SetTrigger(animDodgeTriggerHash);
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
         }
@@ -525,44 +539,44 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 1);
+                        P_Com.animator.Play("Right", 2);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 1);
+                        P_Com.animator.Play("Left", 2);
                     }
                     else
                     {
-                        P_Com.animator.Play("Front", 1);
+                        P_Com.animator.Play("Front", 2);
                     }
                 }
                 else if (P_Input.verticalMovement < 0)
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 1);
+                        P_Com.animator.Play("Right", 2);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 1);
+                        P_Com.animator.Play("Left", 2);
                     }
                     else
                     {
-                        P_Com.animator.Play("Back", 1);
+                        P_Com.animator.Play("Back", 2);
                     }
                 }
                 else if (P_Input.horizontalMovement > 0)
                 {
-                    P_Com.animator.Play("Right", 1);
+                    P_Com.animator.Play("Right", 2);
                 }
                 else if (P_Input.horizontalMovement < 0)
                 {
-                    P_Com.animator.Play("Left", 1);
+                    P_Com.animator.Play("Left", 2);
                 }
             }
             else    //* 주목중이 아니면
             {
-                P_Com.animator.Play("Front", 1);
+                P_Com.animator.Play("Front", 2);
             }
 
             if (P_Value.moveDirection == Vector3.zero)
@@ -580,7 +594,7 @@ public class PlayerMovement : MonoBehaviour
             // 기존 수직 속도를 유지하도록 수직 속도 다시 설정
             P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);
 
-            Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 = 0.16초
+            Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {
@@ -696,7 +710,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if ((P_States.isStartComboAttack || !P_States.isGround /*|| P_States.isDodgeing*/ || P_States.isShortArrow)
+        if (((P_States.isStartComboAttack || P_States.isStartAnim) || !P_States.isGround || P_States.isShortArrow)
                 && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
