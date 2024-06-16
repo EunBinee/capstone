@@ -158,12 +158,12 @@ public class PlayerMovement : MonoBehaviour
 
             P_InputHandle.MouseMoveInput();
 
-            P_InputHandle.MouseClickInput();
-
             if (P_InputHandle.Key2Movement() > 0 || P_InputHandle.Key2Movement() < 0)
                 P_Com.animator.SetBool("isRun", true);
             else
                 P_Com.animator.SetBool("isRun", false);
+
+            P_InputHandle.MouseClickInput();
 
             //* skills input
             P_InputHandle.SkillKeyInput();
