@@ -56,7 +56,9 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
         //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
-        skillRangeIndicator = Resources.Load<GameObject>("TargetMarker");
+        skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
+        //skillRangeIndicator = Resources.Load<GameObject>("TargetMarker");
+
         skillRangeIndicator.SetActive(false);
         //playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
         P_Movement = GetComponent<PlayerMovement>();
@@ -346,7 +348,9 @@ public class PlayerSkills : MonoBehaviour
                 case 'R':
                 case 'F':
                     isPressed = true; P_States.isSkill = true;
-                    skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
+                    //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
+                    skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
+                    
                     skillRangeIndicator.SetActive(true);
                     break;
                 default: break;
@@ -429,7 +433,7 @@ public class PlayerSkills : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(1.6f);
+        yield return new WaitForSeconds(0.5f);
         skillEffect.StopEffect();
         //skillEffectCast.StopEffect();
         P_States.isStop = false;
