@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7195301709572235709}
   - component: {fileID: 7195301709572235706}
   - component: {fileID: 1404091125779623576}
+  - component: {fileID: -497929401672991483}
   - component: {fileID: 1667498000}
   - component: {fileID: 1667498001}
   - component: {fileID: 4604493400107018182}
@@ -266,6 +267,7 @@ MonoBehaviour:
   P_PhysicsCheck: {fileID: 1667498000}
   P_Skills: {fileID: 1667498001}
   playerSkillTree: {fileID: 0}
+  ComboAttack: {fileID: 0}
   navMeshSurface: []
   isGettingHit: 0
   curPlayerState: 0
@@ -293,6 +295,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 73a5198d2e6b48b44a13f4005e6eead0, type: 2}
   - {fileID: 2100000, guid: 90924096dfcdf014ea02f4ad62821cb0, type: 2}
   - {fileID: 2100000, guid: c7657ca3c0c26c04c90788164e3e18ce, type: 2}
+  player_loadScene: 0
 --- !u!114 &1404091125779623576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,6 +308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c393c46bb3c69be48bdb6c8de0472f5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ComboAttack: {fileID: 0}
   skill_Q: {fileID: 0}
   skill_E: {fileID: 0}
   skill_R: {fileID: 0}
@@ -319,6 +323,21 @@ MonoBehaviour:
   camForward: {x: 0, y: 0, z: 0}
   skillTree: {fileID: 0}
   skillTooltipUI: {fileID: 0}
+--- !u!114 &-497929401672991483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: -7299792492529011644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f19bd3065fd2584980033b0ba166a22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _controller: {fileID: 7195301709572235706}
+  comboClickTime: 0.5
+  attackColliders: []
 --- !u!114 &1667498000
 MonoBehaviour:
   m_ObjectHideFlags: 0
