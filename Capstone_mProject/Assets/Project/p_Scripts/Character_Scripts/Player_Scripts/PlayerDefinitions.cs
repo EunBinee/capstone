@@ -118,6 +118,7 @@ public class CurrentState
 
     [Header("Aimming")]
     public bool isBowMode = false;  //활 모드
+    public bool isGunMode = false;  //총 모드
     public bool isClickDown;
     public bool isAim;  //조준스킬
     public bool startAim;

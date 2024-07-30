@@ -204,9 +204,9 @@ public class PlayerInputHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때 => 기본공격
         {   //* 마우스 클릭
-            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing 
+            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing
                 && !P_States.isStop && !P_States.isElectricShock)
-                //&& !EventSystem.current.IsPointerOverGameObject())
+            //&& !EventSystem.current.IsPointerOverGameObject())
             {
                 if (!isAttack)//P_States.isStartComboAttack)
                 {
@@ -288,7 +288,7 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.VDown)  //* Bow Mode & Sword Mode
+        if (P_KState.VDown)  //* Gun(Bow) Mode & Sword Mode
         {
             P_KState.VDown = false;
             if (skill_V.imgCool.fillAmount == 0)
@@ -297,7 +297,7 @@ public class PlayerInputHandle : MonoBehaviour
                 {
                     P_Skills.arrowSkillOff();    // 조준 헤제
                 }
-                P_Skills.skillMotion("ChangeWeapon", 'V');
+                P_Skills.skillMotion("ChangeWeapon_Gun2Sword", 'V');
             }
         }
         if (P_KState.QDown && !P_States.isSkill)

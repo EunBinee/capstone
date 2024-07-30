@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour
     //public List<Collider> forwardHit;
     private float hitStop = 0f;
 
+    public GameObject gun;
     public GameObject bow;
     public GameObject sword;
     public TMP_Text crosshairImage; // 조준점 이미지

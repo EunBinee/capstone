@@ -350,7 +350,7 @@ public class PlayerSkills : MonoBehaviour
                     isPressed = true; P_States.isSkill = true;
                     //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
                     skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
-                    
+
                     skillRangeIndicator.SetActive(true);
                     break;
                 default: break;
@@ -506,7 +506,7 @@ public class PlayerSkills : MonoBehaviour
     {
         switch (skillName)
         {
-            case "ChangeWeapon":   //* weapon change
+            case "ChangeWeapon_Bow2Sword":   //* weapon change
                 //if (skill_Q.imgCool.fillAmount == 0)
                 {
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
@@ -514,6 +514,7 @@ public class PlayerSkills : MonoBehaviour
                     if (P_States.isBowMode) //* 활 모드 -> 칼 모드
                     {
                         P_States.isBowMode = false;
+                        P_Controller.gun.SetActive(false);
                         P_Controller.bow.SetActive(false);
                         P_Controller.sword.SetActive(true);
                         P_Com.animator.SetFloat("isBowmode", 0);
@@ -521,10 +522,37 @@ public class PlayerSkills : MonoBehaviour
                     else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
                     {
                         P_States.isBowMode = true;
+                        P_Controller.gun.SetActive(false);
                         P_Controller.bow.SetActive(true);
                         P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);
                         P_Com.animator.SetFloat("isBowmode", 1);
+                    }
+                }
+                P_Movement.skill_V.OnClicked();
+                break;
+            case "ChangeWeapon_Gun2Sword":   //* weapon change
+                //if (skill_Q.imgCool.fillAmount == 0)
+                {
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
+                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                    if (P_States.isGunMode) //* 총 모드 -> 칼 모드
+                    {
+                        P_States.isGunMode = false;
+                        P_Controller.gun.SetActive(false);
+                        P_Controller.bow.SetActive(false);
+                        P_Controller.sword.SetActive(true);
+                        P_Com.animator.SetFloat("isGunMode", 0);
+                        //P_Com.animator.
+                    }
+                    else if (!P_States.isGunMode) //* 칼 모드 -> 총 모드
+                    {
+                        P_States.isGunMode = true;
+                        P_Controller.gun.SetActive(true);
+                        P_Controller.bow.SetActive(false);
+                        P_Controller.shootPoint.gameObject.SetActive(false);
+                        P_Controller.sword.SetActive(false);
+                        P_Com.animator.SetFloat("isGunMode", 1);
                     }
                 }
                 P_Movement.skill_V.OnClicked();
