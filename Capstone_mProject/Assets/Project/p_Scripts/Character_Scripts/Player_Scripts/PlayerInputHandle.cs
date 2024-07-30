@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
 
@@ -209,10 +208,11 @@ public class PlayerInputHandle : MonoBehaviour
                 && !P_States.isStop && !P_States.isElectricShock)
                 //&& !EventSystem.current.IsPointerOverGameObject())
             {
-                //if (!P_States.isStartAnim)// (!P_States.isStartComboAttack)
+                if (!isAttack)//P_States.isStartComboAttack)
                 {
-                    P_States.isStartComboAttack = true;
-                    P_Controller.ComboAttack.inAttackClick();
+                    //P_States.isStartComboAttack = true;
+                    isAttack = true;
+                    P_Movement.Attacking_co();
                 }
             }
         }

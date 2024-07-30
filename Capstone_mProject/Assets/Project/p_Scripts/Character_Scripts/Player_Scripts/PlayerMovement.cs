@@ -21,7 +21,6 @@ public class PlayerMovement : MonoBehaviour
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerPhysicsCheck P_PhysicsCheck;// => P_Controller.P_PhysicsCheck;
     private PlayerInputHandle P_InputHandle;
-    public PlayerComboAttack ComboAttack;
 
     float curVertVelocity;
 
@@ -36,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public float comboClickTime = 0.5f;
     [Header("플레이어 공격 콜라이더 : 인덱스 0번 칼, 1번 L발, 2번 R발")]
     public Collider[] attackColliders;
-    public List<PlayerAttackCheck> playerAttackChecks;
+    private List<PlayerAttackCheck> playerAttackChecks;
     public List<PlayerAttackCheck> playerArrowList; //* 현재 사용중인 화살
 
     float ElecTime = 0;
@@ -47,26 +46,25 @@ public class PlayerMovement : MonoBehaviour
     public GameObject skillTree;
 
     [SerializeField] private PlayerSkillTooltip skillTooltipUI; //스킬 정보 보여줄 툴팁 UI
-
-    [Header("Player Animation ID")]
-    private int animJumpTriggerHash;
-    private int animDodgeTriggerHash;
-
     void Start()
     {
         _controller = GetComponent<PlayerController>();
+        playerAttackChecks = new List<PlayerAttackCheck>();
         P_PhysicsCheck = GetComponent<PlayerPhysicsCheck>();
         P_InputHandle = GetComponent<PlayerInputHandle>();
-        ComboAttack = P_Controller.ComboAttack;
 
         P_Controller.P_Skills.Setting();
 
         SetUIVariable();
+        for (int i = 0; i < attackColliders.Length; i++)
+        {
+            PlayerAttackCheck attackCheck = attackColliders[i].gameObject.GetComponent<PlayerAttackCheck>();
+            playerAttackChecks.Add(attackCheck);
+        }
         playerArrowList = new List<PlayerAttackCheck>();
+        P_Value.index = 1;
+        P_States.hadAttack = false;
         P_States.canGoForwardInAttack = true; // 플레이어 앞으로 가기 제어 true 움직이기 , false 안움직임
-
-        animJumpTriggerHash = Animator.StringToHash("isJump");
-        animDodgeTriggerHash = Animator.StringToHash("isDodge");
     }
 
     public void SetUIVariable()
@@ -122,18 +120,17 @@ public class PlayerMovement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if ( (!P_States.isStartAnim || P_States.isStartComboAttack) //&& P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
+        if (P_States.isStartComboAttack && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f
             && !P_States.isGettingHit
             && (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1) || P_Input.jumpMovement == 1))
-        {   //공격 중 점프나 닷지로 캔슬 하도록
-            P_Value.index = 0;  
+        {
+            P_Value.index = 1;
             P_Value.time = 0;
             P_Value.isCombo = false;
             P_States.isStartComboAttack = false;
-            P_States.isStartAnim = false;
             P_InputHandle.isAttack = false;
-            P_Com.animator.SetInteger("comboCount", 0);
-            //P_Com.animator.SetBool("p_Locomotion", true);
+            P_Com.animator.SetInteger("comboCount", P_Value.index);
+            P_Com.animator.SetBool("p_Locomotion", true);
             P_Com.animator.Rebind();
         }
         P_PhysicsCheck.CheckedGround();
@@ -187,6 +184,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public void Attacking_co()
+    {
+        StartCoroutine(Attacking());
+    }
+
     private void HandleSprint()
     {
         if (Input.GetKey(KeyCode.V) && P_Value.moveAmount > 0)
@@ -238,29 +240,16 @@ public class PlayerMovement : MonoBehaviour
         if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
             P_States.isJumping = true;
-            Debug.Log("[player test] P_States.isJumping = true;");
             P_Value.gravity = P_COption.gravity;
-            //Debug.Log($"[player test] P_Value.gravity {P_Value.gravity}");
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
             //P_Com.animator.Play("jump_start");
-            P_Com.animator.SetTrigger(animJumpTriggerHash);
-            //P_Com.animator.SetTrigger("isJump");
+            P_Com.animator.SetTrigger("isJump");
             P_Com.animator.SetBool("isJump_Up", true);
-
-            if (P_States.isRunning)
-            {
-                P_Com.animator.Play("Jump_run", 1);
-            }
-            else
-            {
-                P_Com.animator.Play("jump_start", 1);
-            }
         }
-        if (P_States.isGround && P_States.isJumping)
+        if (P_States.isJumping && P_States.isGround)
         {
             P_Com.animator.SetBool("isJump_Up", false);
             P_States.isJumping = false;
-            Debug.Log("[player test] P_States.isJumping = false;");
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
         }
@@ -292,11 +281,11 @@ public class PlayerMovement : MonoBehaviour
         else if (!returnDodgeAnim()
             && P_States.currentDodgeKeyPress
             && !P_States.isDodgeing && !P_States.isJumping
-            && !P_States.isStartComboAttack && !P_States.isStartAnim && P_States.isGround)
+            //&& P_Value.moveAmount > 0
+            && !P_States.isStartComboAttack && P_States.isGround)
         {
             P_States.isJumping = false;
             P_States.isDodgeing = true;
-            //P_Com.animator.SetTrigger(animDodgeTriggerHash);
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
         }
@@ -414,7 +403,7 @@ public class PlayerMovement : MonoBehaviour
 
             Vector3 targetDirect = Vector3.zero;
 
-            if (P_Value.nowEnemy != null && (P_States.isShortArrow || P_States.isStartComboAttack))//( && P_Value.isCombo)))   //* 최근에 공격한 적(몬서터)이 있다면
+            if (P_Value.nowEnemy != null && (P_States.isShortArrow || (P_States.isStartComboAttack && P_Value.isCombo)))   //* 최근에 공격한 적(몬서터)이 있다면
             {
                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
                 Vector3 toMonsterDir = Vector3.zero;
@@ -465,7 +454,9 @@ public class PlayerMovement : MonoBehaviour
     {
         //플레이어의 움직임을 수행하는 함수.
 
-        if (P_States.doNotRotate || P_States.isStartAnim//P_States.isStartComboAttack || P_Value.index > 0
+        if (P_States.doNotRotate || (P_States.isStartComboAttack
+                && (!P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion")
+                && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.8f))
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown")   //* 넉백 애니메이션 시 or
                 || P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("StandUp")     //* 넉백 후 일어나는 애니메이션 시 or
                 || (P_States.isClickDown && P_States.isShortArrow))
@@ -539,44 +530,44 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 2);
+                        P_Com.animator.Play("Right", 1);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 2);
+                        P_Com.animator.Play("Left", 1);
                     }
                     else
                     {
-                        P_Com.animator.Play("Front", 2);
+                        P_Com.animator.Play("Front", 1);
                     }
                 }
                 else if (P_Input.verticalMovement < 0)
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 2);
+                        P_Com.animator.Play("Right", 1);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 2);
+                        P_Com.animator.Play("Left", 1);
                     }
                     else
                     {
-                        P_Com.animator.Play("Back", 2);
+                        P_Com.animator.Play("Back", 1);
                     }
                 }
                 else if (P_Input.horizontalMovement > 0)
                 {
-                    P_Com.animator.Play("Right", 2);
+                    P_Com.animator.Play("Right", 1);
                 }
                 else if (P_Input.horizontalMovement < 0)
                 {
-                    P_Com.animator.Play("Left", 2);
+                    P_Com.animator.Play("Left", 1);
                 }
             }
             else    //* 주목중이 아니면
             {
-                P_Com.animator.Play("Front", 2);
+                P_Com.animator.Play("Front", 1);
             }
 
             if (P_Value.moveDirection == Vector3.zero)
@@ -594,7 +585,7 @@ public class PlayerMovement : MonoBehaviour
             // 기존 수직 속도를 유지하도록 수직 속도 다시 설정
             P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);
 
-            Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 
+            Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 = 0.16초
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {
@@ -710,7 +701,7 @@ public class PlayerMovement : MonoBehaviour
             snappedVertical = 0;
         }
         #endregion
-        if (((P_States.isStartComboAttack || P_States.isStartAnim) || !P_States.isGround || P_States.isShortArrow)
+        if ((P_States.isStartComboAttack || !P_States.isGround /*|| P_States.isDodgeing*/ || P_States.isShortArrow)
                 && !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("locomotion"))
         {
             P_Com.animator.SetFloat("Vertical", 0, 0f, Time.deltaTime);   //상
@@ -796,226 +787,222 @@ public class PlayerMovement : MonoBehaviour
         yield return null;
     }
 
+
     List<Collider> playerColliderList = new List<Collider>();
     List<PlayerAttackCheck> playerAttackCheckList = new List<PlayerAttackCheck>();
 
-    // IEnumerator Attacking() //클릭해서 들어오면
-    // {
-    //     string comboName01 = "Attack_Combo_1";
-    //     string comboName02 = "Attack_Combo_2";
-    //     string comboName03 = "Attack_Combo_3";
-    //     string comboName04 = "Attack_Combo_4";
-    //     string comboName05 = "Attack_Combo_5";
-    //     //Debug.Log("[attack test]플레이어 공격 코루틴 입장");
-    //     P_Com.animator.SetInteger("comboCount", 0);
-    //     P_States.hadAttack = false; //* 공격 여부 비활성화
-    //     P_States.isStartComboAttack = true;
+    IEnumerator Attacking() //클릭해서 들어오면
+    {
+        string comboName01 = "Attack_Combo_1";
+        string comboName02 = "Attack_Combo_2";
+        string comboName03 = "Attack_Combo_3";
+        string comboName04 = "Attack_Combo_4";
+        string comboName05 = "Attack_Combo_5";
+        //Debug.Log("[attack test]플레이어 공격 코루틴 입장");
+        P_Com.animator.SetInteger("comboCount", 0);
+        P_States.hadAttack = false; //* 공격 여부 비활성화
+        P_States.isStartComboAttack = true;
 
-    //     while (true)
-    //     {
-    //         P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
-    //         P_Com.animator.SetInteger("comboCount", P_Value.index);
-    //         switch (P_Value.index)
-    //         {
-    //             case 1:
-    //                 //검
-    //                 //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검1");
-    //                 playerColliderList.Add(attackColliders[0]);
-    //                 playerAttackCheckList.Add(playerAttackChecks[0]);
+        while (true)
+        {
+            P_Value.isCombo = false;    //* 이전 공격 여부 초기화(비활성화)
+            switch (P_Value.index)
+            {
+                case 1:
+                    //검
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검1");
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
 
-    //                 for (int i = 0; i < playerColliderList.Count; ++i)
-    //                 {
-    //                     playerColliderList[i].enabled = true;
-    //                     playerAttackCheckList[i].isEnable = true;
-    //                 }
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
 
-    //                 P_Value.curAnimName = comboName01;
-    //                 break;
-    //             case 2:
-    //                 //검
-    //                 //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검2");
-    //                 playerColliderList.Add(attackColliders[0]);
-    //                 playerAttackCheckList.Add(playerAttackChecks[0]);
+                    P_Value.curAnimName = comboName01;
+                    break;
+                case 2:
+                    //검
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검2");
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
 
-    //                 for (int i = 0; i < playerColliderList.Count; ++i)
-    //                 {
-    //                     playerColliderList[i].enabled = true;
-    //                     playerAttackCheckList[i].isEnable = true;
-    //                 }
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
 
-    //                 P_Value.curAnimName = comboName02;
-    //                 break;
-    //             case 3:
-    //                 //오른쪽 다리
-    //                 //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
-    //                 playerColliderList.Add(attackColliders[2]);
-    //                 playerAttackCheckList.Add(playerAttackChecks[2]);
+                    P_Value.curAnimName = comboName02;
+                    break;
+                case 3:
+                    //오른쪽 다리
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
+                    playerColliderList.Add(attackColliders[2]);
+                    playerAttackCheckList.Add(playerAttackChecks[2]);
 
-    //                 for (int i = 0; i < playerColliderList.Count; ++i)
-    //                 {
-    //                     playerColliderList[i].enabled = true;
-    //                     playerAttackCheckList[i].isEnable = true;
-    //                 }
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
 
-    //                 P_Value.curAnimName = comboName03;
-    //                 break;
-    //             case 4:
-    //                 //양발 다
-    //                 //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 양발 다4");
-    //                 playerColliderList.Add(attackColliders[1]);
-    //                 playerAttackCheckList.Add(playerAttackChecks[1]);
-    //                 //playerColliderList.Add(attackColliders[2]);
-    //                 //playerAttackCheckList.Add(playerAttackChecks[2]);
+                    P_Value.curAnimName = comboName03;
+                    break;
+                case 4:
+                    //양발 다
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 양발 다4");
+                    playerColliderList.Add(attackColliders[1]);
+                    playerAttackCheckList.Add(playerAttackChecks[1]);
+                    //playerColliderList.Add(attackColliders[2]);
+                    //playerAttackCheckList.Add(playerAttackChecks[2]);
 
-    //                 for (int i = 0; i < playerColliderList.Count; ++i)
-    //                 {
-    //                     playerColliderList[i].enabled = true;
-    //                     playerAttackCheckList[i].isEnable = true;
-    //                 }
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
 
-    //                 P_Value.curAnimName = comboName04;
-    //                 break;
-    //             case 5:
-    //                 //검
-    //                 //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검5");
-    //                 playerColliderList.Add(attackColliders[0]);
-    //                 playerAttackCheckList.Add(playerAttackChecks[0]);
+                    P_Value.curAnimName = comboName04;
+                    break;
+                case 5:
+                    //검
+                    //Debug.Log("[attack test]플레이어 공격 콜라이더 활성화 : 검5");
+                    playerColliderList.Add(attackColliders[0]);
+                    playerAttackCheckList.Add(playerAttackChecks[0]);
 
-    //                 for (int i = 0; i < playerColliderList.Count; ++i)
-    //                 {
-    //                     playerColliderList[i].enabled = true;
-    //                     playerAttackCheckList[i].isEnable = true;
-    //                 }
+                    for (int i = 0; i < playerColliderList.Count; ++i)
+                    {
+                        playerColliderList[i].enabled = true;
+                        playerAttackCheckList[i].isEnable = true;
+                    }
 
-    //                 P_Value.curAnimName = comboName05;
-    //                 break;
-    //             default:
-    //                 P_Value.curAnimName = "";
-    //                 break;
-    //         }
+                    P_Value.curAnimName = comboName05;
+                    break;
+                default:
+                    P_Value.curAnimName = "";
+                    break;
+            }
 
-    //         //* 공격 시 앞으로 찔끔찔끔 가도록
-    //         Vector3 dir;
-    //         //앞이 막혀있지 않고
-    //         if (P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
-    //         {
-    //             //적이 있다면 //* 전진
-    //             if (P_Value.nowEnemy != null)
-    //             {
-    //                 Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
+            //* 공격 시 앞으로 찔끔찔끔 가도록
+            Vector3 dir;
+            //앞이 막혀있지 않고
+            if (P_PhysicsCheck.forwardHit == null && P_States.canGoForwardInAttack)
+            {
+                //적이 있다면 //* 전진
+                if (P_Value.nowEnemy != null)
+                {
+                    Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
 
-    //                 if (nowEnemy_Monster.monsterData.isBottomlessMonster)
-    //                 {
-    //                     int curW_index = nowEnemy_Monster.GetIndex_NearestLegs(this.transform);
+                    if (nowEnemy_Monster.monsterData.isBottomlessMonster)
+                    {
+                        int curW_index = nowEnemy_Monster.GetIndex_NearestLegs(this.transform);
 
-    //                     Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x,
-    //                                                         0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
-    //                     dir = (monster_ - this.transform.position).normalized;
-    //                 }
-    //                 else
-    //                 {
-    //                     dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
-    //                 }
+                        Vector3 monster_ = new Vector3(nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.x,
+                                                            0, nowEnemy_Monster.monsterData.bottomlessMonsterLegs[curW_index].position.z);
+                        dir = (monster_ - this.transform.position).normalized;
+                    }
+                    else
+                    {
+                        dir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
+                    }
 
-    //                 Vector3 pos = transform.position + dir * 4f;
-    //                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
-    //             }
-    //             //적이 없다면 //* 전진
-    //             else if (P_Value.nowEnemy == null)
-    //             {
-    //                 dir = this.gameObject.transform.forward.normalized;
-    //                 Vector3 pos = transform.position + dir * 2f;
-    //                 transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
-    //             }
-    //         }
-    //         //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
-    //         else if (P_PhysicsCheck.forwardHit != null || !P_States.canGoForwardInAttack)
-    //         {
-    //             //dir = this.gameObject.transform.forward.normalized;
-    //         }
+                    Vector3 pos = transform.position + dir * 4f;
+                    transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+                }
+                //적이 없다면 //* 전진
+                else if (P_Value.nowEnemy == null)
+                {
+                    dir = this.gameObject.transform.forward.normalized;
+                    Vector3 pos = transform.position + dir * 2f;
+                    transform.position = Vector3.Lerp(transform.position, pos, 5 * Time.deltaTime);
+                }
+            }
+            //앞에 막혀있거나 앞으로 가지 못한다면 //* 그대로
+            else if (P_PhysicsCheck.forwardHit != null || !P_States.canGoForwardInAttack)
+            {
+                //dir = this.gameObject.transform.forward.normalized;
+            }
 
-    //         //* 공격 애니메이션 재생
-    //         //P_Com.animator.Play(P_Value.curAnimName);
-    //         P_Com.animator.SetTrigger("onAttackCombo");
-    //         //* 이펙트
-    //         P_Controller.playAttackEffect(P_Value.curAnimName);
-    //         StopIdleMotion();
-    //         StartIdleMotion(1);    //공격 대기 모션으로 
+            //* 공격 애니메이션 재생
+            P_Com.animator.Play(P_Value.curAnimName);
+            //* 이펙트
+            P_Controller.playAttackEffect(P_Value.curAnimName);
+            StopIdleMotion();
+            StartIdleMotion(1);    //공격 대기 모션으로 
 
-    //         //yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
-    //         //yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
-    //         yield return null;
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName(P_Value.curAnimName));
+            yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
 
-    //         //플레이어 공격 콜라이더 비활성화
-    //         if (playerAttackCheckList.Count != 0)
-    //         {
-    //             //Debug.Log("[attack test]플레이어 공격 콜라이더 비활성화");
-    //             for (int i = 0; i < playerColliderList.Count; ++i)
-    //             {
-    //                 playerColliderList[i].enabled = false;
-    //                 playerAttackCheckList[i].isEnable = false;
-    //             }
-    //             playerColliderList.Clear();
-    //             playerAttackCheckList.Clear();
-    //             P_States.hadAttack = false; //* 공격 여부 비활성화
-    //         }
+            //플레이어 공격 콜라이더 비활성화
+            if (playerAttackCheckList.Count != 0)
+            {
+                //Debug.Log("[attack test]플레이어 공격 콜라이더 비활성화");
+                for (int i = 0; i < playerColliderList.Count; ++i)
+                {
+                    playerColliderList[i].enabled = false;
+                    playerAttackCheckList[i].isEnable = false;
+                }
+                playerColliderList.Clear();
+                playerAttackCheckList.Clear();
+                P_States.hadAttack = false; //* 공격 여부 비활성화
+            }
 
-    //         P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
+            P_Controller.AnimState(PlayerState.FinishComboAttack, P_Value.index);
 
-    //         int curIndex = P_Value.index;
-    //         P_Value.time = 0;
+            int curIndex = P_Value.index;
+            P_Value.time = 0;
 
-    //         while (P_Value.time <= P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime)  //* 콤보 클릭 시간 전까지
-    //         {
-    //             P_Value.time += Time.deltaTime; //* 시간 누적
-    //             //* 애니메이션 70퍼센트 진행까지 대기
-    //             //yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
-    //             yield return null;
-    //             P_States.hadAttack = false; //* 공격 여부 비활성화
+            while (P_Value.time <= P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime)  //* 콤보 클릭 시간 전까지
+            {
+                P_Value.time += Time.deltaTime; //* 시간 누적
+                //* 애니메이션 70퍼센트 진행까지 대기
+                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.7f);
+                P_States.hadAttack = false; //* 공격 여부 비활성화
 
-    //             if (Input.GetMouseButton(0) && curIndex == P_Value.index)   //* 마우스 입력 받음
-    //             {
-    //                 P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
-    //                 if (P_Value.index >= 5) //* 5타 이상이면
-    //                 {
-    //                     P_Value.index = 1;  //* 인덱스 초기화
-    //                     P_Value.time = 0;   //* 시간 초기화
-    //                     //yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
-    //                     yield return null;
-    //                     break;
-    //                 }
-    //                 else
-    //                 {
-    //                     P_Value.index = P_Value.index + 1;    //* 인덱스 추가
-    //                     P_Value.time = 0;   //* 시간 초기화
-    //                     P_Value.isCombo = true; //* 이전 공격 여부 활성화
-    //                 }
-    //                 P_States.hasAttackSameMonster = false;
-    //                 P_States.notSameMonster = false;
-    //                 break;  // ...1
-    //             }
-    //         }   // ...1 (while (P_Value.time <= comboClickTime))
-    //         if (P_Value.isCombo == false || !P_States.isStartComboAttack)   //* 5타 이상이었다면(이후 공격 안한다면)
-    //         {
-    //             //* 원래대로
-    //             P_Com.animator.SetInteger("comboCount", P_Value.index);
-    //             P_Com.animator.SetBool("p_Locomotion", true);
-    //             break;  // ...2
-    //         }
+                if (Input.GetMouseButton(0) && curIndex == P_Value.index)   //* 마우스 입력 받음
+                {
+                    P_Value.isCombo = false;    //* 이전 공격 여부 비활성화
+                    if (P_Value.index >= 5) //* 5타 이상이면
+                    {
+                        P_Value.index = 1;  //* 인덱스 초기화
+                        P_Value.time = 0;   //* 시간 초기화
+                        yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.7f);
+                        break;
+                    }
+                    else
+                    {
+                        P_Value.index = P_Value.index + 1;    //* 인덱스 추가
+                        P_Value.time = 0;   //* 시간 초기화
+                        P_Value.isCombo = true; //* 이전 공격 여부 활성화
+                    }
+                    P_States.hasAttackSameMonster = false;
+                    P_States.notSameMonster = false;
+                    break;  // ...1
+                }
+            }   // ...1 (while (P_Value.time <= comboClickTime))
+            if (P_Value.isCombo == false || !P_States.isStartComboAttack)   //* 5타 이상이었다면(이후 공격 안한다면)
+            {
+                //* 원래대로
+                P_Com.animator.SetInteger("comboCount", P_Value.index);
+                P_Com.animator.SetBool("p_Locomotion", true);
+                break;  // ...2
+            }
 
-    //     }   // ...2 (while (true))
+        }   // ...2 (while (true))
 
-    //     P_States.isStartComboAttack = false;    //* 공격 끝
-    //     P_InputHandle.isAttack = false;
-    //     P_Value.index = 1;  //* 인덱스 초기화
-    //     P_Value.time = 0;   //* 시간 초기화
-    // }
+        P_States.isStartComboAttack = false;    //* 공격 끝
+        P_InputHandle.isAttack = false;
+        P_Value.index = 1;  //* 인덱스 초기화
+        P_Value.time = 0;   //* 시간 초기화
+    }
 
     public void StopPlayer() //연출쪽에서 Player멈추도록.
     {
         P_States.isStop = true;
 
-        P_Value.index = 0;
+        P_Value.index = 1;
         P_Value.time = 0;
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;

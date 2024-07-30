@@ -177,10 +177,8 @@ public class PlayerAttackCheck : MonoBehaviour
                     _playerController.hitMonsters.Add(other.gameObject);
 
                     //Debug.Log($"hit monster ,  curState  {monster.monsterPattern.GetCurMonsterState()}");
-                    if (P_States.hadAttack == false)
+                    if (P_States.hadAttack == false || P_States.notSameMonster)
                     {
-                        P_States.hadAttack = true;
-                        //P_Controller.ComboAttack.AttackColliderOff();
                         // 충돌한 객체의 Transform을 얻기
                         Transform collidedTransform = other.transform;
                         // 충돌 지점의 좌표를 얻기
@@ -287,7 +285,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             if (!P_States.isBowMode)
             {
-                _playerController.playEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+                _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
             }
 
             P_Value.nowEnemy = monster.gameObject;  //* 몬스터 객체 저장
@@ -295,11 +293,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
             P_Controller.CheckHitTime();
             P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
-            //P_States.hadAttack = true;
+            P_States.hadAttack = true;
             P_States.notSameMonster = false;
-            P_States.isStartComboAttack = false;
-
-            P_Controller.ComboAttack.AttackColliderOff();
 
             P_States.isBouncing = true;     //* 히트 UI 출력효과
             Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
@@ -319,7 +314,7 @@ public class PlayerAttackCheck : MonoBehaviour
         damageValue = 0;
 
         monster.GetDamage(damageValue, collisionPoint, otherQuaternion);
-        _playerController.playEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
+        _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
     }
 
     private void ArrowRay()
