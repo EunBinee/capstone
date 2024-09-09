@@ -207,7 +207,7 @@ public class PlayerSkills : MonoBehaviour
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
+                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);   // 화살 방향으로
             }
         }
 

@@ -242,7 +242,6 @@ public class PlayerInputHandle : MonoBehaviour
                     Vector3 toMonsterDir = Vector3.zero;
                     toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                     targetDirect = toMonsterDir;// + (P_Value.nowEnemy.transform.right.normalized - this.transform.right.normalized).normalized;
-
                 }
                 targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
                 targetDirect.y = 0;

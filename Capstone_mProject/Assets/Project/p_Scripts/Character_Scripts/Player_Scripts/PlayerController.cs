@@ -273,7 +273,7 @@ public class PlayerController : MonoBehaviour
 
 
     }
-    Vector3 ChestOffset = new Vector3(0, 180, 0);
+    Vector3 ChestOffset = new Vector3(0, 90, 0);
 
     Vector3 ChestDir = new Vector3();
 
