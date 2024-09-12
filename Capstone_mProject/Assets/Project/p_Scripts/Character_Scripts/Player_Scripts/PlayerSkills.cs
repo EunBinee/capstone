@@ -279,10 +279,10 @@ public class PlayerSkills : MonoBehaviour
                 }
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
-                P_Com.animator.SetLayerWeight(1, 0f);
                 P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
+                P_Com.animator.SetLayerWeight(1, 0f);
             }
         }
     }
