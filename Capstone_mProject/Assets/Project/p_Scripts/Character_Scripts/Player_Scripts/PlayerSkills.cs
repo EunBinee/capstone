@@ -230,6 +230,7 @@ public class PlayerSkills : MonoBehaviour
             if (!P_States.isAim || P_States.isShortArrow)
             {
                 P_Com.animator.SetBool("isAim", true);  //* 애니메이션
+                P_Com.animator.SetLayerWeight(1, 1f);
                 P_States.isAim = true;
                 P_Controller.shootPoint.gameObject.SetActive(true);
                 if (!P_States.isShortArrow)
@@ -278,6 +279,7 @@ public class PlayerSkills : MonoBehaviour
                 }
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
+                P_Com.animator.SetLayerWeight(1, 0f);
                 P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
