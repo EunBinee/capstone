@@ -545,29 +545,29 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 1);
+                        P_Com.animator.Play("Right", 2);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 1);
+                        P_Com.animator.Play("Left", 2);
                     }
                     else
                     {
-                        P_Com.animator.Play("Back", 1);
+                        P_Com.animator.Play("Back", 2);
                     }
                 }
                 else if (P_Input.horizontalMovement > 0)
                 {
-                    P_Com.animator.Play("Right", 1);
+                    P_Com.animator.Play("Right", 2);
                 }
                 else if (P_Input.horizontalMovement < 0)
                 {
-                    P_Com.animator.Play("Left", 1);
+                    P_Com.animator.Play("Left", 2);
                 }
             }
             else    //* 주목중이 아니면
             {
-                P_Com.animator.Play("Front", 1);
+                P_Com.animator.Play("Front", 2);
             }
 
             if (P_Value.moveDirection == Vector3.zero)
