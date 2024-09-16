@@ -112,9 +112,9 @@ public class PlayerProjectile
     {
         GameObject curBulletObj = null;
         //프리펩 찾기
-        if (arrowPrefabs.ContainsKey(bulletName))    //화살이 있으면
+        if (bulletPrefabs.ContainsKey(bulletName))    //화살이 있으면
         {
-            curBulletObj = arrowPrefabs[bulletName];  //최근 오브젝트에 그대로 넣기
+            curBulletObj = bulletPrefabs[bulletName];  //최근 오브젝트에 그대로 넣기
         }
         else        //아니면(화살이 없으면)
         {
@@ -137,7 +137,7 @@ public class PlayerProjectile
             //오브젝트 풀에 
             if (bulletPools.ContainsKey(bulletName))  //풀에서 화살 있으면
             {
-                if (arrowPools[bulletName].Count > 0)    //화살 풀에서 화살 갯수가 1개 이상이라면
+                if (bulletPools[bulletName].Count > 0)    //화살 풀에서 화살 갯수가 1개 이상이라면
                 {
                     curBulletObj = bulletPools[bulletName][0]; //최근 오브젝트에 첫번째부터 넣고
                     bulletPools[bulletName].RemoveAt(0);  //제거
@@ -187,13 +187,16 @@ public class PlayerProjectile
         RaycastHit hit;
 
         // 레이캐스트 실행 (rayDistance 만큼의 거리)
-        if (Physics.Raycast(ray, out hit, rayDistance))
+        if (Physics.Raycast(ray, out hit, rayDistance, 6))
         {
+
+            player.GetComponent<PlayerSkills>().GetBulletDir(hit.point);
             string objtag = hit.collider.gameObject.tag;
+            Debug.Log($"[player test] ray tag = {objtag}");
             if (objtag == "Monster" || objtag == "BossWeakness")
             {
                 Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.point.normalized);
-                player.GetComponent<PlayerAttackCheck>().playerHitMonster(hit.point, otherQuaternion);
+                player.GetComponent<PlayerAttackCheck>().playerHitMonster(hit.point, otherQuaternion, objtag == "BossWeakness");
             }
         }
     }

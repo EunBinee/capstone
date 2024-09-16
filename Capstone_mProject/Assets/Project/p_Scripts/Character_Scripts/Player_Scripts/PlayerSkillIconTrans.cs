@@ -19,7 +19,7 @@ public class PlayerSkillIconTrans : MonoBehaviour
 
     void LateUpdate()
     {
-        if (playerController.returnIsBowMode()) //활 사용중
+        if (playerController.returnIsGunMode()) //총 사용중 playerController.returnIsBowMode() || 
         {
             bow.gameObject.SetActive(false);
             sword.gameObject.SetActive(true);

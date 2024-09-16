@@ -485,7 +485,7 @@ public class PlayerMovement : MonoBehaviour
             P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
-            if (P_States.isBowMode && P_States.startAim)
+            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
             {
                 P_Skills.arrowSkillOff();
             }

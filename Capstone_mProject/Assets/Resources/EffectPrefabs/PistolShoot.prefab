@@ -52,7 +52,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -4965,7 +4965,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da1adaae441422041ae3b21b8752748f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 2
+  size: 0.1
 --- !u!114 &6991590609103387221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5026,7 +5026,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -5201,7 +5201,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.19339621, g: 0.26181313, b: 1, a: 1}
+      maxColor: {r: 0.45882353, g: 0.972549, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -9917,7 +9917,7 @@ ParticleSystem:
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
   emitterVelocityMode: 0
-  looping: 1
+  looping: 0
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -10092,7 +10092,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.3537736, g: 0.50377524, b: 1, a: 1}
+      maxColor: {r: 0.45882353, g: 0.972549, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

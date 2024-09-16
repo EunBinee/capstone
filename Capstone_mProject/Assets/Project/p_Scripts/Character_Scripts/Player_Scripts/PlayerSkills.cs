@@ -25,6 +25,8 @@ public class PlayerSkills : MonoBehaviour
     private PlayerInputHandle P_InputHandle;
 
     private GameObject arrow;// => P_Controller.arrow;
+    private GameObject bullet;
+    public Vector3 bulletDir;
 
     //private SkillButton skill_Q;
     private string Bow_Start_Name = "Bow_Attack_Charging";
@@ -56,8 +58,9 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.selectSkill = new List<PlayerSkillName>();
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
+        bullet = P_Controller.bullet;
         //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
-        skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
+        //skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
         //skillRangeIndicator = Resources.Load<GameObject>("TargetMarker");
 
         skillRangeIndicator.SetActive(false);
@@ -198,11 +201,17 @@ public class PlayerSkills : MonoBehaviour
         }
         else
         {
-            if (P_States.isStrongArrow)
+            if (P_States.isGunMode)
+            {
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(Gun_ShootMuzzle);
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
+            }
+            else if (P_States.isStrongArrow)
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(Bow_StrongName);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
+                effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);   // 화살 방향으로
             }
             else
             {
@@ -224,9 +233,23 @@ public class PlayerSkills : MonoBehaviour
 
         playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
+    void PoolingBullet()
+    {
+        bullet = P_Projectile.GetBulletPrefab();
+        if (bullet == null) Debug.LogError("bullet null!");
+        bullet.SetActive(true);
+
+        playerAttackCheck = bullet.GetComponent<PlayerAttackCheck>();
+    }
+
+    public void GetBulletDir(Vector3 dir)
+    {
+        bulletDir = dir;
+    }
+
     public void onProjectile()
     {
-        if (P_States.isBowMode)
+        if (P_States.isBowMode || P_States.isGunMode)
         {
             if (!P_States.isAim || P_States.isShortArrow)
             {
@@ -250,7 +273,8 @@ public class PlayerSkills : MonoBehaviour
                     GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
                     P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
                 }
-                PoolingArrow(); //* 화살 풀링
+                if (P_States.isGunMode) PoolingBullet(); //* 총알 풀링
+                else if (P_States.isBowMode) PoolingArrow(); //* 화살 풀링
                 //* 단타 
                 if (P_States.isShortArrow)
                 {
@@ -262,7 +286,7 @@ public class PlayerSkills : MonoBehaviour
     }
     public void offArrow()
     {
-        if (P_States.isBowMode)
+        if (P_States.isBowMode || P_States.isGunMode)
         {
             if (P_States.isAim || P_States.isShortArrow)
             {
@@ -514,16 +538,18 @@ public class PlayerSkills : MonoBehaviour
                 {
                     Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
                     effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    if (P_States.isBowMode) //* 활 모드 -> 칼 모드
+                    if (P_States.isBowMode || P_States.isGunMode) //* 활 모드 -> 칼 모드
                     {
-                        P_States.isBowMode = false;
+                        //P_States.isBowMode = false;
+                        P_States.isGunMode = false;
                         P_Controller.bow.SetActive(false);
                         P_Controller.sword.SetActive(true);
                         P_Com.animator.SetFloat("isBowmode", 0);
                     }
-                    else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
+                    else if (!P_States.isBowMode || !P_States.isGunMode) //* 칼 모드 -> 활 모드
                     {
-                        P_States.isBowMode = true;
+                        //P_States.isBowMode = true;
+                        P_States.isGunMode = true;
                         P_Controller.bow.SetActive(true);
                         P_Controller.shootPoint.gameObject.SetActive(false);
                         P_Controller.sword.SetActive(false);

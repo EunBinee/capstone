@@ -246,10 +246,13 @@ MonoBehaviour:
     playerCamera: {fileID: 0}
     playerCameraPivot: {fileID: 0}
     cameraObj: {fileID: 0}
-  _playerArrows:
+  _playerProjectile:
+    poolSize: 10
+    rayDistance: 100
     arrowName: Arrow
-    poolSize: 5
     arrowsPoolCount: 50
+    bulletName: PlayerBullet
+    bulletPoolCount: 100
   _skillInfo:
     haveBowmode: 0
     haveHeal: 0
@@ -282,6 +285,7 @@ MonoBehaviour:
   sword: {fileID: 5855056642962972758}
   crosshairImage: {fileID: 0}
   arrow: {fileID: 0}
+  bullet: {fileID: 0}
   shootPoint: {fileID: 2947553887897710322}
   spine: {fileID: 1665390470443013421}
   originQpos: {x: 0, y: 0, z: 0}
@@ -291,11 +295,19 @@ MonoBehaviour:
   EnablePlayerUI: 1
   blinkDuration: 1
   m_material:
-  - {fileID: 2100000, guid: 4eedd0d9e9040954fac95aef234ccd6c, type: 2}
-  - {fileID: 2100000, guid: 41495429103fedf408abbee14632dd74, type: 2}
-  - {fileID: 2100000, guid: 73a5198d2e6b48b44a13f4005e6eead0, type: 2}
-  - {fileID: 2100000, guid: 90924096dfcdf014ea02f4ad62821cb0, type: 2}
-  - {fileID: 2100000, guid: c7657ca3c0c26c04c90788164e3e18ce, type: 2}
+  - {fileID: 2100000, guid: b89d7a88ef9e1c648b7d2da1a22c1935, type: 2}
+  - {fileID: -4667890360363688061, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: 4515166943647812507, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: -3042384766373714678, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: -5215284089703414080, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: -3509080000778881128, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: -4288583467269203127, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: 5878094081397827806, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: -7828722139915404603, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: 4217796364934669478, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: 4835078630258379571, guid: c8d76fa8fd247024dbd5d29f3d5eb442, type: 3}
+  - {fileID: 2100000, guid: 1c76587fe7a1e8444a042f8991ff7d61, type: 2}
+  - {fileID: 2100000, guid: 8740ff1f39426c44994af86c5365a071, type: 2}
   player_loadScene: 0
 --- !u!114 &1404091125779623576
 MonoBehaviour:

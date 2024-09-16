@@ -118,12 +118,12 @@ public class PlayerAttackCheck : MonoBehaviour
             else if (isBullet)
             {
                 //todo ray 쏴서 데미지 계산
-                transform.Translate(dir.normalized * 10f);
+                transform.Translate(P_Skills.bulletDir * 10f);
                 P_Projectile.PlayerBulletRay();
             }
-            P_States.isShortArrow = false;
+            //P_States.isShortArrow = false;
             goShoot = true;
-            P_States.isShortArrow = false;
+            //P_States.isShortArrow = false;
         }
         while (!(P_States.colliderHit == true || P_States.hadAttack == true || deltaShootTime >= 4.0f))
         {
@@ -151,7 +151,9 @@ public class PlayerAttackCheck : MonoBehaviour
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
 
-        P_Projectile.AddArrowPool(this.gameObject);
+        if (P_States.isBowMode) P_Projectile.AddArrowPool(this.gameObject);
+        else if (P_States.isGunMode) P_Projectile.AddBulletPool(this.gameObject);
+
         this.gameObject.SetActive(false);
 
     }
@@ -295,7 +297,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
-            if (!P_States.isBowMode)
+            if (!P_States.isBowMode || !P_States.isGunMode)
             {
                 _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
             }

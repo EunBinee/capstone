@@ -76,6 +76,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text crosshairImage; // 조준점 이미지
 
     public GameObject arrow;
+    public GameObject bullet;
     public Transform shootPoint; // 화살이 발사될 위치를 나타내는 트랜스폼
     public Transform spine;     // 아바타 모델링
 
@@ -220,7 +221,7 @@ public class PlayerController : MonoBehaviour
             //P_Movement.skill_F.gameObject.transform.position = new Vector3(1000, -1000, 0);
             P_Movement.skill_V.gameObject.transform.position = new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
-            if (P_States.isBowMode && P_States.startAim)
+            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
                 P_Skills.arrowSkillOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
@@ -317,6 +318,10 @@ public class PlayerController : MonoBehaviour
     {
         return P_States.isBowMode;
     }
+    public bool returnIsGunMode()
+    {
+        return P_States.isGunMode;
+    }
 
     private void InitPlayer()
     {
@@ -390,7 +395,7 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    if (P_States.isBowMode && P_States.startAim)
+                    if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
                         P_Skills.arrowSkillOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
@@ -503,7 +508,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            if (P_States.isBowMode && P_States.startAim)    //* 조준 모드면 피격 시 조준 해제
+            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
                 P_Skills.arrowSkillOff();
