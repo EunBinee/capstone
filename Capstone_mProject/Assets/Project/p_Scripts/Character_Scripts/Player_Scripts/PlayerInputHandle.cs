@@ -17,7 +17,7 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerSkills P_Skills => P_Controller.P_Skills;
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
-    bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
+    public bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
     public bool isAttack = false;
 
     private SkillButton skill_Q;
@@ -204,9 +204,9 @@ public class PlayerInputHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !P_States.isBowMode)    //* 누를 때 => 기본공격
         {   //* 마우스 클릭
-            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing 
+            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing
                 && !P_States.isStop && !P_States.isElectricShock)
-                //&& !EventSystem.current.IsPointerOverGameObject())
+            //&& !EventSystem.current.IsPointerOverGameObject())
             {
                 if (!isAttack)//P_States.isStartComboAttack)
                 {
@@ -218,7 +218,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 활 
-        if (Input.GetMouseButtonDown(0) && P_States.isBowMode && !P_States.isElectricShock)
+        if (Input.GetMouseButtonDown(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock)
         {
             P_Value.aimClickDown = 0;
             P_States.isClickDown = true;
@@ -252,7 +252,7 @@ public class PlayerInputHandle : MonoBehaviour
                 Quaternion turnRot = Quaternion.LookRotation(targetDirect);
                 transform.rotation = turnRot;
 
-                P_Skills.onArrow();
+                P_Skills.onProjectile();
                 StartCoroutine(DelayAfterAction());
             }
             P_States.isClickDown = false;
@@ -266,7 +266,7 @@ public class PlayerInputHandle : MonoBehaviour
             P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
 
-        else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
+        else if (Input.GetMouseButton(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock)
         {
             // 길게 누르고 있는 중
             P_Value.aimClickDown += Time.deltaTime;
@@ -279,7 +279,7 @@ public class PlayerInputHandle : MonoBehaviour
                 {
                     P_Movement.camForward = P_Camera.cameraObj.transform.forward;
                     P_States.startAim = true;
-                    P_Skills.onArrow();
+                    P_Skills.onProjectile();
                 }
             }
         }

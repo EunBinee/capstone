@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     public KeyState _keyState = new KeyState();
     public CurrentValue _currentValue = new CurrentValue();
     public PlayerFollowCamera _playerFollowCamera = new PlayerFollowCamera();
-    public PlayerArrows _playerArrows = new PlayerArrows();
+    public PlayerProjectile _playerProjectile = new PlayerProjectile();
     public SkillInfo _skillInfo = new SkillInfo();
     private PlayerComponents P_Com => _playerComponents;
     private PlayerInput P_Input => _input;
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     private KeyState P_KeyState => _keyState;
     private CurrentValue P_Value => _currentValue;
     private PlayerFollowCamera P_Camera => _playerFollowCamera;
-    private PlayerArrows P_Arrows => _playerArrows;
+    private PlayerProjectile P_Projectile => _playerProjectile;
     private SkillInfo P_SkillInfo => _skillInfo;
     public PlayerInputHandle P_InputHandle;
     public PlayerMovement P_Movement;
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
             Destroy(this.gameObject);
         }
         SetUIVariable();
-        _playerArrows.Init();
+        _playerProjectile.Init();
         //SetPlayerMaterials();
     }
 

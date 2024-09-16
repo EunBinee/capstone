@@ -17,13 +17,14 @@ public class PlayerAttackCheck : MonoBehaviour
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
-    private PlayerArrows P_Arrows => P_Controller._playerArrows;
+    private PlayerProjectile P_Projectile => P_Controller._playerProjectile;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
 
     private GameObject player;
     private bool isArrow = false;
+    private bool isBullet = false;
     private bool goShoot = false;
     private bool incoArrow = false;
     Vector3 dir = Vector3.zero;
@@ -48,6 +49,10 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             isArrow = true;
         }
+        if (this.gameObject.tag == "Bullet")  //* 총알인지 확인을 해
+        {
+            isBullet = true;
+        }
         _playerController.hitMonsters.Clear();
 
 
@@ -57,7 +62,7 @@ public class PlayerAttackCheck : MonoBehaviour
         if (_playerController.hitMonsters.Count > 1)
             checkMon();
 
-        if (isArrow)
+        if (isArrow || isBullet)    // 활이거나 총알이면
         {
             if (!goShoot && (P_States.isAim || P_States.startAim || P_States.isShortArrow))
             {
@@ -108,7 +113,14 @@ public class PlayerAttackCheck : MonoBehaviour
                 else
                     dir = player.transform.forward;
             }
-            rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f); //* 발사
+            if (isArrow) //* 발사
+                rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f);
+            else if (isBullet)
+            {
+                //todo ray 쏴서 데미지 계산
+                transform.Translate(dir.normalized * 10f);
+                P_Projectile.PlayerBulletRay();
+            }
             P_States.isShortArrow = false;
             goShoot = true;
             P_States.isShortArrow = false;
@@ -139,7 +151,7 @@ public class PlayerAttackCheck : MonoBehaviour
         deltaShootTime = 0.0f;
         GetComponent<Rigidbody>().isKinematic = true;
 
-        P_Arrows.AddArrowPool(this.gameObject);
+        P_Projectile.AddArrowPool(this.gameObject);
         this.gameObject.SetActive(false);
 
     }
@@ -233,7 +245,7 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-    private bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, bool HitWeakness = false)
+    public bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, bool HitWeakness = false)
     {
         if (!monster.monsterPattern.noAttack)
         {

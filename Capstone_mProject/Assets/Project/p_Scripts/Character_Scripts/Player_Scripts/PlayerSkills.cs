@@ -19,7 +19,7 @@ public class PlayerSkills : MonoBehaviour
     private CurrentState P_States => P_Controller._currentState;
     private CurrentValue P_Value => P_Controller._currentValue;
     private KeyState P_KState => P_Controller._keyState;
-    private PlayerArrows P_Arrows => P_Controller._playerArrows;
+    private PlayerProjectile P_Projectile => P_Controller._playerProjectile;
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerAttackCheck playerAttackCheck;
     private PlayerInputHandle P_InputHandle;
@@ -27,9 +27,10 @@ public class PlayerSkills : MonoBehaviour
     private GameObject arrow;// => P_Controller.arrow;
 
     //private SkillButton skill_Q;
-    private string R_Start_Name = "Bow_Attack_Charging";
-    private string R_Name = "Bow_Attack_launch_02";
-    private string R_StrongName = "ChargingArrowLaunch";
+    private string Bow_Start_Name = "Bow_Attack_Charging";
+    private string Bow_Name = "Bow_Attack_launch_02";
+    private string Bow_StrongName = "ChargingArrowLaunch";
+    private string Gun_ShootMuzzle = "PistolShoot";
 
     [SerializeField]
     public Dictionary<string, PlayerSkillName> skillMap;
@@ -199,13 +200,13 @@ public class PlayerSkills : MonoBehaviour
         {
             if (P_States.isStrongArrow)
             {
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_StrongName);
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(Bow_StrongName);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
             }
             else
             {
-                Effect effect = GameManager.Instance.objectPooling.ShowEffect(R_Name);
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect(Bow_Name);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);   // 화살 방향으로
             }
@@ -217,13 +218,13 @@ public class PlayerSkills : MonoBehaviour
     void PoolingArrow()
     {
         // 화살을 발사할 위치에 화살을 생성하고 방향을 설정
-        arrow = P_Arrows.GetArrowPrefab();
+        arrow = P_Projectile.GetArrowPrefab();
         if (arrow == null) Debug.LogError("arrow null!");
         arrow.SetActive(true);
 
         playerAttackCheck = arrow.GetComponent<PlayerAttackCheck>();
     }
-    public void onArrow()
+    public void onProjectile()
     {
         if (P_States.isBowMode)
         {
@@ -235,8 +236,8 @@ public class PlayerSkills : MonoBehaviour
                 P_Controller.shootPoint.gameObject.SetActive(true);
                 if (!P_States.isShortArrow)
                 {
-                    //* 조준 on
-                    Effect Effect = GameManager.Instance.objectPooling.ShowEffect(R_Start_Name);
+                    //* 조준 on effect
+                    Effect Effect = GameManager.Instance.objectPooling.ShowEffect(Bow_Start_Name);
                     Effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                     Effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
 
@@ -249,8 +250,8 @@ public class PlayerSkills : MonoBehaviour
                     GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
                     P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
                 }
-                //* 단타 
                 PoolingArrow(); //* 화살 풀링
+                //* 단타 
                 if (P_States.isShortArrow)
                 {
                     //Debug.Log("[arrow test] onArrow() / if (P_States.isShortArrow)");
@@ -352,7 +353,7 @@ public class PlayerSkills : MonoBehaviour
                     isPressed = true; P_States.isSkill = true;
                     //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
                     skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
-                    
+
                     skillRangeIndicator.SetActive(true);
                     break;
                 default: break;
