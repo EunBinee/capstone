@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [Serializable]
 public class PlayerProjectile
 {
+    [SerializeField]
     private GameObject player;
     private PlayerController playerController;
     public int poolSize = 10;
@@ -107,10 +108,10 @@ public class PlayerProjectile
         }
     }
 
-
+    GameObject curBulletObj = null;
     public GameObject GetBulletPrefab()
     {
-        GameObject curBulletObj = null;
+        //GameObject curBulletObj = null;
         //프리펩 찾기
         if (bulletPrefabs.ContainsKey(bulletName))    //화살이 있으면
         {
@@ -187,16 +188,23 @@ public class PlayerProjectile
         RaycastHit hit;
 
         // 레이캐스트 실행 (rayDistance 만큼의 거리)
-        if (Physics.Raycast(ray, out hit, rayDistance, 6))
+        if (Physics.Raycast(ray, out hit, rayDistance, LayerMask.GetMask("Monster")))
         {
+            Vector3 objHit = hit.point;
+            Debug.DrawRay(player.transform.position, objHit - player.transform.position, Color.yellow, 5f);
+            player.GetComponent<PlayerSkills>().GetBulletDir(objHit - player.transform.position);
 
-            player.GetComponent<PlayerSkills>().GetBulletDir(hit.point);
             string objtag = hit.collider.gameObject.tag;
             Debug.Log($"[player test] ray tag = {objtag}");
+
             if (objtag == "Monster" || objtag == "BossWeakness")
             {
-                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.point.normalized);
-                player.GetComponent<PlayerAttackCheck>().playerHitMonster(hit.point, otherQuaternion, objtag == "BossWeakness");
+                Vector3 collisionPoint = hit.collider.ClosestPoint(objHit);
+                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, objHit.normalized);
+
+                PlayerAttackCheck a = curBulletObj.GetComponent<PlayerAttackCheck>();
+                Monster monster = hit.collider.gameObject.GetComponent<Monster>();
+                a.playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
             }
         }
     }

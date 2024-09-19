@@ -17,7 +17,7 @@ public class PlayerAttackCheck : MonoBehaviour
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
-    private PlayerProjectile P_Projectile => P_Controller._playerProjectile;
+    private PlayerProjectile P_Projectile => _playerController._playerProjectile;
 
     // HashSet을 사용하여 이미 처리된 몬스터를 추적합니다.
     HashSet<GameObject> seenMonsters = new HashSet<GameObject>();
@@ -206,7 +206,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         }
                         else
                         {
-                            playerHitMonster(collisionPoint, otherQuaternion);
+                            playerHitMonster(collisionPoint, otherQuaternion, monster);
                         }
                         //사운드
                         SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Hit, false);
@@ -247,7 +247,7 @@ public class PlayerAttackCheck : MonoBehaviour
         }
     }
 
-    public bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, bool HitWeakness = false)
+    public bool playerHitMonster(Vector3 collisionPoint, Quaternion otherQuaternion, Monster monster, bool HitWeakness = false)
     {
         if (!monster.monsterPattern.noAttack)
         {
