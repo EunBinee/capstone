@@ -696,6 +696,7 @@ public class PlayerController : MonoBehaviour
             if (interObject != null)
             {
                 //오브젝트가 비어있지 않을 때..
+                if (P_States.isGunMode) P_Skills.skillMotion("ChangeWeapon");   //총이면 칼로 변경(에임캠off)
                 P_Com.animator.Rebind();
                 DialogueManager.instance.dialogueInfo.StartInteraction(interObject);
                 if (!DialogueManager.instance.DoQuest)

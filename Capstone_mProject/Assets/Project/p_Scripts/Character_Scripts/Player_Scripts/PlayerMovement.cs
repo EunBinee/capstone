@@ -131,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
             P_InputHandle.isAttack = false;
             P_Com.animator.SetInteger("comboCount", P_Value.index);
             P_Com.animator.SetBool("p_Locomotion", true);
-            P_Com.animator.Rebind();
+            //P_Com.animator.Rebind();
         }
         P_PhysicsCheck.CheckedGround();
         if (!P_States.isPerformingAction) //액션 수행중이 아닐 때만..
@@ -143,8 +143,15 @@ public class PlayerMovement : MonoBehaviour
         {
             if (P_States.isAim)    //* 조준 모드라면
             {
-                P_Com.animator.SetTrigger("shoot");
-                P_Skills.arrowSkillOff();
+                if (P_States.isGunMode)
+                {
+                    P_Skills.bulletOff();
+                }
+                else
+                {
+                    P_Com.animator.SetTrigger("shoot");
+                    P_Skills.arrowSkillOff();
+                }
             }
         }
     }
@@ -728,7 +735,12 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                if (P_States.isAim || P_States.isWalking)
+                if (P_States.isAim && P_States.isGunMode)
+                {
+                    P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+                }
+                else if (P_States.isAim || P_States.isWalking)
                 {
                     P_Com.animator.SetFloat("Vertical", P_Value.moveAmount / 3, 0.2f, Time.deltaTime);
                     P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime);
@@ -1009,7 +1021,7 @@ public class PlayerMovement : MonoBehaviour
         P_Com.animator.SetInteger("comboCount", P_Value.index);
         P_Com.animator.SetBool("p_Locomotion", true);
         //P_Com.animator.Play("locomotion");
-        P_Com.animator.Rebind();
+        //P_Com.animator.Rebind();
     }
 
     public void PlayPlayer()
