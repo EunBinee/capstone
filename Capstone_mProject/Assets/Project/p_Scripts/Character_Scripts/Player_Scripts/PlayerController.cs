@@ -221,8 +221,10 @@ public class PlayerController : MonoBehaviour
             //P_Movement.skill_F.gameObject.transform.position = new Vector3(1000, -1000, 0);
             P_Movement.skill_V.gameObject.transform.position = new Vector3(1000, -1000, 0);
             //Debug.Log("HPgauge = false");
-            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
+            if (P_States.isBowMode && P_States.startAim)
                 P_Skills.arrowSkillOff();
+            if (P_States.isGunMode && P_States.onShootAim)
+                P_Skills.bulletOff();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitUiGuide.SetActive(false);
@@ -395,8 +397,10 @@ public class PlayerController : MonoBehaviour
                 if (!isGettingHit)
                 {
                     isGettingHit = true;
-                    if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
+                    if (P_States.isBowMode && P_States.startAim)
                         P_Skills.arrowSkillOff();
+                    if (P_States.isGunMode)
+                        P_Skills.bulletOff();
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -508,10 +512,12 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)    //* 조준 모드면 피격 시 조준 해제
+            if (P_States.onShootAim || (P_States.isBowMode && P_States.startAim))    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
-                P_Skills.arrowSkillOff();
+
+                if (P_States.isGunMode) P_Skills.bulletOff();
+                else P_Skills.arrowSkillOff();
             }
 
             if (changeMaterial_co == null && P_Com.skinnedMeshRenderers != null)

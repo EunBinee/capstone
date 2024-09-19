@@ -223,11 +223,25 @@ public class PlayerInputHandle : MonoBehaviour
             P_Value.aimClickDown = 0;
             P_States.isClickDown = true;
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
+            //todo 총모드일때 조준중인 모션 넣어야할듯
+            P_States.onShootAim = true;
         }
 
-        else if (Input.GetMouseButtonUp(0) && P_States.isClickDown && !endArrow) //endArrow가 false이면 활 o, true이면 x
-        {
-            if (P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
+        else if (Input.GetMouseButtonUp(0) && !endArrow) //endArrow가 false이면 활 o, true이면 x
+        {            
+            //* 총모드일때 클릭업(발사)
+            if (P_States.isGunMode && P_States.isClickDown && P_States.onShootAim && !P_States.isShoot)
+            {
+                P_States.isShoot = true;
+                P_States.onShootAim = false;
+
+                P_Com.animator.SetTrigger("shoot");
+
+                P_Skills.onBullet();
+                StartCoroutine(DelayAfterAction());
+            }
+            //* 활모드일때 클릭업
+            else if (P_States.isClickDown && P_States.isBowMode && P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
             {
                 // 짧게 클릭 로직 실행
                 //Debug.Log("[player test] Short click action");
@@ -237,11 +251,9 @@ public class PlayerInputHandle : MonoBehaviour
                 //* 플레이어 회전(몬스터 방향으로)
                 Vector3 targetDirect = Vector3.zero;
                 if (P_Value.nowEnemy != null)   //* 최근에 공격한 적(몬스터)이 있다면
-                {//! P_Value.nowEnemy가 금방 사라짐;;
+                {//! P_Value.nowEnemy가 금방 사라짐
                     Monster nowEnemy_Monster = P_Value.nowEnemy.GetComponent<Monster>();
-                    Vector3 toMonsterDir = Vector3.zero;
-                    toMonsterDir = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
-                    targetDirect = toMonsterDir;// + (P_Value.nowEnemy.transform.right.normalized - this.transform.right.normalized).normalized;
+                    targetDirect = (P_Value.nowEnemy.transform.position - this.transform.position).normalized;
                 }
                 targetDirect.Normalize(); //대각선 이동이 더 빨라지는 것을 방지하기 위해서
                 targetDirect.y = 0;
@@ -252,21 +264,17 @@ public class PlayerInputHandle : MonoBehaviour
                 Quaternion turnRot = Quaternion.LookRotation(targetDirect);
                 transform.rotation = turnRot;
 
-                P_Skills.onProjectile();
+                P_Skills.onArrow();
                 StartCoroutine(DelayAfterAction());
             }
+
             P_States.isClickDown = false;
             P_Value.aimClickDown = 0;
-            if (P_States.startAim)
-            {
-                P_States.startAim = false;
-                P_Skills.arrowSkillOff();
-            }
             P_Movement.StopIdleMotion();
             P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
-
-        else if (Input.GetMouseButton(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock)
+        //* 활모드일 때 꾹 누르고 있으면
+        else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
         {
             // 길게 누르고 있는 중
             P_Value.aimClickDown += Time.deltaTime;
@@ -279,7 +287,7 @@ public class PlayerInputHandle : MonoBehaviour
                 {
                     P_Movement.camForward = P_Camera.cameraObj.transform.forward;
                     P_States.startAim = true;
-                    P_Skills.onProjectile();
+                    P_Skills.onArrow();
                 }
             }
         }

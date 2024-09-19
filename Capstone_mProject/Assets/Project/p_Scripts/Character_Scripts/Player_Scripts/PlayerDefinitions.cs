@@ -122,10 +122,14 @@ public class CurrentState
     public bool isClickDown;
     public bool isAim;  //조준스킬
     public bool startAim;
-    public bool isCamOnAim;
-    public bool beenAttention;
     public bool isShortArrow;   //단타?
     public bool isStrongArrow;
+
+    public bool isShoot;    // 총 발사?
+    public bool onShootAim;
+
+    public bool isCamOnAim;
+    public bool beenAttention;
 
     [Header("Physics Check")]
     public bool isForwardBlocked;   //앞에 장애물이 있는지 여부

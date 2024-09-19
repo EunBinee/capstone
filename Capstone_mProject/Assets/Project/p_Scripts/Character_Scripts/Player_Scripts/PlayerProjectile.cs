@@ -202,7 +202,7 @@ public class PlayerProjectile
                 monIndex = i;
             }
         }}
-        Debug.Log($"[player test] monDist = {monDist}");
+        //Debug.Log($"[player test] monDist = {monDist}");
         Monster monster = nearMon.GetComponentInParent<Monster>();
         if (monster)
         {
@@ -219,7 +219,7 @@ public class PlayerProjectile
                 Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, objHit.normalized);
 
                 //todo 실드몬스터 따로 처리 필요
-                
+
                 curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
                 
             }
