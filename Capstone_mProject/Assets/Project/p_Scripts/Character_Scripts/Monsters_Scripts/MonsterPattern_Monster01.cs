@@ -476,7 +476,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 if (checkPlayerLocation_cantMosterGo == false)
                 {
-                    if (distance <= 1.3f)
+                    if (distance <= 2.3f) //1.3
                     {
                         //거리가 2.5만큼 가깝다.
                         //일반 공격
@@ -485,8 +485,8 @@ public class MonsterPattern_Monster01 : MonsterPattern
                     }
                     else if (distance >= 8f && distance < 12f)
                     {
-                        ChangeMonsterState(MonsterState.Attack);
-                        Monster_Motion(MonsterMotion.Long_Range_Attack);
+                        ChangeMonsterState(MonsterState.Tracing);
+                        //Monster_Motion(MonsterMotion.Long_Range_Attack);
                     }
                 }
                 break;
@@ -530,9 +530,9 @@ public class MonsterPattern_Monster01 : MonsterPattern
                 break;
             case MonsterMotion.Long_Range_Attack:
                 //원거리 공격
-                if (short_Range_Attack_co != null)
-                    StopCoroutine(long_Range_Attack_co);
-                long_Range_Attack_co = StartCoroutine(Long_Range_Attack_Monster01());
+                // if (short_Range_Attack_co != null)
+                //     StopCoroutine(long_Range_Attack_co);
+                // long_Range_Attack_co = StartCoroutine(Long_Range_Attack_Monster01());
                 break;
             case MonsterMotion.GetHit_KnockBack:
                 //피격=>>넉백   t
@@ -563,7 +563,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         SetAnimation(MonsterAnimation.Idle);
 
         int attackCount = 0;
-        while (attackCount < 3) // 공격을 3번 반복
+        while (attackCount < 1) // 공격을 3번 반복
         {
             yield return new WaitUntil(() => isRestraint == false);
 
@@ -607,7 +607,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
         }
         else
         {
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.8f); //1.5
             ChangeMonsterState(MonsterState.Tracing);
             short_Range_Attack_co = null;
         }
