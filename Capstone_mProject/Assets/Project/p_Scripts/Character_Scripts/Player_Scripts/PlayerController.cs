@@ -427,7 +427,7 @@ public class PlayerController : MonoBehaviour
             //HPgauge.value = P_Value.HP / P_Value.MaxHP;
             progressBar.currentValue = P_Value.HP; /// P_Value.MaxHP;
             progressBar.UpdateUI();
-            //todo: 15퍼 미만이면 화면 깜빡이게
+            //todo: 30퍼 미만이면 화면 깜빡이게
             if (P_Value.HP <= (P_Value.MaxHP / 100f) * 30f && !isSick)
             {
                 isSick = true;

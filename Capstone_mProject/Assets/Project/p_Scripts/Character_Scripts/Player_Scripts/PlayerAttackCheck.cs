@@ -11,9 +11,9 @@ public class PlayerAttackCheck : MonoBehaviour
     [SerializeField] private Monster monster;
     private Rigidbody rigid;
 
-    public PlayerController _playerController;// = new PlayerController();
-    public PlayerMovement _playerMovement;// = new PlayerController();
-    public PlayerController P_Controller => _playerController;
+    public PlayerController _playerController;
+    public PlayerMovement _playerMovement;
+    private PlayerController P_Controller => _playerController;
     private CurrentValue P_Value => _playerController._currentValue;
     private CurrentState P_States => _playerController._currentState;
     private PlayerSkills P_Skills => P_Controller.P_Skills;
@@ -117,9 +117,8 @@ public class PlayerAttackCheck : MonoBehaviour
                 rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f);
             else if (isBullet)
             {
-                //todo ray 쏴서 데미지 계산
                 transform.Translate(P_Skills.bulletDir * 10f);
-                P_Projectile.PlayerBulletRay();
+                P_Projectile.PlayerBulletRay(); // 레이 쏘고 데미지 계산 
             }
             //P_States.isShortArrow = false;
             goShoot = true;

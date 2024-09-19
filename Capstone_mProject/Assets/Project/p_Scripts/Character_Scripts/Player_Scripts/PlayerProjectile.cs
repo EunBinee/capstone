@@ -188,7 +188,7 @@ public class PlayerProjectile
         RaycastHit[] hit;
         hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
 
-        GameObject nearMon = hit[0].collider.gameObject;
+        GameObject nearMon = hit[0].collider.gameObject != null? hit[0].collider.gameObject:null;
         float monDist = hit[0].distance;
         int monIndex = 0;
 
@@ -202,7 +202,7 @@ public class PlayerProjectile
                 monIndex = i;
             }
         }}
-        //Debug.Log($"[player test] monDist = {monDist}");
+        Debug.Log($"[player test] monDist = {monDist}");
         Monster monster = nearMon.GetComponentInParent<Monster>();
         if (monster)
         {
@@ -211,14 +211,17 @@ public class PlayerProjectile
             player.GetComponent<PlayerSkills>().GetBulletDir(objHit - player.transform.position);
 
             string objtag = nearMon.tag;
-            //Debug.Log($"[player test] ray tag = {objtag}");
+            Debug.Log($"[player test] ray tag = {objtag}");
 
             if (monster)
             {
                 Vector3 collisionPoint = hit[monIndex].collider.ClosestPoint(objHit);
                 Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, objHit.normalized);
 
+                //todo 실드몬스터 따로 처리 필요
+                
                 curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
+                
             }
         }
     }

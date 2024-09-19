@@ -24,9 +24,9 @@ public class PlayerSkills : MonoBehaviour
     private PlayerAttackCheck playerAttackCheck;
     private PlayerInputHandle P_InputHandle;
 
-    private GameObject arrow;// => P_Controller.arrow;
-    private GameObject bullet;
-    public Vector3 bulletDir;
+    [SerializeField] private GameObject arrow;// => P_Controller.arrow;
+    [SerializeField] private GameObject bullet;
+    [HideInInspector] public Vector3 bulletDir;
 
     //private SkillButton skill_Q;
     private string Bow_Start_Name = "Bow_Attack_Charging";
@@ -99,7 +99,7 @@ public class PlayerSkills : MonoBehaviour
     {
         if (P_Value.aimClickDown > 1.8f)
         {
-            if (P_States.isStrongArrow == false)
+            if (P_States.isStrongArrow == false && P_States.isBowMode)
                 playerAttackCheck.StrongArrowEffect_co();
             P_States.isStrongArrow = true;
         }
@@ -207,7 +207,7 @@ public class PlayerSkills : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
             }
-            else if (P_States.isStrongArrow)
+            else if (P_States.isBowMode && P_States.isStrongArrow)
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(Bow_StrongName);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
@@ -259,10 +259,13 @@ public class PlayerSkills : MonoBehaviour
                 P_Controller.shootPoint.gameObject.SetActive(true);
                 if (!P_States.isShortArrow)
                 {
-                    //* 조준 on effect
-                    Effect Effect = GameManager.Instance.objectPooling.ShowEffect(Bow_Start_Name);
-                    Effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    Effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                    if (P_States.isBowMode)
+                    {
+                        //* 조준 on effect
+                        Effect Effect = GameManager.Instance.objectPooling.ShowEffect(Bow_Start_Name);
+                        Effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                        Effect.transform.rotation = Quaternion.LookRotation(this.transform.forward);
+                    }
 
                     if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
                     {
@@ -534,27 +537,24 @@ public class PlayerSkills : MonoBehaviour
         switch (skillName)
         {
             case "ChangeWeapon":   //* weapon change
-                //if (skill_Q.imgCool.fillAmount == 0)
+                Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
+                effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+                if (P_States.isGunMode) //* 활 모드 -> 칼 모드 P_States.isBowMode
                 {
-                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("weaponChange");
-                    effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
-                    if (P_States.isBowMode || P_States.isGunMode) //* 활 모드 -> 칼 모드
-                    {
-                        //P_States.isBowMode = false;
-                        P_States.isGunMode = false;
-                        P_Controller.bow.SetActive(false);
-                        P_Controller.sword.SetActive(true);
-                        P_Com.animator.SetFloat("isBowmode", 0);
-                    }
-                    else if (!P_States.isBowMode || !P_States.isGunMode) //* 칼 모드 -> 활 모드
-                    {
-                        //P_States.isBowMode = true;
-                        P_States.isGunMode = true;
-                        P_Controller.bow.SetActive(true);
-                        P_Controller.shootPoint.gameObject.SetActive(false);
-                        P_Controller.sword.SetActive(false);
-                        P_Com.animator.SetFloat("isBowmode", 1);
-                    }
+                    //P_States.isBowMode = false;
+                    P_States.isGunMode = false;
+                    P_Controller.bow.SetActive(false);
+                    P_Controller.sword.SetActive(true);
+                    P_Com.animator.SetFloat("isBowmode", 0);
+                }
+                else if (!P_States.isGunMode) //* 칼 모드 -> 활 모드 !P_States.isBowMode
+                {
+                    //P_States.isBowMode = true;
+                    P_States.isGunMode = true;
+                    P_Controller.bow.SetActive(true);
+                    P_Controller.shootPoint.gameObject.SetActive(false);
+                    P_Controller.sword.SetActive(false);
+                    P_Com.animator.SetFloat("isBowmode", 1);
                 }
                 P_Movement.skill_V.OnClicked();
                 break;
