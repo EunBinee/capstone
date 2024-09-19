@@ -416,7 +416,8 @@ public class PlayerController : MonoBehaviour
         if (P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("Get_Damage")
             && P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.99f)
         {
-            P_Com.animator.Rebind();
+            //P_Com.animator.Rebind();
+            P_Com.animator.SetBool("p_Locomotion", true);
         }
     }
 
