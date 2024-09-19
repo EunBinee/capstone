@@ -185,26 +185,40 @@ public class PlayerProjectile
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
 
         // 레이캐스트 결과 저장할 변수
-        RaycastHit hit;
+        RaycastHit[] hit;
+        hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
 
-        // 레이캐스트 실행 (rayDistance 만큼의 거리)
-        if (Physics.Raycast(ray, out hit, rayDistance, LayerMask.GetMask("Monster")))
+        GameObject nearMon = hit[0].collider.gameObject;
+        float monDist = hit[0].distance;
+        int monIndex = 0;
+
+        if (hit.Length > 1){
+        for (int i = 1; i < hit.Length; i++)
         {
-            Vector3 objHit = hit.point;
+            if (monDist < hit[i].distance) 
+            {
+                nearMon = hit[i].collider.gameObject;
+                monDist = hit[i].distance;
+                monIndex = i;
+            }
+        }}
+        //Debug.Log($"[player test] monDist = {monDist}");
+        Monster monster = nearMon.GetComponentInParent<Monster>();
+        if (monster)
+        {
+            Vector3 objHit = hit[monIndex].point;
             Debug.DrawRay(player.transform.position, objHit - player.transform.position, Color.yellow, 5f);
             player.GetComponent<PlayerSkills>().GetBulletDir(objHit - player.transform.position);
 
-            string objtag = hit.collider.gameObject.tag;
-            Debug.Log($"[player test] ray tag = {objtag}");
+            string objtag = nearMon.tag;
+            //Debug.Log($"[player test] ray tag = {objtag}");
 
-            if (objtag == "Monster" || objtag == "BossWeakness")
+            if (monster)
             {
-                Vector3 collisionPoint = hit.collider.ClosestPoint(objHit);
+                Vector3 collisionPoint = hit[monIndex].collider.ClosestPoint(objHit);
                 Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, objHit.normalized);
 
-                PlayerAttackCheck a = curBulletObj.GetComponent<PlayerAttackCheck>();
-                Monster monster = hit.collider.gameObject.GetComponent<Monster>();
-                a.playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
+                curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
             }
         }
     }

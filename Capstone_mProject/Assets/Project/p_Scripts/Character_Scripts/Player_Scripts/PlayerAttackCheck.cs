@@ -297,7 +297,7 @@ public class PlayerAttackCheck : MonoBehaviour
 
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
-            if (!P_States.isBowMode || !P_States.isGunMode)
+            if (!P_States.isBowMode && !P_States.isGunMode)
             {
                 _playerController.playAttackEffect("Attack_Combo_Hit"); //* 히트 이펙트 출력
             }
@@ -395,7 +395,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         Vector3 collisionPoint = hit.point;
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
-                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, true);
+                        bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, monster, true);
                         if (successfulAttack)
                         {
 
@@ -424,7 +424,7 @@ public class PlayerAttackCheck : MonoBehaviour
                         Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
 
-                        playerHitMonster(collisionPoint, otherQuaternion);
+                        playerHitMonster(collisionPoint, otherQuaternion, monster);
 
                     }
                 }
