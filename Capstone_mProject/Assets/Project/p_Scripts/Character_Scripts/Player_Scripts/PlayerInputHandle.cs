@@ -223,7 +223,6 @@ public class PlayerInputHandle : MonoBehaviour
             P_Value.aimClickDown = 0;
             P_States.isClickDown = true;
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
-            //todo 총모드일때 조준중인 모션 넣어야할듯
             P_States.onShootAim = true;
             P_Com.animator.SetBool("onClickGun", true);
         }
@@ -291,6 +290,17 @@ public class PlayerInputHandle : MonoBehaviour
                     P_Skills.onArrow();
                 }
             }
+        }
+        //* 총모드일 때 우클릭 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
+        else if (Input.GetMouseButton(1) && P_States.isGunMode && !P_States.onZoomIn)
+        {
+            P_States.onZoomIn = true;
+            P_Com.animator.SetBool("onClickGun", true);
+        }
+        else if (Input.GetMouseButtonUp(1) && P_States.isGunMode && P_States.onZoomIn)
+        {
+            P_States.onZoomIn = false;
+            P_Com.animator.SetBool("onClickGun", false);
         }
     }
 

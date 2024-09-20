@@ -515,11 +515,13 @@ public class CameraController : MonoBehaviour
             AimCameraLeftRightRotate();
         }
         AimCameraUpDownRotate();
-    }
+    }//P_States.onZoomIn
 
     private void AimCameraSetZ()
     {
-        Vector3 cameraSetVec = new Vector3(0.55f, 0.2f, -1.5f);
+        Vector3 cameraSetVec = new Vector3(0.55f, 0.2f, -2.0f);
+        if (playerController._currentState.onZoomIn)
+            cameraSetVec = new Vector3(0.30f, 0.15f, -0.8f);
 
         cameraObj.transform.localPosition = cameraSetVec;
     }

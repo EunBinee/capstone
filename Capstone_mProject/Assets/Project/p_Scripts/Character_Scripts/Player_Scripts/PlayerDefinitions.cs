@@ -127,6 +127,7 @@ public class CurrentState
 
     public bool isShoot;    // 총 발사?
     public bool onShootAim;
+    public bool onZoomIn;   // 총일때 우클릭
 
     public bool isCamOnAim;
     public bool beenAttention;

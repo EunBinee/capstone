@@ -246,6 +246,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
+            P_Skills.bulletOnOff(true); // 점프 시작
+
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
             P_Com.rigidbody.AddForce(Vector3.up * P_COption.jumpPower, ForceMode.Impulse);
@@ -259,6 +261,8 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = false;
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
+            
+            P_Skills.bulletOnOff(false); // 점프 끝
         }
     }
 
@@ -275,7 +279,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void HandleDodge()
     {
-        P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(1));
+        P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || (!P_States.isGunMode && Input.GetMouseButton(1)));
 
         if (P_States.previousDodgeKeyPress
             && P_States.currentDodgeKeyPress
@@ -291,6 +295,7 @@ public class PlayerMovement : MonoBehaviour
             //&& P_Value.moveAmount > 0
             && !P_States.isStartComboAttack && P_States.isGround)
         {
+            P_Skills.bulletOnOff(true); // 닷지 시작
             P_States.isJumping = false;
             P_States.isDodgeing = true;
             // 기존 수직 속도 보존
@@ -302,11 +307,9 @@ public class PlayerMovement : MonoBehaviour
     private void dodgeOut()
     {
         P_States.isJumping = false;
-        P_States.isDodgeing = false;
-        // 대쉬 종료 후 Rigidbody 속도를 다시 원래 속도로 변경
-        //P_Com.rigidbody.velocity = Vector3.zero;
-        //P_Com.rigidbody.velocity = Vector3.Lerp(P_Com.rigidbody.velocity, Vector3.zero, 0.4f);
+        P_States.isDodgeing = false;  
         P_Controller.AnimState(PlayerState.Idle);
+        P_Skills.bulletOnOff(false);  // 닷지 끝
     }
 
     private void AllPlayerLocomotion()
@@ -492,9 +495,10 @@ public class PlayerMovement : MonoBehaviour
             P_Value.finalSpeed = P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
-            if ((P_States.isBowMode || P_States.isGunMode) && P_States.startAim)
+            if (P_States.startAim)
             {
-                P_Skills.arrowSkillOff();
+                if (P_States.isBowMode) P_Skills.arrowSkillOff();
+                else if (P_States.isGunMode) P_Skills.bulletOff();
             }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
@@ -504,17 +508,6 @@ public class PlayerMovement : MonoBehaviour
                 ElecTime = 0f;
                 //Debug.Log("Electric off");
             }
-            P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
-
-            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
-            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
-            P_Com.rigidbody.velocity = p_velocity;
-        }
-        else if (P_States.isAim)    //조준
-        {
-            P_Value.finalSpeed = P_States.isGunMode? P_COption.runningSpeed : P_COption.slowlySpeed;
-            P_States.isJumping = false; P_Input.jumpMovement = 0;
-            P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
@@ -593,6 +586,25 @@ public class PlayerMovement : MonoBehaviour
             P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);
 
             Invoke("dodgeOut", 0.18f);    //닷지 유지 시간 = 0.16초
+        }
+        else if (P_States.isAim)    //조준
+        {
+            P_Value.finalSpeed = P_COption.slowlySpeed;
+            if (P_States.isGunMode && !P_States.onZoomIn)
+            {
+                P_Value.finalSpeed = P_COption.runningSpeed;
+            }
+            if (P_States.isBowMode)
+            {
+                P_States.isJumping = false; P_Input.jumpMovement = 0;
+                P_States.isDodgeing = false;
+            }
+            
+            P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
+
+            p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
+            p_velocity = p_velocity + Vector3.up * (P_Value.gravity);
+            P_Com.rigidbody.velocity = p_velocity;
         }
         else if (P_States.isWalking || P_States.isSprinting || P_States.isRunning)
         {

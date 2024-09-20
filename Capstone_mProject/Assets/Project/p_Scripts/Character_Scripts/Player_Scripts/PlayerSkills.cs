@@ -276,7 +276,7 @@ public class PlayerSkills : MonoBehaviour
 
     public void bulletOff()
     {
-        P_Com.animator.SetBool("onClickGun", false);
+        if (!P_States.onZoomIn) P_Com.animator.SetBool("onClickGun", false);
         P_States.isClickDown = false;
         P_Value.aimClickDown = 0;
         if (P_States.isGunMode)
@@ -286,6 +286,24 @@ public class PlayerSkills : MonoBehaviour
             effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
         }
         P_States.isShoot = false;
+    }
+
+/// <summary>
+///* 닷지, 점프 할 때 카메라 복구 했다가 다시 켜주는 함수
+/// </summary>
+    public void bulletOnOff(bool value)
+    {
+        if (!P_States.isGunMode) return;
+
+        if (value == true)  // 시작할때 카메라 원래대로
+        {
+            if (P_States.onShootAim) bulletOff();   // 시작할 때 조준중이면 조준 강종
+            arrowSkillOff();
+        }
+        else if (value == false)    // 끝날때 카메라 다시 조준
+        {
+            onBulletCam();
+        }
     }
 
     public void arrowSkillOff()
@@ -309,7 +327,7 @@ public class PlayerSkills : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);   // 화살 방향으로
             }
-            else
+            else if (P_States.isBowMode)
             {
                 Effect effect = GameManager.Instance.objectPooling.ShowEffect(Bow_Name);
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
