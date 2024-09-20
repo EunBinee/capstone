@@ -512,7 +512,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (P_States.isAim)    //조준
         {
-            P_Value.finalSpeed = P_COption.slowlySpeed;
+            P_Value.finalSpeed = P_States.isGunMode? P_COption.runningSpeed : P_COption.slowlySpeed;
             P_States.isJumping = false; P_Input.jumpMovement = 0;
             P_States.isDodgeing = false;
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
@@ -682,25 +682,25 @@ public class PlayerMovement : MonoBehaviour
         }
         #endregion
         #region Vertical
-        if (P_Input.verticalMovement > 0 && P_Input.verticalMovement <= 0.5f)
-        {
-            //0보다 큰데 0.5보다 같거나 작은 경우
-            snappedVertical = 0.5f;
-        }
-        else if (P_Input.verticalMovement > 0.5f)
+        if (P_Input.verticalMovement > 0.5f)
         {
             //0.5보다 큰경우
             snappedVertical = 1;
-        }
-        else if (P_Input.verticalMovement < 0 && P_Input.verticalMovement >= -0.5f)
+        } 
+        else if (P_Input.verticalMovement > 0 && P_Input.verticalMovement <= 0.5f)
         {
-            //0보다 작은데 -0.5보다 같거나 큰 경우
-            snappedVertical = -0.5f;
+            //0보다 큰데 0.5보다 같거나 작은 경우
+            snappedVertical = 0.5f;
         }
         else if (P_Input.verticalMovement < -0.5f)
         {
             //-0.5보다 작은 경우
             snappedVertical = -1;
+        }
+        else if (P_Input.verticalMovement < 0 && P_Input.verticalMovement >= -0.5f)
+        {
+            //0보다 작은데 -0.5보다 같거나 큰 경우
+            snappedVertical = -0.5f;
         }
         else
         {
@@ -726,7 +726,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (P_States.isStrafing)
             {
-                if (P_States.isRunning)
+                if (P_States.isRunning) // 총모드일때도 사용
                 {
                     //뛰기일 경우
                     P_Com.animator.SetFloat("Vertical", snappedVertical, 0f, Time.deltaTime);   //상
@@ -737,8 +737,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_States.isAim && P_States.isGunMode)
                 {
-                    P_Com.animator.SetFloat("Vertical", 0, 0.2f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", 0, 0.2f, Time.deltaTime); //하
+                    P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.05f, Time.deltaTime);   //상
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);    
                 }
                 else if (P_States.isAim || P_States.isWalking)
                 {

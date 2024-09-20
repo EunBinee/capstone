@@ -225,6 +225,7 @@ public class PlayerInputHandle : MonoBehaviour
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
             //todo 총모드일때 조준중인 모션 넣어야할듯
             P_States.onShootAim = true;
+            P_Com.animator.SetBool("onClickGun", true);
         }
 
         else if (Input.GetMouseButtonUp(0) && !endArrow) //endArrow가 false이면 활 o, true이면 x

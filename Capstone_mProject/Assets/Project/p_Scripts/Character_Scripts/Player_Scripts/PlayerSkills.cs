@@ -276,6 +276,7 @@ public class PlayerSkills : MonoBehaviour
 
     public void bulletOff()
     {
+        P_Com.animator.SetBool("onClickGun", false);
         P_States.isClickDown = false;
         P_Value.aimClickDown = 0;
         if (P_States.isGunMode)
