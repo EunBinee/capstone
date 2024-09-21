@@ -158,8 +158,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Inputs()
     {
-        if (!HandleJump()
-                || !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
+        if (// `!HandleJump() ||  //*점프 기능 제거
+                !P_Com.animator.GetCurrentAnimatorStateInfo(0).IsName("KnockDown"))   //* 넉백 애니메이션 시 or
         {
             HandleWalkOrRun(); //HandleSprint();
 
@@ -315,9 +315,9 @@ public class PlayerMovement : MonoBehaviour
     private void AllPlayerLocomotion()
     {
         //캐릭터의 실제 이동을 수행하는 함수.
-        PlayerRotation(); //플레이어의 방향 전환을 수행하는 함수
-        PlayerMovements(); //플레이어의 움직임을 수행하는 함수.
-        PlayerJump();
+        PlayerRotation();   //플레이어의 방향 전환을 수행하는 함수
+        PlayerMovements();  //플레이어의 움직임을 수행하는 함수.
+        // PlayerJump();    //* 점프 기능 제거
         HandleDodge();
     }
     private void PlayerRotation()
