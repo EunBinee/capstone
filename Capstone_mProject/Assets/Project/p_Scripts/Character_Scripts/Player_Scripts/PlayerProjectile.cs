@@ -185,43 +185,54 @@ public class PlayerProjectile
         Ray ray = Camera.main.ScreenPointToRay(screenCenter);
 
         // 레이캐스트 결과 저장할 변수
-        RaycastHit[] hit;
-        hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
+        //RaycastHit[] hit;
+        RaycastHit hit;
 
-        GameObject nearMon = hit[0].collider.gameObject != null? hit[0].collider.gameObject:null;
-        float monDist = hit[0].distance;
-        int monIndex = 0;
+        int layerMask = (1 << LayerMask.NameToLayer("Player"));  // Everything에서 Player 레이어만 제외하고 충돌 체크함
+        layerMask = ~layerMask;
 
-        if (hit.Length > 1){
-        for (int i = 1; i < hit.Length; i++)
-        {
-            if (monDist < hit[i].distance) 
-            {
-                nearMon = hit[i].collider.gameObject;
-                monDist = hit[i].distance;
-                monIndex = i;
-            }
-        }}
+        //hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
+        Physics.Raycast(ray, out hit, rayDistance, layerMask);
+
+        // GameObject nearMon = hit[0].collider.gameObject != null ? hit[0].collider.gameObject : null;
+        // float monDist = hit[0].distance;
+        // int monIndex = 0;
+
+        // if (hit.Length > 1)
+        // {
+        //     for (int i = 1; i < hit.Length; i++)
+        //     {
+        //         if (monDist < hit[i].distance)
+        //         {
+        //             nearMon = hit[i].collider.gameObject;
+        //             monDist = hit[i].distance;
+        //             monIndex = i;
+        //         }
+        //     }
+        // }
         //Debug.Log($"[player test] monDist = {monDist}");
-        Monster monster = nearMon.GetComponentInParent<Monster>();
+        //Monster monster = nearMon.GetComponentInParent<Monster>();
+        Monster monster = hit.collider.gameObject.GetComponentInParent<Monster>();
         if (monster)
         {
-            Vector3 objHit = hit[monIndex].point;
+            //Vector3 objHit = hit[monIndex].point;
+            Vector3 objHit = hit.point;
             Debug.DrawRay(player.transform.position, objHit - player.transform.position, Color.yellow, 5f);
             player.GetComponent<PlayerSkills>().GetBulletDir(objHit - player.transform.position);
 
-            string objtag = nearMon.tag;
+            //string objtag = nearMon.tag;
+            string objtag = hit.collider.gameObject.tag;
             Debug.Log($"[player test] ray tag = {objtag}");
 
             if (monster)
             {
-                Vector3 collisionPoint = hit[monIndex].collider.ClosestPoint(objHit);
+                Vector3 collisionPoint = hit.collider.ClosestPoint(objHit);
                 Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, objHit.normalized);
 
                 //todo 실드몬스터 따로 처리 필요
 
                 curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
-                
+
             }
         }
     }
