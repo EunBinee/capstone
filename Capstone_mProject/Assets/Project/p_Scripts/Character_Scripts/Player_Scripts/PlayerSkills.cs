@@ -56,7 +56,7 @@ public class PlayerSkills : MonoBehaviour
         P_SkillInfo.selectSkill.Clear();
         arrow = P_Controller.arrow;
         //skillRangeIndicator = UnityEngine.Object.Instantiate(skillRangeIndicator);
-        skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
+        //skillRangeIndicator = GameManager.Instance.objectPooling.GetProjectilePrefab("TargetMarker");
         //skillRangeIndicator = Resources.Load<GameObject>("TargetMarker");
 
         skillRangeIndicator.SetActive(false);

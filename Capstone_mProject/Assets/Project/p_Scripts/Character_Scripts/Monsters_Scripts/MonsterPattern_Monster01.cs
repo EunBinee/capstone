@@ -476,7 +476,7 @@ public class MonsterPattern_Monster01 : MonsterPattern
 
                 if (checkPlayerLocation_cantMosterGo == false)
                 {
-                    if (distance <= 2.3f) //1.3
+                    if (distance <= 1.3f) //1.3
                     {
                         //거리가 2.5만큼 가깝다.
                         //일반 공격
