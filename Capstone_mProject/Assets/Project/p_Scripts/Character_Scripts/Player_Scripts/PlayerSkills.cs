@@ -288,9 +288,9 @@ public class PlayerSkills : MonoBehaviour
         P_States.isShoot = false;
     }
 
-/// <summary>
-///* 닷지, 점프 할 때 카메라 복구 했다가 다시 켜주는 함수
-/// </summary>
+    /// <summary>
+    ///* 닷지, 점프 할 때 카메라 복구 했다가 다시 켜주는 함수
+    /// </summary>
     public void bulletOnOff(bool value)
     {
         if (!P_States.isGunMode) return;
@@ -302,8 +302,12 @@ public class PlayerSkills : MonoBehaviour
         }
         else if (value == false)    // 끝날때 카메라 다시 조준
         {
-            onBulletCam();
+            deleyOnBulletCam();
         }
+    }
+    public void deleyOnBulletCam()
+    {
+        Invoke("onBulletCam", 0.3f);
     }
 
     public void arrowSkillOff()

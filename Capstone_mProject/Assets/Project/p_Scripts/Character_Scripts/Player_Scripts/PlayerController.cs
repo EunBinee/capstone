@@ -149,10 +149,10 @@ public class PlayerController : MonoBehaviour
         {
             for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
             {
-                Debug.Log("[player test] SetPlayerMaterials()");
+                //Debug.Log("[player test] SetPlayerMaterials()");
                 m_material[i] = P_Com.skinnedMeshRenderers[i].materials[0];
-                Debug.Log($"[player test] m_material[i] {m_material[i]}");
-                Debug.Log($"[player test] P_Com.skinnedMeshRenderers[i].materials[0] {P_Com.skinnedMeshRenderers[i].materials[0]}");
+                //Debug.Log($"[player test] m_material[i] {m_material[i]}");
+                //Debug.Log($"[player test] P_Com.skinnedMeshRenderers[i].materials[0] {P_Com.skinnedMeshRenderers[i].materials[0]}");
             }
         }
         else
