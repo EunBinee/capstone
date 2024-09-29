@@ -627,40 +627,79 @@ public class PlayerController : MonoBehaviour
         effectRotation.z = 0;
         effect.gameObject.transform.rotation = effectRotation;
     }
+    // 원래 Material 값을 저장할 리스트
+    private List<Material[]> originalMaterials;
 
     IEnumerator ChangeMaterial()
     {
-        // Skinned Mesh Renderer의 모든 Materials를 새로운 Material로 변경합니다.
-        Material[] materials = P_Com.skinnedMeshRenderers[0].materials;
+        // 원래 Material 값을 저장할 리스트 초기화
+        originalMaterials = new List<Material[]>();
+
+        // 모든 Skinned Mesh Renderer의 Material을 저장
         for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
         {
-            Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
-            for (int j = 0; j < _materials.Length; j++)
+            // 현재 Skinned Mesh Renderer의 Material 배열을 저장
+            Material[] currentMaterials = P_Com.skinnedMeshRenderers[i].materials;
+            originalMaterials.Add(currentMaterials); // 원래의 Material 배열 저장
+
+            // Skinned Mesh Renderer의 모든 Material을 hitMat로 변경
+            Material[] newMaterials = new Material[currentMaterials.Length];
+            for (int j = 0; j < currentMaterials.Length; j++)
             {
-                if (j == 0)
-                    _materials[j] = P_Com.hitMat;
-                else
-                    _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
+                // 모든 Material을 hitMat로 변경
+                newMaterials[j] = P_Com.hitMat;
             }
-            P_Com.skinnedMeshRenderers[i].materials = _materials;
+
+            // 변경된 Material 배열을 적용
+            P_Com.skinnedMeshRenderers[i].materials = newMaterials;
         }
 
+        // 0.3초 대기
         yield return new WaitForSeconds(0.3f);
+
+        // 원래의 Material로 복원
         for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
         {
-            Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
-            for (int j = 0; j < _materials.Length; j++)
-            {
-                if (j == 0)
-                    _materials[j] = m_material[i];
-                else
-                    _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
-            }
-            P_Com.skinnedMeshRenderers[i].materials = _materials;
+            // 원래 저장한 Material 배열로 복원
+            P_Com.skinnedMeshRenderers[i].materials = originalMaterials[i];
         }
 
+        // 코루틴이 완료되었으므로 changeMaterial_co를 null로 설정
         changeMaterial_co = null;
     }
+    // IEnumerator ChangeMaterial()
+    // {
+    //     // Skinned Mesh Renderer의 모든 Materials를 새로운 Material로 변경합니다.
+    //     Material[] materials = P_Com.skinnedMeshRenderers[0].materials;
+    //     for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
+    //     {
+    //         Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
+    //         for (int j = 0; j < _materials.Length; j++)
+    //         {
+    //             if (j == 0)
+    //                 _materials[j] = P_Com.hitMat;
+    //             else
+    //                 _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
+    //         }
+    //         P_Com.skinnedMeshRenderers[i].materials = _materials;
+    //     }
+
+    //     yield return new WaitForSeconds(0.3f);
+    //     for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
+    //     {
+    //         Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
+    //         for (int j = 0; j < _materials.Length; j++)
+    //         {
+    //             if (j == 0)
+    //                 _materials[j] = m_material[i];
+    //             else
+    //                 _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
+    //         }
+    //         P_Com.skinnedMeshRenderers[i].materials = _materials;
+    //     }
+
+    //     changeMaterial_co = null;
+    // }
 
     //*-------------------------------------------------------------------//
     //* 데미지에 따른 넉백 Distance 계산
