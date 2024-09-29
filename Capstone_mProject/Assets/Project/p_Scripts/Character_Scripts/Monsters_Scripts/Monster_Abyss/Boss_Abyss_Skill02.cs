@@ -54,7 +54,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         while (time < 15)
         {
             time += Time.deltaTime;
-            float randTime = UnityEngine.Random.Range(0.5f, 3f);
+            float randTime = UnityEngine.Random.Range(0.5f, 1.5f);
             yield return new WaitForSeconds(randTime);
             time += randTime;
 
