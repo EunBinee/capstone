@@ -691,7 +691,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     {
                         //* 페이즈 2 이상이면, 스킬 2번에서 바로 스킬 3번으로 연계
                         Monster_Motion(BossMonsterMotion.Skill02);
-                        breakTime = 2;
+                        breakTime = 1;
                     }
                     else
                         pickAgain = true;
@@ -701,7 +701,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     {
                         //* 스킬 4번으로 연계
                         Monster_Motion(BossMonsterMotion.Skill04);
-                        breakTime = 2;
+                        breakTime = 1;
                     }
                     break;
                 default:
@@ -1220,6 +1220,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         EnableBossWeaknessEffect(false);
 
         Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
+
+        //약점알람text
+        bossText.SetActive(true);
+        TMP_Text bossTextWeakness = bossText.GetComponent<TMP_Text>();
+        bossTextWeakness.text = "총을 조준하여 약점을 공격하세요.";
     }
 
     //*-------------------------------------------------------------------------------------//

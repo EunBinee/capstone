@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 public class Boss_Abyss_Skill04 : MonoBehaviour
 {
-    //! 스킬 03  총쏘기
+    //! 스킬 04  번개
     MonsterPattern_Boss_Abyss monsterPattern_Abyss;
     Monster m_monster;
     PlayerController playerController;
@@ -361,7 +361,11 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
-
+        //마커 불투명도 조절
+        //! 여기부터 하기  MeshRenderer
+        MeshRenderer meshRenderer = skillIndicator_obj.GetComponentInChildren<MeshRenderer>();
+        StartCoroutine(FadeInMarker(meshRenderer, 1.0f)); // 1초 동안 불투명하게 만들기
+ 
         //*------------------------------------------------------------------------------------------------//
         yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
 
@@ -444,6 +448,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
 
+        //불투명도 조절
+        MeshRenderer meshRenderer = skillIndicator_obj.GetComponentInChildren<MeshRenderer>();
+        StartCoroutine(FadeInMarker(meshRenderer, 1.0f)); // 1초 동안 불투명하게 만들기
         //*------------------------------------------------------------------------------------------------//
         yield return new WaitForSeconds(waitTime);
 
@@ -506,6 +513,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 targetMarker_Pattern05_List[i].gameObject.SetActive(true);
             curTargetMarker.Add(targetMarker_Pattern05_List[i]);
         }
+        //불투명도 조절
+        MeshRenderer meshRenderer = skillIndicator_obj.GetComponentInChildren<MeshRenderer>();
+        StartCoroutine(FadeInMarker(meshRenderer, 1.0f)); // 1초 동안 불투명하게 만들기
         //*------------------------------------------------------------------------------------------------//
         yield return new WaitForSeconds(waitTime); //* 8초 뒤 체크
 
@@ -728,6 +738,30 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill04);
 
+    }
+    
+    //* 타겟마커 불투명도 조절
+    IEnumerator FadeInMarker(MeshRenderer renderer, float duration)
+    {
+        Color color = renderer.material.color;
+        float startAlpha = 0f; // 투명하게 시작
+        float endAlpha = 1f; // 불투명하게 설정
+        float elapsedTime = 0f;
+
+        Debug.Log("시작ㅈ갖ㄱ자작");   
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration); // 알파 값을 점차 증가
+            color.a = alpha;
+            renderer.material.color = color;
+            yield return null;
+        }
+
+        // 최종적으로 알파 값을 완전 불투명으로 설정
+        color.a = endAlpha;
+        renderer.material.color = color;
+        Debug.Log("끝");   
     }
 
 }
