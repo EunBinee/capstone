@@ -284,7 +284,7 @@ public class PlayerSkills : MonoBehaviour
         if (P_States.isGunMode)
         {
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(Gun_ShootMuzzle);
-            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+            effect.gameObject.transform.position = P_Controller.shootPoint.transform.position;//this.gameObject.transform.position + Vector3.up;
             effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
         }
         P_States.isShoot = false;
