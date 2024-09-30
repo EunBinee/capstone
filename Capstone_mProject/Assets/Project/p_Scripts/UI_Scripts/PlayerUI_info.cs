@@ -32,6 +32,7 @@ public class PlayerUI_info : MonoBehaviour
     [Space]
     [Header("Player 조준 카메라 관련")]
     public TMP_Text crosshairImage; // 조준점 이미지
+    public Image crosshair; // 조준점 이미지
 
 
     public PlayerController p_controller;

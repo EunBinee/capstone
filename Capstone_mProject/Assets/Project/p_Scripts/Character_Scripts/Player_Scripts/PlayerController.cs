@@ -74,6 +74,7 @@ public class PlayerController : MonoBehaviour
     public GameObject bow;
     public GameObject sword;
     public TMP_Text crosshairImage; // 조준점 이미지
+    public Image crosshair; // 조준점 이미지
 
     public GameObject arrow;
     public GameObject bullet;
@@ -179,6 +180,7 @@ public class PlayerController : MonoBehaviour
         //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
         crosshairImage = playerUI_info.crosshairImage;
+        crosshair = playerUI_info.crosshair;
 
         playerSkillTree = playerUI_info.GetComponent<PlayerSkillTree>();
         P_Movement.skill_Q = playerUI_info.skill_Q;
