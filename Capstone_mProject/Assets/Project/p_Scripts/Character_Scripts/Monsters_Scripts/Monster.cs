@@ -420,7 +420,8 @@ public class Monster : MonoBehaviour
         float y = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         float z = UnityEngine.Random.Range(randomRangeMin, randdomRangeMax);
         Vector3 randomPos = new Vector3(x, y, z);
-        randomPos = GameManager.Instance.gameData.playerHeadPos.position + randomPos;//monsterData.effectTrans.position + randomPos;
+        //randomPos = GameManager.Instance.gameData.playerHeadPos.position + randomPos;//monsterData.effectTrans.position + randomPos;
+        randomPos = monsterData.effectTrans.position + randomPos;
 
         damageUI.Reset(this, randomPos, damage);
     }

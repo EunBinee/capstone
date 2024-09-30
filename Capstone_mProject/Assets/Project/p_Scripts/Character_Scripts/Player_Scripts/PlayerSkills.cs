@@ -233,7 +233,8 @@ public class PlayerSkills : MonoBehaviour
                         P_States.beenAttention = true;
                     }
                     GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-                    P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
+                    //P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
+                    P_Controller.crosshair.gameObject.SetActive(true);
                 }
                 PoolingArrow(); //* 화살 풀링
                 //* 단타 
@@ -263,7 +264,8 @@ public class PlayerSkills : MonoBehaviour
             P_States.beenAttention = true;
         }
         GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-        P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
+        //P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
+        P_Controller.crosshair.gameObject.SetActive(true);
     }
     public void onBullet()
     {
@@ -282,7 +284,7 @@ public class PlayerSkills : MonoBehaviour
         if (P_States.isGunMode)
         {
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(Gun_ShootMuzzle);
-            effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
+            effect.gameObject.transform.position = P_Controller.shootPoint.transform.position;//this.gameObject.transform.position + Vector3.up;
             effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
         }
         P_States.isShoot = false;
@@ -362,7 +364,9 @@ public class PlayerSkills : MonoBehaviour
                 }
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
-                P_Controller.crosshairImage.gameObject.SetActive(false);
+                //P_Controller.crosshairImage.gameObject.SetActive(false);
+                P_Controller.crosshair.gameObject.SetActive(false);
+
                 P_Controller.shootPoint.gameObject.SetActive(false);
                 P_States.isAim = false;
                 P_Com.animator.SetLayerWeight(1, 0f);
