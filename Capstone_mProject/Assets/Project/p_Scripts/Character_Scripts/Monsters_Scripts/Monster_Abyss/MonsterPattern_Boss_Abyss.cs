@@ -569,7 +569,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //ChangeBossPhase(BossMonsterPhase.Phase2);
             //Monster_Motion(BossMonsterMotion.Skill04);
             // Monster_Motion(BossMonsterMotion.Skill01);
-            //* 테스트 후 아래 주석 풀기
+   
+            //! 테스트 후 아래 주석 풀기
             ChangeBossPhase(BossMonsterPhase.Phase1);
             ChangeMonsterState(MonsterState.Tracing);
         }

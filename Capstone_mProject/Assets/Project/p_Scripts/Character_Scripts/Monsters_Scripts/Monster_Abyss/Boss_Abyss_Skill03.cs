@@ -144,9 +144,49 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
 
 
         //* 광역 폭딜
+        float damageRadius = 15f;
+        //이펙트 추가하기.
+        Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+
+        Vector3 originPos = this.transform.position;
+        originPos.y += 1.1f;
+        effect.transform.position = originPos;
+
+        yield return new WaitForSeconds(5f);
+
+        float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
+        if (playerDistance <= damageRadius ) 
+        {
+           // 몬스터에서 플레이어까지의 방향
+            Vector3 directionToPlayer = (playerTrans.position - this.transform.position).normalized;
+            RaycastHit hit;
+
+            //! 여기 고치기    ㅅㅂ 디버그가 안뜨는데요 거지같은거 
+            // 레이캐스트로 잔해물이 있는지 확인
+            if (Physics.Raycast(this.transform.position, directionToPlayer, out hit, damageRadius))
+            {
+                // 레이캐스트가 무언가에 충돌했을 때
+                if (hit.collider.gameObject== wreckage_obj)
+                {
+                    // 잔해물이 플레이어를 막고 있음. 데미지 적용 안 함
+                    Debug.Log("노데미지");
+                }
+                else 
+                {
+                    // 잔해물이 없고 플레이어가 맞음. 데미지 적용
+                    //playerController.TakeDamage(monsterPattern_Abyss.monsterDamage);
+                    Debug.Log("데미지 입음");
+                }
+            }
+        }
+        effect=GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red");
+
         
 
+        yield return new WaitForSeconds(5f);
+
         //* 잔해물 치우기
+        effect.StopEffect();
         ClearWreckage();
         yield return new WaitForSeconds(1f);
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
