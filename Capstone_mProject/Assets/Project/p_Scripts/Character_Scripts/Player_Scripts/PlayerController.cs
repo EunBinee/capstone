@@ -278,7 +278,8 @@ public class PlayerController : MonoBehaviour
 
 
     }
-    Vector3 ChestOffset = new Vector3(0, 0, 0);
+    Vector3 ChestOffset = new Vector3(0, 45, 0);
+    Vector3 onAimChestOffset = new Vector3(0, 30, 0);
 
     Vector3 ChestDir = new Vector3();
 
@@ -310,7 +311,12 @@ public class PlayerController : MonoBehaviour
         //ChestDir = hit.point - this.transform.position;
 
         spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
-        spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+        
+        if (P_States.onZoomIn)
+            spine.rotation = spine.rotation * Quaternion.Euler(onAimChestOffset);
+        else
+            spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
+
         lastRotation = spine.rotation;
     }
 

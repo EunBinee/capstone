@@ -252,9 +252,9 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             //TODO: 나중에 연산식 사용.
             double damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
-            if (isArrow)
+            if (isArrow || isBullet)
             {
-                if (P_States.isStrongArrow) //* 예스 차징
+                if (P_States.isAim)// P_States.isStrongArrow) //* 예스 차징
                 {
                     if (HitWeakness && monster.monsterData.useWeakness)
                     {
@@ -262,7 +262,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     }
                     else
                         damageValue = 550;
-                    P_States.isStrongArrow = false;
+                    //P_States.isStrongArrow = false;
                 }
                 else                        //* 노 차징
                 {

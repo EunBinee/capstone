@@ -231,8 +231,10 @@ public class PlayerProjectile
 
                 //todo 실드몬스터 따로 처리 필요
 
-                curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, objtag == "BossWeakness");
-
+                if (objtag == "BossWeakness")
+                    curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster, true);
+                else
+                    curBulletObj.GetComponent<PlayerAttackCheck>().playerHitMonster(collisionPoint, otherQuaternion, monster);
             }
         }
     }
