@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isBowMode && P_States.startAim)
                 P_Skills.arrowSkillOff();
             if (P_States.isGunMode && P_States.onShootAim)
-                P_Skills.bulletOff();
+                P_Skills.bulletEffect();
             HPgauge.gameObject.SetActive(false);
             hitUI.SetActive(false);
             hitUiGuide.SetActive(false);
@@ -273,12 +273,13 @@ public class PlayerController : MonoBehaviour
 
     public void LateUpdate()
     {
-        if (P_States.isAim)
+        //if (P_States.isAim)
+        if (P_States.onZoomIn)
             Operation_boneRotation();   // 모델링 변환
 
 
     }
-    Vector3 ChestOffset = new Vector3(0, 45, 0);
+    Vector3 ChestOffset = new Vector3(0, 70, 0);
 
     Vector3 ChestDir = new Vector3();
 
@@ -403,8 +404,8 @@ public class PlayerController : MonoBehaviour
                     isGettingHit = true;
                     if (P_States.isBowMode && P_States.startAim)
                         P_Skills.arrowSkillOff();
-                    if (P_States.isGunMode)
-                        P_Skills.bulletOff();
+                    if (P_States.onZoomIn)
+                        P_Skills.switchBullet(true);
                     StartCoroutine(GetHit_KnockBack_co(knockbackDistance));
                 }
                 break;
@@ -517,11 +518,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             //아직 살아있음.
-            if (P_States.onShootAim || (P_States.isBowMode && P_States.startAim))    //* 조준 모드면 피격 시 조준 해제
+            if (P_States.onZoomIn || (P_States.isBowMode && P_States.startAim))    //* 조준 모드면 피격 시 조준 해제
             {
                 P_Com.animator.SetTrigger("shoot");
 
-                if (P_States.isGunMode) P_Skills.bulletOff();
+                if (P_States.isGunMode) P_Skills.switchBullet(true);
                 else P_Skills.arrowSkillOff();
             }
 
@@ -538,7 +539,7 @@ public class PlayerController : MonoBehaviour
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
         yield return new WaitForSeconds(hitStop);
         P_States.isGettingHit = false;
-
+        P_Skills.switchBullet(false);
     }
 
     public Monster Get_CurHitEnemy()
@@ -607,6 +608,7 @@ public class PlayerController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         isGettingHit = false;
+        P_Skills.switchBullet(false);
         yield return null;
     }
 
@@ -671,39 +673,6 @@ public class PlayerController : MonoBehaviour
         // 코루틴이 완료되었으므로 changeMaterial_co를 null로 설정
         changeMaterial_co = null;
     }
-    // IEnumerator ChangeMaterial()
-    // {
-    //     // Skinned Mesh Renderer의 모든 Materials를 새로운 Material로 변경합니다.
-    //     Material[] materials = P_Com.skinnedMeshRenderers[0].materials;
-    //     for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
-    //     {
-    //         Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
-    //         for (int j = 0; j < _materials.Length; j++)
-    //         {
-    //             if (j == 0)
-    //                 _materials[j] = P_Com.hitMat;
-    //             else
-    //                 _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
-    //         }
-    //         P_Com.skinnedMeshRenderers[i].materials = _materials;
-    //     }
-
-    //     yield return new WaitForSeconds(0.3f);
-    //     for (int i = 0; i < P_Com.skinnedMeshRenderers.Count; i++)
-    //     {
-    //         Material[] _materials = P_Com.skinnedMeshRenderers[i].materials;
-    //         for (int j = 0; j < _materials.Length; j++)
-    //         {
-    //             if (j == 0)
-    //                 _materials[j] = m_material[i];
-    //             else
-    //                 _materials[j] = P_Com.skinnedMeshRenderers[i].materials[j];
-    //         }
-    //         P_Com.skinnedMeshRenderers[i].materials = _materials;
-    //     }
-
-    //     changeMaterial_co = null;
-    // }
 
     //*-------------------------------------------------------------------//
     //* 데미지에 따른 넉백 Distance 계산

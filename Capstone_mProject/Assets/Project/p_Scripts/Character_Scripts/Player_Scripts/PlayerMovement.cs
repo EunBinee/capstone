@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_States.isGunMode)
                 {
-                    P_Skills.bulletOff();
+                    P_Skills.bulletEffect();
                 }
                 else
                 {
@@ -246,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
-            P_Skills.bulletOnOff(true); // 점프 시작
+            P_Skills.switchBullet(true); // 점프 시작
 
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
@@ -262,7 +262,7 @@ public class PlayerMovement : MonoBehaviour
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
 
-            P_Skills.bulletOnOff(false); // 점프 끝
+            P_Skills.switchBullet(false); // 점프 끝
         }
     }
 
@@ -295,7 +295,7 @@ public class PlayerMovement : MonoBehaviour
             //&& P_Value.moveAmount > 0
             && !P_States.isStartComboAttack && P_States.isGround)
         {
-            P_Skills.bulletOnOff(true); // 닷지 시작
+            P_Skills.switchBullet(true); // 닷지 시작
             P_States.isJumping = false;
             P_States.isDodgeing = true;
             // 기존 수직 속도 보존
@@ -309,7 +309,7 @@ public class PlayerMovement : MonoBehaviour
         P_States.isJumping = false;
         P_States.isDodgeing = false;
         P_Controller.AnimState(PlayerState.Idle);
-        P_Skills.bulletOnOff(false);  // 닷지 끝
+        P_Skills.switchBullet(false);  // 닷지 끝
     }
 
     private void AllPlayerLocomotion()
@@ -498,7 +498,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.startAim)
             {
                 if (P_States.isBowMode) P_Skills.arrowSkillOff();
-                else if (P_States.isGunMode) P_Skills.bulletOff();
+                else if (P_States.isGunMode) P_Skills.bulletEffect();
             }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;

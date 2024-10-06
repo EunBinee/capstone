@@ -96,7 +96,7 @@ public class PlayerAttackCheck : MonoBehaviour
     {
         incoArrow = true;
         dir = Vector3.zero;
-        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown));  //* isAim이 거짓이 되거나 단타라면
+        yield return new WaitUntil(() => (!P_States.isAim || P_States.isShortArrow || !P_States.isClickDown) || P_States.isGunMode);  //* isAim이 거짓이 되거나 단타라면
 
         if (!goShoot)
         {
@@ -265,7 +265,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 }
                 else                        //* 노 차징
                 {
-                    damageValue = 400;
+                    damageValue = 250;
                 }
             }
             else if (isBullet)              //* 총
@@ -275,7 +275,7 @@ public class PlayerAttackCheck : MonoBehaviour
                     damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
                 }
                 else if (!monster.monsterData.useWeakness)
-                    damageValue = 550;
+                    damageValue = 3;
                 else damageValue = 0;
             }
             else                            //* 검
@@ -470,18 +470,21 @@ public class PlayerAttackCheck : MonoBehaviour
         layerMask = ~layerMask;
 
         //hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
-        Physics.Raycast(ray, out hit, 100f, layerMask);
+        bool currentIsHit = Physics.Raycast(ray, out hit, 100f, layerMask);
+
+        if (!currentIsHit) return;
+        
         P_Skills.GetBulletDir(hit.point - player.transform.position);
         transform.Translate(P_Skills.bulletDir * 10f);
 
-        if (hit.collider.CompareTag("SoundObject"))
-        {
-            P_States.colliderHit = true;
-            soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
-            //Debug.Log(soundObject);
-            soundObject.attackSoundObj = true;
-            soundObject.collisionPos = hit.transform.position;
-        }
+        //if (hit.collider.CompareTag("SoundObject"))
+        //{
+        //    P_States.colliderHit = true;
+        //    soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
+        //    //Debug.Log(soundObject);
+        //    soundObject.attackSoundObj = true;
+        //    soundObject.collisionPos = hit.transform.position;
+        //}
 
         if (hit.collider.tag == "BossWeakness")
         {

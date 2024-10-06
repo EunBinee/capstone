@@ -519,9 +519,9 @@ public class CameraController : MonoBehaviour
 
     private void AimCameraSetZ()
     {
-        Vector3 cameraSetVec = new Vector3(0.55f, 0.2f, -2.0f);
-        if (playerController._currentState.onZoomIn)
-            cameraSetVec = new Vector3(0.30f, 0.15f, -0.8f);
+        Vector3 cameraSetVec;// = new Vector3(0.55f, 0.2f, -2.0f);
+        //if (playerController._currentState.onZoomIn)
+            cameraSetVec = new Vector3(0.5f, 0.12f, -0.65f);
 
         cameraObj.transform.localPosition = cameraSetVec;
     }

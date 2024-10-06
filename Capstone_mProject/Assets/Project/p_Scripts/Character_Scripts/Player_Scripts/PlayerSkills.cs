@@ -246,66 +246,38 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    /// <summary>
-    ///* 총 모드 on
-    /// 카메라 aimCam
-    /// </summary>
-    public void onBulletCam()
-    {
-        P_Com.animator.SetBool("isAim", true);  //* 애니메이션
-        P_Com.animator.SetLayerWeight(1, 1f);
-        P_States.isAim = true;
-        P_Controller.shootPoint.gameObject.SetActive(true);
-
-        if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
-        {
-            //주목 풀기
-            GameManager.instance.cameraController.UndoAttention();
-            P_States.beenAttention = true;
-        }
-        GameManager.instance.cameraController.SetAimCamera();   //* 카메라 셋팅
-        //P_Controller.crosshairImage.gameObject.SetActive(true);  //* 조준점
-        P_Controller.crosshair.gameObject.SetActive(true);
-    }
-    public void onBullet()
+    public void onShoot()
     {
         if (P_States.isShoot)
         {
             PoolingBullet(); //* 총알 풀링
-            bulletOff();
+            bulletEffect();
         }
     }
 
-    public void bulletOff()
+    public void bulletEffect()
     {
-        if (!P_States.onZoomIn) P_Com.animator.SetBool("onClickGun", false);
-        P_States.isClickDown = false;
-        P_Value.aimClickDown = 0;
-        if (P_States.isGunMode)
+        if (P_States.onShootAim)
         {
             Effect effect = GameManager.Instance.objectPooling.ShowEffect(Gun_ShootMuzzle);
             effect.gameObject.transform.position = P_Controller.shootPoint.transform.position;//this.gameObject.transform.position + Vector3.up;
             effect.transform.rotation = Quaternion.LookRotation(playerAttackCheck.transform.forward);
         }
+        //if (P_States.isShoot) 
         P_States.isShoot = false;
     }
 
     /// <summary>
     ///* 닷지, 점프 할 때 카메라 복구 했다가 다시 켜주는 함수
     /// </summary>
-    public void bulletOnOff(bool value)
+    public void switchBullet(bool value)
     {
         if (!P_States.isGunMode) return;
 
-        if (value == true)  // 시작할때 카메라 원래대로
-        {
-            if (P_States.onShootAim) bulletOff();   // 시작할 때 조준중이면 조준 강종
-            arrowSkillOff();
-        }
-        else if (value == false)    // 끝날때 카메라 다시 조준
-        {
-            deleyOnBulletCam();
-        }
+        GunOnOff(!value);
+
+        if (P_States.onZoomIn && value)  ZoomOnOff(false);
+        else if (P_States.onZoomIn && !value) ZoomOnOff(true);
     }
     public void deleyOnBulletCam()
     {
@@ -315,7 +287,6 @@ public class PlayerSkills : MonoBehaviour
     public void arrowSkillOff()
     {
         //* 발사 
-        //P_States.isOnAim = false;
         P_States.startAim = false;
         P_States.isCamOnAim = false;
         P_States.isClickDown = false;
@@ -359,18 +330,60 @@ public class PlayerSkills : MonoBehaviour
                             GameManager.instance.cameraController.AttentionMonster();
                         P_States.beenAttention = false;
                     }
-                    //arrow.SetActive(true);
                     GameManager.instance.cameraController.OffAimCamera();   //* 카메라 끄기
                 }
                 P_Com.animator.SetBool("isAim", false);
                 P_Com.animator.SetTrigger("shoot");
-                //P_Controller.crosshairImage.gameObject.SetActive(false);
                 P_Controller.crosshair.gameObject.SetActive(false);
-
                 P_Controller.shootPoint.gameObject.SetActive(false);
-                P_States.isAim = false;
-                P_Com.animator.SetLayerWeight(1, 0f);
+                P_States.isAim = false; 
             }
+            P_Com.animator.SetLayerWeight(1, 0f);
+        }
+    }
+    
+    public void GunOnOff(bool isGun)    //* true = gun, false = sword
+    {
+        if (isGun)
+        {
+            P_Com.animator.SetLayerWeight(1, 1f);
+        }
+        else
+        {
+            P_Com.animator.SetLayerWeight(1, 0f);
+        }
+    }
+
+    public void ZoomOnOff(bool value)   //* On = true, Off = false
+    {
+        if (value)  //* zoom on
+        {
+            P_States.isAim = true;
+            P_Com.animator.SetBool("isAim", true);
+            if (GameManager.instance.cameraController.isBeingAttention) // 주목 하고 있으면
+            {
+                //주목 풀기
+                GameManager.instance.cameraController.UndoAttention();
+                P_States.beenAttention = true;
+            }
+            GameManager.instance.cameraController.SetAimCamera();   //cam
+            P_Controller.shootPoint.gameObject.SetActive(true);
+            P_Controller.crosshair.gameObject.SetActive(true);
+        }
+        else    //* zoom off 
+        {
+            P_States.isAim = false;
+            P_Com.animator.SetBool("isAim", false);
+            if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
+            {
+                //주목 풀기
+                if (!GameManager.instance.cameraController.banAttention)
+                    GameManager.instance.cameraController.AttentionMonster();
+                P_States.beenAttention = false;
+            }
+            GameManager.instance.cameraController.OffAimCamera();
+            P_Controller.shootPoint.gameObject.SetActive(false);
+            P_Controller.crosshair.gameObject.SetActive(false);
         }
     }
 
@@ -600,7 +613,7 @@ public class PlayerSkills : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 if (P_States.isGunMode) //* 총 모드 -> 칼 모드 
                 {
-                    offArrow();
+                    GunOnOff(false);
                     P_States.isGunMode = false;
                     P_Controller.bow.SetActive(false);
                     P_Controller.sword.SetActive(true);
@@ -608,13 +621,12 @@ public class PlayerSkills : MonoBehaviour
                 }
                 else if (!P_States.isGunMode) //* 칼 모드 -> 총 모드 
                 {
+                    GunOnOff(true);
                     P_States.isGunMode = true;
                     P_States.isBowMode = false;
                     P_Controller.bow.SetActive(true);
-                    P_Controller.shootPoint.gameObject.SetActive(false);
                     P_Controller.sword.SetActive(false);
                     P_Com.animator.SetFloat("isBowmode", 1);
-                    onBulletCam();
                 }
                 P_Movement.skill_V.OnClicked();
                 break;
@@ -630,7 +642,7 @@ public class PlayerSkills : MonoBehaviour
                 }
                 else if (!P_States.isBowMode) //* 칼 모드 -> 활 모드
                 {
-                    offArrow();
+                    onArrow();
                     P_States.isBowMode = true;
                     P_States.isGunMode = false;
                     P_Controller.bow.SetActive(true);
