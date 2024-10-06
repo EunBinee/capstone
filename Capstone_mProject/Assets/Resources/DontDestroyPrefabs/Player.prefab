@@ -120,16 +120,16 @@ MonoBehaviour:
     playerBackPos: {fileID: 1997270830}
     sickScreen: {fileID: 2100000, guid: a61a18be572132e44b5c911a9d371bcf, type: 2}
     skinnedMeshRenderers:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    - {fileID: 3222820502747652102}
+    - {fileID: 1064885380461472497}
+    - {fileID: 3813117621472203948}
+    - {fileID: 4959352985980409446}
+    - {fileID: 1886947561426747138}
+    - {fileID: 8471687242101576652}
+    - {fileID: 6332641836978682256}
+    - {fileID: 8683653799888769374}
+    - {fileID: 6933131739639846086}
+    - {fileID: 5734479727069386311}
     hitMat: {fileID: 2100000, guid: 07cdef0da6c8254448855d23a3cbe500, type: 2}
   _input:
     verticalMovement: 0
@@ -258,7 +258,6 @@ MonoBehaviour:
   _playerProjectile:
     player: {fileID: 0}
     poolSize: 10
-    rayDistance: 100
     arrowName: Arrow
     arrowsPoolCount: 50
     bulletName: PlayerBullet
@@ -4780,6 +4779,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &3330612732811185693
 GameObject:
   m_ObjectHideFlags: 0
@@ -6092,6 +6092,7 @@ MonoBehaviour:
   _playerController: {fileID: 7195301709572235706}
   _playerMovement: {fileID: 1404091125779623576}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!120 &4911125341409011894
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -9670,6 +9671,7 @@ MonoBehaviour:
   _playerController: {fileID: 7195301709572235706}
   _playerMovement: {fileID: 1404091125779623576}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &5889886258681751168
 GameObject:
   m_ObjectHideFlags: 0
@@ -9757,6 +9759,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &5937764252818731719
 GameObject:
   m_ObjectHideFlags: 0
@@ -10768,6 +10771,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &6573679960912575696
 GameObject:
   m_ObjectHideFlags: 0
@@ -12946,6 +12950,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &7149743203924937914
 GameObject:
   m_ObjectHideFlags: 0
@@ -13158,6 +13163,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!1 &7262776672752238073
 GameObject:
   m_ObjectHideFlags: 0
@@ -15289,6 +15295,7 @@ MonoBehaviour:
   _playerController: {fileID: 7195301709572235706}
   _playerMovement: {fileID: 1404091125779623576}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!120 &8919398466675571520
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -18362,6 +18369,7 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
 --- !u!4 &3723415152261526016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5246327162783607734, guid: ed04a0c66911eaa458f072b5ccd90236, type: 3}
@@ -18452,3 +18460,4 @@ MonoBehaviour:
   _playerController: {fileID: 0}
   _playerMovement: {fileID: 0}
   deltaShootTime: 0
+  soundObject: {fileID: 0}
