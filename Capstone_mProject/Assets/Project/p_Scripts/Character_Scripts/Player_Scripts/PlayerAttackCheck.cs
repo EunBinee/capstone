@@ -31,7 +31,7 @@ public class PlayerAttackCheck : MonoBehaviour
     Transform nowArrow;
     public float deltaShootTime = 0.0f;
 
-    private SoundObject soundObject;
+    public SoundObject soundObject;
 
     //계산식
     //bool attackEnemy = false;
@@ -117,8 +117,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 rigid.velocity = dir.normalized * (P_States.isShortArrow ? 40f : 88f);
             else if (isBullet)
             {
-                transform.Translate(P_Skills.bulletDir * 10f);
-                P_Projectile.PlayerBulletRay(); // 레이 쏘고 데미지 계산 
+                PlayerBulletRay(); // 레이 쏘고 데미지 계산 
             }
             //P_States.isShortArrow = false;
             goShoot = true;
@@ -127,7 +126,7 @@ public class PlayerAttackCheck : MonoBehaviour
         while (!(P_States.colliderHit == true || P_States.hadAttack == true || deltaShootTime >= 4.0f))
         {
             deltaShootTime = deltaShootTime + Time.deltaTime;
-            ArrowRay();
+            if (isArrow) ArrowRay();
             yield return null;
         }
         //yield return new WaitUntil(() => P_States.colliderHit == true || P_States.hadAttack == true || shootDeltaTime() >= 5.0f);
@@ -251,10 +250,10 @@ public class PlayerAttackCheck : MonoBehaviour
         if (!monster.monsterPattern.noAttack)
         {
             //TODO: 나중에 연산식 사용.
-            double damageValue;// = (isArrow ? (P_States.isStrongArrow? 550 : 400) : 350);
-            if (isArrow || isBullet)
+            double damageValue;
+            if (isArrow)                    //* 활
             {
-                if (P_States.isAim)// P_States.isStrongArrow) //* 예스 차징
+                if (P_States.isStrongArrow) //* 예스 차징
                 {
                     if (HitWeakness && monster.monsterData.useWeakness)
                     {
@@ -268,6 +267,16 @@ public class PlayerAttackCheck : MonoBehaviour
                 {
                     damageValue = 400;
                 }
+            }
+            else if (isBullet)              //* 총
+            {
+                if (HitWeakness && monster.monsterData.useWeakness)
+                {
+                    damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+                }
+                else if (!monster.monsterData.useWeakness)
+                    damageValue = 550;
+                else damageValue = 0;
             }
             else                            //* 검
             {
@@ -444,5 +453,101 @@ public class PlayerAttackCheck : MonoBehaviour
             }
         }
 
+    }
+
+    public void PlayerBulletRay()
+    {
+        // 화면 중앙 좌표 계산 (스크린 해상도 기준)
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
+
+        // 화면 중앙에서 카메라 방향으로 레이 생성
+        Ray ray = Camera.main.ScreenPointToRay(screenCenter);
+
+        // 레이캐스트 결과 저장할 변수
+        RaycastHit hit;
+
+        int layerMask = (1 << LayerMask.NameToLayer("Player"));  // Everything에서 Player 레이어만 제외하고 충돌 체크함
+        layerMask = ~layerMask;
+
+        //hit = Physics.RaycastAll(ray, rayDistance, LayerMask.GetMask("Monster"));
+        Physics.Raycast(ray, out hit, 100f, layerMask);
+        P_Skills.GetBulletDir(hit.point - player.transform.position);
+        transform.Translate(P_Skills.bulletDir * 10f);
+
+        if (hit.collider.CompareTag("SoundObject"))
+        {
+            P_States.colliderHit = true;
+            soundObject = hit.collider.gameObject.GetComponent<SoundObject>();
+            //Debug.Log(soundObject);
+            soundObject.attackSoundObj = true;
+            soundObject.collisionPos = hit.transform.position;
+        }
+
+        if (hit.collider.tag == "BossWeakness")
+        {
+            P_States.colliderHit = true;
+            //* 보스 약점
+            BossWeakness bossWeakness = hit.collider.GetComponent<BossWeakness>();
+            monster = bossWeakness.m_monster;
+            if (monster != null)
+            {
+                //Debug.Log($"약점 맞음! 몬스터 : {monster.gameObject.name}");
+            }
+
+            if (!bossWeakness.destroy_BossWeakness)
+            {
+                P_States.hadAttack = true;
+
+                Vector3 collisionPoint = hit.point;
+                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                player.GetComponent<PlayerSkills>().GetBulletDir(collisionPoint - player.transform.position);
+
+                bool successfulAttack = playerHitMonster(collisionPoint, otherQuaternion, monster, true);
+                if (successfulAttack)
+                {
+
+                    bossWeakness.WeaknessGetDamage(hit.normal, hit.point);
+                }
+
+            }
+        }
+        else if (hit.collider.tag == "Monster")
+        {
+            P_Controller._currentState.colliderHit = true;
+            monster = hit.collider.GetComponentInParent<Monster>();
+            
+            if (monster == null)
+            {
+                Debug.LogError("몬스터 : null");
+                return;
+            }
+            if (monster.monsterPattern.GetCurMonsterState() != MonsterPattern.MonsterState.Death
+                && P_States.hadAttack == false)
+            {
+                //attackEnemy = true;
+                P_States.hadAttack = true;
+                //m_Hit = hit;
+                Vector3 collisionPoint = hit.point;
+                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+
+                playerHitMonster(collisionPoint, otherQuaternion, monster);
+
+            }
+        }
+        if (hit.collider.tag == "Shield")
+        {
+            monster = hit.collider.GetComponentInParent<Monster>();
+
+            if (monster.monsterData.isShieldMonster && monster.monsterPattern.isShield)
+            {
+                Vector3 collisionPoint = hit.point;
+                Quaternion otherQuaternion = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+                monster.monsterPattern.isShield = false;
+                playerHitShield(collisionPoint, otherQuaternion);
+                //monster.monsterPattern.isShield = false;
+            }
+        }
     }
 }
