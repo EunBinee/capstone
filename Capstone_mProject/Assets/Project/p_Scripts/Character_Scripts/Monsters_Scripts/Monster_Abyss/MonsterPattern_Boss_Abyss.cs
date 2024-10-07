@@ -528,7 +528,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //! 사운드
             m_monster.SoundPlay("Boss_ChangePhase", true);
 
-            yield return new WaitForSeconds(15f);//원래 15
+            yield return new WaitForSeconds(10f);
 
             //! 사운드 멈춤
             m_monster.SoundPlayStop("Boss_ChangePhase");

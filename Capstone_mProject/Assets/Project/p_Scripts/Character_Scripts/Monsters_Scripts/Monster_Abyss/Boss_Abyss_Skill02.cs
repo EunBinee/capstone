@@ -174,7 +174,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             effect = GameManager.Instance.objectPooling.ShowEffect("SpiritBomb");
 
             Vector3 originPos = this.transform.position;
-            originPos.y += 1.1f;
+            originPos.y += 0.5f;
             effect.transform.position = originPos;
 
             //* 잔해물 떨어지기

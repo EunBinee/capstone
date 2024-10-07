@@ -9,7 +9,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
     MonsterPattern_Boss_Abyss monsterPattern_Abyss;
     PlayerController playerController;
     Transform playerTrans;
-    Monster m_monster;
 
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;
@@ -45,7 +44,6 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         muzzlesL = monsterPattern_Abyss.muzzlesL;
         muzzlesR = monsterPattern_Abyss.muzzlesR;
         muzzlePos = monsterPattern_Abyss.muzzlePos;
-        m_monster = monsterPattern_Abyss.m_monster;
     }
 
     public void Skill03()
@@ -143,21 +141,14 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         // ResetSkill02Rotation();
 
         // yield return new WaitForSeconds(1f);
-        Debug.DrawRay(bossNeck.transform.position, playerTrans.position - bossNeck.transform.position, Color.yellow);
-        //* 광역 폭딜
-        float damageRadius = 35f;
-   
-        //이펙트 추가하기.
-        // Effect effect = GameManager.Instance.objectPooling.ShowEffect("SpiritBomb");
 
-        // Vector3 originPos = this.transform.position;
-        // originPos.y += 1.1f;
-        // effect.transform.position = originPos;
+        //* 광역 폭딜
+        float damageRadius = 80f;
 
         yield return new WaitForSeconds(5f);
-        //effect=GameManager.Instance.objectPooling.ShowEffect("SpiritBomb")
+    
         //! 이펙트랑 데미지 해야함 사운드도
-
+        Debug.Log("펑~");
         float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
         if (playerDistance <= damageRadius ) 
         {
@@ -207,11 +198,8 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
             }
               
         }
-        //effect=GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red");
 
-        
-
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3.5f);
 
         //* 잔해물 치우기
         //effect.StopEffect();
