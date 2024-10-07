@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (P_States.isGunMode)
                 {
-                    P_Skills.bulletOff();
+                    P_Skills.bulletEffect();
                 }
                 else
                 {
@@ -246,7 +246,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (P_Input.jumpMovement == 1 && !P_States.isJumping && !P_States.isDodgeing)
         {
-            P_Skills.bulletOnOff(true); // 점프 시작
+            P_Skills.switchBullet(true); // 점프 시작
 
             P_States.isJumping = true;
             P_Value.gravity = P_COption.gravity;
@@ -261,8 +261,8 @@ public class PlayerMovement : MonoBehaviour
             P_States.isJumping = false;
             P_Input.jumpMovement = 0;
             P_Value.gravity = 0;
-            
-            P_Skills.bulletOnOff(false); // 점프 끝
+
+            P_Skills.switchBullet(false); // 점프 끝
         }
     }
 
@@ -295,7 +295,7 @@ public class PlayerMovement : MonoBehaviour
             //&& P_Value.moveAmount > 0
             && !P_States.isStartComboAttack && P_States.isGround)
         {
-            P_Skills.bulletOnOff(true); // 닷지 시작
+            P_Skills.switchBullet(true); // 닷지 시작
             P_States.isJumping = false;
             P_States.isDodgeing = true;
             // 기존 수직 속도 보존
@@ -307,9 +307,9 @@ public class PlayerMovement : MonoBehaviour
     private void dodgeOut()
     {
         P_States.isJumping = false;
-        P_States.isDodgeing = false;  
+        P_States.isDodgeing = false;
         P_Controller.AnimState(PlayerState.Idle);
-        P_Skills.bulletOnOff(false);  // 닷지 끝
+        P_Skills.switchBullet(false);  // 닷지 끝
     }
 
     private void AllPlayerLocomotion()
@@ -498,7 +498,7 @@ public class PlayerMovement : MonoBehaviour
             if (P_States.startAim)
             {
                 if (P_States.isBowMode) P_Skills.arrowSkillOff();
-                else if (P_States.isGunMode) P_Skills.bulletOff();
+                else if (P_States.isGunMode) P_Skills.bulletEffect();
             }
             StartCoroutine(electricity_Damage());
             ElecTime += Time.deltaTime;
@@ -530,15 +530,15 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (P_Input.horizontalMovement > 0)
                     {
-                        P_Com.animator.Play("Right", 1);
+                        P_Com.animator.Play("Right", 2);
                     }
                     else if (P_Input.horizontalMovement < 0)
                     {
-                        P_Com.animator.Play("Left", 1);
+                        P_Com.animator.Play("Left", 2);
                     }
                     else
                     {
-                        P_Com.animator.Play("Front", 1);
+                        P_Com.animator.Play("Front", 2);
                     }
                 }
                 else if (P_Input.verticalMovement < 0)
@@ -599,7 +599,7 @@ public class PlayerMovement : MonoBehaviour
                 P_States.isJumping = false; P_Input.jumpMovement = 0;
                 P_States.isDodgeing = false;
             }
-            
+
             P_Value.moveDirection = P_Value.moveDirection * P_Value.finalSpeed;
 
             p_velocity = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
@@ -698,7 +698,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //0.5보다 큰경우
             snappedVertical = 1;
-        } 
+        }
         else if (P_Input.verticalMovement > 0 && P_Input.verticalMovement <= 0.5f)
         {
             //0보다 큰데 0.5보다 같거나 작은 경우
@@ -750,7 +750,7 @@ public class PlayerMovement : MonoBehaviour
                 if (P_States.isAim && P_States.isGunMode)
                 {
                     P_Com.animator.SetFloat("Vertical", P_Value.moveAmount, 0.05f, Time.deltaTime);   //상
-                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);    
+                    P_Com.animator.SetFloat("Horizontal", 0, 0.05f, Time.deltaTime);
                 }
                 else if (P_States.isAim || P_States.isWalking)
                 {

@@ -19,6 +19,7 @@ public class PlayerInputHandle : MonoBehaviour
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     public bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
     public bool isAttack = false;
+    bool setCam = false;
 
     private SkillButton skill_Q;
     private SkillButton skill_E;
@@ -217,31 +218,20 @@ public class PlayerInputHandle : MonoBehaviour
             }
         }
 
-        //* 활 
-        if (Input.GetMouseButtonDown(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock)
+        //* 원거리 
+        if (Input.GetMouseButtonDown(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock && !P_States.onShootAim)
         {
+            //Debug.Log("[player test] Input.GetMouseButtonDown(0) 다운");
             P_Value.aimClickDown = 0;
             P_States.isClickDown = true;
             // 짧게 클릭 로직을 바로 실행하지 않고, 상태만 설정합니다.
             P_States.onShootAim = true;
-            P_Com.animator.SetBool("onClickGun", true);
+            P_Com.animator.SetBool("onLeftClick", true);
         }
-
-        else if (Input.GetMouseButtonUp(0) && !endArrow) //endArrow가 false이면 활 o, true이면 x
-        {            
-            //* 총모드일때 클릭업(발사)
-            if (P_States.isGunMode && P_States.isClickDown && P_States.onShootAim && !P_States.isShoot)
-            {
-                P_States.isShoot = true;
-                P_States.onShootAim = false;
-
-                P_Com.animator.SetTrigger("shoot");
-
-                P_Skills.onBullet();
-                StartCoroutine(DelayAfterAction());
-            }
+        else if (Input.GetMouseButtonUp(0)) //endArrow가 false이면 활 o, true이면 x
+        {
             //* 활모드일때 클릭업
-            else if (P_States.isClickDown && P_States.isBowMode && P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow)
+            if (P_States.isClickDown && P_States.isBowMode && P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow && !endArrow)
             {
                 // 짧게 클릭 로직 실행
                 //Debug.Log("[player test] Short click action");
@@ -273,6 +263,22 @@ public class PlayerInputHandle : MonoBehaviour
             P_Movement.StopIdleMotion();
             P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
+        
+        //* 총모드일 때 꾹 누르고 있으면
+        if (Input.GetMouseButton(0) && P_States.isGunMode && P_States.onZoomIn && !P_States.isElectricShock)
+        {
+            //Debug.Log("[player test] Input.GetMouseButton(0) 꾹");
+            // 길게 누르고 있는 중
+            P_Com.animator.SetBool("onLeftClick", true);
+            if (!endArrow)
+            //* 총모드일때 발사
+            {
+                //P_Com.animator.SetTrigger("shoot");
+                P_States.isShoot = true;
+                P_Skills.onShoot();
+                StartCoroutine(DelayZoomInGun());
+            }
+        }
         //* 활모드일 때 꾹 누르고 있으면
         else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
         {
@@ -291,16 +297,32 @@ public class PlayerInputHandle : MonoBehaviour
                 }
             }
         }
+        else if (P_States.isGunMode)
+        {
+            //Debug.Log("[player test] Input.GetMouseButton(0) else");
+            P_States.onShootAim = false;
+            P_Com.animator.SetBool("onLeftClick", false);
+        }
+        
         //* 총모드일 때 우클릭 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
-        else if (Input.GetMouseButton(1) && P_States.isGunMode && !P_States.onZoomIn)
+        if (Input.GetMouseButton(1) && P_States.isGunMode && !P_States.onZoomIn)
         {
             P_States.onZoomIn = true;
             P_Com.animator.SetBool("onClickGun", true);
+            if (!setCam) {
+                setCam = true;
+                P_Skills.ZoomOnOff(true);
+            }
         }
         else if (Input.GetMouseButtonUp(1) && P_States.isGunMode && P_States.onZoomIn)
         {
             P_States.onZoomIn = false;
             P_Com.animator.SetBool("onClickGun", false);
+            
+            if (setCam) {
+                setCam = false;
+                P_Skills.ZoomOnOff(false);
+            }
         }
     }
 
@@ -394,6 +416,19 @@ public class PlayerInputHandle : MonoBehaviour
     {
         endArrow = true; //화살 쏘고 나서 true
         yield return new WaitForSeconds(0.5f); // 딜레이
+        endArrow = false; //다시 화살 쏠 수 있게 false로 해줘야함. 
+    }
+
+    IEnumerator DelayZoomOutGun()
+    {
+        endArrow = true; //화살 쏘고 나서 true
+        yield return new WaitForSeconds(0.5f); // 딜레이
+        endArrow = false; //다시 화살 쏠 수 있게 false로 해줘야함. 
+    }
+    IEnumerator DelayZoomInGun()
+    {
+        endArrow = true; //화살 쏘고 나서 true
+        yield return new WaitForSeconds(0.1f); // 딜레이
         endArrow = false; //다시 화살 쏠 수 있게 false로 해줘야함. 
     }
 
