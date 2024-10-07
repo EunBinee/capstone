@@ -306,10 +306,10 @@ public class PlayerMovement : MonoBehaviour
     }
     private void dodgeOut()
     {
-        P_States.isJumping = false;
-        P_States.isDodgeing = false;
         P_Controller.AnimState(PlayerState.Idle);
         P_Skills.switchBullet(false);  // 닷지 끝
+        P_States.isJumping = false;
+        P_States.isDodgeing = false;
     }
 
     private void AllPlayerLocomotion()

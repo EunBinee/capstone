@@ -270,14 +270,14 @@ public class PlayerSkills : MonoBehaviour
     /// <summary>
     ///* 닷지, 점프 할 때 카메라 복구 했다가 다시 켜주는 함수
     /// </summary>
-    public void switchBullet(bool value)
+    public void switchBullet(bool value)    // true = start
     {
-        if (!P_States.isGunMode) return;
+        if (!P_States.isGunMode || P_States.isDodgeing) return;
 
-        GunOnOff(!value);
+        GunOnOff(!value);   //value = true = P_Com.animator.SetLayerWeight(1, 0f);
 
-        if (P_States.onZoomIn && value)  ZoomOnOff(false);
-        else if (P_States.onZoomIn && !value) ZoomOnOff(true);
+        if (P_States.onZoomIn && value) ZoomOnOff(false);       // zoom off
+        else if (P_States.onZoomIn && !value) ZoomOnOff(true);  // zoom on
     }
     public void deleyOnBulletCam()
     {
@@ -336,12 +336,12 @@ public class PlayerSkills : MonoBehaviour
                 P_Com.animator.SetTrigger("shoot");
                 P_Controller.crosshair.gameObject.SetActive(false);
                 P_Controller.shootPoint.gameObject.SetActive(false);
-                P_States.isAim = false; 
+                P_States.isAim = false;
             }
             P_Com.animator.SetLayerWeight(1, 0f);
         }
     }
-    
+
     public void GunOnOff(bool isGun)    //* true = gun, false = sword
     {
         if (isGun)
@@ -613,6 +613,7 @@ public class PlayerSkills : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 if (P_States.isGunMode) //* 총 모드 -> 칼 모드 
                 {
+                    if (P_States.isAim) ZoomOnOff(false);
                     GunOnOff(false);
                     P_States.isGunMode = false;
                     P_Controller.bow.SetActive(false);
