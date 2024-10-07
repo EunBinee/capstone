@@ -188,6 +188,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void useUpdate()
     {
+        Debug.DrawRay(bossNeck.transform.position, playerTrans.position - bossNeck.transform.position, Color.yellow);
+   
         if (StartFirstScene == false)
         {
             StartFirstScene = true;
@@ -526,7 +528,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //! 사운드
             m_monster.SoundPlay("Boss_ChangePhase", true);
 
-            yield return new WaitForSeconds(10f);
+            yield return new WaitForSeconds(15f);//원래 15
 
             //! 사운드 멈춤
             m_monster.SoundPlayStop("Boss_ChangePhase");
@@ -566,13 +568,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
-            //ChangeBossPhase(BossMonsterPhase.Phase2);
-            //Monster_Motion(BossMonsterMotion.Skill04);
+            ChangeBossPhase(BossMonsterPhase.Phase2);
+            //Monster_Motion(BossMonsterMotion.Skill02);
             // Monster_Motion(BossMonsterMotion.Skill01);
    
             //! 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            //ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -631,7 +633,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (curBossPhase == BossMonsterPhase.Phase1)
                 skill = UnityEngine.Random.Range(0, 2);
             else if (curBossPhase != BossMonsterPhase.Phase1)
-                skill = UnityEngine.Random.Range(0, 3);
+                skill = 1;//!여기 UnityEngine.Random.Range(0, 3);
             //* 중복 체크-----------------------//
             if (skill_List.Count <= 0)
             {
@@ -1339,6 +1341,4 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     }
 
     # endregion
-
-
 }

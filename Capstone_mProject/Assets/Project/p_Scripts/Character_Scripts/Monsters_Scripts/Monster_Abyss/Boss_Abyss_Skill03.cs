@@ -9,6 +9,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
     MonsterPattern_Boss_Abyss monsterPattern_Abyss;
     PlayerController playerController;
     Transform playerTrans;
+    Monster m_monster;
 
     [Header("스킬 02 잔해물 범위")]
     public int rangeXZ = 50;
@@ -44,6 +45,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         muzzlesL = monsterPattern_Abyss.muzzlesL;
         muzzlesR = monsterPattern_Abyss.muzzlesR;
         muzzlePos = monsterPattern_Abyss.muzzlePos;
+        m_monster = monsterPattern_Abyss.m_monster;
     }
 
     public void Skill03()
@@ -84,7 +86,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         // originChildWorldRot = childWorldRotation;
         // bossNeck.rotation = childWorldRotation;
         // // 가져온 월드 회전값을 출력해보기
-        // Vector3 rayPos = new Vector3(bossNeck.position.x, monsterPattern_Abyss.playerTargetPos.position.y, bossNeck.position.z);
+        //Vector3 rayPos = new Vector3(bossNeck.position.x, monsterPattern_Abyss.playerTargetPos.position.y, bossNeck.position.z);
 
 
         // for (int i = 0; i < muzzlesL.Length; i++)
@@ -141,52 +143,78 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         // ResetSkill02Rotation();
 
         // yield return new WaitForSeconds(1f);
-
-
+        Debug.DrawRay(bossNeck.transform.position, playerTrans.position - bossNeck.transform.position, Color.yellow);
         //* 광역 폭딜
-        float damageRadius = 15f;
+        float damageRadius = 35f;
+   
         //이펙트 추가하기.
-        Effect effect = GameManager.Instance.objectPooling.ShowEffect("BossMonster_aura");
+        // Effect effect = GameManager.Instance.objectPooling.ShowEffect("SpiritBomb");
 
-        Vector3 originPos = this.transform.position;
-        originPos.y += 1.1f;
-        effect.transform.position = originPos;
+        // Vector3 originPos = this.transform.position;
+        // originPos.y += 1.1f;
+        // effect.transform.position = originPos;
 
         yield return new WaitForSeconds(5f);
+        //effect=GameManager.Instance.objectPooling.ShowEffect("SpiritBomb")
+        //! 이펙트랑 데미지 해야함 사운드도
 
         float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
         if (playerDistance <= damageRadius ) 
         {
-           // 몬스터에서 플레이어까지의 방향
-            Vector3 directionToPlayer = (playerTrans.position - this.transform.position).normalized;
+            // 몬스터에서 플레이어까지의 방향
+            Vector3 directionToPlayer = (playerTrans.position - bossNeck.transform.position).normalized;
+            
             RaycastHit hit;
-
-            //! 여기 고치기    ㅅㅂ 디버그가 안뜨는데요 거지같은거 
+            bool iswreckage = false;
+            //Debug.DrawRay(this.transform.position, directionToPlayer, Color.yellow);
             // 레이캐스트로 잔해물이 있는지 확인
-            if (Physics.Raycast(this.transform.position, directionToPlayer, out hit, damageRadius))
+            if (Physics.Raycast(bossNeck.transform.position, directionToPlayer, out hit))
             {
                 // 레이캐스트가 무언가에 충돌했을 때
-                if (hit.collider.gameObject== wreckage_obj)
+                // if (hit.collider.gameObject== wreckage_obj)
+                // {
+                //     // 잔해물이 플레이어를 막고 있음. 데미지 적용 안 함
+                //     Debug.Log("노데미지");
+                // }
+                // else if(hit.collider.gameObject.CompareTag("Player"))
+                // {
+                //     // 잔해물이 없고 플레이어가 맞음. 데미지 적용
+                //     monsterPattern_Abyss.m_monster.OnHit_FallDown(90, 60);
+                //     Debug.Log("데미지 입음");
+                // }
+                
+                foreach (Wreckage wreckage in wreckages)
                 {
-                    // 잔해물이 플레이어를 막고 있음. 데미지 적용 안 함
-                    Debug.Log("노데미지");
+                    if (hit.collider.gameObject == wreckage.gameObject)
+                    {
+                        iswreckage = true;
+                        Debug.Log("장애물 있음. 데미지 없음.");
+                        break;
+                    }
                 }
-                else 
+                // for (int i = 0; i < wreckages.Count; ++i)
+                // {
+                //     if(hit.collider.gameObject ==wreckages[i])
+                //     {
+                //         break;
+                //     }
+                // }
+                if(!iswreckage)
                 {
-                    // 잔해물이 없고 플레이어가 맞음. 데미지 적용
-                    //playerController.TakeDamage(monsterPattern_Abyss.monsterDamage);
-                    Debug.Log("데미지 입음");
+                    monsterPattern_Abyss.m_monster.OnHit_FallDown(90, 20);
+                    Debug.Log("장애물 없음. 데미지 입음");
                 }
             }
+              
         }
-        effect=GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red");
+        //effect=GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red");
 
         
 
         yield return new WaitForSeconds(5f);
 
         //* 잔해물 치우기
-        effect.StopEffect();
+        //effect.StopEffect();
         ClearWreckage();
         yield return new WaitForSeconds(1f);
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
@@ -579,5 +607,4 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill03);
 
     }
-
 }
