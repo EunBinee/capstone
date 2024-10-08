@@ -253,6 +253,7 @@ public class Monster : MonoBehaviour
                 {
                     //죽음
                     Death();
+                    StartCoroutine(KillImg());
                 }
                 else
                 {
@@ -448,4 +449,51 @@ public class Monster : MonoBehaviour
         return -1;
 
     }
+
+    //킬 이미지 
+    IEnumerator KillImg()
+    {   
+        playerController.killImg.gameObject.SetActive(true);
+
+        GameManager.Instance.PadeIn_Alpha(playerController.killImg.gameObject, true, 255, 7f, true);
+       // StartCoroutine(KillImgBounce(playerController.killImg.gameObject, 2f, ));
+
+        yield return new WaitForSeconds(0.5f);
+
+
+        GameManager.Instance.PadeIn_Alpha(playerController.killImg.gameObject, false, 0, 2f, true);
+
+
+
+    }
+
+    IEnumerator KillImgBounce(RectTransform rectTransform, float maxScale, float bounceDuration)
+    {
+        Vector3 originalScale = rectTransform.localScale;
+        float elapsedTime = 0f;
+
+        // 커지는 애니메이션
+        while (elapsedTime < bounceDuration / 2)
+        {
+            elapsedTime += Time.deltaTime;
+            float scale = Mathf.Lerp(originalScale.x, maxScale, elapsedTime / (bounceDuration / 2));
+            rectTransform.localScale = new Vector3(scale, scale, 1);
+            yield return null;
+        }
+
+        elapsedTime = 0f;
+
+        // 다시 작아지는 애니메이션
+        while (elapsedTime < bounceDuration / 2)
+        {
+            elapsedTime += Time.deltaTime;
+            float scale = Mathf.Lerp(maxScale, originalScale.x, elapsedTime / (bounceDuration / 2));
+            rectTransform.localScale = new Vector3(scale, scale, 1);
+            yield return null;
+        }
+
+        // 최종적으로 원래 크기로 복귀
+        rectTransform.localScale = originalScale;
+    }
+    
 }
