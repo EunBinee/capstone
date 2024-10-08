@@ -33,8 +33,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
     public SoundObject soundObject;
 
-    //계산식
-    //bool attackEnemy = false;
+    //데미지
+    public double damageValue = 0;
 
 
 
@@ -250,55 +250,59 @@ public class PlayerAttackCheck : MonoBehaviour
         if (!monster.monsterPattern.noAttack)
         {
             //TODO: 나중에 연산식 사용.
-            double damageValue;
-            if (isArrow)                    //* 활
+            // if (isArrow)                    //* 활
+            // {
+            //     if (P_States.isStrongArrow) //* 예스 차징
+            //     {
+            //         if (HitWeakness && monster.monsterData.useWeakness)
+            //         {
+            //             damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+            //         }
+            //         else
+            //             damageValue = 550;
+            //         //P_States.isStrongArrow = false;
+            //     }
+            //     else                        //* 노 차징
+            //     {
+            //         damageValue = 250;
+            //     }
+            // }
+            if (isBullet)              //* 총
             {
-                if (P_States.isStrongArrow) //* 예스 차징
+                // damageValue = 3;
+                if (HitWeakness && monster.monsterData.useWeakness && monster.monsterData.weaknessHP_ == 0) //약점공격 
                 {
-                    if (HitWeakness && monster.monsterData.useWeakness)
-                    {
-                        damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
-                    }
-                    else
-                        damageValue = 550;
-                    //P_States.isStrongArrow = false;
+                   // damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+                    Debug.Log(damageValue);
                 }
-                else                        //* 노 차징
-                {
-                    damageValue = 250;
-                }
-            }
-            else if (isBullet)              //* 총
-            {
-                if (HitWeakness && monster.monsterData.useWeakness)
-                {
-                    damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
-                }
-                else if (!monster.monsterData.useWeakness)
-                    damageValue = 3;
-                else damageValue = 0;
+                // else if (monster.monsterData.useWeakness)
+                //     damageValue = 0;
+                else damageValue = 3; 
             }
             else                            //* 검
             {
                 damageValue = 350;
+
+                if (P_Value.hits % 5 != 0)
+                {
+                    GameManager.instance.damageCalculator.damageExpression = "A+B";
+                    GameManager.instance.damageCalculator.CalculateAndPrint();
+                    damageValue = GameManager.instance.damageCalculator.result;
+
+
+                }
+                else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
+                {
+                    GameManager.instance.damageCalculator.damageExpression = "A+C";
+                    GameManager.instance.damageCalculator.CalculateAndPrint();
+                    damageValue = GameManager.instance.damageCalculator.result;
+                }
+
             }
 
-            if (P_Value.hits % 5 != 0)
-            {
-                GameManager.instance.damageCalculator.damageExpression = "A+B";
-                GameManager.instance.damageCalculator.CalculateAndPrint();
-                damageValue = GameManager.instance.damageCalculator.result;
-
-
-            }
-            else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
-            {
-                GameManager.instance.damageCalculator.damageExpression = "A+C";
-                GameManager.instance.damageCalculator.CalculateAndPrint();
-                damageValue = GameManager.instance.damageCalculator.result;
-            }
-            if (isBullet && !monster.monsterData.useWeakness)
-                damageValue = 3;
+            
+            // if (isBullet && !monster.monsterData.useWeakness)
+            //         damageValue = 3;
 
             // 20% 확률로 데미지에 100을 추가
             if (Random.value < 0.25f)
@@ -487,8 +491,7 @@ public class PlayerAttackCheck : MonoBehaviour
         //    //Debug.Log(soundObject);
         //    soundObject.attackSoundObj = true;
         //    soundObject.collisionPos = hit.transform.position;
-        //}
-
+        //
         if (hit.collider.tag == "BossWeakness")
         {
             P_States.colliderHit = true;
@@ -538,7 +541,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
 
                 playerHitMonster(collisionPoint, otherQuaternion, monster);
-
             }
         }
         if (hit.collider.tag == "Shield")
