@@ -284,7 +284,8 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.previousDodgeKeyPress
             && P_States.currentDodgeKeyPress
             && P_States.isDodgeing
-            && returnDodgeAnim())
+            && returnDodgeAnim()
+            && P_Value.Stamina - P_COption.dodgingStamina < 0)
         {
             //Debug.Log("이전 프레임에도 누름!");
             return;
@@ -293,13 +294,15 @@ public class PlayerMovement : MonoBehaviour
             && P_States.currentDodgeKeyPress
             && !P_States.isDodgeing && !P_States.isJumping
             //&& P_Value.moveAmount > 0
-            && !P_States.isStartComboAttack && P_States.isGround)
+            && !P_States.isStartComboAttack && P_States.isGround
+            && P_Value.Stamina - P_COption.dodgingStamina >= 0)
         {
             P_Skills.switchBullet(true); // 닷지 시작
             P_States.isJumping = false;
             P_States.isDodgeing = true;
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
+            P_Value.Stamina = P_Value.Stamina - P_COption.dodgingStamina;
         }
 
         P_States.previousDodgeKeyPress = P_States.currentDodgeKeyPress;
@@ -581,6 +584,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 projectedDodgeDirection = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
 
             P_Com.rigidbody.AddForce(projectedDodgeDirection, ForceMode.VelocityChange);
+            
 
             // 기존 수직 속도를 유지하도록 수직 속도 다시 설정
             P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);

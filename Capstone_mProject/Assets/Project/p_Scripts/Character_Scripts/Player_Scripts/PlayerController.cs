@@ -122,6 +122,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked; //마우스 커서 위치 고정
 
         P_Value.HP = P_Value.MaxHP;
+        P_Value.Stamina = P_Value.MaxStamina;
+        StartCoroutine(StaminaCharge());
 
         bow.SetActive(false);
         sword.SetActive(true);
@@ -423,6 +425,24 @@ public class PlayerController : MonoBehaviour
         {
             //P_Com.animator.Rebind();
             P_Com.animator.SetBool("p_Locomotion", true);
+        }
+    }
+
+    //private float staminaChargeTime = 0;
+    IEnumerator StaminaCharge(){
+        while (true)
+        {
+            yield return new WaitUntil(() => P_Value.Stamina < P_Value.MaxStamina);
+
+            //staminaChargeTime += Time.deltaTime;
+            //if (staminaChargeTime >= 0.2f)
+            //{
+            //    P_Value.Stamina++;
+            //    staminaChargeTime = 0;
+            //}
+
+            P_Value.Stamina++;
+            yield return new WaitForSeconds(0.2f);
         }
     }
 

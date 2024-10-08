@@ -73,6 +73,8 @@ public class CheckOption
 
     [Range(1f, 30f), Tooltip("닷지 속도")]
     public float dodgingSpeed = 15f;
+    [Range(1f, 30f), Tooltip("닷지 스태미나 소비")]
+    public int dodgingStamina = 25;
 
     [Range(-9.81f, 0f), Tooltip("경사로 이동속도 변화율(가속/감속)")]
     public float slopeAccel = 1f;
@@ -185,6 +187,8 @@ public class CurrentValue
     public int comboCount;          // 현재 콤보 카운트
     public float MaxHP = 100;               //플레이어 체력
     public float HP;
+    public float MaxStamina = 100;               //플레이어 체력
+    public float Stamina;
     public int index;
     public float time;
     public bool isCombo;
