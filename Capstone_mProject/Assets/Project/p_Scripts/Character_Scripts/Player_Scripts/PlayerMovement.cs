@@ -883,7 +883,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     case 1:
                         //검
-                        Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검1");
+                        //Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검1");
                         playerColliderList.Add(attackColliders[0]);
                         playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -897,7 +897,7 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case 2:
                         //검
-                        Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검2");
+                        //Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검2");
                         playerColliderList.Add(attackColliders[0]);
                         playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -911,7 +911,7 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case 3:
                         //오른쪽 다리
-                        Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
+                        //Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 오른쪽 다리3");
                         playerColliderList.Add(attackColliders[2]);
                         playerAttackCheckList.Add(playerAttackChecks[2]);
 
@@ -925,7 +925,7 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case 4:
                         //양발 다
-                        Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 왼쪽 다리4");
+                        //Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 왼쪽 다리4");
                         playerColliderList.Add(attackColliders[1]);
                         playerAttackCheckList.Add(playerAttackChecks[1]);
 
@@ -939,7 +939,7 @@ public class PlayerMovement : MonoBehaviour
                         break;
                     case 5:
                         //검
-                        Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검5");
+                        //Debug.Log("[player test] 플레이어 공격 콜라이더 활성화 : 검5");
                         playerColliderList.Add(attackColliders[0]);
                         playerAttackCheckList.Add(playerAttackChecks[0]);
 
@@ -977,9 +977,10 @@ public class PlayerMovement : MonoBehaviour
                             isAttackSuccess = true;
                     }
                     yield return new WaitUntil(() => P_States.hadAttack || isAttackSuccess || attackTerm >= 0.5f);
+                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.6f);
                     //if (isAttackSuccess || attackTerm >= 0.5f)  // 공격 성공이거나 0.5초 후
                     {   // 콜라이더 비활성화
-                        Debug.Log("[player test] 콜라이더 비활성화");
+                        //Debug.Log("[player test] 콜라이더 비활성화");
                         for (int i = 0; i < playerColliderList.Count; ++i)
                         {
                             playerColliderList[i].enabled = false;
@@ -989,7 +990,6 @@ public class PlayerMovement : MonoBehaviour
                         playerAttackCheckList.Clear();
                     }
                 }
-                yield return new WaitUntil(() => P_Com.animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 0.6f);
 
                 // 5번째 공격(5타)이면 인덱스 초기화
                 if(P_Value.index + 1 >= 5){
