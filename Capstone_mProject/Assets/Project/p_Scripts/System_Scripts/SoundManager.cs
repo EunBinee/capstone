@@ -34,6 +34,8 @@ public class SoundManager : MonoBehaviour
     {
         Hit,
         Shoot,
+        SwordAttack,
+        Dodge,
         GetDamage,
         Death,
     }

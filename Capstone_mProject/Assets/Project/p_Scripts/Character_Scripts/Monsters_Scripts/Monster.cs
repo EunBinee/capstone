@@ -273,6 +273,12 @@ public class Monster : MonoBehaviour
                     }
                     else
                         monsterPattern.Monster_Motion(MonsterPattern.MonsterMotion.GetHit_KnockBack);
+
+                    // 플레이어한테 맞으면 나오는 이펙트, 사운드
+                    Effect effect = GameManager.Instance.objectPooling.ShowEffect("MonsterHitBullet");
+                    effect.gameObject.transform.position = attackPos;
+                    effect.transform.rotation = Quaternion.LookRotation(playerController.transform.position);
+                    SoundPlay("Monster_hitBullet");
                 }
 
             }

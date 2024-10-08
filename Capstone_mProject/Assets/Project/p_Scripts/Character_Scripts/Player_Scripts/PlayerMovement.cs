@@ -584,7 +584,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 projectedDodgeDirection = Vector3.ProjectOnPlane(P_Value.moveDirection, P_Value.groundNormal);
 
             P_Com.rigidbody.AddForce(projectedDodgeDirection, ForceMode.VelocityChange);
-            
+            SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Dodge, false);
 
             // 기존 수직 속도를 유지하도록 수직 속도 다시 설정
             P_Com.rigidbody.velocity = new Vector3(P_Com.rigidbody.velocity.x, curVertVelocity, P_Com.rigidbody.velocity.z);

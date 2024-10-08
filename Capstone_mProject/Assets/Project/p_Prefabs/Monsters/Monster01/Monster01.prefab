@@ -1371,6 +1371,7 @@ MonoBehaviour:
     haveLastWeakness: 0
     lastWeaknessList: []
     weaknessDamageRate: 0.05
+    weaknessHP_: 15
     HPBarPos: {fileID: 6423218241841854254}
     MaxHP: 5000
     HP: 0
@@ -1391,10 +1392,12 @@ MonoBehaviour:
   - Monster01_ShortAttack
   - Monster01_LongAttack
   - Monster01_Death
+  - Monster_hitBullet
   monsterSoundClips:
   - {fileID: 8300000, guid: 8c86f05491738c943abc3e397eee9865, type: 3}
   - {fileID: 8300000, guid: 721d70187533ce040928a28cdd71d53b, type: 3}
   - {fileID: 8300000, guid: 42a0e995e421e7440af64f7f1ec89ebe, type: 3}
+  - {fileID: 8300000, guid: 487b8285d0f9ddb48be242447fa32bac, type: 3}
   playerController: {fileID: 0}
   m_hPBar: {fileID: 0}
   resetHP: 0

@@ -655,6 +655,7 @@ public class PlayerController : MonoBehaviour
 
     public void playAttackEffect(string name)
     {
+        SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.SwordAttack, false);
         //* 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(name);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
