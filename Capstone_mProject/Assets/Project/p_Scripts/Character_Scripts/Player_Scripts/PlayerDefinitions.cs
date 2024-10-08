@@ -97,6 +97,7 @@ public class CurrentState
     public bool isStrafing; //주목, 현재 카메라가 바라보고 있는 방향을 주목하면서 이동
     public bool isJumping;  //점프
     public bool isDodgeing;  //닷지
+    public bool isClickAttack;  //공격
     public bool isSkill;
     public bool doNotRotate;
     public bool isDie;

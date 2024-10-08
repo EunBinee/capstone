@@ -272,11 +272,9 @@ public class PlayerController : MonoBehaviour
         AnimState(PlayerState.Idle);
         P_Value.HP = P_Value.MaxHP;
         P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
-        P_Value.index = 1;
-        P_Value.time = 0;
+        P_Value.index = 0;
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;
-        P_InputHandle.isAttack = false;
         staminaObj.SetActive(true);
         P_Com.animator.SetInteger("comboCount", P_Value.index);
         P_Com.animator.SetBool("p_Locomotion", true);
@@ -403,11 +401,11 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Move:
                 break;
             case PlayerState.ComboAttack:
-                P_Com.animator.SetInteger("comboCount", index);
+                //P_Com.animator.SetInteger("comboCount", index);
                 P_Com.animator.SetBool("p_Locomotion", false);
                 break;
             case PlayerState.FinishComboAttack:
-                P_Com.animator.SetInteger("comboCount", index);
+                //P_Com.animator.SetInteger("comboCount", index);
                 P_Com.animator.SetBool("p_Locomotion", true);
                 AnimState(PlayerState.Idle);
                 break;
@@ -633,7 +631,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             hitStop = 0.367f;
-            P_Com.animator.Play("Get_Damage", 0);
+            //P_Com.animator.Play("Get_Damage", 0);
+            P_Com.animator.SetTrigger("isDamage");
         }
         P_Value.hits = 0;   //* 피격 시 히트 초기화
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
@@ -655,7 +654,7 @@ public class PlayerController : MonoBehaviour
 
     public void playAttackEffect(string name)
     {
-        SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.SwordAttack, false);
+        //SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.SwordAttack, false);
         //* 이펙트
         Effect effect = GameManager.Instance.objectPooling.ShowEffect(name);
         effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;

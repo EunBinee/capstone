@@ -18,7 +18,6 @@ public class PlayerInputHandle : MonoBehaviour
     private SkillInfo P_SkillInfo => P_Controller._skillInfo;
     private PlayerMovement P_Movement => P_Controller.P_Movement;
     public bool endArrow = false; //화살을 쏘고 난 후인지 아닌지
-    public bool isAttack = false;
     bool setCam = false;
 
     private SkillButton skill_Q;
@@ -205,16 +204,13 @@ public class PlayerInputHandle : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && !(P_States.isBowMode || P_States.isGunMode))    //* 누를 때 => 기본공격
         {   //* 마우스 클릭
-            if (P_States.isGround && !P_States.isGettingHit && !P_States.isDodgeing
+            if (P_States.isGround 
+                //&& !P_States.isGettingHit 
+                && !P_States.isDodgeing
                 && !P_States.isStop && !P_States.isElectricShock)
             //&& !EventSystem.current.IsPointerOverGameObject())
             {
-                if (!isAttack)//P_States.isStartComboAttack)
-                {
-                    //P_States.isStartComboAttack = true;
-                    isAttack = true;
-                    P_Movement.Attacking_co();
-                }
+                P_States.isClickAttack = true;
             }
         }
 
