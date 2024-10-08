@@ -33,8 +33,9 @@ public class SoundManager : MonoBehaviour
     public enum PlayerSound
     {
         Hit,
+        Shoot,
         GetDamage,
-        Death
+        Death,
     }
 
     [Header("MonsterSound")]

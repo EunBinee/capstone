@@ -153,6 +153,7 @@ MonoBehaviour:
     jumpPower: 10
     jumpGravity: 3
     dodgingSpeed: 5
+    dodgingStamina: 25
     slopeAccel: 1
     gravity: -9.81
     electricShock_Time: 5
@@ -232,6 +233,8 @@ MonoBehaviour:
     comboCount: 0
     MaxHP: 100
     HP: 100
+    MaxStamina: 100
+    Stamina: 0
     index: 0
     time: 0
     isCombo: 0
@@ -289,11 +292,14 @@ MonoBehaviour:
   hitUiGuide: {fileID: 0}
   portrait: {fileID: 0}
   HPgauge: {fileID: 0}
+  staminaBar: {fileID: 0}
+  staminaObj: {fileID: 0}
   hitMonsters: []
   bow: {fileID: 8347625466126564294}
   sword: {fileID: 6490715099745903179}
   crosshairImage: {fileID: 0}
   crosshair: {fileID: 0}
+  killImg: {fileID: 0}
   arrow: {fileID: 0}
   bullet: {fileID: 0}
   shootPoint: {fileID: 4763102869829816325}
@@ -9093,6 +9099,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 664874476749307532}
+  - component: {fileID: 6637059864706636882}
   m_Layer: 0
   m_Name: mixamorig:LeftShoulder
   m_TagString: Untagged
@@ -9116,6 +9123,24 @@ Transform:
   m_Father: {fileID: 1916315462624951709}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6637059864706636882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5457944339531376591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baedd976e12657241bf7ff2d1c685342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.27, z: 0.22}
+  m_Bound: 0
+  m_Radius: 0.48
+  m_Height: 0
+  m_Radius2: 0
 --- !u!1 &5499818022384607690
 GameObject:
   m_ObjectHideFlags: 0
@@ -15646,15 +15671,15 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8347625466126564294}
-  m_LocalRotation: {x: -0.5416754, y: 0.54167515, z: 0.4545197, w: 0.45451927}
-  m_LocalPosition: {x: -0.274, y: 0.443, z: 0.111}
+  m_LocalRotation: {x: -0.56243443, y: 0.5197195, z: 0.47947022, w: 0.42856464}
+  m_LocalPosition: {x: -0.2740023, y: 0.4430002, z: 0.11099993}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3316194436702007258}
   m_Father: {fileID: 1973080988490903932}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: -100, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: -101.345, y: 28.501999, z: 61.97}
 --- !u!33 &2031673606735665258
 MeshFilter:
   m_ObjectHideFlags: 0

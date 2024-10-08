@@ -265,6 +265,7 @@ public class PlayerSkills : MonoBehaviour
         }
         //if (P_States.isShoot) 
         P_States.isShoot = false;
+        SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Shoot, false);
     }
 
     /// <summary>
