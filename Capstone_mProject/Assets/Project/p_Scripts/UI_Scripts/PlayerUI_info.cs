@@ -17,6 +17,10 @@ public class PlayerUI_info : MonoBehaviour
     public GameObject portrait;
     public Slider HPgauge;
 
+    [Header("Player Stamina")]
+    public GameObject stamina;
+    public Image staminaBar;
+
     [Space]
     [Header("Player Skill")]
     public SkillButton skill_V;

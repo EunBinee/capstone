@@ -66,6 +66,8 @@ public class PlayerController : MonoBehaviour
     public GameObject portrait;
     //public GameObject chargingImg;
     public Slider HPgauge;
+    public Image staminaBar;
+    public GameObject staminaObj;
     float nowHitTime;
     public List<GameObject> hitMonsters;
     //public List<Collider> forwardHit;
@@ -182,6 +184,9 @@ public class PlayerController : MonoBehaviour
         portrait = playerUI_info.portrait;
         //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
+        staminaObj = playerUI_info.stamina;
+        staminaBar = playerUI_info.staminaBar;
+
         crosshairImage = playerUI_info.crosshairImage;
         crosshair = playerUI_info.crosshair;
         killImg = playerUI_info.killImg;
@@ -232,6 +237,7 @@ public class PlayerController : MonoBehaviour
             if (P_States.isGunMode && P_States.onShootAim)
                 P_Skills.bulletEffect();
             HPgauge.gameObject.SetActive(false);
+            staminaObj.SetActive(false);
             hitUI.SetActive(false);
             hitUiGuide.SetActive(false);
             portrait.SetActive(false);
@@ -243,6 +249,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("플레이어 UI 활성화");
             HPgauge.gameObject.SetActive(true);
+            staminaObj.SetActive(true);
             hitUI.SetActive(true);
             hitUiGuide.SetActive(true);
             portrait.SetActive(true);
@@ -270,6 +277,7 @@ public class PlayerController : MonoBehaviour
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;
         P_InputHandle.isAttack = false;
+        staminaObj.SetActive(true);
         P_Com.animator.SetInteger("comboCount", P_Value.index);
         P_Com.animator.SetBool("p_Locomotion", true);
         P_Com.animator.Rebind();
@@ -277,6 +285,7 @@ public class PlayerController : MonoBehaviour
 
     public void LateUpdate()
     {
+        staminaBar.fillAmount = P_Value.Stamina / P_Value.MaxStamina;
         //if (P_States.isAim)
         if (P_States.onZoomIn)
             Operation_boneRotation();   // 모델링 변환
