@@ -328,10 +328,14 @@ public class PlayerAttackCheck : MonoBehaviour
             P_States.isBouncing = true;     //* 히트 UI 출력효과
             Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
 
+            this.gameObject.SetActive(false);
+
             return true;
         }
-        else
+        else{
+            this.gameObject.SetActive(false);
             return false;
+        }
     }
 
     public void playerHitShield(Vector3 collisionPoint, Quaternion otherQuaternion)
