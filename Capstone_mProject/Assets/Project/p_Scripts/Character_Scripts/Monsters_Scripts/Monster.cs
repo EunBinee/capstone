@@ -253,7 +253,11 @@ public class Monster : MonoBehaviour
                 {
                     //죽음
                     Death();
-                    StartCoroutine(KillImg());
+                    if(monsterData.monsterType != MonsterData.MonsterType.BossMonster)
+                    {
+                         StartCoroutine(KillImg());
+                    }
+                   
                 }
                 else
                 {
@@ -456,13 +460,13 @@ public class Monster : MonoBehaviour
         playerController.killImg.gameObject.SetActive(true);
 
         GameManager.Instance.PadeIn_Alpha(playerController.killImg.gameObject, true, 255, 7f, true);
-       // StartCoroutine(KillImgBounce(playerController.killImg.gameObject, 2f, ));
+        StartCoroutine(KillImgBounce(playerController.killImg.rectTransform, 1.5f,0.4f ));
 
         yield return new WaitForSeconds(0.5f);
 
 
         GameManager.Instance.PadeIn_Alpha(playerController.killImg.gameObject, false, 0, 2f, true);
-
+      
 
 
     }
