@@ -54,7 +54,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         while (time < 15)
         {
             time += Time.deltaTime;
-            float randTime = UnityEngine.Random.Range(0.5f, 3f);
+            float randTime = UnityEngine.Random.Range(0.5f, 1.5f);
             yield return new WaitForSeconds(randTime);
             time += randTime;
 
@@ -170,8 +170,15 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
 
         if (monsterPhase != MonsterPattern_Boss.BossMonsterPhase.Phase1)
         {
+             //이펙트 추가하기.
+            effect = GameManager.Instance.objectPooling.ShowEffect("SpiritBomb");
+
+            Vector3 originPos = this.transform.position;
+            originPos.y += 0.5f;
+            effect.transform.position = originPos;
+
             //* 잔해물 떨어지기
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(1.5f);
             monsterPattern_Abyss.boss_Abyss_Skill03.SettingWreckage();
             yield return new WaitForSeconds(1f);
             monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);

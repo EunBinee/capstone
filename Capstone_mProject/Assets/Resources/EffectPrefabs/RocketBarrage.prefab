@@ -19580,6 +19580,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2348986143147364527}
   - component: {fileID: 6676200677694238404}
+  - component: {fileID: 2109577619494344503}
   m_Layer: 0
   m_Name: RocketBarrage
   m_TagString: Untagged
@@ -19616,6 +19617,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a42d2183fb9ffe4e843f353f1e4e6a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2109577619494344503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2348986143147364520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da1adaae441422041ae3b21b8752748f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: 1
 --- !u!1 &2348986143160329484
 GameObject:
   m_ObjectHideFlags: 0

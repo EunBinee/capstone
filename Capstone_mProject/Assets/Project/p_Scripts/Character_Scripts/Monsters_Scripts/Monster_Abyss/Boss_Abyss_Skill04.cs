@@ -747,8 +747,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         float startAlpha = 0f; // 투명하게 시작
         float endAlpha = 1f; // 불투명하게 설정
         float elapsedTime = 0f;
-
-        Debug.Log("시작ㅈ갖ㄱ자작");   
+ 
         while (elapsedTime < duration)
         {
             elapsedTime += Time.deltaTime;
@@ -761,7 +760,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         // 최종적으로 알파 값을 완전 불투명으로 설정
         color.a = endAlpha;
         renderer.material.color = color;
-        Debug.Log("끝");   
     }
 
 }
