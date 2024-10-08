@@ -16,22 +16,43 @@ public class BossWeakness : MonoBehaviour
 
     public Action HitWeakness_director = null; //*맞았을 때 연출 있는지.
 
+    public bool isLastWeakness = false;
+    int weaknessHP = 15;
+
 
     public void SetMonster(Monster _monster)
     {
         m_monster = _monster;
         effectName01 = "explosion_360_v1_M";
         effectName02 = "explosion_360_v2_M";
+
+        if(isLastWeakness)
+        {
+            m_monster.monsterData.weaknessHP_ = 40;
+        }
     }
 
     public void WeaknessGetDamage(Vector3 _normalHitPoint, Vector3 hitPoint)
     {
         //* 공격 당했을 때 연출
-        destroy_BossWeakness = true;       
-        GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.8f, 2f, 2f);
-        StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
-        m_monster.bossMonsterPattern.ReduceRemainWeaknessesNum(this);
-        HitWeakness_director?.Invoke();
+        //m_monster.monsterData.weaknessHP -= 1;
+        weaknessHP -= 1;
+
+        if(weaknessHP<=0)
+        {
+            destroy_BossWeakness = true;       
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.8f, 2f, 2f);
+            StartCoroutine(GetDamageEffect(_normalHitPoint, hitPoint));
+            m_monster.bossMonsterPattern.ReduceRemainWeaknessesNum(this);
+            HitWeakness_director?.Invoke();
+
+            m_monster.curMonsterWeaknessNum--;
+
+            m_monster.monsterData.weaknessHP_ = weaknessHP;
+
+            //Debug.Log(m_monster.curMonsterWeaknessNum);
+        }
+        
     }
 
     IEnumerator GetDamageEffect(Vector3 _normalHitPoint, Vector3 hitPoint)
