@@ -297,6 +297,9 @@ public class PlayerAttackCheck : MonoBehaviour
                 GameManager.instance.damageCalculator.CalculateAndPrint();
                 damageValue = GameManager.instance.damageCalculator.result;
             }
+            if (isBullet && !monster.monsterData.useWeakness)
+                    damageValue = 3;
+
             // 20% 확률로 데미지에 100을 추가
             if (Random.value < 0.25f)
             {
