@@ -51,7 +51,7 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
         float getRandomTime = 0;
         randomPos_skill02.Clear();
         //* 15초동안 공격
-        while (time < 1) //! 여기 원래 15임. 
+        while (time < 15)
         {
             time += Time.deltaTime;
             float randTime = UnityEngine.Random.Range(0.5f, 1.5f);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -144,6 +145,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
 
         //* 광역 폭딜
         float damageRadius = 80f;
+        bool isWreckageHit = false;
 
         yield return new WaitForSeconds(5f);
     
@@ -151,51 +153,32 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         Debug.Log("펑~");
         float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
         if (playerDistance <= damageRadius ) 
-        {
-            // 몬스터에서 플레이어까지의 방향
-            Vector3 directionToPlayer = (playerTrans.position - bossNeck.transform.position).normalized;
-            
-            RaycastHit hit;
-            bool iswreckage = false;
-            //Debug.DrawRay(this.transform.position, directionToPlayer, Color.yellow);
-            // 레이캐스트로 잔해물이 있는지 확인
-            if (Physics.Raycast(bossNeck.transform.position, directionToPlayer, out hit))
+        {            
+            RaycastHit[] hits;
+            hits = Physics.RaycastAll(bossNeck.transform.position, playerTrans.position - bossNeck.transform.position);
+           
+            foreach(RaycastHit hit in hits)
             {
-                // 레이캐스트가 무언가에 충돌했을 때
-                // if (hit.collider.gameObject== wreckage_obj)
+                // if (hit.collider.gameObject.CompareTag("BossWeakness"))
                 // {
-                //     // 잔해물이 플레이어를 막고 있음. 데미지 적용 안 함
-                //     Debug.Log("노데미지");
+                //     continue; // 다음 오브젝트로 넘어감
                 // }
-                // else if(hit.collider.gameObject.CompareTag("Player"))
-                // {
-                //     // 잔해물이 없고 플레이어가 맞음. 데미지 적용
-                //     monsterPattern_Abyss.m_monster.OnHit_FallDown(90, 60);
-                //     Debug.Log("데미지 입음");
-                // }
-                
-                foreach (Wreckage wreckage in wreckages)
+
+                // Wreckage 태그가 있는 오브젝트 확인
+                if (hit.collider.gameObject.CompareTag("Wreckage"))
                 {
-                    if (hit.collider.gameObject == wreckage.gameObject)
-                    {
-                        iswreckage = true;
-                        Debug.Log("장애물 있음. 데미지 없음.");
-                        break;
-                    }
-                }
-                // for (int i = 0; i < wreckages.Count; ++i)
-                // {
-                //     if(hit.collider.gameObject ==wreckages[i])
-                //     {
-                //         break;
-                //     }
-                // }
-                if(!iswreckage)
-                {
-                    monsterPattern_Abyss.m_monster.OnHit_FallDown(90, 20);
-                    Debug.Log("장애물 없음. 데미지 입음");
+                    isWreckageHit = true;
+                    //Debug.Log("장애물 있음. 데미지 없음.");
+                    break; // Wreckage가 있으면 더 이상 확인할 필요 없음
                 }
             }
+
+            if(!isWreckageHit)
+            {
+                monsterPattern_Abyss.m_monster.OnHit_FallDown(90, 60);
+                //Debug.Log("장애물 없음. 데미지 있음.");
+            }
+            
               
         }
 
