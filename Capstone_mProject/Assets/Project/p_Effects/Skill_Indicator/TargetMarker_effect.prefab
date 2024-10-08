@@ -4932,7 +4932,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tempPoint: {fileID: 2227456476327911140}
   boxCollider: {fileID: 4894993174553925430}
+  checkTrigger: 0
   insideBox: 0
+  electricity_Effects: []
+  lightningStrike_Effects: []
 --- !u!114 &1796446804179415242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4956,8 +4959,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 7, y: 5, z: 31.51}
-  m_Center: {x: 0, y: 1.76, z: 25.5}
+  m_Size: {x: 7, y: 0.6165639, z: 31.510002}
+  m_Center: {x: 0, y: -0.4317178, z: 25.5}
 --- !u!1 &7298248800001213073
 GameObject:
   m_ObjectHideFlags: 0
