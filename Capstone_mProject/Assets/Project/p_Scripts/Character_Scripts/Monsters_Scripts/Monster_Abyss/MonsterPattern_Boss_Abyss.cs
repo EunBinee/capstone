@@ -634,7 +634,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             if (curBossPhase == BossMonsterPhase.Phase1)
                 skill = UnityEngine.Random.Range(0, 2);
             else if (curBossPhase != BossMonsterPhase.Phase1)
-                skill = UnityEngine.Random.Range(0, 3);
+                skill = 1;//UnityEngine.Random.Range(0, 3);
             //* 중복 체크-----------------------//
             if (skill_List.Count <= 0)
             {

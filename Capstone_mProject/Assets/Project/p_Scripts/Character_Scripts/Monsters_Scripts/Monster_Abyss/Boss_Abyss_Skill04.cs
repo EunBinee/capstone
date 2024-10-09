@@ -370,7 +370,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
-        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
+        //monsterPattern_Abyss.m_monster.SoundPlay("electronic_01", true);
         yield return new WaitForSeconds(endSkillTime); //* 7초후 스킬 종료
         monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
         if (!skillOver)
@@ -456,7 +456,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
-        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
+        
 
         yield return new WaitForSeconds(endSkillTime);
         monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
@@ -526,9 +526,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         {
             StartCoroutine(ElectricityProduction(targetMarker_Pattern05_List[i], electricity_DurationTime, mAngle));
         }
-          monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
+         // monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
-          monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
+        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
 
         //* 스킬끝났음.----------------------------------------------//
         if (!skillOver)
@@ -579,7 +579,7 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
             randomPos = skill_Indicator.GetRandomPos(getBounds);
             Effect effect = GameManager.Instance.objectPooling.ShowEffect("LightningStrike2_red", skill_Indicator.gameObject.transform);
             effect.transform.position = randomPos;
-
+            
             if (!isTrigger_si)
             {
                 if (time > 1f && !isTrigger)
@@ -602,10 +602,10 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
                 Quaternion rotation = Quaternion.Euler(0f, angle, 0f);
                 effect.transform.localPosition = rotation * effect.transform.localPosition;
             }
-
+monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04");
             yield return new WaitForSeconds(createEffectStopTime);
             time += createEffectStopTime;
-
+//monsterPattern_Abyss.m_monster.SoundPlayStop("electronic_01");
             yield return new WaitUntil(() => UIManager.gameIsPaused == false);
         }
 
