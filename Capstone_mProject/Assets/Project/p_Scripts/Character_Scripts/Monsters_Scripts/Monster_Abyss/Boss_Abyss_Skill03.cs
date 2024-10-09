@@ -150,7 +150,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         yield return new WaitForSeconds(5f);
         GameManager.Instance.cameraController.cameraShake.ShakeCamera(2f, 3, 3);
         Debug.Log("펑~");
-        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Death");
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill03_explosion");
         float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
         if (playerDistance <= damageRadius ) 
         {            
@@ -183,7 +183,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         }
 
         yield return new WaitForSeconds(3.5f);
-        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Death");
+        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill03_explosion");
         //* 잔해물 치우기
         //effect.StopEffect();
         ClearWreckage();
