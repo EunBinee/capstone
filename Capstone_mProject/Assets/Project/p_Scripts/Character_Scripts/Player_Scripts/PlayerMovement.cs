@@ -116,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (!UIManager.gameIsPaused)
+        if (!P_States.isStop)//UIManager.gameIsPaused)
         {
             AnimationParameters();
             Inputs();
@@ -1029,11 +1029,13 @@ public class PlayerMovement : MonoBehaviour
     public void StopPlayer() //연출쪽에서 Player멈추도록.
     {
         P_States.isStop = true;
+        P_States.isPerformingAction = true;
 
         P_Value.index = 0;
         P_Value.isCombo = false;
         P_States.isStartComboAttack = false;
-        P_Com.animator.SetInteger("comboCount", P_Value.index);
+        P_States.isDodgeing = false;
+        P_Com.animator.SetInteger("comboCount", P_Value.index + 1);
         P_Com.animator.SetBool("p_Locomotion", true);
         //P_Com.animator.Play("locomotion");
         //P_Com.animator.Rebind();
@@ -1042,6 +1044,8 @@ public class PlayerMovement : MonoBehaviour
     public void PlayPlayer()
     {
         P_States.isStop = false;
+        P_States.isPerformingAction = false;
+        P_States.isDodgeing = false;
     }
 
 

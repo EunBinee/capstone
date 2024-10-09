@@ -306,6 +306,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerController playerController = gameData.GetPlayerController();
         playerController.PlayerUI_SetActive(false);
+        playerController.P_Movement.StopPlayer();
         Stop_AllMonster();
 
         UIManager.gameIsPaused = true;
@@ -314,6 +315,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerController playerController = gameData.GetPlayerController();
         playerController.PlayerUI_SetActive(true);
+        playerController.P_Movement.PlayPlayer();
         Start_AllMonster();
 
         UIManager.gameIsPaused = false;
