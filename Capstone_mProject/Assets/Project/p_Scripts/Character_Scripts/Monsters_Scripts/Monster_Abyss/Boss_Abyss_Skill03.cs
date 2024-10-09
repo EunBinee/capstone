@@ -146,11 +146,11 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         //* 광역 폭딜
         float damageRadius = 80f;
         bool isWreckageHit = false;
-
+        
         yield return new WaitForSeconds(5f);
-    
-        //! 이펙트랑 데미지 해야함 사운드도
+        GameManager.Instance.cameraController.cameraShake.ShakeCamera(2f, 3, 3);
         Debug.Log("펑~");
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Death");
         float playerDistance = Vector3.Distance(this.transform.position, playerTrans.position);
         if (playerDistance <= damageRadius ) 
         {            
@@ -183,7 +183,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
         }
 
         yield return new WaitForSeconds(3.5f);
-
+        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Death");
         //* 잔해물 치우기
         //effect.StopEffect();
         ClearWreckage();

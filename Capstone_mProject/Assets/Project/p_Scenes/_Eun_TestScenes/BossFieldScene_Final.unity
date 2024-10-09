@@ -10153,7 +10153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.data[0]
@@ -10173,23 +10173,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.data[4]
-      value: Boss_Skill04
+      value: Boss_Skill03_charge
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.data[5]
-      value: Boss_ChangePhase
+      value: Boss_Skill03_explosion
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.data[6]
-      value: Boss_Death
+      value: Boss_Skill04
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: soundName.Array.data[7]
+      value: Boss_ChangePhase
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[8]
+      value: Boss_Death
+      objectReference: {fileID: 0}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: soundName.Array.data[9]
       value: Monster_hitBullet
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.size
-      value: 8
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.data[0]
@@ -10210,17 +10218,25 @@ PrefabInstance:
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.data[4]
       value: 
-      objectReference: {fileID: 8300000, guid: 2f6a27a1fbae41447bf41a37b1caedc7, type: 3}
+      objectReference: {fileID: 8300000, guid: a6150df9211c3d04dbfe48a6b767c7e6, type: 3}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.data[5]
       value: 
-      objectReference: {fileID: 8300000, guid: e89e84fddf1b42341bc54ed80547dba3, type: 3}
+      objectReference: {fileID: 8300000, guid: 75444e6e45250b544bf764382e931465, type: 3}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.data[6]
       value: 
-      objectReference: {fileID: 8300000, guid: 9824b97870715c44b9b2911e7de8f00c, type: 3}
+      objectReference: {fileID: 8300000, guid: 2f6a27a1fbae41447bf41a37b1caedc7, type: 3}
     - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
       propertyPath: monsterSoundClips.Array.data[7]
+      value: 
+      objectReference: {fileID: 8300000, guid: e89e84fddf1b42341bc54ed80547dba3, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[8]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9824b97870715c44b9b2911e7de8f00c, type: 3}
+    - target: {fileID: 2755003020157360585, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}
+      propertyPath: monsterSoundClips.Array.data[9]
       value: 
       objectReference: {fileID: 8300000, guid: 487b8285d0f9ddb48be242447fa32bac, type: 3}
     - target: {fileID: 2755003020157360586, guid: 71b8b38f842b1314bb7c6e0f81382ace, type: 3}

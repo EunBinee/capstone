@@ -175,12 +175,18 @@ public class Boss_Abyss_Skill02 : MonoBehaviour
             Vector3 originPos = transform.position;
             originPos.y += 0.5f;
             effect.transform.position = originPos;
-            
+            monsterPattern_Abyss.m_monster.SoundPlay("test1", true);
+           
             //* 잔해물 떨어지기
             yield return new WaitForSeconds(1.5f);
             monsterPattern_Abyss.boss_Abyss_Skill03.SettingWreckage();
+          
+
             yield return new WaitForSeconds(1f);
             monsterPattern_Abyss.EndSkill(MonsterPattern_Boss.BossMonsterMotion.Skill02);
+  GameManager.Instance.cameraController.cameraShake.ShakeCamera(5f, 1, 1);
+            yield return new WaitForSeconds(9f);
+            monsterPattern_Abyss.m_monster.SoundPlayStop("test1");
         }
         else
         {
