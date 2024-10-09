@@ -38,7 +38,8 @@ public class mainStartScene : MonoBehaviour
     public TMP_Text noticeText; // 어느씬으로 이동할지 알려줌.
     int curSceneIndex;
     public string curSelectSceneName = ""; //* 현재 이동하는 씬 (불러오기 X)
-    public string defaultcurSelectSceneName = "StartScene 1";
+    //public string defaultcurSelectSceneName = "StartScene 1";
+    public string defaultcurSelectSceneName = "FieldMap01";
 
     void Start()
     {
