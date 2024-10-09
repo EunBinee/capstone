@@ -485,7 +485,7 @@ public class CameraController : MonoBehaviour
     public void SetAimCamera()
     {
         //! 아래 코드 임시로 주목
-        playerController._currentState.isStrafing = true;
+        //playerController._currentState.isStrafing = true;
         cameraObj.fieldOfView = default_FieldOfView;
         use_aimCamera = true;
         Vector3 rotZero = new Vector3(0, 0, 0);

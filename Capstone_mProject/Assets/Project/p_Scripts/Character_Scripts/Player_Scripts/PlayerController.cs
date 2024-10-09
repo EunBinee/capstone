@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
 
     public TMP_Text hitNum;
     public GameObject hitUI;
-    public GameObject hitUiGuide;
+    public GameObject hitDamageUi;
     public GameObject portrait;
     //public GameObject chargingImg;
     public Slider HPgauge;
@@ -180,7 +180,7 @@ public class PlayerController : MonoBehaviour
         PlayerUI_info playerUI_info = CanvasManager.instance.playerUI.GetComponent<PlayerUI_info>();
         hitNum = playerUI_info.hitNum;
         hitUI = playerUI_info.hitUI;
-        hitUiGuide = playerUI_info.hitUiGuide;
+        hitDamageUi = playerUI_info.hitDamageUi;
         portrait = playerUI_info.portrait;
         //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(false);
             staminaObj.SetActive(false);
             hitUI.SetActive(false);
-            hitUiGuide.SetActive(false);
+            hitDamageUi.SetActive(false);
             portrait.SetActive(false);
             hitNum.gameObject.SetActive(false);
             //chargingImg.SetActive(false);
@@ -251,7 +251,7 @@ public class PlayerController : MonoBehaviour
             HPgauge.gameObject.SetActive(true);
             staminaObj.SetActive(true);
             hitUI.SetActive(true);
-            hitUiGuide.SetActive(true);
+            hitDamageUi.SetActive(true);
             portrait.SetActive(true);
             hitNum.gameObject.SetActive(true);
             //chargingImg.SetActive(true);
@@ -285,7 +285,7 @@ public class PlayerController : MonoBehaviour
     {
         staminaBar.fillAmount = P_Value.Stamina / P_Value.MaxStamina;
         //if (P_States.isAim)
-        if (P_States.onZoomIn)
+        if (P_States.isAim)
             Operation_boneRotation();   // 모델링 변환
 
 

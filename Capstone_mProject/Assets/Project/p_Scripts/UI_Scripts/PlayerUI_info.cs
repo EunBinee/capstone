@@ -7,10 +7,10 @@ using UnityEngine.UI;
 public class PlayerUI_info : MonoBehaviour
 {
     [Header("Player Hit")]
+    public GameObject hitDamageUi;  // 히트 데미지 전부
     public TMP_Text hitNum;
-    public GameObject hitUiGuide;
     public GameObject hitUI;
-    //public GameObject chargingImg;
+    public TMP_Text DamageNum;
 
     [Space]
     [Header("Player HP")]
