@@ -362,7 +362,6 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(0f, mAngle, 0f);
         skillIndicator_obj.transform.rotation = skillIndicator_obj.transform.rotation * rotation;
         //마커 불투명도 조절
-        //! 여기부터 하기  MeshRenderer
         MeshRenderer meshRenderer = skillIndicator_obj.GetComponentInChildren<MeshRenderer>();
         StartCoroutine(FadeInMarker(meshRenderer, 1.0f)); // 1초 동안 불투명하게 만들기
  
@@ -371,8 +370,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
-
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
         yield return new WaitForSeconds(endSkillTime); //* 7초후 스킬 종료
+        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
         if (!skillOver)
             skillOver = true;
 
@@ -456,8 +456,10 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
 
         //* 번개, 파지직 번개
         StartCoroutine(ElectricityProduction(skill_Indicator, electricity_DurationTime, mAngle, simultaneous));
+        monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
 
         yield return new WaitForSeconds(endSkillTime);
+        monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
         if (!skillOver)
             skillOver = true;
 
@@ -524,8 +526,9 @@ public class Boss_Abyss_Skill04 : MonoBehaviour
         {
             StartCoroutine(ElectricityProduction(targetMarker_Pattern05_List[i], electricity_DurationTime, mAngle));
         }
-
+          monsterPattern_Abyss.m_monster.SoundPlay("Boss_Skill04", true);
         yield return new WaitForSeconds(endSkillTime); //* 7초후 종료
+          monsterPattern_Abyss.m_monster.SoundPlayStop("Boss_Skill04");
 
         //* 스킬끝났음.----------------------------------------------//
         if (!skillOver)

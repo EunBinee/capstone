@@ -1232,7 +1232,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         bossText.SetActive(true);
         TMP_Text bossTextWeakness = bossText.GetComponent<TMP_Text>();
         bossTextWeakness.text = "총을 조준하여 약점을 공격하세요.";
-        
+
         playerController.PlayerStop(false);
         playerController.P_Skills.switchBullet(false);
     }
