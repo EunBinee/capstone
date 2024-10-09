@@ -635,7 +635,6 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator electricity_Damage()
     {   //todo: 파직 파직 파직(느리게) 나오면서 "감전" UI 같이 출력
-        SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Electronic, 2f ,true);
         float num = 0;
         while (num < 6 && !showElec)
         {
@@ -1055,5 +1054,9 @@ public class PlayerMovement : MonoBehaviour
     public void PlayerElectricShock(bool electrocution = true)
     {
         P_States.isElectricShock = electrocution;
+        if (electrocution) {
+            SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Electronic, false);
+            SoundManager.Instance.Play_PlayerSound(SoundManager.PlayerSound.Electronic, 1f ,false);
+        }
     }
 }
