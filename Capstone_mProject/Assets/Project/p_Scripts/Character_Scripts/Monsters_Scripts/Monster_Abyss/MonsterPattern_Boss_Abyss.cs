@@ -543,6 +543,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
             bossText.SetActive(false);
             CheckPlayerPos = false;
+
             //* 타임 라인
             DirectTheBossWeakness();
         }
@@ -1168,6 +1169,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void DirectTheBossWeakness()
     {
+        playerController.PlayerStop(true);
         //*--------------------------------------------------------------------//
         //* 스킵 버튼
         Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
@@ -1228,6 +1230,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         bossText.SetActive(true);
         TMP_Text bossTextWeakness = bossText.GetComponent<TMP_Text>();
         bossTextWeakness.text = "총을 조준하여 약점을 공격하세요.";
+        playerController.PlayerStop(false);
     }
 
     //*-------------------------------------------------------------------------------------//
@@ -1260,6 +1263,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         GameManager.instance.cameraController.CinemachineSetting(true);
         //* 모든 것 멈추기
         CurSceneManager.instance.PlayTimeline("Abyss_LastWeakness_TimeLine");
+        playerController.PlayerStop(true);
     }
 
     //* 타임라인에서 사용되는 이펙트 
@@ -1337,7 +1341,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         curRemainWeaknessesNum = m_monster.monsterData.lastWeaknessList.Count;
 
         Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
-
+        playerController.PlayerStop(false);
     }
 
     # endregion
