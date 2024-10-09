@@ -290,6 +290,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
         else if (!returnDodgeAnim()
+            && !P_States.previousDodgeKeyPress
             && P_States.currentDodgeKeyPress
             && !P_States.isDodgeing && !P_States.isJumping
             //&& P_Value.moveAmount > 0
