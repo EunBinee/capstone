@@ -329,13 +329,15 @@ public class PlayerMovement : MonoBehaviour
         if (P_States.isGettingHit)
         {
             Monster curmonster = P_Controller.Get_CurHitEnemy();
-            Vector3 rotationDirection;
-            rotationDirection = curmonster.transform.position - this.transform.position;
-            rotationDirection.y = 0;
-            rotationDirection.Normalize();
-            Quaternion tr = Quaternion.LookRotation(rotationDirection);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
-            transform.rotation = targetRotation;
+            if (curmonster != null){
+                Vector3 rotationDirection;
+                rotationDirection = curmonster.transform.position - this.transform.position;
+                rotationDirection.y = 0;
+                rotationDirection.Normalize();
+                Quaternion tr = Quaternion.LookRotation(rotationDirection);
+                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tr, P_COption.rotSpeed * Time.deltaTime);
+                transform.rotation = targetRotation;
+            }
         }
         else if (P_States.isStop || P_States.isJumping || P_States.doNotRotate)
         {
