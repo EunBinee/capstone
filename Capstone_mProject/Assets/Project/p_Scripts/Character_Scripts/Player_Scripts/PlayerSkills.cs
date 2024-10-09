@@ -79,10 +79,10 @@ public class PlayerSkills : MonoBehaviour
         //skill_Q = P_Movement.skill_Q;
         SkillMapAdd("Bowmode", P_SkillInfo.bowmode);    // 기본지급 스킬
         P_SkillInfo.haveBowmode = true;
-        SkillMapAdd("Heal", P_SkillInfo.heal);
-        P_SkillInfo.haveHeal = true;
         SkillMapAdd("Restraint", P_SkillInfo.restraint);
         P_SkillInfo.haveRestraint = true;
+        SkillMapAdd("Heal", P_SkillInfo.heal);
+        P_SkillInfo.haveHeal = true;
 
         SkillMapAdd("Ultimate", P_SkillInfo.ultimate);  // 기본지급 스킬
         P_SkillInfo.haveUltimate = true;

@@ -60,9 +60,10 @@ public class PlayerController : MonoBehaviour
 
     private Monster curEnemy; //*현재 플레이어를 공격한 몬스터
 
+    public GameObject hitDamageUi;
     public TMP_Text hitNum;
     public GameObject hitUI;
-    public GameObject hitDamageUi;
+    public TMP_Text damageNum;
     public GameObject portrait;
     //public GameObject chargingImg;
     public Slider HPgauge;
@@ -181,6 +182,7 @@ public class PlayerController : MonoBehaviour
         hitNum = playerUI_info.hitNum;
         hitUI = playerUI_info.hitUI;
         hitDamageUi = playerUI_info.hitDamageUi;
+        damageNum = playerUI_info.DamageNum;
         portrait = playerUI_info.portrait;
         //chargingImg = playerUI_info.chargingImg;
         HPgauge = playerUI_info.HPgauge;
@@ -203,6 +205,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         hitNum.text = P_Value.hits.ToString();
+        damageNum.text = P_Value.damageOnHits.ToString();
 
         //* 정지 상태
         if (UIManager.gameIsPaused == true && EnablePlayerUI)
@@ -238,8 +241,8 @@ public class PlayerController : MonoBehaviour
                 P_Skills.bulletEffect();
             HPgauge.gameObject.SetActive(false);
             staminaObj.SetActive(false);
-            hitUI.SetActive(false);
             hitDamageUi.SetActive(false);
+            //hitUI.SetActive(false);
             portrait.SetActive(false);
             hitNum.gameObject.SetActive(false);
             //chargingImg.SetActive(false);
@@ -250,14 +253,14 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("플레이어 UI 활성화");
             HPgauge.gameObject.SetActive(true);
             staminaObj.SetActive(true);
-            hitUI.SetActive(true);
             hitDamageUi.SetActive(true);
+            //hitUI.SetActive(true);
             portrait.SetActive(true);
             hitNum.gameObject.SetActive(true);
             //chargingImg.SetActive(true);
-            P_Movement.skill_Q.gameObject.transform.position = originQpos;
+            //P_Movement.skill_Q.gameObject.transform.position = originQpos;
             P_Movement.skill_E.gameObject.transform.position = originEpos;
-            P_Movement.skill_R.gameObject.transform.position = originRpos;
+            //P_Movement.skill_R.gameObject.transform.position = originRpos;
             //P_Movement.skill_F.gameObject.transform.position = originFpos;
             P_Movement.skill_V.gameObject.transform.position = originVpos;
             EnablePlayerUI = true;
@@ -381,6 +384,7 @@ public class PlayerController : MonoBehaviour
         {
             //Debug.Log("hits 초기화");
             P_Value.hits = 0;   //히트수 초기화
+            P_Value.damageOnHits = 0;
             P_Value.nowEnemy = null;
         }
 
@@ -635,6 +639,7 @@ public class PlayerController : MonoBehaviour
             P_Com.animator.SetTrigger("isDamage");
         }
         P_Value.hits = 0;   //* 피격 시 히트 초기화
+        P_Value.damageOnHits = 0;
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         isGettingHit = false;

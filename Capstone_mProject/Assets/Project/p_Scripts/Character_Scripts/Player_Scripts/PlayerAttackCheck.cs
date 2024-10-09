@@ -310,6 +310,8 @@ public class PlayerAttackCheck : MonoBehaviour
                 damageValue *= 1.5;
             }
 
+            P_Value.damageOnHits = P_Value.damageOnHits + (int)damageValue;
+
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
             if (!P_States.isBowMode && !P_States.isGunMode)

@@ -201,6 +201,7 @@ public class CurrentValue
     public GameObject nowEnemy;
     public float finalSpeed;
     public float aimClickDown;
+    public int damageOnHits;
 
     [Space]
     public float groundDistance;    //플레이어와 땅의 거리
