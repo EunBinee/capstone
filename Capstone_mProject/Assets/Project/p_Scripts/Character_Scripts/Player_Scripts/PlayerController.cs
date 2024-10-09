@@ -274,6 +274,7 @@ public class PlayerController : MonoBehaviour
         P_States.isDie = false;
         AnimState(PlayerState.Idle);
         P_Value.HP = P_Value.MaxHP;
+        P_Value.Stamina = P_Value.MaxStamina;
         P_Com.sickScreen.SetFloat("_Fullscreenintencity", 0f);
         P_Value.index = 0;
         P_Value.isCombo = false;
