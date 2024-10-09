@@ -543,6 +543,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             GameManager.instance.PadeIn_Alpha(redImage, false, 0);
             bossText.SetActive(false);
             CheckPlayerPos = false;
+
             //* 타임 라인
             DirectTheBossWeakness();
         }
@@ -568,13 +569,13 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             isRoaming = true;
             //TODO: 나중에 범위안에 들어오면, 등장씬 나오도록 수정
             //* 일단은 바로 공격하도록
-            //ChangeBossPhase(BossMonsterPhase.Phase2);
+            ChangeBossPhase(BossMonsterPhase.Phase2);
             //Monster_Motion(BossMonsterMotion.Skill02);
             // Monster_Motion(BossMonsterMotion.Skill01);
    
             //! 테스트 후 아래 주석 풀기
-            ChangeBossPhase(BossMonsterPhase.Phase1);
-            ChangeMonsterState(MonsterState.Tracing);
+            //ChangeBossPhase(BossMonsterPhase.Phase1);
+            //ChangeMonsterState(MonsterState.Tracing);
         }
     }
     // *---------------------------------------------------------------------------------------------------------//
@@ -1168,6 +1169,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
     public override void DirectTheBossWeakness()
     {
+        playerController.PlayerStop(true);
+        playerController.P_Skills.switchBullet(true);
+       
         //*--------------------------------------------------------------------//
         //* 스킵 버튼
         Button_Controller.instance.skipBtn.onClick.RemoveAllListeners();
@@ -1228,6 +1232,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
         bossText.SetActive(true);
         TMP_Text bossTextWeakness = bossText.GetComponent<TMP_Text>();
         bossTextWeakness.text = "총을 조준하여 약점을 공격하세요.";
+
+        playerController.PlayerStop(false);
+        playerController.P_Skills.switchBullet(false);
     }
 
     //*-------------------------------------------------------------------------------------//
@@ -1236,6 +1243,9 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
     //Coroutine monsterLastWeakness_co = null;
     public override void DirectTheBossLastWeakness()
     {
+        playerController.PlayerStop(true);
+        playerController.P_Skills.switchBullet(true);
+
         SetMove_AI(false);
         SetAnimation(MonsterAnimation.Idle);
         bossText.SetActive(false);
@@ -1338,6 +1348,8 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
 
         Button_Controller.instance.SetActiveBtn(Button_Controller.Btns.SkipBtn, false);
 
+        playerController.PlayerStop(false);
+        playerController.P_Skills.switchBullet(false);
     }
 
     # endregion

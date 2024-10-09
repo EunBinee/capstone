@@ -25,11 +25,6 @@ public class BossWeakness : MonoBehaviour
         m_monster = _monster;
         effectName01 = "explosion_360_v1_M";
         effectName02 = "explosion_360_v2_M";
-
-        if(isLastWeakness)
-        {
-            m_monster.monsterData.weaknessHP_ = 40;
-        }
     }
 
     public void WeaknessGetDamage(Vector3 _normalHitPoint, Vector3 hitPoint)
@@ -38,6 +33,12 @@ public class BossWeakness : MonoBehaviour
         //m_monster.monsterData.weaknessHP -= 1;
         weaknessHP -= 1;
 
+        if (isLastWeakness)
+        {
+            weaknessHP = 30;
+            isLastWeakness = false;
+        }
+            
         if(weaknessHP<=0)
         {
             destroy_BossWeakness = true;       
@@ -48,11 +49,13 @@ public class BossWeakness : MonoBehaviour
 
             m_monster.curMonsterWeaknessNum--;
 
-            m_monster.monsterData.weaknessHP_ = weaknessHP;
-
-            //Debug.Log(m_monster.curMonsterWeaknessNum);
+            //m_monster.monsterData.weaknessHP_ = weaknessHP;
+          
         }
         
+
+        m_monster.monsterData.weaknessHP_ = weaknessHP;
+        Debug.Log(m_monster.monsterData.weaknessHP_);
     }
 
     IEnumerator GetDamageEffect(Vector3 _normalHitPoint, Vector3 hitPoint)

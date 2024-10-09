@@ -273,7 +273,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 if (HitWeakness && monster.monsterData.useWeakness && monster.monsterData.weaknessHP_ == 0) //약점공격 
                 {
                    // damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
-                    Debug.Log(damageValue);
+                    //Debug.Log(damageValue);
                 }
                 // else if (monster.monsterData.useWeakness)
                 //     damageValue = 0;
