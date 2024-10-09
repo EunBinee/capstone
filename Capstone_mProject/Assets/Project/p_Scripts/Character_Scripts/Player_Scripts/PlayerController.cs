@@ -285,7 +285,7 @@ public class PlayerController : MonoBehaviour
     {
         staminaBar.fillAmount = P_Value.Stamina / P_Value.MaxStamina;
         //if (P_States.isAim)
-        if (P_States.onZoomIn)
+        if (P_States.isAim)
             Operation_boneRotation();   // 모델링 변환
 
 

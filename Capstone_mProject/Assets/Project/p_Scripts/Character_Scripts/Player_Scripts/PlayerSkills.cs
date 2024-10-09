@@ -351,6 +351,7 @@ public class PlayerSkills : MonoBehaviour
         }
         else
         {
+            P_Com.animator.SetBool("onClickGun", false);
             P_Com.animator.SetLayerWeight(1, 0f);
         }
     }
@@ -375,9 +376,9 @@ public class PlayerSkills : MonoBehaviour
         {
             P_States.isAim = false;
             P_Com.animator.SetBool("isAim", false);
+            P_Com.animator.SetBool("onClickGun", false);
             if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
             {
-                //주목 풀기
                 if (!GameManager.instance.cameraController.banAttention)
                     GameManager.instance.cameraController.AttentionMonster();
                 P_States.beenAttention = false;
