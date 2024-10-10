@@ -145,6 +145,14 @@ public class SettingUI : MonoBehaviour
     {
         settingInfo.gototheMainSceneBtn.onClick.AddListener(() =>
         {
+            //* 몬스터
+            GameManager.instance.Stop_AllMonster();
+            if (GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing)
+            {
+                GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing = false;
+            }
+            GameManager.instance.RemoveMonster();
+            
             if (!isMainScene)
             {
                 //* 메인씬이 아니면 세팅창 닫아주고 메인으로

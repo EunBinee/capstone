@@ -280,10 +280,6 @@ public class PlayerSkills : MonoBehaviour
         if (P_States.onZoomIn && value) ZoomOnOff(false);       // zoom off
         else if (P_States.onZoomIn && !value) ZoomOnOff(true);  // zoom on
     }
-    public void deleyOnBulletCam()
-    {
-        Invoke("onBulletCam", 0.3f);
-    }
 
     public void arrowSkillOff()
     {
