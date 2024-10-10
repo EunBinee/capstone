@@ -310,7 +310,7 @@ public class PlayerAttackCheck : MonoBehaviour
                 damageValue *= 1.5;
             }
 
-            P_Value.damageOnHits = P_Value.damageOnHits + (int)damageValue;
+            //P_Value.damageOnHits = P_Value.damageOnHits + (int)damageValue;
 
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
@@ -323,12 +323,12 @@ public class PlayerAttackCheck : MonoBehaviour
             P_Value.curHitTime = Time.time; //* 현재 시간 저장
 
             P_Controller.CheckHitTime();
-            P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
+            //P_Value.hits = P_Value.hits + 1;    //* 히트 수 증가
             P_States.hadAttack = true;
             P_States.notSameMonster = false;
 
-            P_States.isBouncing = true;     //* 히트 UI 출력효과
-            Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
+            //P_States.isBouncing = true;     //* 히트 UI 출력효과
+            if (P_States.isBouncing) Invoke("isBouncingToFalse", 0.3f);  //* 히트 UI 출력효과 초기화
 
             if (isBullet) this.gameObject.SetActive(false);
 

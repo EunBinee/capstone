@@ -243,7 +243,11 @@ public class Monster : MonoBehaviour
                 }
 
                 //* 데미지 UI 처리---------------------------------------------------------------//
-
+                playerController._currentValue.damageOnHits += (int)damage;
+                if (damage > 0) {
+                    playerController._currentValue.hits++;
+                    playerController._currentState.isBouncing = true;     //* 히트 UI 출력효과
+                }
                 Get_DamageUI(damage);
 
                 //* HP 와 HPBar처리---------------------------------------------------------------//
