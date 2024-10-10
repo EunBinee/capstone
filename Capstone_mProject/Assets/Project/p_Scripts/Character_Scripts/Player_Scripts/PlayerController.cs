@@ -573,7 +573,7 @@ public class PlayerController : MonoBehaviour
         //HP같은 플레이어 정보와 연출은 코루틴에서 변경하면 깔끔할것같음
         yield return new WaitForSeconds(hitStop);
         P_States.isGettingHit = false;
-        P_Skills.switchBullet(false);
+        if (P_States.onZoomIn) P_Skills.switchBullet(false);
     }
 
     public Monster Get_CurHitEnemy()
@@ -644,7 +644,9 @@ public class PlayerController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         isGettingHit = false;
-        P_Skills.switchBullet(false);
+        
+        if (P_States.onZoomIn) P_Skills.switchBullet(false);
+        
         yield return null;
     }
 

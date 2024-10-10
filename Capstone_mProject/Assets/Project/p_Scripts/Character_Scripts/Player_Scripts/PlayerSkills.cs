@@ -347,7 +347,7 @@ public class PlayerSkills : MonoBehaviour
         }
         else
         {
-            P_Com.animator.SetBool("onClickGun", false);
+            //P_Com.animator.SetBool("onClickGun", false);
             P_Com.animator.SetLayerWeight(1, 0f);
         }
     }
@@ -372,7 +372,7 @@ public class PlayerSkills : MonoBehaviour
         {
             P_States.isAim = false;
             P_Com.animator.SetBool("isAim", false);
-            P_Com.animator.SetBool("onClickGun", false);
+            //P_Com.animator.SetBool("onClickGun", false);
             if (P_States.beenAttention) // 조준 전 주목 하고 있었다면
             {
                 if (!GameManager.instance.cameraController.banAttention)
@@ -611,6 +611,7 @@ public class PlayerSkills : MonoBehaviour
                 effect.gameObject.transform.position = this.gameObject.transform.position + Vector3.up;
                 if (P_States.isGunMode) //* 총 모드 -> 칼 모드 
                 {
+                    P_Com.animator.SetBool("onClickGun", false);
                     if (P_States.isAim) ZoomOnOff(false);
                     GunOnOff(false);
                     P_States.isGunMode = false;
