@@ -167,6 +167,14 @@ public class SettingUI : MonoBehaviour
         {
             if (!isMainScene)
             {
+                //* 몬스터
+                GameManager.instance.Stop_AllMonster();
+                if (GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing)
+                {
+                    GameManager.instance.gameData.GetPlayerController()._currentState.isStrafing = false;
+                }
+                GameManager.instance.RemoveMonster();
+
                 //* 메인씬이 아니면 세팅창 닫아주고 다시 시작
                 settingUIAnim.Play(panelFadeOut);
                 ChangeSettingValue();
@@ -185,7 +193,7 @@ public class SettingUI : MonoBehaviour
                     Debug.Log("없는 씬 이름입니다");
 #endif
                 }
-
+                GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
                 LoadingSceneController.LoadScene(curSceneName);
             }
             //

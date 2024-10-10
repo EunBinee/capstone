@@ -44,7 +44,6 @@ public class FinishUI : MonoBehaviour
         {
             restartBtn.onClick.AddListener(() =>
                     {
-
                         //* 메인씬이 아니면 세팅창 닫아주고 다시 시작
                         settingUIAnim.Play(panelFadeOut);
 
@@ -54,7 +53,6 @@ public class FinishUI : MonoBehaviour
                             UIManager.Instance.Resume();
                         }
 
-
                         string curSceneName = CurSceneManager.instance.curSceneName;
                         if (curSceneName == "")
                         {
@@ -63,12 +61,10 @@ public class FinishUI : MonoBehaviour
 #endif
                         }
 
-
-
                         resetPlayer();
                         LoadingSceneController.LoadScene(curSceneName);
 
-                        Debug.Log("HI");
+                        //Debug.Log("HI");
                         // this.gameObject.SetActive(false);
                         // Destroy(this);
                     });
