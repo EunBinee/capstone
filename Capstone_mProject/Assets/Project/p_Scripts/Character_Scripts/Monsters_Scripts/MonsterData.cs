@@ -33,7 +33,7 @@ public class MonsterData
     public List<Transform> weaknessList;
     public bool haveLastWeakness = false; //약점 끝나고, 마지막 약점
     public List<Transform> lastWeaknessList;
-    public float weaknessDamageRate = 0.05f; //* 몬스터의 MaxHP의 5% 정도의 데미지를 주겠다는 뜻
+    public float weaknessDamageRate = 0.06f; //* 몬스터의 MaxHP의 5% 정도의 데미지를 주겠다는 뜻
     public int weaknessHP_ = 15; //약점 체력
 
     [Header("몬스터 체력")]

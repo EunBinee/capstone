@@ -117,8 +117,8 @@ public class MonsterPattern_Boss : MonsterPattern
     protected void CheckBossHP()
     {
         Phase1_BossHP = (float)m_monster.monsterData.MaxHP;
-        Phase2_BossHP = (float)(m_monster.monsterData.MaxHP * 0.7f);
-        Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2f);
+        Phase2_BossHP = (float)(m_monster.monsterData.MaxHP * 0.3f);
+        //Phase3_BossHP = (float)(m_monster.monsterData.MaxHP * 0.2f);
     }
 
     public virtual void Base_Phase_HP(bool production = true)
@@ -239,7 +239,9 @@ public class MonsterPattern_Boss : MonsterPattern
                 //! 보스 연출
                 isLastWeakness = true;
                 OnEnableWeakness = false;
-                DirectTheBossLastWeakness();
+                //DirectTheBossLastWeakness();
+                ChangeBossPhase(BossMonsterPhase.Phase3);
+                
             }
             else
             {

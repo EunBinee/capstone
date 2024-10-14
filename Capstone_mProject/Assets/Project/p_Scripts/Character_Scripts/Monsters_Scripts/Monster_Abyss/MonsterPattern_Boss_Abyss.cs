@@ -425,6 +425,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                     }
                     break;
                 case BossMonsterPhase.Phase3:
+                        StartCoroutine(Phase03_Production());
                     //나락은 3페이즈 없음.
                     break;
                 case BossMonsterPhase.Death:
@@ -547,6 +548,15 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             //* 타임 라인
             DirectTheBossWeakness();
         }
+    }
+
+    IEnumerator Phase03_Production()
+    {
+        noAttack = true;
+        yield return new WaitUntil(() => startSkill == false);
+        //* 타임 라인
+        DirectTheBossLastWeakness();
+        
     }
 
 
@@ -963,7 +973,7 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
                 {
                     ChangeBossPhase(BossMonsterPhase.Death, production);
                 }
-                else if (curHP < Phase2_BossHP)
+                else if (curHP <= Phase2_BossHP)
                 {
                     //*페이즈 2
                     ChangeBossPhase(BossMonsterPhase.Phase2, production);

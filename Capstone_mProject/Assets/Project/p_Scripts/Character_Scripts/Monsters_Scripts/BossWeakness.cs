@@ -48,6 +48,7 @@ public class BossWeakness : MonoBehaviour
             HitWeakness_director?.Invoke();
 
             m_monster.curMonsterWeaknessNum--;
+            m_monster.monsterData.HP -= 250;
 
             //m_monster.monsterData.weaknessHP_ = weaknessHP;
           
