@@ -13,8 +13,9 @@ public class DamageCalculator
 
     [Header("테스트 값")]
     public int valueA = 350;
-    public int valueB = 125;
-    public int valueC = 500;
+    public int valueB = 125;    // 히트수가 5배수가 아닐때
+    public int valueC = 500;    // 히트수가 5배수이면서 0이 아닐때
+    public int valueD = 370;    // 4,5타 일때
 
     //결과값
     public int result = 0;
@@ -110,6 +111,9 @@ public class DamageCalculator
                         break;
                     case 'C':
                         stack.Push(valueC);
+                        break;
+                    case 'D':
+                        stack.Push(valueD);
                         break;
                     default:
                         Debug.LogError("올바르지 않은 변수가 사용되었습니다.");

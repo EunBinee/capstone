@@ -272,12 +272,12 @@ public class PlayerAttackCheck : MonoBehaviour
                 // damageValue = 3;
                 if (HitWeakness && monster.monsterData.useWeakness && monster.monsterData.weaknessHP_ == 0) //약점공격 
                 {
-                   // damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
+                    // damageValue = monster.monsterData.MaxHP * monster.monsterData.weaknessDamageRate;
                     //Debug.Log(damageValue);
                 }
                 // else if (monster.monsterData.useWeakness)
                 //     damageValue = 0;
-                else damageValue = 3; 
+                else damageValue = 10;
             }
             else                            //* 검
             {
@@ -285,22 +285,20 @@ public class PlayerAttackCheck : MonoBehaviour
 
                 if (P_Value.hits % 5 != 0)
                 {
-                    GameManager.instance.damageCalculator.damageExpression = "A+B";
+                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index > 3) ? "A+D" : "A+B"; // 350+370 : 350+125
                     GameManager.instance.damageCalculator.CalculateAndPrint();
                     damageValue = GameManager.instance.damageCalculator.result;
-
-
                 }
                 else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
                 {
-                    GameManager.instance.damageCalculator.damageExpression = "A+C";
+                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index > 3) ? "A+D" : "A+C"; // 350+370 : 350+500
                     GameManager.instance.damageCalculator.CalculateAndPrint();
                     damageValue = GameManager.instance.damageCalculator.result;
                 }
 
             }
 
-            
+
             // if (isBullet && !monster.monsterData.useWeakness)
             //         damageValue = 3;
 
@@ -334,7 +332,8 @@ public class PlayerAttackCheck : MonoBehaviour
 
             return true;
         }
-        else{
+        else
+        {
             if (isBullet) this.gameObject.SetActive(false);
             return false;
         }
@@ -486,7 +485,7 @@ public class PlayerAttackCheck : MonoBehaviour
         bool currentIsHit = Physics.Raycast(ray, out hit, 100f, layerMask);
 
         if (!currentIsHit) return;
-        
+
         P_Skills.GetBulletDir(hit.point - player.transform.position);
         transform.Translate(P_Skills.bulletDir * 10f);
 
@@ -530,7 +529,7 @@ public class PlayerAttackCheck : MonoBehaviour
         {
             P_Controller._currentState.colliderHit = true;
             monster = hit.collider.GetComponentInParent<Monster>();
-            
+
             if (monster == null)
             {
                 Debug.LogError("몬스터 : null");
