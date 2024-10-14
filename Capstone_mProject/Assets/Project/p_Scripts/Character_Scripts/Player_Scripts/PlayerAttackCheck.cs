@@ -285,13 +285,13 @@ public class PlayerAttackCheck : MonoBehaviour
 
                 if (P_Value.hits % 5 != 0)
                 {
-                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index > 3) ? "A+D" : "A+B"; // 350+370 : 350+125
+                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index + 1 > 3) ? "A+D" : "A+B"; // 350+370 : 350+125
                     GameManager.instance.damageCalculator.CalculateAndPrint();
                     damageValue = GameManager.instance.damageCalculator.result;
                 }
                 else if (P_Value.hits % 5 == 0 && P_Value.hits != 0)
                 {
-                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index > 3) ? "A+D" : "A+C"; // 350+370 : 350+500
+                    GameManager.instance.damageCalculator.damageExpression = (P_Value.index + 1 > 3) ? "A+D" : "A+C"; // 350+370 : 350+500
                     GameManager.instance.damageCalculator.CalculateAndPrint();
                     damageValue = GameManager.instance.damageCalculator.result;
                 }
