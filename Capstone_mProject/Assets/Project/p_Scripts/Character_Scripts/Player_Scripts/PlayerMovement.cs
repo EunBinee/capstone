@@ -298,8 +298,8 @@ public class PlayerMovement : MonoBehaviour
             && P_Value.Stamina - P_COption.dodgingStamina >= 0)
         {
             P_Skills.switchBullet(true); // 닷지 시작
-            P_States.isJumping = false;
             P_States.isDodgeing = true;
+            P_States.isJumping = false;
             // 기존 수직 속도 보존
             curVertVelocity = P_Com.rigidbody.velocity.y;
             P_Value.Stamina = P_Value.Stamina - P_COption.dodgingStamina;

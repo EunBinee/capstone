@@ -275,10 +275,11 @@ public class PlayerSkills : MonoBehaviour
     {
         if (!P_States.isGunMode || P_States.isDodgeing) return;
 
-        GunOnOff(!value);   //value = true = P_Com.animator.SetLayerWeight(1, 0f);
+        GunOnOff(!value);   //value = true => P_Com.animator.SetLayerWeight(1, 0f);
 
-        if (P_States.onZoomIn && value) ZoomOnOff(false);       // zoom off
-        else if (P_States.onZoomIn && !value) ZoomOnOff(true);  // zoom on
+        if (!P_States.onZoomIn) return;
+
+        ZoomOnOff(!value);  //value = true => zoom off
     }
 
     public void arrowSkillOff()
