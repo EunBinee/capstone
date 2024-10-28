@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SettingUI : MonoBehaviour
 {
@@ -22,7 +24,8 @@ public class SettingUI : MonoBehaviour
 
     public string mainSceneName = "StartMainScene";
 
-
+    private Selectable[] selectables; // UI에서 선택 가능한 버튼들
+    private int currentSelection = 0; // 현재 선택된 메뉴 항목의 인덱스
 
     void Start()
     {
@@ -31,13 +34,22 @@ public class SettingUI : MonoBehaviour
         SettingInit();
         SettingBtn();
         Michsky.UI.Reach.UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+
+        // UI에서 선택 가능한 버튼을 가져옵니다.
+        selectables = GetComponentsInChildren<Selectable>(); // 자식 오브젝트에서 Selectable 컴포넌트를 가져옴
+         // Debug: selectables 배열에 포함된 요소 출력하여 확인
+   
+        if (selectables.Length > 0 && !isMainScene)
+        {
+            EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject); // 기본 선택 버튼 설정
+        }
     }
 
     private void Update()
     {
         if (!isMainScene)
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && canAccess)
+            if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Setting")) && canAccess)
             {
                 if (hideSettingUI_co == null)
                     HideSettingUI();
@@ -45,11 +57,14 @@ public class SettingUI : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Escape) && canvasGroup.alpha == 1)
+            if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Setting")) && canvasGroup.alpha == 1)
             {
                 settingUIAnim.Play(panelFadeOut);
             }
         }
+        
+        // 조이스틱 입력 처리
+        HandleJoystickInput();
     }
 
     public void SettingInit()
@@ -221,5 +236,60 @@ public class SettingUI : MonoBehaviour
     public void resetPlayer()
     {
         GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
+    }
+
+    private void HandleJoystickInput()
+    {
+        if(!isMainScene)
+        {
+            float vertical = Input.GetAxis("Vertical");
+
+            float sliderValueAdjustment = 0.1f; // 슬라이더 조정 값
+
+            if (Mathf.Abs(vertical) > 4.5f) // 입력 감도 설정
+            {
+                if (vertical > 0)
+                {
+                    // 위로 이동
+                    currentSelection = (currentSelection - 1 + selectables.Length) % selectables.Length;
+                    EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
+                }
+                else
+                {
+                    // 아래로 이동
+                    currentSelection = (currentSelection + 1) % selectables.Length;
+                    EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
+                }
+            }
+
+
+            // B 버튼 입력 처리 (슬라이더 조정)
+            if (Input.GetButton("Submit")) // B 버튼이 눌렸을 때
+            {
+                // 현재 선택된 UI 요소가 슬라이더인지 확인
+                Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
+                Debug.Log(currentSlider);
+            
+                if (currentSlider != null)
+                {
+                    // 슬라이더 값 조정
+                    if (Input.GetAxis("Horizontal") > 0)
+                    {
+                        currentSlider.value += sliderValueAdjustment; // 값을 증가
+                    }
+                    else if (Input.GetAxis("Horizontal") < 0)
+                    {
+                        currentSlider.value -= sliderValueAdjustment; // 값을 감소
+                    }
+
+                    // 슬라이더의 범위를 제한 (예: 0에서 1까지)
+                    currentSlider.value = Mathf.Clamp(currentSlider.value, currentSlider.minValue, currentSlider.maxValue);
+                }
+
+            
+            }
+
+        }
+        
     }
 }

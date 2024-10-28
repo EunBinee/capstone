@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 //using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -113,7 +114,7 @@ public class mainStartScene : MonoBehaviour
     {
         if (showSettingPanel)
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Setting"))
             {
                 showSettingPanel = false;
                 settingUI.ChangeSettingValue();
@@ -121,6 +122,7 @@ public class mainStartScene : MonoBehaviour
                 mainStartSceneAnim.Play(panelFadeIn);
             }
         }
+        
     }
 
     public void SetButton()
