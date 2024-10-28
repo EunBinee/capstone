@@ -38,7 +38,7 @@ public class DialogueController : MonoBehaviour
     {
         if (startChat)
         {
-            if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0) || Input.GetButtonDown("Dialogue"))
             {
                 //Enter키를 누르면 애니메이션 중지하고, 바로 글씨 나오도록 하기 위함.
                 stopChat = true;

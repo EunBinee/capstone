@@ -138,6 +138,8 @@ public class SettingUI : MonoBehaviour
         {
             audioSource.volume = sfxValue;
         }
+        float uiValue = settingInfo.UIVolumeSlider.value * masterValue;
+        SoundManager.Instance.UIPlayer.volume = uiValue;
 
     }
 
