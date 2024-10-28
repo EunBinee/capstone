@@ -173,11 +173,11 @@ public class PlayerInputHandle : MonoBehaviour
 
     public float Key2Movement()
     {
-        if (P_KState.WDown)
+        if (P_KState.WDown || Input.GetAxis("Vertical") > 0)
         {
             P_Input.verticalMovement = 1;
         }
-        else if (P_KState.SDown)
+        else if (P_KState.SDown || Input.GetAxis("Vertical") < 0)
         {
             P_Input.verticalMovement = -1;
         }
@@ -185,11 +185,11 @@ public class PlayerInputHandle : MonoBehaviour
         {
             P_Input.verticalMovement = 0;
         }
-        if (P_KState.DDown)
+        if (P_KState.DDown || Input.GetAxis("Horizontal") > 0)
         {
             P_Input.horizontalMovement = 1;
         }
-        else if (P_KState.ADown)
+        else if (P_KState.ADown || Input.GetAxis("Horizontal") < 0)
         {
             P_Input.horizontalMovement = -1;
         }
@@ -200,11 +200,15 @@ public class PlayerInputHandle : MonoBehaviour
         return P_Input.verticalMovement + P_Input.horizontalMovement;
     }
 
+    /// <summary>
+    /// Joystick1Button0 = A
+    /// 
+    /// </summary>
     public void MouseClickInput()
     {
-        if (Input.GetMouseButtonDown(0) && !(P_States.isBowMode || P_States.isGunMode))    //* 누를 때 => 기본공격
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && !(P_States.isBowMode || P_States.isGunMode))    //* 누를 때 => 기본공격
         {   //* 마우스 클릭
-            if (P_States.isGround 
+            if (P_States.isGround
                 //&& !P_States.isGettingHit 
                 && !P_States.isDodgeing
                 && !P_States.isStop && !P_States.isElectricShock)
@@ -215,7 +219,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 원거리 
-        if (Input.GetMouseButtonDown(0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock && !P_States.onShootAim)
+        if ((Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Joystick1Button0)) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock && !P_States.onShootAim)
         {
             //Debug.Log("[player test] Input.GetMouseButtonDown(0) 다운");
             P_Value.aimClickDown = 0;
@@ -224,7 +228,7 @@ public class PlayerInputHandle : MonoBehaviour
             P_States.onShootAim = true;
             P_Com.animator.SetBool("onLeftClick", true);
         }
-        else if (Input.GetMouseButtonUp(0)) //endArrow가 false이면 활 o, true이면 x
+        else if (Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Joystick1Button0)) //endArrow가 false이면 활 o, true이면 x
         {
             //* 활모드일때 클릭업
             if (P_States.isClickDown && P_States.isBowMode && P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow && !endArrow)
@@ -259,9 +263,9 @@ public class PlayerInputHandle : MonoBehaviour
             // P_Movement.StopIdleMotion();
             // P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
-        
+
         //* 총모드일 때 꾹 누르고 있으면
-        if (Input.GetMouseButton(0) && P_States.isGunMode && P_States.onZoomIn && !P_States.isElectricShock)
+        if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Joystick1Button0)) && P_States.isGunMode && P_States.onZoomIn && !P_States.isElectricShock)
         {
             //Debug.Log("[player test] Input.GetMouseButton(0) 꾹");
             // 길게 누르고 있는 중
@@ -276,7 +280,7 @@ public class PlayerInputHandle : MonoBehaviour
             }
         }
         //* 활모드일 때 꾹 누르고 있으면
-        else if (Input.GetMouseButton(0) && P_States.isBowMode && !P_States.isElectricShock)
+        else if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Joystick1Button0)) && P_States.isBowMode && !P_States.isElectricShock)
         {
             // 길게 누르고 있는 중
             P_Value.aimClickDown += Time.deltaTime;
@@ -299,23 +303,25 @@ public class PlayerInputHandle : MonoBehaviour
             P_States.onShootAim = false;
             P_Com.animator.SetBool("onLeftClick", false);
         }
-        
-        //* 총모드일 때 우클릭 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
-        if (Input.GetMouseButton(1) && P_States.isGunMode && !P_States.onZoomIn)
+
+        //* 총모드일 때 우클릭(좌범퍼) 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
+        if ((Input.GetMouseButton(1) || Input.GetKey(KeyCode.Joystick1Button5)) && P_States.isGunMode && !P_States.onZoomIn)
         {
             P_States.onZoomIn = true;
             P_Com.animator.SetBool("onClickGun", true);
-            if (!setCam) {
+            if (!setCam)
+            {
                 setCam = true;
                 P_Skills.ZoomOnOff(true);
             }
         }
-        else if (Input.GetMouseButtonUp(1) && P_States.isGunMode && P_States.onZoomIn)
+        else if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Joystick1Button5)) && P_States.isGunMode && P_States.onZoomIn)
         {
             P_States.onZoomIn = false;
             P_Com.animator.SetBool("onClickGun", false);
-            
-            if (setCam) {
+
+            if (setCam)
+            {
                 setCam = false;
                 P_Skills.ZoomOnOff(false);
             }
@@ -324,7 +330,8 @@ public class PlayerInputHandle : MonoBehaviour
 
     public void SkillKeyInput()
     {
-        if (P_KState.VDown)  //* Bow Mode & Sword Mode
+        if (P_KState.VDown ||   //* Bow Mode & Sword Mode  
+                (Input.GetKey(KeyCode.Joystick1Button5) && Input.GetKey(KeyCode.Joystick1Button3))) // Joystick1Button5 = LBump / Joystick1Button3 = Y
         {
             P_KState.VDown = false;
             if (skill_V.imgCool.fillAmount == 0)
@@ -336,7 +343,7 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.skillMotion("ChangeWeapon", 'V');
             }
         }
-        if (P_KState.QDown && !P_States.isSkill)
+        if (P_KState.QDown && !P_States.isSkill)    // no use
         {
             if (skill_Q.imgCool.fillAmount == 0)
             {
@@ -345,7 +352,7 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[0]), 'Q');
             }
         }
-        if (P_KState.EDown && !P_States.isSkill)
+        if ((P_KState.EDown || Input.GetKey(KeyCode.Joystick1Button2)) && !P_States.isSkill)    // Joystick1Button2 = X
         {
             if (skill_E.imgCool.fillAmount == 0)
             {
@@ -354,7 +361,7 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.skillMotion(mapValueReturnKey(P_SkillInfo.selectSkill[1]), 'E');
             }
         }
-        if (P_KState.RDown && !P_States.isSkill)
+        if ((P_KState.RDown || Input.GetKey(KeyCode.Joystick1Button3)) && !P_States.isSkill)    // Joystick1Button3 = Y
         {
             if (skill_R.imgCool.fillAmount == 0)
             {
