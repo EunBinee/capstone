@@ -168,6 +168,7 @@ public class PlayerMovement : MonoBehaviour
             HandleWalkOrRun(); //HandleSprint();
 
             P_InputHandle.MouseMoveInput();
+            P_InputHandle.CameraMouseMoveInput();
 
             if (P_InputHandle.Key2Movement() > 0 || P_InputHandle.Key2Movement() < 0)
                 P_Com.animator.SetBool("isRun", true);
@@ -278,7 +279,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void HandleDodge()
     {
-        P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || (!P_States.isGunMode && Input.GetMouseButton(1)));
+        P_States.currentDodgeKeyPress = (Input.GetKey(KeyCode.LeftShift) || (!P_States.isGunMode && Input.GetMouseButton(1)))   // keymou
+                                        || Input.GetKey(KeyCode.Joystick1Button2);  //joy   
 
         if (P_States.previousDodgeKeyPress
             && P_States.currentDodgeKeyPress

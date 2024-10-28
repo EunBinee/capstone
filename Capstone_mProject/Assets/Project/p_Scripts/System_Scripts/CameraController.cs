@@ -225,8 +225,8 @@ public class CameraController : MonoBehaviour
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * Time.deltaTime;
-        up_down_LookAngle -= (playerController._input.mouseY * up_down_LookSpeed) * Time.deltaTime;
+        left_right_LookAngle += ((Input.GetAxis("DHorizontal") != 0 ? playerController._input.camMouseX : playerController._input.mouseX) * left_right_LookSpeed) * Time.deltaTime;
+        up_down_LookAngle -= ((Input.GetAxis("DVertical") != 0 ? playerController._input.camMouseY : playerController._input.mouseY) * up_down_LookSpeed) * Time.deltaTime;
 
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
 
@@ -470,7 +470,7 @@ public class CameraController : MonoBehaviour
             minZ = -0.9f; //벽 앞이라 Z값을 땡겼을때
             maxZ = -5f;
             minY = 1.2f; //Pivot의 Y값 고정
-                         //* 주목O Z값
+            //* 주목O Z값
             minZ_Attention = -0.9f; //벽 앞이라 Z값을 땡겼을때
             maxZ_Attention = -7f;
             minY_Attention = 1.4f; //벽 앞이라 Z값을 땡겼을때 Pivot의 Y값

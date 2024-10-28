@@ -30,6 +30,8 @@ public class PlayerInput
     public float horizontalMovement; //좌우
     public float mouseY;             //마우스 상하
     public float mouseX;             //마우스 좌우
+    public float camMouseY;             //마우스 상하
+    public float camMouseX;             //마우스 좌우
     public float jumpMovement;       //점프
 
 }
