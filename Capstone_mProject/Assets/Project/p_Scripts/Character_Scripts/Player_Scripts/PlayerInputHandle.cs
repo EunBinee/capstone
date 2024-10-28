@@ -315,7 +315,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 총모드일 때 우클릭(좌범퍼) 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
-        if ((Input.GetMouseButton(1) || Input.GetKey(KeyCode.Joystick1Button9)) && P_States.isGunMode && !P_States.onZoomIn)
+        if ((Input.GetMouseButton(1) || Input.GetAxis("L2Trigger") > 0) && P_States.isGunMode && !P_States.onZoomIn)
         {
             P_States.onZoomIn = true;
             P_Com.animator.SetBool("onClickGun", true);
@@ -325,7 +325,7 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.ZoomOnOff(true);
             }
         }
-        else if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.Joystick1Button9)) && P_States.isGunMode && P_States.onZoomIn)
+        else if ((Input.GetMouseButtonUp(1) || Input.GetAxis("L2Trigger") <= 0) && P_States.isGunMode && P_States.onZoomIn)
         {
             P_States.onZoomIn = false;
             P_Com.animator.SetBool("onClickGun", false);
