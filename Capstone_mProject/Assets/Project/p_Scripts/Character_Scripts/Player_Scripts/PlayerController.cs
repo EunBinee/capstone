@@ -150,6 +150,7 @@ public class PlayerController : MonoBehaviour
         //SetPlayerMaterials();
     }
 
+
     public void SetPlayerMaterials()
     {
         if (P_Com.skinnedMeshRenderers != null)

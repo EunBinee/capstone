@@ -7,6 +7,7 @@ using TMPro;
 // using TMPro;
 // using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 //using UnityEngine.UIElements;
 // using UnityEngine.EventSystems;     //UI 클릭시 터치 이벤트 발생 방지.
@@ -290,7 +291,7 @@ public class DialogueManager : MonoBehaviour
                     curContext++;
                     ClickChoiceBtn = false;
                 }
-                else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return))
+                else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return)||Input.GetButtonDown("Submit"))
                 {
                     //선택지가 없고 아직 문장이 끝나지 않은경우
                     DialogueUI_info.Text_Dialogue.text = "";
@@ -356,11 +357,21 @@ public class DialogueManager : MonoBehaviour
                         UnityEngine.UI.Button btn01 = DialogueUI_info.ObjectTextBox_Button01.GetComponent<UnityEngine.UI.Button>();
                         btn01.onClick.RemoveAllListeners();
 
+                        float joystickInput = Input.GetAxis("Horizontal"); // 조이스틱의 좌우 방향 입력 읽기
+                        if (joystickInput > 0.1f)
+                        {
+                            EventSystem.current.SetSelectedGameObject(DialogueUI_info.ObjectTextBox_Button02); // 두 번째 버튼 선택
+                        }
+                        else if (joystickInput < -0.1f)
+                        {
+                            EventSystem.current.SetSelectedGameObject(DialogueUI_info.ObjectTextBox_Button01); // 첫 번째 버튼 선택
+                        }
+                        EventSystem.current.SetSelectedGameObject(DialogueUI_info.ObjectTextBox_Button01);
                         //AddListener에 함수를 만들어 넣어줄 수 있지만..동적으로 계속 curPart가 변해야하기에..
                         //람다를 이용해서 익명함수를 만들어주었다.
                         btn01.onClick.AddListener(() =>
                         {
-                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return))// 아직 문장이 끝나지 않았다면
+                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return)||Input.GetButtonDown("Submit"))// 아직 문장이 끝나지 않았다면
                             {
                                 curPart = (firstOptDialogPart - 1); //curPart로 다음으로 넘어감. 
                                 curLine = 0;
@@ -378,7 +389,7 @@ public class DialogueManager : MonoBehaviour
                         btn02.onClick.RemoveAllListeners();
                         btn02.onClick.AddListener(() =>
                         {
-                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return))
+                            if (!Input.GetMouseButtonDown(0) || !Input.GetKeyDown(KeyCode.Return) ||Input.GetButtonDown("Submit"))
                             {
                                 curPart = (secondOptDialogPart - 1);
                                 curLine = 0;
@@ -455,7 +466,7 @@ public class DialogueManager : MonoBehaviour
 
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
+                    if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0) ||Input.GetButtonDown("Submit"))
                     {
                         DialogueUI_info.dialogueArrow.SetActive(false);
                         AllFinish = true;
