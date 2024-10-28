@@ -179,11 +179,11 @@ public class PlayerMovement : MonoBehaviour
             //* skills input
             P_InputHandle.SkillKeyInput();
 
-            if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false
-                && (P_Controller.curPlayerState == PlayerState.Idle || P_Controller.curPlayerState == PlayerState.FinishComboAttack))
-            {
-                StartIdleMotion(0);  //일반 대기 모션으로 
-            }
+            // if (P_States.isSkill == false && P_States.startAim == false && P_States.isStartComboAttack == false
+            //     && (P_Controller.curPlayerState == PlayerState.Idle || P_Controller.curPlayerState == PlayerState.FinishComboAttack))
+            // {
+            //     StartIdleMotion(0);  //일반 대기 모션으로 
+            // }
             //Clamp01 >> 0에서 1의 값을 돌려줍니다. value 인수가 0 이하이면 0, 이상이면 1입니다
             P_Value.moveAmount = Mathf.Clamp01(Mathf.Abs(P_Input.verticalMovement) + Mathf.Abs(P_Input.horizontalMovement) + P_Input.jumpMovement);
             if (P_Input.horizontalMovement == 0 && P_Input.verticalMovement == 0 && P_Input.jumpMovement == 0)
@@ -781,41 +781,41 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void StartIdleMotion(float value)
-    {
-        idleMotion_co = StartCoroutine(IdleMotion(value));
-    }
-    public void StopIdleMotion()
-    {
-        if (idleMotion_co != null)
-        {
-            StopCoroutine(idleMotion_co);
-        }
-    }
+    // public void StartIdleMotion(float value)
+    // {
+    //     idleMotion_co = StartCoroutine(IdleMotion(value));
+    // }
+    // public void StopIdleMotion()
+    // {
+    //     if (idleMotion_co != null)
+    //     {
+    //         StopCoroutine(idleMotion_co);
+    //     }
+    // }
 
-    IEnumerator IdleMotion(float value) // value = 1 쩍벌
-    {
-        if (value == 0) //가만히 두고 있다
-        {
-            float dTime = 0;
-            while (dTime < 5f)
-            {
-                dTime += Time.deltaTime;
-                yield return null;
-            }
-            //yield return new WaitForSeconds(5f);    //5초 뒤에 실행
-            while (P_Com.animator.GetFloat("Idle") > 0.0f && !P_States.isStartComboAttack && !P_States.startAim) //0.0f보다 값이 크고 공격을 하지 않았다면
-            {
-                P_Com.animator.SetFloat("Idle", value, 0.2f, Time.deltaTime);
-                yield return null;
-            }
-        }
-        else
-        {
-            P_Com.animator.SetFloat("Idle", value);
-        }
-        yield return null;
-    }
+    // IEnumerator IdleMotion(float value) // value = 1 쩍벌
+    // {
+    //     if (value == 0) //가만히 두고 있다
+    //     {
+    //         float dTime = 0;
+    //         while (dTime < 5f)
+    //         {
+    //             dTime += Time.deltaTime;
+    //             yield return null;
+    //         }
+    //         //yield return new WaitForSeconds(5f);    //5초 뒤에 실행
+    //         while (P_Com.animator.GetFloat("Idle") > 0.0f && !P_States.isStartComboAttack && !P_States.startAim) //0.0f보다 값이 크고 공격을 하지 않았다면
+    //         {
+    //             P_Com.animator.SetFloat("Idle", value, 0.2f, Time.deltaTime);
+    //             yield return null;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         P_Com.animator.SetFloat("Idle", value);
+    //     }
+    //     yield return null;
+    // }
 
 
     List<Collider> playerColliderList = new List<Collider>();

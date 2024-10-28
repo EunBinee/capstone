@@ -256,8 +256,8 @@ public class PlayerInputHandle : MonoBehaviour
 
             P_States.isClickDown = false;
             P_Value.aimClickDown = 0;
-            P_Movement.StopIdleMotion();
-            P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
+            // P_Movement.StopIdleMotion();
+            // P_Movement.StartIdleMotion(1);    //공격 대기 모션으로 
         }
         
         //* 총모드일 때 꾹 누르고 있으면
