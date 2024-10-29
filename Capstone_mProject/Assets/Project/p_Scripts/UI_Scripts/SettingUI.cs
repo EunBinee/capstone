@@ -26,7 +26,8 @@ public class SettingUI : MonoBehaviour
 
     private Selectable[] selectables; // UI에서 선택 가능한 버튼들
     private int currentSelection = 0; // 현재 선택된 메뉴 항목의 인덱스
-
+ // 각 슬라이더에 대한 인덱스를 저장하기 위한 리스트
+    private List<int> sliderIndices = new List<int>();
     void Start()
     {
         settingUIAnim = GetComponent<Animator>();
@@ -38,11 +39,21 @@ public class SettingUI : MonoBehaviour
         // UI에서 선택 가능한 버튼을 가져옵니다.
         selectables = GetComponentsInChildren<Selectable>(); // 자식 오브젝트에서 Selectable 컴포넌트를 가져옴
          // Debug: selectables 배열에 포함된 요소 출력하여 확인
-   
-        if (selectables.Length > 0 && !isMainScene)
+ // 각 슬라이더의 인덱스를 관리합니다.
+        for (int i = 0; i < selectables.Length; i++)
         {
-            EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject); // 기본 선택 버튼 설정
+            Slider slider = selectables[i].GetComponentInChildren<Slider>();
+            if (slider != null)
+            {
+                sliderIndices.Add(i); // 슬라이더 인덱스 추가
+            }
         }
+     
+        if (selectables.Length > 0 )
+        {
+            Debug.Log(selectables.Length);
+            EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject); // 기본 선택 버튼 설정
+        }        
     }
 
     private void Update()
@@ -63,8 +74,9 @@ public class SettingUI : MonoBehaviour
             }
         }
         
+        
         // 조이스틱 입력 처리
-        HandleJoystickInput();
+       HandleJoystickInput();
     }
 
     public void SettingInit()
@@ -238,41 +250,49 @@ public class SettingUI : MonoBehaviour
         GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
     }
 
-    private void HandleJoystickInput()
+    private bool isAdjustingSlider = false; // 슬라이더 조정 중인지 여부를 나타내는 변수
+      private void HandleJoystickInput()
     {
-        if(!isMainScene)
+        //float vertical = Input.GetAxis("Vertical");
+        float sliderValueAdjustment = 0.1f; // 슬라이더 조정 값
+        //float inputThreshold = 0.5f; // 입력 감도 기준
+
+
+        // // 슬라이더 조정 중이 아니면 메뉴 항목 선택
+        // if (!isAdjustingSlider)
+        // {
+        //     // 입력 감도가 기준치를 넘으면 처리
+        //     if (vertical > inputThreshold || vertical < -inputThreshold)
+        //     {
+        //         if (vertical > 0)
+        //         {
+        //             // 위로 이동
+        //             currentSelection = (currentSelection - 1 + selectables.Length) % selectables.Length;
+        //             EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
+        //         }
+        //         else
+        //         {
+        //             // 아래로 이동
+        //             currentSelection = (currentSelection + 1) % selectables.Length;
+        //             EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
+        //         }
+        //     }
+        // }
+
+        // B 버튼 입력 처리 (슬라이더 조정)
+        if (Input.GetButton("Submit")) // B 버튼이 눌렸을 때
         {
-            float vertical = Input.GetAxis("Vertical");
+            //Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
+            Debug.Log(currentSelection);
 
-            float sliderValueAdjustment = 0.1f; // 슬라이더 조정 값
-
-            if (Mathf.Abs(vertical) > 4.5f) // 입력 감도 설정
+            if (currentSelection < selectables.Length)
             {
-                if (vertical > 0)
-                {
-                    // 위로 이동
-                    currentSelection = (currentSelection - 1 + selectables.Length) % selectables.Length;
-                    EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
-                }
-                else
-                {
-                    // 아래로 이동
-                    currentSelection = (currentSelection + 1) % selectables.Length;
-                    EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject);
-                }
-            }
-
-
-            // B 버튼 입력 처리 (슬라이더 조정)
-            if (Input.GetButton("Submit")) // B 버튼이 눌렸을 때
-            {
-                // 현재 선택된 UI 요소가 슬라이더인지 확인
                 Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
-                Debug.Log(currentSlider);
-            
+                Debug.Log($"Current Selection: {currentSelection}");
                 if (currentSlider != null)
                 {
-                    // 슬라이더 값 조정
+                    isAdjustingSlider = true; // 슬라이더 조정 시작
+                                              // 슬라이더 값 조정
                     if (Input.GetAxis("Horizontal") > 0)
                     {
                         currentSlider.value += sliderValueAdjustment; // 값을 증가
@@ -282,14 +302,15 @@ public class SettingUI : MonoBehaviour
                         currentSlider.value -= sliderValueAdjustment; // 값을 감소
                     }
 
-                    // 슬라이더의 범위를 제한 (예: 0에서 1까지)
+                    // 슬라이더의 범위를 제한
                     currentSlider.value = Mathf.Clamp(currentSlider.value, currentSlider.minValue, currentSlider.maxValue);
                 }
-
-            
             }
-
+            else
+            {
+                // B 버튼이 눌리지 않으면 슬라이더 조정 중지
+                isAdjustingSlider = false;
+            }
         }
-        
     }
 }
