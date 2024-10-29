@@ -298,10 +298,6 @@ public class PlayerAttackCheck : MonoBehaviour
 
             }
 
-
-            // if (isBullet && !monster.monsterData.useWeakness)
-            //         damageValue = 3;
-
             // 20% 확률로 데미지에 100을 추가
             if (Random.value < 0.25f)
             {
@@ -309,6 +305,30 @@ public class PlayerAttackCheck : MonoBehaviour
             }
 
             //P_Value.damageOnHits = P_Value.damageOnHits + (int)damageValue;
+
+            //index = 0~4
+            switch (P_Value.index + 1)
+            {
+                case 1: //1타
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.25f, 2, 1);
+                    break;
+                case 2: //2타
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.25f, 2, 1);
+                    break;
+                case 3: //3타
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.4f, 3, 2);
+                    break;
+                case 4: //4타
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.5f, 4, 3);
+                    break;
+                case 5: //5타
+                    GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.5f, 4, 3);
+                    break;
+                default:
+                    break;
+            }
+            if (P_Value.index == 3)
+            GameManager.Instance.cameraController.cameraShake.ShakeCamera(0.2f, 2, 1);
 
             monster.GetDamage(damageValue, collisionPoint, otherQuaternion, HitWeakness);
 
