@@ -225,8 +225,10 @@ public class CameraController : MonoBehaviour
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        left_right_LookAngle += ((Input.GetAxis("DHorizontal") != 0 ? playerController._input.camMouseX : playerController._input.mouseX) * left_right_LookSpeed) * Time.deltaTime;
-        up_down_LookAngle -= ((Input.GetAxis("DVertical") != 0 ? playerController._input.camMouseY : playerController._input.mouseY) * up_down_LookSpeed) * Time.deltaTime;
+        left_right_LookAngle += ((Input.GetAxis("DHorizontal") != 0 ? playerController._input.camMouseX * 3
+                                            : playerController._input.mouseX) * left_right_LookSpeed) * Time.deltaTime;
+        up_down_LookAngle -= ((Input.GetAxis("DVertical") != 0 ? playerController._input.camMouseY * 3
+                                            : playerController._input.mouseY) * up_down_LookSpeed) * Time.deltaTime;
 
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, minPivot, maxPivot); //위아래 고정
 
@@ -520,8 +522,8 @@ public class CameraController : MonoBehaviour
     private void AimCameraSetZ()
     {
         Vector3 cameraSetVec;// = new Vector3(0.55f, 0.2f, -2.0f);
-        //if (playerController._currentState.onZoomIn)
-            cameraSetVec = new Vector3(0.5f, 0.12f, -0.65f);
+                             //if (playerController._currentState.onZoomIn)
+        cameraSetVec = new Vector3(0.5f, 0.12f, -0.65f);
 
         cameraObj.transform.localPosition = cameraSetVec;
     }
