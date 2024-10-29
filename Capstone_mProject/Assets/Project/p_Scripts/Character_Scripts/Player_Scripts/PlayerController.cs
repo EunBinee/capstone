@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
     //* 쉐이더 블링크 관련
     public float blinkDuration = 1f; // 블링크 지속 시간
-    private float maxIntensity = 0.25f;
+    private float maxIntensity = 0.45f;
 
     public Material[] m_material;
     Coroutine changeMaterial_co = null;
@@ -326,7 +326,7 @@ public class PlayerController : MonoBehaviour
         //ChestDir = hit.point - this.transform.position;
 
         spine.LookAt(ChestDir); //상체를 카메라 보는방향으로 보기
-        
+
         spine.rotation = spine.rotation * Quaternion.Euler(ChestOffset); // 상체가 꺽여 잇어 상체로테이션을 보정하기 
 
         lastRotation = spine.rotation;
@@ -443,7 +443,8 @@ public class PlayerController : MonoBehaviour
     }
 
     //private float staminaChargeTime = 0;
-    IEnumerator StaminaCharge(){
+    IEnumerator StaminaCharge()
+    {
         while (true)
         {
             yield return new WaitUntil(() => P_Value.Stamina < P_Value.MaxStamina);
@@ -644,9 +645,9 @@ public class PlayerController : MonoBehaviour
         transform.position = Vector3.Lerp(transform.position, KnockBackPos, 5 * Time.deltaTime);
 
         isGettingHit = false;
-        
+
         if (P_States.onZoomIn) P_Skills.switchBullet(false);
-        
+
         yield return null;
     }
 
