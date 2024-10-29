@@ -196,6 +196,11 @@ public class MonsterPattern_Boss_Abyss : MonsterPattern_Boss
             DirectFirstAppearance_TimeLine();
         }
 
+        if (Input.GetButtonDown("Skip")) // 스킵 키매핑
+        {
+            Button_Controller.instance.skipBtn.onClick.Invoke();
+        }
+
         //* -----------------------------------------------------------------------------//
         if (Input.GetKeyDown(KeyCode.H))
         {

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class FinishUI : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class FinishUI : MonoBehaviour
     public Michsky.UI.Reach.ButtonManager gototheMainSceneBtn;
     public Michsky.UI.Reach.ButtonManager restartBtn;
 
+     private int currentSelection = 0; // 현재 선택된 버튼의 인덱스
+
     void Start()
     {
         settingUIAnim = GetComponent<Animator>();
@@ -19,6 +22,31 @@ public class FinishUI : MonoBehaviour
         SettingInit();
         SettingBtn();
         Michsky.UI.Reach.UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
+    }
+
+      void Update()
+    {
+        // 조이스틱 입력을 확인하여 포커스를 이동
+        float verticalInput = Input.GetAxis("Vertical");
+        if (verticalInput > 0.5f)
+        {
+            currentSelection = 0; // 첫 번째 버튼으로 선택
+            EventSystem.current.SetSelectedGameObject(gototheMainSceneBtn.gameObject);
+        }
+        else if (verticalInput < -0.5f)
+        {
+            currentSelection = 1; // 두 번째 버튼으로 선택
+            EventSystem.current.SetSelectedGameObject(restartBtn.gameObject);
+        }
+
+        // B 버튼으로 클릭 처리
+        if (Input.GetButtonDown("Submit"))
+        {
+            if (EventSystem.current.currentSelectedGameObject != null)
+            {
+                EventSystem.current.currentSelectedGameObject.GetComponent<Michsky.UI.Reach.ButtonManager>().onClick.Invoke();
+            }
+        }
     }
 
     void SettingBtn()
