@@ -25,6 +25,4 @@ public class SettingInfo
     public Slider sfxVolumeSlider;
     public Slider UIVolumeSlider;
 
-
-
 }
