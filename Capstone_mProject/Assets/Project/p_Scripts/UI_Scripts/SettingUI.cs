@@ -282,35 +282,30 @@ public class SettingUI : MonoBehaviour
         // B 버튼 입력 처리 (슬라이더 조정)
         if (Input.GetButton("Submit")) // B 버튼이 눌렸을 때
         {
-            //Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
+            Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
             Debug.Log(currentSelection);
 
-            if (currentSelection < selectables.Length)
+            if (currentSlider != null)
             {
-                Slider currentSlider = selectables[currentSelection].GetComponentInChildren<Slider>();
-                Debug.Log($"Current Selection: {currentSelection}");
-                if (currentSlider != null)
+                isAdjustingSlider = true; // 슬라이더 조정 시작
+                // 슬라이더 값 조정
+                if (Input.GetAxis("Horizontal") > 0)
                 {
-                    isAdjustingSlider = true; // 슬라이더 조정 시작
-                                              // 슬라이더 값 조정
-                    if (Input.GetAxis("Horizontal") > 0)
-                    {
-                        currentSlider.value += sliderValueAdjustment; // 값을 증가
-                    }
-                    else if (Input.GetAxis("Horizontal") < 0)
-                    {
-                        currentSlider.value -= sliderValueAdjustment; // 값을 감소
-                    }
-
-                    // 슬라이더의 범위를 제한
-                    currentSlider.value = Mathf.Clamp(currentSlider.value, currentSlider.minValue, currentSlider.maxValue);
+                    currentSlider.value += sliderValueAdjustment; // 값을 증가
                 }
+                else if (Input.GetAxis("Horizontal") < 0)
+                {
+                    currentSlider.value -= sliderValueAdjustment; // 값을 감소
+                }
+
+                // 슬라이더의 범위를 제한
+                currentSlider.value = Mathf.Clamp(currentSlider.value, currentSlider.minValue, currentSlider.maxValue);
             }
-            else
-            {
-                // B 버튼이 눌리지 않으면 슬라이더 조정 중지
-                isAdjustingSlider = false;
-            }
+        }
+        else
+        {
+            // B 버튼이 눌리지 않으면 슬라이더 조정 중지
+            isAdjustingSlider = false;
         }
     }
 }
