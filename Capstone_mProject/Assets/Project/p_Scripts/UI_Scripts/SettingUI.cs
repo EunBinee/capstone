@@ -65,7 +65,7 @@ public class SettingUI : MonoBehaviour
         
         
         // 조이스틱 입력 처리
-       HandleJoystickInput();
+       //HandleJoystickInput();
     }
 
     public void SettingInit()
