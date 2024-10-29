@@ -108,7 +108,7 @@ public class CameraController : MonoBehaviour
             //*주목
             if (GameManager.instance.monsterUnderAttackList.Count > 0 && !banAttention) // - 현재 플레이어와 싸우고 있는 몬스터가 있고.
             {
-                if (Input.GetMouseButtonUp(2)) //* 다른 몬스터로 주목 옮김
+                if (Input.GetMouseButtonUp(2) || Input.GetButtonDown("Attention")) //* 다른 몬스터로 주목 옮김
                 {
                     if (!isBeingAttention) // - 만약에 아무것도 주목이 안되어잇는상태면?
                     {
@@ -120,7 +120,7 @@ public class CameraController : MonoBehaviour
                         UndoAttention();
                     }
                 }
-                if (Input.GetKeyDown(KeyCode.Tab)) //* 다른 몬스터로 주목 옮김
+                if (Input.GetKeyDown(KeyCode.Tab)|| Input.GetButtonDown("Attention")) //* 다른 몬스터로 주목 옮김
                 {
                     if (isBeingAttention) // 주목되있는 상태라면?
                     {
@@ -133,10 +133,10 @@ public class CameraController : MonoBehaviour
                 }
             }
             //* 조준모드
-            if (Input.GetKeyDown(KeyCode.F4))
-            {
-                SetAimCamera();
-            }
+            // if (Input.GetKeyDown(KeyCode.F4))
+            // {
+            //     SetAimCamera();
+            // }
 
             //* 마우스 휠 줌인줌아웃
             float scroll = -Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
