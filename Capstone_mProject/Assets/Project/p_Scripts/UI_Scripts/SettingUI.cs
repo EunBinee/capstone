@@ -24,9 +24,10 @@ public class SettingUI : MonoBehaviour
 
     public string mainSceneName = "StartMainScene";
 
-    private Selectable[] selectables; // UI에서 선택 가능한 버튼들
-    private int currentSelection = 0; // 현재 선택된 메뉴 항목의 인덱스
- 
+    private int currentIndex = 0;   // 현재 선택된 UI 요소의 인덱스
+    private bool isSliderSelected = false;
+    private Slider[] sliders; // 슬라이더 요소 저장
+
     void Start()
     {
         settingUIAnim = GetComponent<Animator>();
@@ -35,14 +36,16 @@ public class SettingUI : MonoBehaviour
         SettingBtn();
         Michsky.UI.Reach.UIManagerAudio.instance.audioSource = SoundManager.instance.UIPlayer;
 
-        // UI에서 선택 가능한 버튼을 가져옵니다.
-        selectables = GetComponentsInChildren<Selectable>(); // 자식 오브젝트에서 Selectable 컴포넌트를 가져옴
-     
-        if (selectables.Length > 0 )
+         sliders = new Slider[]
         {
-            EventSystem.current.SetSelectedGameObject(selectables[currentSelection].gameObject); // 기본 선택 버튼 설정
-        }        
-
+            settingInfo.slider_CameraSensitivity,
+            settingInfo.masterVolumeSlider,
+            settingInfo.BGMVolumeSlider,
+            settingInfo.sfxVolumeSlider,
+            settingInfo.UIVolumeSlider,
+        };
+         //초기 선택 요소 설정
+        EventSystem.current.SetSelectedGameObject(sliders[currentIndex].gameObject);
     }
 
     private void Update()
@@ -65,7 +68,8 @@ public class SettingUI : MonoBehaviour
         
         
         // 조이스틱 입력 처리
-       //HandleJoystickInput();
+        HandleSelection();
+
     }
 
     public void SettingInit()
@@ -138,7 +142,6 @@ public class SettingUI : MonoBehaviour
     //* 오디오의 소리 조절
     public void SettingVolume()
     {
-
         float masterValue = settingInfo.masterVolumeSlider.value;
 
         float bgmValue = settingInfo.BGMVolumeSlider.value * masterValue;
@@ -157,6 +160,7 @@ public class SettingUI : MonoBehaviour
         float uiValue = settingInfo.UIVolumeSlider.value * masterValue;
         SoundManager.Instance.UIPlayer.volume = uiValue;
 
+        Debug.Log(masterValue);
     }
 
     void SettingBtn()
@@ -238,12 +242,65 @@ public class SettingUI : MonoBehaviour
     {
         GameManager.Instance.gameData.player.GetComponent<PlayerController>().PlayerSetting();
     }
-    private void HandleJoystickInput()
+
+    void HandleSelection()
     {
-        
+        if (Input.GetButtonDown("Submit"))
+        {
+            GameObject selectedObject = EventSystem.current.currentSelectedGameObject;
 
+            if (selectedObject != null)
+            {
+                // 기본값으로 false 설정
+                isSliderSelected = false;
 
+                // 현재 선택된 슬라이더와 비교
+                for (int i = 0; i < sliders.Length; i++)
+                {
+                    if (selectedObject.name == sliders[i].gameObject.transform.parent.name)
+                    {
+                        currentIndex = i; // 현재 선택된 슬라이더의 인덱스로 업데이트
+                        isSliderSelected = true; // 슬라이더가 선택된 경우 true로 설정
+                        break;
+                    }
+                }
+
+                // 슬라이더가 선택된 경우에만 이벤트 실행
+                if (isSliderSelected)
+                {
+                    ExecuteEvents.Execute(selectedObject, new BaseEventData(EventSystem.current), ExecuteEvents.submitHandler);
+                }
+
+                Debug.Log("Slider selected: " + isSliderSelected);
+                Debug.Log("Selected object name: " + selectedObject.name);
+            }
+        }
+
+        // 슬라이더 값 조정
+        if (isSliderSelected)
+        {
+            HandleSliderAdjustment();
+        }
     }
 
+    void HandleSliderAdjustment()
+    {
+        // 슬라이더의 현재 인덱스를 사용
+        Slider currentSlider = sliders[currentIndex];
+        Debug.Log(currentSlider.transform.parent.name);
+        if (currentSlider != null)
+        {
+            float adjustment = Input.GetAxis("Horizontal"); // 조이스틱 또는 D-Pad의 수평 입력
+            
+            // 조정 스케일 (조정 민감도)
+            float sensitivityScale = 0.2f; // 필요에 따라 조정 가능
+           // Debug.Log( currentSlider.value);
+            // 슬라이더 값 업데이트 (최소값과 최대값을 설정)
+            float newValue = currentSlider.value + adjustment * sensitivityScale;
+            currentSlider.value = Mathf.Clamp(newValue, currentSlider.minValue, currentSlider.maxValue);
+
+            Debug.Log(currentSlider.value);
+        }
+    }
 
 }

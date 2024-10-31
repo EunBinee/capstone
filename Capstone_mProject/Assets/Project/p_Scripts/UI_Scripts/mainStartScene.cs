@@ -42,6 +42,9 @@ public class mainStartScene : MonoBehaviour
     //public string defaultcurSelectSceneName = "StartScene 1";
     public string defaultcurSelectSceneName = "FieldMap01";
 
+    private GameObject[] buttons;   // 네비게이션 할 버튼 배열
+    private int currentIndex = 0;   // 현재 선택된 버튼의 인덱스
+
     void Start()
     {
         mainStartSceneAnim.Play(panelFadeIn);
@@ -49,6 +52,10 @@ public class mainStartScene : MonoBehaviour
         SetButton();
         sceneList = new List<mainSceneName>();
         selectColor = GameManager.Instance.HexToColor("#FF8C80");
+
+        buttons = new GameObject[] { startBtnManager.gameObject,settingBtnManager.gameObject, exitBtnManager.gameObject};
+        // 초기 선택 버튼 설정
+        EventSystem.current.SetSelectedGameObject(buttons[currentIndex]);
 
         //!! 리스트로 씬 이름 받기!!
         if (curSelectSceneNameList.Count <= 0)
