@@ -21,20 +21,21 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_QuadrapedMechCockpit
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: 4800000, guid: 766736548846cdf459a9766614dcccab, type: 3}
   m_ValidKeywords:
   - _EMISSION
-  - _METALLICSPECGLOSSMAP
-  - _NORMALMAP
-  - _OCCLUSIONMAP
-  m_InvalidKeywords:
-  - _
   - _EMISSIVE_SIMPLE
   - _IS_ANGELRING_OFF
   - _IS_CLIPPING_OFF
   - _IS_OUTLINE_CLIPPING_NO
-  - _METALLICGLOSSMAP
+  - _METALLICSPECGLOSSMAP
   - _OUTLINE_NML
+  m_InvalidKeywords:
+  - _
+  - _METALLICGLOSSMAP
+  - _MatCap
+  - _NORMALMAP
+  - _OCCLUSIONMAP
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -47,7 +48,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _1st_ShadeMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6adcb6b8167218740b91dfb75b4c905a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _2nd_ShadeMap:
@@ -91,7 +92,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emissive_Tex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: b7af12133dbd5094ea4be8fdf1c42f77, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _HighColor_Tex:
@@ -103,7 +104,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MatCap_Sampler:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 52c6bbef5cf9f95469012029cd316718, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -115,7 +116,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMapForMatCap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 6adcb6b8167218740b91dfb75b4c905a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -225,7 +226,7 @@ Material:
     - _Is_BLD: 0
     - _Is_BakedNormal: 0
     - _Is_BlendAddToHiColor: 0
-    - _Is_BlendAddToMatCap: 1
+    - _Is_BlendAddToMatCap: 0
     - _Is_BlendBaseColor: 0
     - _Is_ColorShift: 0
     - _Is_Filter_HiCutPointLightColor: 1
@@ -239,7 +240,7 @@ Material:
     - _Is_LightColor_MatCap: 1
     - _Is_LightColor_Outline: 1
     - _Is_LightColor_RimLight: 1
-    - _Is_NormalMapForMatCap: 0
+    - _Is_NormalMapForMatCap: 1
     - _Is_NormalMapToBase: 0
     - _Is_NormalMapToHighColor: 0
     - _Is_NormalMapToRimLight: 0
@@ -252,7 +253,7 @@ Material:
     - _Is_ViewCoord_Scroll: 0
     - _Is_ViewShift: 0
     - _LightDirection_MaskOn: 0
-    - _MatCap: 0
+    - _MatCap: 1
     - _Metallic: 0
     - _Mode: 0
     - _Nearest_Distance: 0.5
@@ -267,8 +268,8 @@ Material:
     - _ReceiveShadows: 1
     - _RimLight: 0
     - _RimLight_FeatherOff: 0
-    - _RimLight_InsideMask: 0.0001
-    - _RimLight_Power: 0.1
+    - _RimLight_InsideMask: 0.3
+    - _RimLight_Power: 0.7
     - _Rotate_EmissiveUV: 0
     - _Rotate_MatCapUV: 0
     - _Rotate_NormalMapForMatCapUV: 0
@@ -330,7 +331,7 @@ Material:
     - _HighColor: {r: 0, g: 0, b: 0, a: 1}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
     - _Outline_Color: {r: 0, g: 0, b: 0, a: 1}
-    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimLightColor: {r: 0.34117648, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _ViewShift: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

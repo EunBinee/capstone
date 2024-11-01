@@ -268,10 +268,10 @@ public class PlayerMovement : MonoBehaviour
 
     private bool returnDodgeAnim()
     {
-        if (P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Front")
-        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Back")
-        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Left")
-        || P_Com.animator.GetCurrentAnimatorStateInfo(1).IsName("Right"))
+        if (P_Com.animator.GetCurrentAnimatorStateInfo(2).IsName("Front")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(2).IsName("Back")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(2).IsName("Left")
+        || P_Com.animator.GetCurrentAnimatorStateInfo(2).IsName("Right"))
         {
             return true;
         }

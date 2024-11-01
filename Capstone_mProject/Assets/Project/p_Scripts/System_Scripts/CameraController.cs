@@ -548,7 +548,8 @@ public class CameraController : MonoBehaviour
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        up_down_LookAngle -= (playerController._input.mouseY * up_down_LookSpeed) * 0.4f * Time.deltaTime;
+        up_down_LookAngle -= ((Input.GetAxis("DVertical") != 0 ? playerController._input.camMouseY * 3
+                                            : playerController._input.mouseY) * up_down_LookSpeed) * 0.4f * Time.deltaTime;
 
         up_down_LookAngle = Mathf.Clamp(up_down_LookAngle, -40, maxPivot); //위아래 고정
         //위아래 => cameraPivot
@@ -560,10 +561,11 @@ public class CameraController : MonoBehaviour
     //* 좌우 카메라
     private void AimCameraLeftRightRotate()
     {
-        //마우스 방향에 따른 카메라 방향
+        //마우스 방향에 따른 카메라 방향 
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        left_right_LookAngle += (playerController._input.mouseX * left_right_LookSpeed) * 0.4f * Time.deltaTime;
+        left_right_LookAngle += ((Input.GetAxis("DHorizontal") != 0 ? playerController._input.camMouseX * 3
+                                            : playerController._input.mouseX) * left_right_LookSpeed) * 0.4f * Time.deltaTime;
 
         //좌우 => playerCamera
         cameraRot = Vector3.zero;
@@ -577,7 +579,8 @@ public class CameraController : MonoBehaviour
         //마우스 방향에 따른 카메라 방향
         Vector3 cameraRot;
         Quaternion targetCameraRot;
-        left_right_LookAngle += playerController._input.mouseX * left_right_LookSpeed * Time.deltaTime;
+        left_right_LookAngle += ((Input.GetAxis("DHorizontal") != 0 ? playerController._input.camMouseX * 3
+                                            : playerController._input.mouseX) * left_right_LookSpeed) * Time.deltaTime;
 
         cameraRot = Vector3.zero;
         cameraRot.y = left_right_LookAngle;
