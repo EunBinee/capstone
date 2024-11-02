@@ -18,7 +18,7 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
 
     public GameObject wreckage_obj; //실제 게임에서 사용될 잔해물 오브젝트
 
-    bool findPlayer = false;
+    //bool findPlayer = false;
     public float skillRadius = 10;
 
     Transform bossNeck;
@@ -27,12 +27,12 @@ public class Boss_Abyss_Skill03 : MonoBehaviour
     Transform[] muzzlesR;
     Transform[] muzzlePos;
 
-    float skillTime = 0;
+    //float skillTime = 0;
     bool canFire = false;
 
-    List<Quaternion> muzzleL_OriginQ = null;
-    List<Quaternion> muzzleR_OriginQ = null;
-    Quaternion originChildWorldRot = Quaternion.identity;
+    //List<Quaternion> muzzleL_OriginQ = null;
+    //List<Quaternion> muzzleR_OriginQ = null;
+    //Quaternion originChildWorldRot = Quaternion.identity;
 
     Coroutine skill03_co = null;
 

@@ -84,7 +84,7 @@ public class StoryBG : MonoBehaviour
         yield return new WaitUntil(() => Input.anyKeyDown);
         int i = 0;
         string writerText = "";
-        string sentence = "";
+        //string sentence = "";
         string preSentence = "";
         while (i < storyList.Count)
         {

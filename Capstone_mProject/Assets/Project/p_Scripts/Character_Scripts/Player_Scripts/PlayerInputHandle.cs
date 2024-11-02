@@ -229,7 +229,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 원거리 
-        if ((Input.GetMouseButtonDown(0) || Input.GetButtonDown("Fire")) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock && !P_States.onShootAim)
+        if ((Input.GetMouseButtonDown(0) || Input.GetAxis("Fire") > 0) && (P_States.isBowMode || P_States.isGunMode) && !P_States.isElectricShock && !P_States.onShootAim)
         {
             //Debug.Log("[player test] Input.GetMouseButtonDown(0) 다운");
             P_Value.aimClickDown = 0;
@@ -238,7 +238,7 @@ public class PlayerInputHandle : MonoBehaviour
             P_States.onShootAim = true;
             P_Com.animator.SetBool("onLeftClick", true);
         }
-        else if (Input.GetMouseButtonUp(0) || Input.GetButtonUp("Fire")) //endArrow가 false이면 활 o, true이면 x
+        else if (Input.GetMouseButtonUp(0) || Input.GetAxis("Fire") <= 0) //endArrow가 false이면 활 o, true이면 x
         {
             //* 활모드일때 클릭업
             if (P_States.isClickDown && P_States.isBowMode && P_Value.aimClickDown <= 0.25f && !P_States.isShortArrow && !endArrow)
@@ -275,7 +275,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 총모드일 때 꾹 누르고 있으면
-        if ((Input.GetMouseButton(0) || Input.GetButton("Fire")) && P_States.isGunMode && P_States.onZoomIn && !P_States.isElectricShock)
+        if ((Input.GetMouseButton(0) || Input.GetAxis("Fire") > 0) && P_States.isGunMode && P_States.onZoomIn && !P_States.isElectricShock)
         {
             //Debug.Log("[player test] Input.GetMouseButton(0) 꾹");
             // 길게 누르고 있는 중
@@ -290,7 +290,7 @@ public class PlayerInputHandle : MonoBehaviour
             }
         }
         //* 활모드일 때 꾹 누르고 있으면
-        else if ((Input.GetMouseButton(0) || Input.GetButton("Fire")) && P_States.isBowMode && !P_States.isElectricShock)
+        else if ((Input.GetMouseButton(0) || Input.GetAxis("Fire") > 0) && P_States.isBowMode && !P_States.isElectricShock)
         {
             // 길게 누르고 있는 중
             P_Value.aimClickDown += Time.deltaTime;
@@ -315,7 +315,7 @@ public class PlayerInputHandle : MonoBehaviour
         }
 
         //* 총모드일 때 우클릭(좌범퍼) 누르고 있으면 -> 변수 설정(속도 감소) + 줌인
-        if ((Input.GetMouseButton(1) || Input.GetButton("Aim")) && P_States.isGunMode && !P_States.onZoomIn)
+        if ((Input.GetMouseButton(1) || Input.GetAxis("Aim") > 0) && P_States.isGunMode && !P_States.onZoomIn)
         {
             P_States.onZoomIn = true;
             P_Com.animator.SetBool("onClickGun", true);
@@ -325,7 +325,7 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.ZoomOnOff(true);
             }
         }
-        else if ((Input.GetMouseButtonUp(1) || Input.GetButtonUp("Aim")) && P_States.isGunMode && P_States.onZoomIn)
+        else if ((Input.GetMouseButtonUp(1) || Input.GetAxis("Aim") <= 0) && P_States.isGunMode && P_States.onZoomIn)
         {
             P_States.onZoomIn = false;
             P_Com.animator.SetBool("onClickGun", false);

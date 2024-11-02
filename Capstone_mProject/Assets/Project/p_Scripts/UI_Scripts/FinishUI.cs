@@ -13,7 +13,7 @@ public class FinishUI : MonoBehaviour
     public Michsky.UI.Reach.ButtonManager gototheMainSceneBtn;
     public Michsky.UI.Reach.ButtonManager restartBtn;
 
-     private int currentSelection = 0; // 현재 선택된 버튼의 인덱스
+    private int currentSelection = 0; // 현재 선택된 버튼의 인덱스
 
     void Start()
     {
@@ -27,7 +27,7 @@ public class FinishUI : MonoBehaviour
       void Update()
     {
         // 조이스틱 입력을 확인하여 포커스를 이동
-        float verticalInput = Input.GetAxis("Vertical");
+        float verticalInput = Input.GetAxis("JVertical");
         if (verticalInput > 0.5f)
         {
             currentSelection = 0; // 첫 번째 버튼으로 선택
