@@ -45,6 +45,13 @@ public class mainStartScene : MonoBehaviour
     private GameObject[] buttons;   // 네비게이션 할 버튼 배열
     private int currentIndex = 0;   // 현재 선택된 버튼의 인덱스
 
+    public UnityEngine.UI.Image blinkImg;
+    public float blinkSpeed = 0.1f; //클수록 느리고 작을수록 빠름. 
+    public UnityEngine.UI.Image moveImg; // 이동하는 이미지
+    public GameObject[] targetObjects; // 위치를 담을 빈 오브젝트 배열
+    public Vector3[] positions; // 이동할 위치 배열
+    public float moveDuration = 8f; // 이동 시간
+    //public float fadeDuration = 6.5f; // 사라지는 시간
     void Start()
     {
         mainStartSceneAnim.Play(panelFadeIn);
@@ -115,6 +122,13 @@ public class mainStartScene : MonoBehaviour
                 curSceneIndex = 0;
             }
         }
+        // 빈 오브젝트의 위치를 positions 배열에 담기
+        positions = new Vector3[targetObjects.Length];
+        for (int i = 0; i < targetObjects.Length; i++)
+        {
+            positions[i] = targetObjects[i].transform.position;
+        }
+        StartCoroutine(HandleImageMovement());
     }
 
     void Update()
@@ -129,7 +143,11 @@ public class mainStartScene : MonoBehaviour
                 mainStartSceneAnim.Play(panelFadeIn);
             }
         }
-        
+
+        float alpha = (Mathf.Sin(Time.unscaledTime * blinkSpeed) + 1) / 2.0f; // 0 ~ 1로 변환
+        Color color = blinkImg.color;
+        color.a = alpha;
+        blinkImg.color = color;
     }
 
     public void SetButton()
@@ -157,5 +175,58 @@ public class mainStartScene : MonoBehaviour
     public void InputcurSelectSceneName()
     {
         noticeText.text = $"이동할 씬 이름은 [ {curSelectSceneName} ]입니다.";
+    }
+
+    private IEnumerator HandleImageMovement()
+    {
+        while (true) // 무한 루프
+        {
+            foreach (Vector3 targetPos in positions)
+            {
+                yield return StartCoroutine(MoveToPosition(targetPos));
+            }
+        }
+    }
+
+   private IEnumerator MoveToPosition(Vector3 targetPos)
+    {
+        Vector3 startPos = moveImg.transform.position;
+        float elapsedTime = 0f;
+        Color color = moveImg.color;
+
+        // 이동 및 알파 값 조정
+        while (elapsedTime < moveDuration)
+        {
+            float t = elapsedTime / moveDuration; // [0, 1] 사이의 비율
+            moveImg.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            
+            // 이동하는 동안 알파 값을 조절 (최초에만 적용)
+            if (targetPos != positions[0]) // 처음 위치가 아닐 때만 페이드 아웃
+            {
+                color.a = Mathf.Lerp(1, 0, t); // 알파 값을 이동하는 동안 조절
+            }
+            
+            moveImg.color = color;
+
+            elapsedTime += Time.unscaledDeltaTime; // 경과 시간 증가
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        // 최종 위치 설정
+        moveImg.transform.position = targetPos;
+
+        // 마지막 위치에 도달할 때
+        if (targetPos == positions[positions.Length - 1]) // 마지막 위치에 도달할 때
+        {
+            // 즉시 알파 값을 0으로 설정하여 사라지게 함
+            color.a = 0; 
+            moveImg.color = color;
+        }
+        else
+        {
+            // 다른 위치에 도달했을 때는 알파 값을 1로 설정 (옵션)
+            color.a = 1; 
+            moveImg.color = color;
+        }
     }
 }
