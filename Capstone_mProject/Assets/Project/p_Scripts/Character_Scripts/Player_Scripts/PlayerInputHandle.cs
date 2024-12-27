@@ -325,7 +325,8 @@ public class PlayerInputHandle : MonoBehaviour
                 P_Skills.ZoomOnOff(true);
             }
         }
-        else if ((Input.GetMouseButtonUp(1) || Input.GetAxis("Aim") <= 0) && P_States.isGunMode && P_States.onZoomIn)
+        else if (Input.GetMouseButtonUp(1) //|| Input.GetAxis("Aim") <= 0) 
+            && P_States.isGunMode && P_States.onZoomIn)
         {
             P_States.onZoomIn = false;
             P_Com.animator.SetBool("onClickGun", false);
