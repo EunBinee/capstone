@@ -77,6 +77,9 @@
                 outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
                 outSurfaceData.occlusion = SampleOcclusion(uv);
                 outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
+
+                outSurfaceData.clearCoatMask = 0.0h;
+                outSurfaceData.clearCoatSmoothness = 0.0h;
             }
             half3 GlobalIlluminationUTS(BRDFData brdfData, half3 bakedGI, half occlusion, half3 normalWS, half3 viewDirectionWS)
             {

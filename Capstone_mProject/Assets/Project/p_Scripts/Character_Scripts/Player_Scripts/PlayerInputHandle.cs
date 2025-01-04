@@ -53,78 +53,99 @@ public class PlayerInputHandle : MonoBehaviour
     }
     void Update()
     {
-        foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
-        {
-            if (Input.GetKeyDown(keyCode))
-            {
-                switch (keyCode)
-                {
-                    case KeyCode.Q: P_KState.QDown = true; break;   //궁
-                    case KeyCode.W: P_KState.WDown = true; break;   //앞
-                    case KeyCode.E: P_KState.EDown = true; break;   //스킬1
-                    case KeyCode.R: P_KState.RDown = true; break;   //스킬2
-                    case KeyCode.T: P_KState.TDown = true; break;   //조준
-                    case KeyCode.Y: P_KState.YDown = true; break;
-                    case KeyCode.U: P_KState.UDown = true; break;
-                    case KeyCode.I: P_KState.IDown = true; break;
-                    case KeyCode.O: P_KState.ODown = true; break;
-                    case KeyCode.P: P_KState.PDown = true; break;
-                    case KeyCode.A: P_KState.ADown = true; break;   //좌
-                    case KeyCode.S: P_KState.SDown = true; break;   //뒤
-                    case KeyCode.D: P_KState.DDown = true; break;   //우
-                    case KeyCode.F: P_KState.FDown = true; break;   //스킬3
-                    case KeyCode.G: P_KState.GDown = true; break;
-                    case KeyCode.H: P_KState.HDown = true; break;
-                    case KeyCode.J: P_KState.JDown = true; break;
-                    case KeyCode.K: P_KState.KDown = true; break;
-                    case KeyCode.L: P_KState.LDown = true; break;
-                    case KeyCode.Z: P_KState.ZDown = true; break;
-                    case KeyCode.X: P_KState.XDown = true; break;
-                    case KeyCode.C: P_KState.CDown = true; break;
-                    case KeyCode.V: P_KState.VDown = true; break;
-                    case KeyCode.B: P_KState.BDown = true; break;
-                    case KeyCode.N: P_KState.NDown = true; break;
-                    case KeyCode.M: P_KState.MDown = true; break;
-                    case KeyCode.CapsLock: P_States.isWalking = true; break;    //걷기 on
-                    default: break;
-                }
-            }
+        // foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
+        // {
+        //     if (Input.GetKeyDown(keyCode))
+        //     {
+        //         switch (keyCode)
+        //         {
+        //             case KeyCode.Q: P_KState.QDown = true; break;   //궁
+        //             case KeyCode.W: P_KState.WDown = true; break;   //앞
+        //             case KeyCode.E: P_KState.EDown = true; break;   //스킬1
+        //             case KeyCode.R: P_KState.RDown = true; break;   //스킬2
+        //             case KeyCode.T: P_KState.TDown = true; break;   //조준
+        //             case KeyCode.Y: P_KState.YDown = true; break;
+        //             case KeyCode.U: P_KState.UDown = true; break;
+        //             case KeyCode.I: P_KState.IDown = true; break;
+        //             case KeyCode.O: P_KState.ODown = true; break;
+        //             case KeyCode.P: P_KState.PDown = true; break;
+        //             case KeyCode.A: P_KState.ADown = true; break;   //좌
+        //             case KeyCode.S: P_KState.SDown = true; break;   //뒤
+        //             case KeyCode.D: P_KState.DDown = true; break;   //우
+        //             case KeyCode.F: P_KState.FDown = true; break;   //스킬3
+        //             case KeyCode.G: P_KState.GDown = true; break;
+        //             case KeyCode.H: P_KState.HDown = true; break;
+        //             case KeyCode.J: P_KState.JDown = true; break;
+        //             case KeyCode.K: P_KState.KDown = true; break;
+        //             case KeyCode.L: P_KState.LDown = true; break;
+        //             case KeyCode.Z: P_KState.ZDown = true; break;
+        //             case KeyCode.X: P_KState.XDown = true; break;
+        //             case KeyCode.C: P_KState.CDown = true; break;
+        //             case KeyCode.V: P_KState.VDown = true; break;
+        //             case KeyCode.B: P_KState.BDown = true; break;
+        //             case KeyCode.N: P_KState.NDown = true; break;
+        //             case KeyCode.M: P_KState.MDown = true; break;
+        //             case KeyCode.CapsLock: P_States.isWalking = true; break;    //걷기 on
+        //             default: break;
+        //         }
+        //     }
 
-            if (Input.GetKeyUp(keyCode))
-            {
-                switch (keyCode)
-                {
-                    case KeyCode.Q: P_KState.QDown = false; break;  //궁
-                    case KeyCode.W: P_KState.WDown = false; break;  //앞
-                    case KeyCode.E: P_KState.EDown = false; break;  //스킬1
-                    case KeyCode.R: P_KState.RDown = false; break;  //스킬2
-                    case KeyCode.T: P_KState.TDown = false; break;  //조준
-                    case KeyCode.Y: P_KState.YDown = false; break;
-                    case KeyCode.U: P_KState.UDown = false; break;
-                    case KeyCode.I: P_KState.IDown = false; break;
-                    case KeyCode.O: P_KState.ODown = false; break;
-                    case KeyCode.P: P_KState.PDown = false; break;
-                    case KeyCode.A: P_KState.ADown = false; break;  //좌
-                    case KeyCode.S: P_KState.SDown = false; break;  //뒤
-                    case KeyCode.D: P_KState.DDown = false; break;  //우
-                    case KeyCode.F: P_KState.FDown = false; break;  //스킬3
-                    case KeyCode.G: P_KState.GDown = false; break;
-                    case KeyCode.H: P_KState.HDown = false; break;
-                    case KeyCode.J: P_KState.JDown = false; break;
-                    case KeyCode.K: P_KState.KDown = false; break;
-                    case KeyCode.L: P_KState.LDown = false; break;
-                    case KeyCode.Z: P_KState.ZDown = false; break;
-                    case KeyCode.X: P_KState.XDown = false; break;
-                    case KeyCode.C: P_KState.CDown = false; break;
-                    case KeyCode.V: P_KState.VDown = false; break;
-                    case KeyCode.B: P_KState.BDown = false; break;
-                    case KeyCode.N: P_KState.NDown = false; break;
-                    case KeyCode.M: P_KState.MDown = false; break;
-                    case KeyCode.CapsLock: P_States.isWalking = false; break;   //걷기 off
-                    default: break;
-                }
-            }
-        }
+        //     if (Input.GetKeyUp(keyCode))
+        //     {
+        //         switch (keyCode)
+        //         {
+        //             case KeyCode.Q: P_KState.QDown = false; break;  //궁
+        //             case KeyCode.W: P_KState.WDown = false; break;  //앞
+        //             case KeyCode.E: P_KState.EDown = false; break;  //스킬1
+        //             case KeyCode.R: P_KState.RDown = false; break;  //스킬2
+        //             case KeyCode.T: P_KState.TDown = false; break;  //조준
+        //             case KeyCode.Y: P_KState.YDown = false; break;
+        //             case KeyCode.U: P_KState.UDown = false; break;
+        //             case KeyCode.I: P_KState.IDown = false; break;
+        //             case KeyCode.O: P_KState.ODown = false; break;
+        //             case KeyCode.P: P_KState.PDown = false; break;
+        //             case KeyCode.A: P_KState.ADown = false; break;  //좌
+        //             case KeyCode.S: P_KState.SDown = false; break;  //뒤
+        //             case KeyCode.D: P_KState.DDown = false; break;  //우
+        //             case KeyCode.F: P_KState.FDown = false; break;  //스킬3
+        //             case KeyCode.G: P_KState.GDown = false; break;
+        //             case KeyCode.H: P_KState.HDown = false; break;
+        //             case KeyCode.J: P_KState.JDown = false; break;
+        //             case KeyCode.K: P_KState.KDown = false; break;
+        //             case KeyCode.L: P_KState.LDown = false; break;
+        //             case KeyCode.Z: P_KState.ZDown = false; break;
+        //             case KeyCode.X: P_KState.XDown = false; break;
+        //             case KeyCode.C: P_KState.CDown = false; break;
+        //             case KeyCode.V: P_KState.VDown = false; break;
+        //             case KeyCode.B: P_KState.BDown = false; break;
+        //             case KeyCode.N: P_KState.NDown = false; break;
+        //             case KeyCode.M: P_KState.MDown = false; break;
+        //             case KeyCode.CapsLock: P_States.isWalking = false; break;   //걷기 off
+        //             default: break;
+        //         }
+        //     }
+        // }
+
+        if (Input.GetKeyDown(KeyCode.Q)) P_KState.QDown = true;   // 궁
+        if (Input.GetKeyDown(KeyCode.E)) P_KState.EDown = true;   // 스킬1
+        if (Input.GetKeyDown(KeyCode.R)) P_KState.RDown = true;   // 스킬2
+        if (Input.GetKeyDown(KeyCode.W)) P_KState.WDown = true;   // 앞
+        if (Input.GetKeyDown(KeyCode.A)) P_KState.ADown = true;   // 좌
+        if (Input.GetKeyDown(KeyCode.S)) P_KState.SDown = true;   // 뒤
+        if (Input.GetKeyDown(KeyCode.D)) P_KState.DDown = true;   // 우
+        if (Input.GetKeyDown(KeyCode.V)) P_KState.VDown = true;   // 우
+        if (Input.GetKeyDown(KeyCode.CapsLock)) P_States.isWalking = true; // 걷기 on
+
+        if (Input.GetKeyUp(KeyCode.Q)) P_KState.QDown = false;
+        if (Input.GetKeyUp(KeyCode.E)) P_KState.EDown = false;
+        if (Input.GetKeyUp(KeyCode.R)) P_KState.RDown = false;
+        if (Input.GetKeyUp(KeyCode.W)) P_KState.WDown = false;
+        if (Input.GetKeyUp(KeyCode.A)) P_KState.ADown = false;   // 좌
+        if (Input.GetKeyUp(KeyCode.S)) P_KState.SDown = false;   // 뒤
+        if (Input.GetKeyUp(KeyCode.D)) P_KState.DDown = false;   // 우
+        if (Input.GetKeyUp(KeyCode.V)) P_KState.VDown = false;
+        if (Input.GetKeyUp(KeyCode.CapsLock)) P_States.isWalking = false; // 걷기 off
+
     }
 
     public void KeyRebind()
